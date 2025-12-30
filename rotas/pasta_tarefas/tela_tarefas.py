@@ -47,14 +47,3 @@ def excluir_tarefa(tarefa_id):
 
         flash('Tarefa excluída com sucesso!', 'success')
         return redirect(url_for('tarefas.initarefas'))
-
-
-
-
-
-@bp_tela_tarefas.route('/editar_tarefa/<int:tarefa_id>', methods=['GET', 'POST'])
-@login_required
-def iniedittarefa(tarefa_id):
-
-
-    return render_template('pasta_tarefas/crud/tela_edit.html')

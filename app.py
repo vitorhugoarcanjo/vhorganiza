@@ -34,6 +34,7 @@ from rotas.pasta_config.config import bp_config
 # PASTA TAREFAS
 from rotas.pasta_tarefas.tela_tarefas import bp_tela_tarefas
 from rotas.pasta_tarefas.crud.pasta_insert.tela_insert import bp_insert_tarefas # INSERIR
+from rotas.pasta_tarefas.crud.pasta_edit.logica_edit import bp_tela_edit
 
 load_dotenv()
 
@@ -71,6 +72,7 @@ app.register_blueprint(bp_config, url_prefix="/config")
 # TAREFAS
 app.register_blueprint(bp_tela_tarefas, url_prefix="/tarefas")
 app.register_blueprint(bp_insert_tarefas, url_prefix="/insert_tarefas")
+app.register_blueprint(bp_tela_edit, url_prefix="/editar_tarefa")
 
 @app.route('/')
 def appinicializar():
