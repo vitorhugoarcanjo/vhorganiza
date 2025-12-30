@@ -16,5 +16,5 @@ def iniposlogin():
 @bp_pos_login.route('/logout')
 def logout():
     session.clear()
-    flash('Você saiu do sistema', 'sucess')
+    flash('Você saiu do sistema', 'info')
     return redirect(url_for('appinicializar'))

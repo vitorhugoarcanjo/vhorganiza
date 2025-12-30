@@ -41,8 +41,8 @@ def validar_login():
             session['user_id'] = usuario[0] # ID do usuário
             session['user_nome'] = usuario[1] # Nome do usuário
 
-            
-            return redirect(url_for('pos_login.iniposlogin')) 
+            flash('Logado com sucesso!', 'success')
+            return redirect(url_for('pos_login.iniposlogin'))
 
         else:
             flash('Usuário ou senha incorretos!', 'error')

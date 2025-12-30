@@ -17,10 +17,6 @@
                     <p>Usuário Logado: {{ user_nome }}</p>
                 </div>
 
-                <div class="titulo">
-                    <h1 class="h1">TAREFAS</h1>
-                </div>
-
                 <div class="menu">
                     <div class="btn_voltar">
                         <a href="{{ url_for('pos_login.iniposlogin') }}"><span>↩️</span>VOLTAR</a>
@@ -80,36 +76,95 @@
     <!-- SEÇÃO DE TABELA -->
     <section class="section_tabela">
         <div class="section_tabela_fundo">
-            <div class="sub_section_fundo_tabela">
+            <div class="tabela-container">
                 <div class="titulo">
-                    <h1>TABELA EM PREPARAÇÃO</h1>
+                    <h1>TAREFAS</h1>
                 </div>
+
+                <div class="section_dados_tabela">
+                    <table>
+
+                        <!-- NOME DAS COLUNAS -->
+                        <thead>
+                            <tr>
+                                <th>ID:</th>
+                                <th>DESCRIÇÃO:</th>
+                                <th>STATUS:</th>
+                                <th>DATA DE INÍCIO:</th>
+                                <th>DATA FINAL:</th>
+                                <th>AÇÕES:</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% if tarefas %}
+                                {% for tarefa in tarefas %}
+                                <tr>
+                                    <!-- ID DA TAREFA-->
+                                    <td>{{ tarefa[0] }}</td>
+
+                                    <!-- DESCRICAO -->
+                                    <td>{{ tarefa[1] }}</td>
+
+                                    <!-- STATUS -->
+                                    <td>
+                                        {% if tarefa[2] == 'concluido' %}
+                                        <p>✅ CONCLÚIDO</p>
+                                        {% endif %}
+
+                                        {% if tarefa[2] == 'em andamento' %}
+                                        <p>⏳ EM ANDAMENTO</p>
+                                        {% endif %}
+
+                                        {% if tarefa[2] == 'pendente' %}
+                                        <p>🔴 PENDENTE</p>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <!-- DATA INICIO -->
+                                    <td>{{ tarefa[3] }}</td>
+
+                                    <!-- DATA FINAL -->
+                                    <td>{{ tarefa[4] }}</td>
+
+                                    <!-- AÇÕES -->
+                                    <td>
+                                        {% if tarefa[2] != 'concluido' %}
+                                        <!-- CONCLUIR -->
+                                        <form method="post" action="{{ url_for('tarefas.concluir_tarefa', tarefa_id=tarefa[0]) }}">
+                                            <button type="submit" title="CONCLUIR?">🟢</button>
+                                        </form>
+
+
+                                        <!-- EDITAR -->
+                                        <form method="post" action="{{ url_for('tarefas.iniedittarefa', tarefa_id=tarefa[0]) }}">
+                                            <button type="submit" title="EDITAR?">✏️</button>
+                                        </form>
+
+
+                                        <!-- EXCLUIR-->
+                                        <form method="post" action="{{ url_for('tarefas.excluir_tarefa', tarefa_id=tarefa[0]) }}">
+                                            <button type="submit" title="EXCLUIR?">❌</button>
+                                        </form>
+
+                                        {% else %}
+                                            <span title="Concluido">✅</span>
+                                        {% endif %}
+                                        
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                        
+                            {% else %}
+                                <tr><td colspan="6" style="text-align:center;padding:40px;color:#666;">📝 Nenhuma tarefa encontrada! Crie a primeira.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <td>ID:</td>
-                    <th>DESCRIÇÃO:</th>
-                    <th>STATUS:</th>
-                    <th>DATA DE INÍCIO:</th>
-                    <th>DATA FINAL:</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for tarefa in resultado_tarefas %}
-                <tr>
-                    <td>{{ tarefa.id }}</td>
-                    <td>{{ tarefa.descricao }}</td>
-                    <td>{{ tarefa.status }}</td>
-                    <td>{{ tarefa.data_inicio }}</td>
-                    <td>{{ tarefa.data_final }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </section>
 </main>
 </html>
