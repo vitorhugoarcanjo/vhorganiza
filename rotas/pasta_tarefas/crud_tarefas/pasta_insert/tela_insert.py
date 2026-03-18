@@ -25,8 +25,15 @@ def ini_insert():
             conexao_banco = sqlite3.connect(caminho_banco)
             cursor = conexao_banco.cursor()
 
-            cursor.execute('INSERT INTO tarefas (user_id, descricao, status, data_inicio, data_final, categoria_id, prioridade) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                           (user_id, descricao or '', status or 'pendente', data_inicio, data_final, categoria_tarefa, prioridade_tarefa))
+            # 1. pegar próxima sequência POR USUÁRIO - TAREFA SEQUENCIA
+            cursor.execute(
+                "SELECT IFNULL(MAX(tarefa_sequencia), 0) + 1 FROM tarefas WHERE user_id = ?",
+                (user_id,)
+            )
+            prox_seq = cursor.fetchone()[0]
+
+            cursor.execute('INSERT INTO tarefas (user_id, descricao, status, data_inicio, data_final, categoria_id, prioridade, tarefa_sequencia) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                           (user_id, descricao or '', status or 'pendente', data_inicio, data_final, categoria_tarefa, prioridade_tarefa, prox_seq))
 
             conexao_banco.commit()
             conexao_banco.close()
