@@ -20,7 +20,6 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
-
 @app.before_request
 def debug_request():
     app.logger.debug(f"=== REQUISIÇÃO RECEBIDA ===")
