@@ -28,6 +28,7 @@ def debug_request():
     app.logger.debug(f"Path: {request.path}")
     app.logger.debug(f"Endpoint: {request.endpoint}")
 
+
 @app.route('/')
 def ini_app():
     """ INICIO DO MEU APP """
