@@ -28,6 +28,12 @@ def debug_request():
     app.logger.debug(f"Path: {request.path}")
     app.logger.debug(f"Endpoint: {request.endpoint}")
 
+@app.after_request
+def debug_response(response):
+    app.logger.debug(f"=== RESPOSTA ENVIADA ===")
+    app.logger.debug(f"Status: {response.status_code}")
+    app.logger.debug(f"Location: {response.headers.get('Location', 'Nenhum')}")
+    return response
 
 @app.route('/')
 def ini_app():
