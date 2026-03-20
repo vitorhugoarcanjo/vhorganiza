@@ -3,193 +3,652 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/import_css.css') }}">
-    <title>GESTÃO TAREFAS</title>
+    
+    <!-- Bootstrap + Dark Mode -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Seu Dark Mode Global -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_login_e_cadastre_se/global.css') }}">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <title>Gestão de Tarefas</title>
+    
+    <style>
+/* 🔧 LAYOUT HORIZONTAL - BLOCOS EMPILHADOS VERTICALMENTE */
+html, body { 
+    height: 100vh; 
+    margin: 0; 
+    padding: 0; 
+    overflow: hidden;
+}
+
+.container-fluid {
+    height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;  /* MUDEI: agora é column (vertical) */
+    padding: 0 !important;
+}
+
+.row.g-0 {
+    height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;  /* MUDEI: empilhado verticalmente */
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* BLOCOS EMPILHADOS VERTICALMENTE COM NOVAS PROPORÇÕES */
+.col-acoes { 
+    flex: 0 0 4% !important;           /* 4% da altura */
+    max-height: 4% !important;
+    width: 100% !important;
+    background: #0f0f23 !important;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    overflow: hidden;
+}
+
+/* ========== BLOCO FILTROS - VERSÃO COMPACTA 100% VISÍVEL ========== */
+/* Container pai dos filtros */
+.col-filtros { 
+    flex: 0 0 16% !important;
+    max-height: 16% !important;
+    width: 100% !important;
+    background: #16213e !important;
+    overflow-y: visible !important;
+}
+
+.col-filtros .h-100 {
+    height: 100% !important;
+    overflow-y: visible !important;
+}
+
+/* Container dos 3 blocos (DATA, CAT, DESC) */
+.col-filtros .filtros-container {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    height: 100%;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+/* Cada bloco individual */
+.col-filtros .bloco-filtro {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px;
+    padding: 3px;
+    gap: 2px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Bloco DATA - maior largura */
+.col-filtros .bloco-filtro:first-child {
+    flex: 1.3;  /* 50% maior que os outros */
+}
+
+/* Demais blocos */
+.col-filtros .bloco-filtro:not(:first-child) {
+    flex: 1;
+}
+
+/* Bloco 6 - Ações */
+.col-filtros .bloco-filtro:last-child {
+    flex: 0.4;  /* menor que os outros */
+    justify-content: center;
+}
+
+/* Título do bloco */
+.col-filtros .bloco-titulo {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6c757d;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 2px;
+    margin-bottom: 1px;
+    flex-shrink: 0;
+}
+
+/* Grupo de botões em linha */
+.col-filtros .grupo-botoes-linha {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+/* Container dos inputs de data com labels do lado */
+.col-filtros .grupo-inputs-data {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+/* Labels dos inputs */
+.col-filtros .input-label {
+    font-size: 1rem;
+    color: #6c757d;
+    white-space: nowrap;
+    width: 100%;
+}
+
+/* Wrapper de cada input - agora em linha */
+.col-filtros .input-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    padding: 1px;
+}
+
+/* Wrapper para input com label sobreposto */
+.col-filtros .input-com-label {
+    flex: 1;
+    position: relative;
+    display: inline-block;
+}
+
+/* Label sobreposto dentro do input */
+.col-filtros .input-label-overlay {
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.55rem;
+    color: #6c757d;
+    pointer-events: none;
+    background: transparent;
+    padding: 0 2px;
+}
+
+/* Inputs de data - sem borda e sem fundo */
+.col-filtros .input-data {
+    flex: 1;
+    font-size: 0.8rem;
+    height: auto;
+    background: transparent;
+    border: none;
+    color: white;
+}
+
+.col-filtros .input-data:focus {
+    outline: none;
+}
+
+/* Ajuste específico para os botões de data */
+.col-filtros .btn-data {
+    padding: 2px 2px;
+    font-size: 0.7rem;
+    min-width: 35px;
+    width: 100%;
+}
+
+.col-filtros .btn-ok-data,
+.col-filtros .btn-limpar-data {
+    padding: 2px 4px;
+    font-size: 0.65rem;
+    min-width: 45px;
+    width: 100%;
+}
+/* =================== FILTROS - DATA ===================== */
+
+
+/* =================== FILTROS - CATEGORIAS ===================== */
+/* Categorias com fundo escuro e texto claro */
+.col-filtros .lista-categorias {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.65rem;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.col-filtros .lista-categorias label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Botões de ação dentro dos blocos */
+.col-filtros .btn-aplicar {
+    flex: 0 0 auto;
+    font-size: 0.6rem;
+    padding: 2px;
+    margin-top: 2px;
+}
+
+/* Botão limpar geral */
+.col-filtros .btn-limpar-geral {
+    margin-top: 4px;
+    font-size: 0.6rem;
+    padding: 2px;
+}
+
+.col-filtros .lista-categorias label span {
+    color: #e0e0e0 !important;
+    font-size: 0.7rem;
+}
+.col-filtros .lista-categorias label:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+/* =================== FILTROS - CATEGORIAS ===================== */
+
+
+/* =================== STATUS E PRIORIDADE ===================== */
+.col-filtros .status-select,
+.col-filtros .prioridade-select {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    color: white;
+    font-size: 0.7rem;
+    padding: 4px 6px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.col-filtros .status-select option,
+.col-filtros .prioridade-select option {
+    background: #16213e;
+    color: white;
+}
+
+.col-filtros .status-select:focus,
+.col-filtros .prioridade-select:focus {
+    outline: none;
+    border-color: #0d6efd;
+}
+/* =================== STATUS E PRIORIDADE ===================== */
+
+
+/* =================== TABELA - TAREFAS ===================== */
+.col-tarefas { 
+    flex: 1 !important;                /* Restante da altura (80%) */
+    width: 100% !important;
+    background: #0f0f23 !important;
+    overflow-y: auto;
+}
+
+/* Ajustes internos para o novo layout horizontal */
+.col-acoes .d-flex {
+    flex-direction: row !important;    /* Ícones em linha horizontal */
+    justify-content: space-around;
+    align-items: center;
+}
+
+.nav-icon {
+    display: inline-block !important;
+    margin: 0 !important;
+}
+/* =================== TABELA - TAREFAS ===================== */
+
+
+/* =================== MOBILE - MOBILE ===================== */
+@media (max-width: 768px) {
+    .col-acoes { 
+        flex: 0 0 70px !important;
+        max-height: 70px !important;
+    }
+    .col-filtros { 
+        flex: 0 0 40vh !important;
+        max-height: 40vh !important;
+    }
+    .col-tarefas { 
+        flex: 1 !important;
+    }
+}
+    </style>
 </head>
-
-<main>
-    <!-- SECÃO DO CABEÇALHO -->
-    <section class="section_cabecalho">
-        <div class="sec_cab_container_fundo">
-            <div class="sec_cab_sub_container">
-
-                <div class="usuario_logado">
-                    <p>Usuário Logado: {{ user_nome }}</p>
-                </div>
-
-                <div class="menu">
-                    <div class="btn_voltar">
-                        <a href="{{ url_for('pos_login.iniposlogin') }}"><span>↩️</span>VOLTAR</a>
+<body>
+    <div class="container-fluid px-0">
+        <div class="row g-0">
+            
+            <!-- ========== BLOCO 1: AÇÕES (4% da altura) ========== -->
+            <div class="col col-acoes">
+                <div class="d-flex h-100 px-3 align-items-center justify-content-between">
+                    
+                    <!-- Logo/Ícone principal -->
+                    <div class="text-center">
+                        <i class="bi bi-grid-3x3-gap-fill text-primary fs-4"></i>
                     </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- SECÃO DA CONSULTA -->
-    <section class="section_consulta">
-        <div class="sec_con_container_fundo">
-            <div class="sec_con_sub_container">
-                <div class="titulo">
-                    <h3>CONSULTE SUA TAREFA</h3>
-                </div>
-
-                <div class="label_input">
-                    <div class="sub_label_input">
-                        <label>Descrição:</label>
-                        <input>
+                    
+                    <!-- Navegação principal (agora horizontal) -->
+                    <div class="nav">
+                        <a href="#" class="nav-icon mx-2 text-white" title="Dashboard">
+                            <i class="bi bi-house-door fs-5"></i>
+                        </a>
+                        <a href="#" class="nav-icon mx-2 text-info" title="Tarefas">
+                            <i class="bi bi-check2-square fs-5"></i>
+                        </a>
+                        <a href="#" class="nav-icon mx-2 text-success" title="Finanças">
+                            <i class="bi bi-currency-dollar fs-5"></i>
+                        </a>
+                        <a href="#" class="nav-icon mx-2 text-warning" title="Config">
+                            <i class="bi bi-gear fs-5"></i>
+                        </a>
                     </div>
-
-                    <div class="sub_label_input">
-                        <label>DATA INICIO:</label>
-                        <input type="date">
+                    
+                    <!-- Sair -->
+                    <div>
+                        <a href="{{ url_for('login.validar_login') }}" class="nav-icon text-danger" title="Sair">
+                            <i class="bi bi-box-arrow-right fs-5"></i>
+                        </a>
                     </div>
-
-                    <div class="sub_label_input">
-                        <label>DATA FINAL:</label>
-                        <input type="date">
-                    </div>
-                </div>
-
-                <div class="botoes">
-                    <button type="submit" class="btn_consultar">CONSULTAR</button>
-                    <button type="reset" class="btn_limpar">LIMPAR</button>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- SEÇÃO DE BOTÕES -->
-    <section class="section_botoes">
-        <div class="section_botoes_fundo">
-            <div class="sub_section_botoes">
-                <div class="botoes_globais">
-                    <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn_novo">NOVO</a>
-                    <a href="{{ url_for('dashboard.inidashboard') }}" class="btn_dashboard">DASHBOARD</a>
-                    <a href="{{ url_for('categorias.listar_categorias') }}" class="btn_dashboard">CATEGORIAS</a> 
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- SEÇÃO DE TABELA -->
-    <section class="section_tabela">
-        <div class="section_tabela_fundo">
-            <div class="tabela-container">
-                <div class="titulo">
-                    <h1>TAREFAS</h1>
-                </div>
-
-                <div class="section_dados_tabela">
-                    <table>
-
-                        <!-- NOME DAS COLUNAS -->
-                        <thead>
-                            <tr>
-                                <th>ID:</th>
-                                <th>DESCRIÇÃO:</th>
-                                <th>STATUS:</th>
-                                <th>DATA DE INÍCIO:</th>
-                                <th>DATA FINAL:</th>
-                                <th>CATEGORIA</th>
-                                <th>PRIORIDADE</th>
-                                <th>AÇÕES:</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {% if tarefas %}
-                                {% for tarefa in tarefas %}
-                                <tr>
-                                    <!-- ID DA TAREFA-->
-                                    <td>{{ tarefa[0] }}</td>
-
-                                    <!-- DESCRICAO -->
-                                    <td>{{ tarefa[1] }}</td>
-
-                                    <!-- STATUS -->
-                                    <td>
-                                        {% if tarefa[2] == 'concluido' %}
-                                        <p>✅ CONCLÚIDO</p>
-                                        {% endif %}
-
-                                        {% if tarefa[2] == 'em andamento' %}
-                                        <p>⏳ EM ANDAMENTO</p>
-                                        {% endif %}
-
-                                        {% if tarefa[2] == 'pendente' %}
-                                        <p>🔴 PENDENTE</p>
-                                        {% endif %}
-                                    </td>
-                                    
-                                    <!-- DATA INICIO -->
-                                    <td>{{ tarefa[3] }}</td>
-
-                                    <!-- DATA FINAL -->
-                                    <td>{{ tarefa[4] }}</td>
-
-                                    <!-- CATEGORIA -->
-                                    <td>
-                                        {% if tarefa[7] %}
-                                        <span style="background-color: {{ tarefa[8] }}; padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold;">{{ tarefa[7] }}</span>
-
-                                        {% else %}
-                                            <span class="sem-categoria">-</span>
-                                        {% endif %}
-                                    </td>
-
-                                    <!-- PRIORIDADE -->
-                                    <td>
-                                        {% if tarefa[6] %}
-                                        <span>{{ tarefa[6] }}</span>
-                                        {% else %}
-                                        <span>-</span>
-                                        {% endif %}
-
-                                    </td>
-
-                                    
-
-                                    <!-- AÇÕES -->
-                                    <td>
-                                        {% if tarefa[2] != 'concluido' %}
-                                        <!-- CONCLUIR -->
-                                        <form method="post" action="{{ url_for('tarefas.concluir_tarefa', tarefa_id=tarefa[0]) }}">
-                                            <button type="submit" title="CONCLUIR?">🟢</button>
-                                        </form>
-
-
-                                        <!-- EDITAR -->
-                                        <form action="{{ url_for('editar_tarefa.iniedittarefa', tarefa_id=tarefa[0]) }}">
-                                            <button type="submit" title="EDITAR?">✏️</button>
-                                        </form>
-
-
-                                        <!-- EXCLUIR-->
-                                        <form method="post" action="{{ url_for('tarefas.excluir_tarefa', tarefa_id=tarefa[0]) }}">
-                                            <button type="submit" title="EXCLUIR?">❌</button>
-                                        </form>
-
-                                        {% else %}
-                                            <span title="Concluido">✅</span>
-                                        {% endif %}
-                                        
-                                    </td>
-
-                                </tr>
-                                {% endfor %}
+                        <!-- ========== BLOCO 2: FILTROS (16% da altura) ========== -->
+            <div class="col col-filtros">
+                <div class="h-100 p-1" style="overflow: visible;">  <!-- padding menor -->
+                    <form action="{{ url_for('tarefas.ini_tarefas') }}" method="POST" class="h-100">
                         
-                            {% else %}
-                                <tr><td colspan="6" style="text-align:center;padding:40px;color:#666;">📝 Nenhuma tarefa encontrada! Crie a primeira.</td></tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
-                </div>
+                        <div class="filtros-container">
+                            
+                            <!-- BLOCO 1: DATA (compacto) -->
+                            <div class="bloco-filtro">
+                                <div class="bloco-titulo">📅 DATA</div>
+                                
+                                <!-- Linha 1: botões rápidos -->
+                                <div class="grupo-botoes-linha">
+                                    <button type="submit" name="tipo_filtro" value="ontem" class="btn btn-sm btn-outline-light btn-data">-1</button>
+                                    <button type="submit" name="tipo_filtro" value="hoje" class="btn btn-sm btn-outline-success btn-data">HOJE</button>
+                                    <button type="submit" name="tipo_filtro" value="amanha" class="btn btn-sm btn-outline-light btn-data">+1</button>
+                                </div>
 
+                                <!-- Linha 2: botões de mês -->
+                                <div class="grupo-botoes-linha">
+                                    <button type="submit" name="tipo_filtro" value="mes_passado" class="btn btn-sm btn-outline-light btn-data">-1m</button>
+                                    <button type="submit" name="tipo_filtro" value="mes" class="btn btn-sm btn-outline-info btn-data">I/F</button>
+                                    <button type="submit" name="tipo_filtro" value="mes_proximo" class="btn btn-sm btn-outline-light btn-data">+1m</button>
+                                </div>
+                                
+                                <!-- Inputs de data na HORIZONTAL com labels do lado -->
+                                <div class="grupo-inputs-data">
+                                    <div class="input-wrapper">
+                                        <span class="input-label">Início:</span>
+                                        <input type="date" name="data_inicio" class="form-control form-control-sm input-data" 
+                                            value="{{ data_inicio or '' }}">
+                                    </div>
+                                    <div class="input-wrapper">
+                                        <span class="input-label">Fim/Mês:</span>
+                                        <input type="date" name="data_fim" class="form-control form-control-sm input-data" 
+                                            value="{{ data_fim or '' }}">
+                                    </div>
+                                </div>
+                                
+                                <!-- Botões em linha horizontal -->
+                                <div class="grupo-botoes-linha">
+                                    <button type="submit" name="tipo_filtro" value="personalizado" class="btn btn-sm btn-primary btn-ok-data">
+                                        OK
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- BLOCO 2: CATEGORIAS (compacto) -->
+                            <div class="bloco-filtro">
+                                <div class="bloco-titulo">🏷️ CATEGORIAS</div>
+                                
+                                <div class="lista-categorias">
+                                    <!-- Opção "Sem categoria" -->
+                                    <label class="d-flex align-items-center" style="cursor: pointer;">
+                                        <input type="checkbox" name="categorias" value="null" 
+                                            class="me-1" style="transform: scale(0.9);"
+                                            {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
+                                        <span style="font-size: 0.7rem;">📭 SEM CATEGORIA</span>
+                                    </label>
+
+                                    {% for cat in categorias_usuario %}
+                                    <label class="d-flex align-items-center" style="cursor: pointer;">
+                                        <input type="checkbox" name="categorias" value="{{ cat[0] }}" 
+                                            class="me-1" 
+                                            style="accent-color: {{ cat[2] }}; transform: scale(0.9);"
+                                            {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
+                                        <span style="font-size: 0.7rem; color: #e0e0e0;">{{ cat[1] }}</span>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                                                                
+                                <button type="submit" name="tipo_filtro" value="categorias" class="btn btn-sm btn-primary btn-aplicar">
+                                    OK
+                                </button>
+                            </div>
+
+                            <!-- BLOCO 3: STATUS -->
+                            <div class="bloco-filtro">
+                                <div class="bloco-titulo">📊 STATUS</div>
+                                
+                                <select name="status" class="form-select form-select-sm status-select">
+                                    <option value="" {% if status_filtro == '' %}selected{% endif %}>Todos</option>
+                                    <option value="vazio" {% if status_filtro == 'vazio' %}selected{% endif %}>📋 Vazio (pendente validação)</option>
+                                    <option value="pendente" {% if status_filtro == 'pendente' %}selected{% endif %}>⏰ Pendente</option>
+                                    <option value="em andamento" {% if status_filtro == 'em andamento' %}selected{% endif %}>⏳ Em Andamento</option>
+                                    <option value="concluido" {% if status_filtro == 'concluido' %}selected{% endif %}>✅ Concluído</option>
+                                    <option value="concluido_em_andamento" {% if status_filtro == 'concluido_em_andamento' %}selected{% endif %}>🔄 Concluído + Em Andamento</option>
+                                </select>
+                                
+                                <button type="submit" name="tipo_filtro" value="status" class="btn btn-sm btn-primary btn-aplicar">
+                                    OK
+                                </button>
+                            </div>
+
+                            <!-- BLOCO 4: PRIORIDADE -->
+                            <div class="bloco-filtro">
+                                <div class="bloco-titulo">⚡ PRIORIDADE</div>
+                                
+                                <select name="prioridade" class="form-select form-select-sm prioridade-select">
+                                    <option value="" {% if prioridade_filtro == '' %}selected{% endif %}>Todos</option>
+                                    <option value="vazio" {% if prioridade_filtro == 'vazio' %}selected{% endif %}>📋 Vazio (pendente validação)</option>
+                                    <option value="baixa" {% if prioridade_filtro == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
+                                    <option value="media" {% if prioridade_filtro == 'media' %}selected{% endif %}>🟡 Média</option>
+                                    <option value="alta" {% if prioridade_filtro == 'alta' %}selected{% endif %}>🔴 Alta</option>
+                                </select>
+                                
+                                <button type="submit" name="tipo_filtro" value="prioridade" class="btn btn-sm btn-primary btn-aplicar">
+                                    OK
+                                </button>
+                            </div>
+
+                            <!-- BLOCO 5: DESCRIÇÃO (compacto) -->
+                            <div class="bloco-filtro">
+                                <div class="bloco-titulo">🔍 DESC</div>
+                                
+                                <input type="text" name="descricao" class="form-control form-control-sm bg-dark text-white" 
+                                    style="font-size: 0.7rem; padding: 3px 6px;"
+                                    placeholder="buscar..." value="{{ descricao_filtro or '' }}">
+                                
+                                <button type="submit" name="tipo_filtro" value="descricao" class="btn btn-sm btn-outline-light btn-aplicar">
+                                    OK
+                                </button>
+                            </div>
+
+                            <!-- BLOCO 6: AÇÕES RÁPIDAS -->
+                            <div class="bloco-filtro">
+                                <div class="bloco-titulo">⚙️ AÇÕES</div>
+                                
+                                <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; justify-content: center;">
+                                    <a href="{{ url_for('tarefas.limpar_filtros') }}" class="btn btn-sm btn-outline-light w-100" style="font-size: 0.7rem; padding: 4px;">
+                                        <i class="bi bi-eraser"></i> Limpar Todos
+                                    </a>
+                                    
+                                    <!-- Opcional: botão de ajuda ou outros -->
+                                    <button type="submit" name="tipo_filtro" value="consultar" class="btn btn-sm btn-primary w-100" style="font-size: 0.7rem; padding: 4px;">
+                                        <i class="bi bi-search"></i> Consultar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>                        
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- ========== BLOCO 3: TAREFAS (80% da altura) ========== -->
+            <div class="col col-tarefas">
+                <div class="p-4">
+                    
+                    <!-- HEADER -->
+                    <div class="content-wrapper p-4 rounded-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <div>
+                                <h2 class="fw-bold text-white mb-2">📝 Olá, {{ user_nome }}!</h2>
+                                <p class="lead text-white-50 mb-0">Gerencie suas tarefas diárias</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-primary fs-6">{{ tarefas|length }} tarefas</span>
+                                <a href="{{ url_for('pos_login.iniposlogin') }}" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-arrow-left"></i> Voltar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTOES NOVA TAREFA - DASHBOARD - CATEGORIAS -->
+                    <div class="d-flex gap-2 mb-4 flex-wrap">
+                        <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Nova Tarefa
+                        </a>
+                        <a href="{{ url_for('dashboard.inidashboard') }}" class="btn btn-info">
+                            <i class="bi bi-graph-up"></i> Dashboard
+                        </a>
+                        <a href="{{ url_for('categorias.listar_categorias') }}" class="btn btn-warning">
+                            <i class="bi bi-tags"></i> Categorias
+                        </a>
+                    </div>
+
+                    <!-- TABELA DE TAREFAS -->
+                    <div class="content-wrapper rounded-4 overflow-hidden">
+                        <div class="p-4 border-bottom" style="background: rgba(255,255,255,0.05);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="fw-bold text-white mb-0">
+                                    <i class="bi bi-list-task me-2"></i>Lista de Tarefas
+                                </h4>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="border-0"><small>Seq</small></th>
+                                        <th class="border-0"><small>Descrição</small></th>
+                                        <th class="border-0"><small>Status</small></th>
+                                        <th class="border-0"><small>Início</small></th>
+                                        <th class="border-0"><small>Fim</small></th>
+                                        <th class="border-0"><small>Categoria</small></th>
+                                        <th class="border-0"><small>Prioridade</small></th>
+                                        <th class="border-0"><small>Ações</small></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if tarefas %}
+                                        {% for tarefa in tarefas %}
+                                        <tr class="align-middle">
+                                            <td class="fw-semibold text-white-50">{{ tarefa[0] }}</td>
+                                            <td class="text-white">{{ tarefa[1] }}</td>
+                                            <td>
+                                                {% if tarefa[2] == 'concluido' %}
+                                                    <span class="badge bg-success">✅ Concluída</span>
+                                                {% elif tarefa[2] == 'em andamento' %}
+                                                    <span class="badge bg-warning text-dark">⏳ Andamento</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">⏰ Pendente</span>
+                                                {% endif %}
+                                            </td>
+                                            <td><span class="text-white-50">{{ tarefa[3] or '-' }}</span></td>
+                                            <td><span class="text-white-50">{{ tarefa[4] or '-' }}</span></td>
+                                            <td>
+                                                {% if tarefa[7] %}
+                                                    <span class="badge fw-semibold" style="background-color: {{ tarefa[8] }}; color: white;">
+                                                        {{ tarefa[7] }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if tarefa[6] %}
+                                                    {% set prio_class = 'bg-danger' if tarefa[6] == 'alta' else 'bg-warning text-dark' if tarefa[6] == 'media' else 'bg-success' %}
+                                                    <span class="badge {{ prio_class }} fw-semibold">{{ tarefa[6]|title }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if tarefa[2] != 'concluido' %}
+                                                    <div class="btn-group" role="group">
+                                                        <form method="post" action="{{ url_for('tarefas.concluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;">
+                                                            <button class="btn btn-success btn-sm" title="Concluir">
+                                                                <i class="bi bi-check-lg"></i>
+                                                            </button>
+                                                        </form>
+                                                        <a href="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa[0]) }}" class="btn btn-primary btn-sm" title="Editar">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <form method="post" action="{{ url_for('tarefas.excluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;" onsubmit="return confirm('Confirmar exclusão?')">
+                                                            <button class="btn btn-danger btn-sm" title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                {% else %}
+                                                    <span class="badge bg-success fs-6">✅ Finalizada</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="8" class="text-center py-5">
+                                                <div class="text-center text-white-50 py-5">
+                                                    <i class="bi bi-calendar-check display-1 mb-4 opacity-50"></i>
+                                                    <h4 class="fw-bold mb-3">Nenhuma tarefa cadastrada ou nesse período</h4>
+                                                    <p class="lead mb-4">Comece criando sua primeira tarefa</p>
+                                                    <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn btn-success btn-lg px-5">
+                                                        <i class="bi bi-plus-circle me-2"></i>Nova Tarefa
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
-</main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    function desmarcarTodosOff() {
+        document.querySelectorAll('#offcanvasCategorias input[name="categorias"]').forEach(cb => cb.checked = false);
+    }
+    </script>
+</body>
 </html>

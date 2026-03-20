@@ -14,11 +14,10 @@ from config.imports_rotas import logica_imports # IMPORTS DE BLUEPRINTS
 load_dotenv()
 
 app = Flask(__name__)
+
 logica_imports(app) # IMPORTAÇÃO DOS BLUEPRINTS
-
-app.secret_key = os.getenv('SECRET_KEY')
-
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30) # TEMPO COM LOGIN ABERTO
 
 @app.before_request
 def debug_request():
