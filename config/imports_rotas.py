@@ -1,5 +1,6 @@
 """ ARQUIVO IMPORTS DE ROTAS """
 from rotas.pasta_login.pasta_acesso_login.logica_login import bp_login # LOGIN
+from rotas.pasta_login.recuperar_senha.recuperar_senha import bp_recuperar # RECUPERAR SENHA
 from rotas.pasta_login.pasta_cadastre_se.tela_cadastre_se import bp_cadastre_se # CADASTRE-SE
 from rotas.pasta_tela_pos_login.tela_pos_login import bp_pos_login # TELA POS LOGIN
 
@@ -28,6 +29,7 @@ from rotas.pasta_categorias.logica_insert_categorias import bp_categorias
 def logica_imports(app):
     """ REGISTROS DO APP.BLUE... """
     app.register_blueprint(bp_login, url_prefix="/login") # LOGIN
+    app.register_blueprint(bp_recuperar, url_prefix="/recuperar")
     app.register_blueprint(bp_cadastre_se, url_prefix="/cadastre_se") # CADASTRE-SE
     app.register_blueprint(bp_pos_login, url_prefix="/pos_login") # TELA POS LOGIN
 

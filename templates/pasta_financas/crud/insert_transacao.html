@@ -51,7 +51,7 @@
                         <p class="lead text-white-50 mb-0">Crie receitas ou despesas rapidamente</p>
                     </div>
 
-                    <form action="/nova_transacao" method="post">
+                    <form action="{{ url_for('nova_transacao.initransacao') }}" method="post">
                         <div class="row g-4">
                             <!-- TIPO -->
                             <div class="col-12">
@@ -59,10 +59,10 @@
                                 <select name="tipo" class="form-select form-select-lg" required>
                                     <option value="">Selecione...</option>
                                     <option value="receita" class="text-success">
-                                        <i class="bi bi-graph-up-arrow"></i> 📈 Receita/Entrada
+                                        📈 Receita/Entrada
                                     </option>
                                     <option value="despesa" class="text-danger">
-                                        <i class="bi bi-graph-down-arrow"></i> 📉 Despesa/Saída
+                                        📉 Despesa/Saída
                                     </option>
                                 </select>
                             </div>
@@ -96,8 +96,9 @@
                                         <i class="bi bi-calendar3"></i>
                                     </span>
                                     <input type="number" name="total_parcelas" min="1" max="60"
-                                           class="form-control form-control-lg" placeholder="1">
+                                        class="form-control form-control-lg" placeholder="1" value="1">
                                 </div>
+                                <small class="text-white-50">Deixe 1 para pagamento à vista</small>
                             </div>
 
                             <!-- DATA EMISSÃO -->

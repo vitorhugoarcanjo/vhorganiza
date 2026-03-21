@@ -7,16 +7,15 @@ caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 bp_delete = Blueprint('deletar_transacao', __name__)
 
 
-@bp_delete.route('/<int:transacao_id>')
+@bp_delete.route('/<int:sequencia>')
 @login_required
-def inideletar(transacao_id):
-    conexao_banco = sqlite3.connect(caminho_banco)
-    cursor = conexao_banco.cursor()
-
-    cursor.execute('DELETE FROM transacoes WHERE id = ? AND user_id = ?', (transacao_id, session['user_id']))
-
-    conexao_banco.commit()
-    conexao_banco.close()
-
-    flash('Transação excluída', 'success')
+def inideletar(sequencia):
+    user_id = session['user_id']
+    
+    with sqlite3.connect(caminho_banco) as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM transacoes WHERE sequencia_transacoes = ? AND user_id = ?", (sequencia, user_id))
+        conn.commit()
+    
+    flash('Transação excluída com sucesso!', 'success')
     return redirect(url_for('financas.inifinancas'))

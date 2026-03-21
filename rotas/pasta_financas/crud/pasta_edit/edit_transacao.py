@@ -7,42 +7,61 @@ caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 bp_edit_transacao = Blueprint('edit_transacoes', __name__)
 
 
-@bp_edit_transacao.route('/<int:transacao_id>', methods=['GET', 'POST'])
+@bp_edit_transacao.route('/<int:sequencia>', methods=['GET', 'POST'])
 @login_required
-def inieditar(transacao_id):
-
+def inieditar(sequencia):
+    user_id = session['user_id']
+    
     if request.method == 'GET':
         conexao_banco = sqlite3.connect(caminho_banco)
         cursor = conexao_banco.cursor()
 
-        cursor.execute('SELECT * FROM transacoes WHERE id = ? AND user_id = ?', (transacao_id, session['user_id']))
+        # Busca pela sequência e user_id
+        cursor.execute('''
+            SELECT sequencia_transacoes, id, tipo, valor_total, descricao, data_emissao, 
+                   categoria, status, data_vencimento
+            FROM transacoes 
+            WHERE sequencia_transacoes = ? AND user_id = ?
+        ''', (sequencia, user_id))
         transacao = cursor.fetchone()
         conexao_banco.close()
 
-        return render_template('pasta_financas/crud/edit_transacao.html', transacao=transacao, transacao_id=transacao_id)
+        if not transacao:
+            flash('Transação não encontrada!', 'danger')
+            return redirect(url_for('financas.inifinancas'))
+
+        return render_template('pasta_financas/crud/edit_transacao.html', 
+                               transacao=transacao, 
+                               sequencia=sequencia)
     
     if request.method == 'POST':
-        user_id = session['user_id']
+        # Pega os dados do formulário
         descricao = request.form.get('descricao')
-        valor = float(request.form.get('valor'))
+        valor = float(request.form.get('valor_total'))
         tipo = request.form.get('tipo')
-        data = request.form.get('data')
+        data_emissao = request.form.get('data_emissao')
+        data_vencimento = request.form.get('data_vencimento')
+        categoria = request.form.get('categoria')
+        status = request.form.get('status')
 
         conexao_banco = sqlite3.connect(caminho_banco)
         cursor = conexao_banco.cursor()
 
-        cursor.execute('UPDATE transacoes SET descricao = ?, valor = ?, tipo = ?, data = ? WHERE id = ? AND user_id = ?', (descricao, valor, tipo, data, transacao_id, user_id))
+        # Atualiza pela sequência
+        cursor.execute('''
+            UPDATE transacoes 
+            SET descricao = ?, 
+                valor_total = ?, 
+                tipo = ?, 
+                data_emissao = ?,
+                data_vencimento = ?,
+                categoria = ?,
+                status = ?
+            WHERE sequencia_transacoes = ? AND user_id = ?
+        ''', (descricao, valor, tipo, data_emissao, data_vencimento, categoria, status, sequencia, user_id))
 
         conexao_banco.commit()
         conexao_banco.close()
 
-        flash('Atualizado com sucesso!', 'success')
+        flash('Transação atualizada com sucesso!', 'success')
         return redirect(url_for('financas.inifinancas'))
-    
-
-    return render_template('pasta_financas/crud/edit_transacao.html')
-
-
-
-
-

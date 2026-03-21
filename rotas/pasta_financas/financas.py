@@ -23,27 +23,50 @@ def inifinancas():
     descricao = request.args.get('descricao')
     tipo = request.args.get('tipo')
 
+    conexao = sqlite3.connect(caminho_banco)
+    cursor = conexao.cursor()
 
-    if data_inicio or data_final or descricao or tipo:
-        transacoes = validacao_data(caminho_banco, user_id)
+    # Monta a query
+    query = """
+        SELECT sequencia_transacoes, id, tipo, valor_total, descricao, data_emissao, 
+               categoria, status, data_vencimento
+        FROM transacoes 
+        WHERE user_id = ?
+    """
+    params = [user_id]
 
-
-    # Se não veio filtrado, busca tudo
-    else:
-        conexao = sqlite3.connect(caminho_banco)
-        cursor = conexao.cursor()
-
-        cursor.execute('''
-            SELECT id, tipo, valor_total, descricao, data_emissao, categoria, status, data_vencimento
-            FROM transacoes 
-            WHERE user_id = ? 
-            ORDER BY data_emissao DESC
-        ''', (user_id,))
-
-
-        transacoes = cursor.fetchall()
-        conexao.close()
-
-
+    if data_inicio and data_final:
+        query += " AND data_emissao BETWEEN ? AND ?"
+        params.extend([data_inicio, data_final])
     
-    return render_template('pasta_financas/tela_financas.html', hoje=hoje, data_final=data_final, data_inicio=data_inicio,transacoes=transacoes, user_nome=session.get('user_nome'))
+    if descricao:
+        query += " AND descricao LIKE ?"
+        params.append(f"%{descricao}%")
+    
+    if tipo:
+        query += " AND tipo = ?"
+        params.append(tipo)
+
+    query += " ORDER BY data_emissao DESC, sequencia_transacoes DESC"
+    
+    cursor.execute(query, params)
+    transacoes_raw = cursor.fetchall()
+    conexao.close()
+    
+    # Formata os valores para exibição
+    transacoes = []
+    for t in transacoes_raw:
+        transacao_lista = list(t)
+        # Formata o valor (índice 3) para float com 2 casas decimais
+        try:
+            transacao_lista[3] = float(transacao_lista[3]) if transacao_lista[3] else 0.0
+        except (ValueError, TypeError):
+            transacao_lista[3] = 0.0
+        transacoes.append(transacao_lista)
+    
+    return render_template('pasta_financas/tela_financas.html', 
+                          hoje=hoje, 
+                          data_final=data_final, 
+                          data_inicio=data_inicio,
+                          transacoes=transacoes, 
+                          user_nome=session.get('user_nome'))

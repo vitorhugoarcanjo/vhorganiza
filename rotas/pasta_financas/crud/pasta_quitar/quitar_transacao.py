@@ -1,29 +1,26 @@
 from flask import Blueprint, redirect, url_for, session, flash
 import sqlite3
 import os
+from datetime import date
 
 caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 bp_quitar = Blueprint('quitar_transacao', __name__)
 
-@bp_quitar.route('/<int:transacao_id>')
-def iniquitacao(transacao_id):
+@bp_quitar.route('/<int:sequencia>')
+def iniquitacao(sequencia):
     user_id = session['user_id']
+    hoje = date.today().isoformat()
     
-    conexao = sqlite3.connect(caminho_banco)
-    cursor = conexao.cursor()
+    with sqlite3.connect(caminho_banco) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE transacoes 
+            SET status = 'quitado', 
+                data_quitamento = ? 
+            WHERE sequencia_transacoes = ? AND user_id = ?
+        """, (hoje, sequencia, user_id))
+        conn.commit()
     
-    # Verifica se é despesa e está aberta
-    cursor.execute('SELECT tipo, status FROM transacoes WHERE id = ? AND user_id = ?', 
-                   (transacao_id, user_id))
-    transacao = cursor.fetchone()
-    
-    if transacao and transacao[0] == 'despesa' and transacao[1] == 'aberto':
-        cursor.execute('UPDATE transacoes SET status = "quitado" WHERE id = ?', (transacao_id,))
-        conexao.commit()
-        flash('✅ Despesa quitada com sucesso!', 'success')
-    else:
-        flash('❌ Não foi possível quitar esta transação', 'error')
-    
-    conexao.close()
+    flash('Despesa quitada com sucesso!', 'success')
     return redirect(url_for('financas.inifinancas'))

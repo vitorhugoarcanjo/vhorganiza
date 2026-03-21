@@ -35,5 +35,12 @@ def tabela_transacoes(cursor):
     """)
         print("✅ tabela tabela_transacoes criada com sucesso")
 
+    # MODELO - ESTRUTURA
+    cursor.execute("PRAGMA table_info(transacoes)")
+    if not any(col[1] == 'sequencia_transacoes' for col in cursor.fetchall()):
+        cursor.execute("ALTER TABLE transacoes ADD COLUMN sequencia_transacoes INTEGER")
+        print("✅ Coluna sequencia_transacoes adicionada em transacoes!")
+
+
     else:
         print("ℹ️ tabela tabela_transacoes já está criada.")
