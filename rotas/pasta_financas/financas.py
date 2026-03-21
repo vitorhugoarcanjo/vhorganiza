@@ -4,10 +4,6 @@ import os
 from rotas.middleware.autenticacao import login_required
 from datetime import date
 
-# FUNÇÃO PARA VALIDAÇÃO DATA E TIPO
-from rotas.pasta_financas.validacoes.financas.data import validacao_data
-
-
 bp_financas = Blueprint('financas', __name__)
 caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
@@ -26,7 +22,7 @@ def inifinancas():
     conexao = sqlite3.connect(caminho_banco)
     cursor = conexao.cursor()
 
-    # Monta a query
+    # Monta a query base
     query = """
         SELECT sequencia_transacoes, id, tipo, valor_total, descricao, data_emissao, 
                categoria, status, data_vencimento
@@ -35,6 +31,7 @@ def inifinancas():
     """
     params = [user_id]
 
+    # Filtro de data
     if data_inicio and data_final:
         query += " AND data_emissao BETWEEN ? AND ?"
         params.extend([data_inicio, data_final])
