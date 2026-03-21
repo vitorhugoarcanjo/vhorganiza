@@ -8,7 +8,8 @@ sys.path.insert(0, '/var/www/site_gestao_financeira')
 
 from rotas.pasta_login.pasta_cadastre_se.autenticador_email.email_utils import gerar_codigo, enviar_email_confirmacao, salvar_codigo_verificacao
 
-caminho_banco = os.path.join('/var/www/site_gestao_financeira', 'instance', 'banco_de_dados.db')
+# CAMINHO ABSOLUTO DO BANCO
+caminho_banco = '/var/www/site_gestao_financeira/instance/banco_de_dados.db'
 
 def main():
     print("🚀 Iniciando envio de verificação para usuários antigos...")
