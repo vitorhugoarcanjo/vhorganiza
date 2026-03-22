@@ -1,124 +1,82 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Bootstrap + Dark Mode CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Seu Dark Mode (fundo + cards vidro) -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_login_e_cadastre_se/global.css') }}">
-    
-    <title>Dashboard Principal</title>
-    
-    <style>
-        /* Ajustes específicos pro dashboard */
-        .welcome-card {
-            background: rgba(255, 255, 255, 0.08) !important;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        .welcome-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
+{% extends "tela_base_telas_unificadas/base.html" %}
+
+{% block title %}Início - Gestão Financeira{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ============================================ */
+/* CSS ESPECÍFICO DA PÁGINA DE INÍCIO (POS-LOGIN) */
+/* ============================================ */
+
+/* WELCOME CARD */
+.welcome-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.shadow-xl {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* ============================================ */
+/* TEMA CLARO - AJUSTES PARA O WELCOME CARD    */
+/* ============================================ */
+
+body.light-mode .welcome-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+body.light-mode .main-content {
+    background: linear-gradient(135deg, #a5c3c7 0%, #878792 100%);
+}
         
-        .display-4 { font-size: 3.5rem !important; }
-        body { background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%) !important; }
-        .text-muted { color: #94a3b8 !important; }
-    </style>
-</head>
-<body class="min-vh-100 py-4">
-    <div class="container px-3 px-lg-4">
-        
-        <!-- ALERTS FLASH -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show mb-4 shadow-lg" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-                </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+body.light-mode .welcome-card .text-white {
+    color: rgb(0, 0, 0) !important;
+}
 
-        <!-- WELCOME CARD -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <div class="welcome-card p-5 rounded-4 shadow-xl text-center text-lg-start">
-                    <div class="row align-items-center">
-                        <div class="col-lg-8">
-                            <h1 class="display-4 fw-bold mb-3 text-white">👋 Bem-vindo, {{ user_nome }}!</h1>
-                            <p class="lead text-white-50 mb-0 fs-4">Sistema de Gestão Financeira Completa</p>
-                        </div>
-                        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
-                            <span class="badge bg-gradient text-white fs-6 px-3 py-2">Dark Mode Premium</span>
-                        </div>
+body.light-mode .text-white-50 {
+    color: black !important;
+}
+
+body.light-mode .badge.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container px-3 px-lg-4">
+    
+    <!-- WELCOME CARD -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="welcome-card p-5 rounded-4 shadow-xl text-center text-lg-start">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-4 fw-bold mb-3 text-white">👋 Bem-vindo, {{ user_nome }}!</h1>
+                        <p class="lead text-white-50 mb-0 fs-4">Sistema de Gestão Financeira Completa</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                        <span class="badge bg-gradient text-white fs-6 px-3 py-2">Premium</span>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- MENU CARDS (Grid Responsivo) -->
-        <div class="row g-4 mb-5">
-            <!-- Finanças -->
-            <div class="col-xl-3 col-lg-4 col-md-6">
-                <a href="{{ url_for('financas.inifinancas') }}" class="text-decoration-none">
-                    <div class="welcome-card h-100 rounded-3 p-4 text-center">
-                        <div class="display-3 text-primary mb-3 opacity-75">💵</div>
-                        <h4 class="fw-bold text-white mb-2">Finanças</h4>
-                        <p class="text-muted mb-0">Controle receitas e despesas</p>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Tarefas -->
-            <div class="col-xl-3 col-lg-4 col-md-6">
-                <a href="{{ url_for('tarefas.ini_tarefas') }}" class="text-decoration-none">
-                    <div class="welcome-card h-100 rounded-3 p-4 text-center">
-                        <div class="display-3 text-success mb-3 opacity-75">✍️</div>
-                        <h4 class="fw-bold text-white mb-2">Tarefas</h4>
-                        <p class="text-muted mb-0">Gerencie suas atividades</p>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Dashboard -->
-            <div class="col-xl-3 col-lg-4 col-md-6">
-                <a href="{{ url_for('dashboard.inidashboard') }}" class="text-decoration-none">
-                    <div class="welcome-card h-100 rounded-3 p-4 text-center">
-                        <div class="display-3 text-info mb-3 opacity-75">📊</div>
-                        <h4 class="fw-bold text-white mb-2">Dashboard</h4>
-                        <p class="text-muted mb-0">Visão geral completa</p>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Configurações -->
-            <div class="col-xl-3 col-lg-4 col-md-6">
-                <a href="{{ url_for('config.iniconfig') }}" class="text-decoration-none">
-                    <div class="welcome-card h-100 rounded-3 p-4 text-center">
-                        <div class="display-3 text-warning mb-3 opacity-75">⚙️</div>
-                        <h4 class="fw-bold text-white mb-2">Configurações</h4>
-                        <p class="text-muted mb-0">Seus dados</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- SAIR BUTTON -->
-        <div class="row">
-            <div class="col-12 text-center">
-                <a href="{{ url_for('pos_login.logout') }}" class="btn btn-outline-danger btn-lg px-5 py-3 shadow-lg">
-                    🚪 Sair do Sistema
-                </a>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <!-- MENSAGEM DE BOAS-VINDAS -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <p class="lead text-white-50">
+                Utilize o menu lateral para navegar entre as funcionalidades do sistema.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
