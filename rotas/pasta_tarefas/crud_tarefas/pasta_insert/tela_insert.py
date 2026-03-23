@@ -1,3 +1,4 @@
+# rotas/pasta_tarefas/crud_tarefas/pasta_insert/tela_insert.py
 from flask import Blueprint, request, render_template, session, redirect, url_for
 import os, sqlite3
 
@@ -9,6 +10,7 @@ caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 def ini_insert():
     if request.method == 'POST':
         user_id = session['user_id']
+        titulo = request.form.get('titulo')  # ← NOVO
         descricao = request.form.get('descricao')
         status = request.form.get('status')
         data_inicio = request.form.get('data_inicio')
@@ -25,15 +27,18 @@ def ini_insert():
             conexao_banco = sqlite3.connect(caminho_banco)
             cursor = conexao_banco.cursor()
 
-            # 1. pegar próxima sequência POR USUÁRIO - TAREFA SEQUENCIA
+            # pegar próxima sequência POR USUÁRIO
             cursor.execute(
                 "SELECT IFNULL(MAX(tarefa_sequencia), 0) + 1 FROM tarefas WHERE user_id = ?",
                 (user_id,)
             )
             prox_seq = cursor.fetchone()[0]
 
-            cursor.execute('INSERT INTO tarefas (user_id, descricao, status, data_inicio, data_final, categoria_id, prioridade, tarefa_sequencia) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                           (user_id, descricao or '', status or 'pendente', data_inicio, data_final, categoria_tarefa, prioridade_tarefa, prox_seq))
+            # INSERT com título
+            cursor.execute('''
+                INSERT INTO tarefas (user_id, titulo, descricao, status, data_inicio, data_final, categoria_id, prioridade, tarefa_sequencia) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (user_id, titulo or '', descricao or '', status or 'pendente', data_inicio, data_final, categoria_tarefa, prioridade_tarefa, prox_seq))
 
             conexao_banco.commit()
             conexao_banco.close()

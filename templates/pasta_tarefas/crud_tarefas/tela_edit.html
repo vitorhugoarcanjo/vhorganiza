@@ -39,7 +39,14 @@
                     </div>
 
                     <form method="post" action="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa_seq) }}">
-                        
+                        <!-- TITULO -->
+                        <div class="mb-3">
+                            <label class="form-label text-white">Título</label>
+                            <input type="text" name="titulo" class="form-control bg-dark text-white border-secondary" 
+                                value="{{ tarefa[0] }}" required>
+                        </div>
+
+
                         <!-- DESCRIÇÃO -->
                         <div class="mb-4">
                             <label class="form-label fw-bold fs-5">Descrição</label>
