@@ -14,16 +14,34 @@ def logs_acessos():
     limite = 20
     offset = (pagina - 1) * limite
     filtro = request.args.get('filtro', '')
+    usuario_id = request.args.get('usuario_id', type=int)  # ← filtro por ID
     
-    resultados = LogService.listar_acessos(limite, offset, filtro)
+    # Se tiver filtro por usuário, usa o método específico
+    if usuario_id:
+        # Busca todos acessos do usuário
+        todos_acessos = LogService.obter_acessos_por_usuario(usuario_id, limite=1000)
+        total = len(todos_acessos)
+        # Aplica paginação manual
+        acessos = todos_acessos[offset:offset + limite]
+        
+        # Busca nome do usuário para exibir
+        usuario_nome = LogService.obter_nome_usuario(usuario_id)
+    else:
+        # Senão, usa o listar_acessos normal com filtro de texto
+        resultados = LogService.listar_acessos(limite, offset, filtro)
+        acessos = resultados['dados']
+        total = resultados['total']
+        usuario_nome = None
     
     return render_template(
         'logs/pasta_logs_acessos/logs_acessos.html',
-        acessos=resultados['dados'],
-        total=resultados['total'],
+        acessos=acessos,
+        total=total,
         pagina=pagina,
         limite=limite,
-        filtro=filtro
+        filtro=filtro,
+        usuario_id=usuario_id,
+        usuario_nome=usuario_nome
     )
 
 @bp_painel_acessos.route('/<int:acesso_id>')
@@ -36,4 +54,4 @@ def detalhe_acesso(acesso_id):
     if not acesso:
         return "Acesso não encontrado", 404
     
-    return render_template('logs/pasta_logs_acessos/detalhe_acesso.html', acesso=acesso)
+    return render_template('logs/pasta_logs_acessos/logs_acessos_detalhado.html', acesso=acesso)

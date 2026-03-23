@@ -19,20 +19,20 @@ logica_imports(app) # IMPORTAÇÃO DOS BLUEPRINTS
 app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30) # TEMPO COM LOGIN ABERTO
 
-@app.before_request
-def debug_request():
-    app.logger.debug(f"=== REQUISIÇÃO RECEBIDA ===")
-    app.logger.debug(f"URL: {request.url}")
-    app.logger.debug(f"Host: {request.host}")
-    app.logger.debug(f"Path: {request.path}")
-    app.logger.debug(f"Endpoint: {request.endpoint}")
+# @app.before_request
+# def debug_request():
+#     app.logger.debug(f"=== REQUISIÇÃO RECEBIDA ===")
+#     app.logger.debug(f"URL: {request.url}")
+#     app.logger.debug(f"Host: {request.host}")
+#     app.logger.debug(f"Path: {request.path}")
+#     app.logger.debug(f"Endpoint: {request.endpoint}")
 
-@app.after_request
-def debug_response(response):
-    app.logger.debug(f"=== RESPOSTA ENVIADA ===")
-    app.logger.debug(f"Status: {response.status_code}")
-    app.logger.debug(f"Location: {response.headers.get('Location', 'Nenhum')}")
-    return response
+# @app.after_request
+# def debug_response(response):
+#     app.logger.debug(f"=== RESPOSTA ENVIADA ===")
+#     app.logger.debug(f"Status: {response.status_code}")
+#     app.logger.debug(f"Location: {response.headers.get('Location', 'Nenhum')}")
+#     return response
 
 @app.route('/')
 def ini_app():

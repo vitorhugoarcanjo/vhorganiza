@@ -22,12 +22,12 @@
         </div>
     </div>
 
-    <!-- FILTRO -->
+    <!-- FILTROS -->
     <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <form method="GET" class="d-flex gap-2">
                 <input type="text" name="filtro" class="form-control bg-dark text-white border-secondary" 
-                       placeholder="Buscar por rota ou usuário..." value="{{ filtro }}">
+                    placeholder="Buscar por rota..." value="{{ filtro }}">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-search"></i> Buscar
                 </button>
@@ -38,11 +38,38 @@
                 {% endif %}
             </form>
         </div>
-        <div class="col-md-6 text-end">
+        
+        <!-- FILTRO POR ID DO USUÁRIO -->
+        <div class="col-md-3">
+            <form method="GET" class="d-flex gap-2">
+                <input type="number" name="usuario_id" class="form-control bg-dark text-white border-secondary" 
+                    placeholder="ID do usuário" value="{{ usuario_id if usuario_id else '' }}"
+                    min="1" step="1">
+                <button type="submit" class="btn btn-info">
+                    <i class="bi bi-person"></i> Filtrar
+                </button>
+                {% if usuario_id %}
+                <a href="{{ url_for('painel_acessos.logs_acessos') }}" class="btn btn-outline-light" title="Limpar filtro">
+                    <i class="bi bi-x"></i>
+                </a>
+                {% endif %}
+            </form>
+            {% if usuario_nome %}
+            <small class="text-info mt-1 d-block">
+                <i class="bi bi-person-circle"></i> Usuário: {{ usuario_nome }}
+            </small>
+            {% elif usuario_id %}
+            <small class="text-danger mt-1 d-block">
+                <i class="bi bi-exclamation-triangle"></i> Usuário não encontrado
+            </small>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-5 text-end">
             <span class="badge bg-primary fs-6">Total: {{ total }} acessos</span>
         </div>
     </div>
-
+        
     <!-- TABELA DE ACESSOS -->
     <div class="card bg-dark bg-opacity-50">
         <div class="card-body p-0">
@@ -50,46 +77,85 @@
                 <table class="table table-dark table-hover mb-0">
                     <thead>
                         <tr>
-                            <th style="width: 80px">ID</th>
-                            <th style="width: 160px">Data/Hora</th>
+                            <th>ID</th>
+                            <th>Data/Hora</th>
                             <th>Usuário</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
                             <th>Rota</th>
                             <th>Método</th>
                             <th>Status</th>
                             <th>Tempo</th>
                             <th>IP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for acesso in acessos %}
-                        <tr onclick="window.location='{{ url_for('painel_acessos.detalhe_acesso', acesso_id=acesso.id) }}'">
-                            <td class="fw-bold text-white-50">{{ acesso.id }}</td>
-                            <td><span class="text-white-50">{{ acesso.data_hora }}</span></td>
-                            <td>{{ acesso.usuario_nome or 'Visitante' }}</td>
-                            <td><code>{{ acesso.rota or '-' }}</code></td>
-                            <td><span class="badge bg-secondary">{{ acesso.metodo or '-' }}</span></td>
-                            <td>
-                                {% if acesso.status_code >= 200 and acesso.status_code < 300 %}
-                                    <span class="badge bg-success">{{ acesso.status_code }}</span>
-                                {% elif acesso.status_code >= 400 %}
-                                    <span class="badge bg-danger">{{ acesso.status_code }}</span>
-                                {% else %}
-                                    <span class="badge bg-warning">{{ acesso.status_code }}</span>
-                                {% endif %}
-                            </td>
-                            <td><span class="text-white-50">{{ acesso.tempo_resposta }}ms</span></td>
-                            <td><span class="text-white-50">{{ acesso.ip or '-' }}</span></td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="8" class="text-center py-5">
-                                <i class="bi bi-database fs-1"></i>
-                                <p class="mt-3 text-white-50">Nenhum acesso registrado</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                            <th>Ações</th>
+                        </thead>
+                        <tbody>
+                            {% for acesso in acessos %}
+                            <tr>
+                                <td>{{ acesso.id }}</td>
+                                <td>{{ acesso.data_hora_br or acesso.data_hora }}</td>  <!-- ← SIMPLIFICADO! -->
+                                <td>
+                                    {% if acesso.usuario_nome %}
+                                        {{ acesso.usuario_nome }}
+                                        <small class="text-white-50">(ID: {{ acesso.user_id }})</small>
+                                    {% else %}
+                                        <span class="text-white-50">Visitante</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if acesso.usuario_email %}
+                                        <a href="mailto:{{ acesso.usuario_email }}" class="text-info text-decoration-none">
+                                            <i class="bi bi-envelope"></i> {{ acesso.usuario_email }}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-white-50">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if acesso.usuario_telefone %}
+                                        <a href="tel:{{ acesso.usuario_telefone }}" class="text-success text-decoration-none">
+                                            <i class="bi bi-telephone"></i> {{ acesso.usuario_telefone }}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-white-50">-</span>
+                                    {% endif %}
+                                </td>
+                                <td><code>{{ acesso.rota }}</code></td>
+                                <td><span class="badge bg-secondary">{{ acesso.metodo }}</span></td>
+                                <td>
+                                    {% if acesso.status_code >= 200 and acesso.status_code < 300 %}
+                                        <span class="badge bg-success">{{ acesso.status_code }}</span>
+                                    {% elif acesso.status_code >= 400 %}
+                                        <span class="badge bg-danger">{{ acesso.status_code }}</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">{{ acesso.status_code }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ acesso.tempo_resposta }}ms</td>
+                                <td><small>{{ acesso.ip }}</small></td>
+                                <td>
+                                    <a href="{{ url_for('painel_acessos.detalhe_acesso', acesso_id=acesso.id) }}" 
+                                       class="btn btn-sm btn-outline-info" title="Detalhes">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    {% if acesso.usuario_email %}
+                                    <a href="mailto:{{ acesso.usuario_email }}" 
+                                       class="btn btn-sm btn-outline-success" title="Enviar email">
+                                        <i class="bi bi-envelope"></i>
+                                    </a>
+                                    {% endif %}
+                                    {% if acesso.usuario_telefone %}
+                                    <a href="tel:{{ acesso.usuario_telefone }}" 
+                                       class="btn btn-sm btn-outline-warning" title="Ligar">
+                                        <i class="bi bi-telephone"></i>
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -101,7 +167,7 @@
             {% if pagina > 1 %}
             <li class="page-item">
                 <a class="page-link bg-dark text-white border-secondary" 
-                   href="{{ url_for('painel_acessos.logs_acessos', pagina=pagina-1, filtro=filtro) }}">
+                   href="{{ url_for('painel_acessos.logs_acessos', pagina=pagina-1, filtro=filtro, usuario_id=usuario_id) }}">
                     Anterior
                 </a>
             </li>
@@ -116,7 +182,7 @@
                 {% elif p <= pagina + 2 and p >= pagina - 2 %}
                 <li class="page-item">
                     <a class="page-link bg-dark text-white border-secondary" 
-                       href="{{ url_for('painel_acessos.logs_acessos', pagina=p, filtro=filtro) }}">
+                       href="{{ url_for('painel_acessos.logs_acessos', pagina=p, filtro=filtro, usuario_id=usuario_id) }}">
                         {{ p }}
                     </a>
                 </li>
@@ -126,7 +192,7 @@
             {% if pagina < total_paginas %}
             <li class="page-item">
                 <a class="page-link bg-dark text-white border-secondary" 
-                   href="{{ url_for('painel_acessos.logs_acessos', pagina=pagina+1, filtro=filtro) }}">
+                   href="{{ url_for('painel_acessos.logs_acessos', pagina=pagina+1, filtro=filtro, usuario_id=usuario_id) }}">
                     Próxima
                 </a>
             </li>

@@ -17,7 +17,27 @@
 
     <!-- CARDS -->
     <div class="row g-4 mb-4">
-        <div class="col-md-3">
+        <div class="col-md-4">
+            <div class="card bg-dark bg-opacity-50 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-bar-chart fs-1 text-primary"></i>
+                    <h3 class="mt-3 text-white">{{ stats.total_acessos }}</h3>
+                    <p class="text-white-50 mb-0">Total de Acessos</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card bg-dark bg-opacity-50 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people fs-1 text-info"></i>
+                    <h3 class="mt-3 text-white">{{ stats.total_usuarios }}</h3>
+                    <p class="text-white-50 mb-0">Usuários Únicos</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
             <div class="card bg-dark bg-opacity-50 h-100">
                 <div class="card-body text-center">
                     <i class="bi bi-exclamation-triangle fs-1 text-warning"></i>
@@ -27,32 +47,32 @@
             </div>
         </div>
         
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card bg-dark bg-opacity-50 h-100">
                 <div class="card-body text-center">
-                    <i class="bi bi-person fs-1 text-info"></i>
-                    <h3 class="mt-3 text-white">{{ stats.total_acessos }}</h3>
-                    <p class="text-white-50 mb-0">Total de Acessos</p>
+                    <i class="bi bi-person-check fs-1 text-success"></i>
+                    <h3 class="mt-3 text-white">{{ stats.usuarios_ativos }}</h3>
+                    <p class="text-white-50 mb-0">Usuários Ativos (7d)</p>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-3">
+        <div class="col-md-4">
+            <div class="card bg-dark bg-opacity-50 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-plus fs-1 text-success"></i>
+                    <h3 class="mt-3 text-white">{{ stats.novos_cadastros }}</h3>
+                    <p class="text-white-50 mb-0">Novos Cadastros (7d)</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
             <div class="card bg-dark bg-opacity-50 h-100">
                 <div class="card-body text-center">
                     <i class="bi bi-calendar-week fs-1 text-danger"></i>
                     <h3 class="mt-3 text-white">{{ stats.erros_7dias }}</h3>
-                    <p class="text-white-50 mb-0">Erros (últimos 7 dias)</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-3">
-            <div class="card bg-dark bg-opacity-50 h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-graph-up fs-1 text-success"></i>
-                    <h3 class="mt-3 text-white">{{ stats.acessos_7dias }}</h3>
-                    <p class="text-white-50 mb-0">Acessos (últimos 7 dias)</p>
+                    <p class="text-white-50 mb-0">Erros (7 dias)</p>
                 </div>
             </div>
         </div>
