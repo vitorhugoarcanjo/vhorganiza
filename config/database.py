@@ -15,7 +15,7 @@ from rotas.pasta_categorias.categorias_tarefas.tabela.tabela_categoria_tarefas i
 from rotas.logs.logs_services.tabela_services import tabela_services
 from rotas.logs.logs_acessos.tabela_acessos import tabela_logs_acessos
 from rotas.logs.logs_erros.tabela_erros import tabela_logs_erros
-from rotas.logs.logs_mensais_relatorio.tabela_logs_relatorio import tabela_logs_erros
+from rotas.logs.logs_mensais_relatorio.tabela_logs_relatorio import tabela_logs_resumo_mensal
 
 def criar_todas_tabelas():
     conexao = sqlite3.connect(caminho_banco)
@@ -35,7 +35,7 @@ def criar_todas_tabelas():
     tabela_services(cursor)
     tabela_logs_acessos(cursor)
     tabela_logs_erros(cursor)
-    tabela_logs_erros(cursor)
+    tabela_logs_resumo_mensal(cursor)
 
 
     print('Tabela criadas com sucesso!')

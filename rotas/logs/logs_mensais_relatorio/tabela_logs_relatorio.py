@@ -1,4 +1,4 @@
-def tabela_logs_erros(cursor):
+def tabela_logs_resumo_mensal(cursor):
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS logs_resumo_mensal (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
