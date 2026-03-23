@@ -15,6 +15,7 @@ def criar_tabela_tarefas(cursor):
                     
         data_inicio DATE,
         data_final DATE,
+        data_finalizacao DATE,
                     
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -28,8 +29,8 @@ def criar_tabela_tarefas(cursor):
     else:
         # MODELO - ESTRUTURA
         cursor.execute("PRAGMA table_info(tarefas)")
-        if not any(col[1] == 'data_finalizacao' for col in cursor.fetchall()):
-            cursor.execute("ALTER TABLE tarefas ADD COLUMN data_finalizacao DATE")
-            print("✅ Coluna data_finalizacao adicionada em tarefas!")
+        if not any(col[1] == 'titulo' for col in cursor.fetchall()):
+            cursor.execute("ALTER TABLE tarefas ADD COLUMN titulo VARCHAR(200)")
+            print("✅ Coluna titulo adicionada em tarefas!")
 
         print("ℹ️ Tabela tarefas já existe.")

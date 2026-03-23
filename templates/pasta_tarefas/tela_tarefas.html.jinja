@@ -505,7 +505,7 @@ body.light-mode .container_list_taf{
                             <thead>
                                 <tr>
                                     <th class="border-0"><small>Nº_REG.</small></th>
-                                    <th class="border-0"><small>DESCRIÇÃO</small></th>
+                                    <th class="border-0"><small>TÍTULO</small></th>
                                     <th class="border-0"><small>STATUS</small></th>
                                     <th class="border-0"><small>DATA_INICIO</small></th>
                                     <th class="border-0"><small>DATA_FINAL</small></th>
@@ -522,43 +522,51 @@ body.light-mode .container_list_taf{
                                         <td class="fw-semibold text-white-50">{{ tarefa[0] }}</td>
                                         <td class="text-white">{{ tarefa[1] }}</td>
                                         <td>
-                                            {% if tarefa[2] == 'concluido' %}
+                                            {% if tarefa[3] == 'concluido' %}
                                                 <span class="badge bg-success">✅ Concluída</span>
-                                            {% elif tarefa[2] == 'em andamento' %}
+                                            {% elif tarefa[3] == 'em andamento' %}
                                                 <span class="badge bg-warning text-dark">⏳ Andamento</span>
                                             {% else %}
                                                 <span class="badge bg-danger">⏰ Pendente</span>
                                             {% endif %}
                                         </td>
-                                        <td><span class="text-white-50">{{ tarefa[3] or '-' }}</span></td>
                                         <td><span class="text-white-50">{{ tarefa[4] or '-' }}</span></td>
+                                        <td><span class="text-white-50">{{ tarefa[5] or '-' }}</span></td>
                                         <td>
-                                            {% if tarefa[5] and tarefa[5] != '-' %}
-                                                <span class="badge bg-success">{{ tarefa[5] }}</span>
+                                            {% if tarefa[6] and tarefa[6] != '-' %}
+                                                <span class="badge bg-success">{{ tarefa[6] }}</span>
                                             {% else %}
                                                 <span class="text-white-50">-</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if tarefa[8] %}
-                                                <span class="badge fw-semibold" style="background-color: {{ tarefa[9] }}; color: white;">
-                                                    {{ tarefa[8] }}
+                                            {% if tarefa[9] %}
+                                                <span class="badge fw-semibold" style="background-color: {{ tarefa[10] }}; color: white;">
+                                                    {{ tarefa[9] }}
                                                 </span>
                                             {% else %}
                                                 <span class="badge bg-secondary">-</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if tarefa[7] %}
-                                                {% set prio_class = 'bg-danger' if tarefa[7] == 'alta' else 'bg-warning text-dark' if tarefa[7] == 'media' else 'bg-success' %}
-                                                <span class="badge {{ prio_class }} fw-semibold">{{ tarefa[7]|title }}</span>
+                                            {% if tarefa[8] %}
+                                                {% set prio_class = 'bg-danger' if tarefa[8] == 'alta' else 'bg-warning text-dark' if tarefa[8] == 'media' else 'bg-success' %}
+                                                <span class="badge {{ prio_class }} fw-semibold">{{ tarefa[8]|title }}</span>
                                             {% else %}
                                                 <span class="badge bg-secondary">-</span>
                                             {% endif %}
                                         </td>
+
                                         <td>
-                                            {% if tarefa[2] != 'concluido' %}
-                                                <div class="btn-group" role="group">
+                                            <div class="btn-group" role="group">
+                                                <!-- Botão Ver Detalhes -->
+                                                <button type="button" class="btn btn-sm btn-info" 
+                                                        onclick="verDetalhes({{ tarefa[0] }})" 
+                                                        title="Ver detalhes">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+
+                                                {% if tarefa[3] != 'concluido' %}
                                                     <form method="post" action="{{ url_for('tarefas.concluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;">
                                                         <button class="btn btn-success btn-sm" title="Concluir">
                                                             <i class="bi bi-check-lg"></i>
@@ -572,11 +580,10 @@ body.light-mode .container_list_taf{
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
-                                                </div>
-                                            {% else %}
-                                                <span class="badge bg-success fs-8">✅</span>
-                                            {% endif %}
+                                                {% endif %}
+                                            </div>
                                         </td>
+
                                     </tr>
                                     {% endfor %}
                                 {% else %}
@@ -601,4 +608,123 @@ body.light-mode .container_list_taf{
         </div>
     </div>
 </div>
+
+
+<!-- MODAL DE DETALHES -->
+<div class="modal fade" id="modalDetalhesTarefa" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <span id="modalTitulo">Detalhes da Tarefa</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="conteudoDetalhes">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <a href="#" id="btnEditarTarefa" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Editar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+function verDetalhes(tarefaId) {
+    const modal = new bootstrap.Modal(document.getElementById('modalDetalhesTarefa'));
+    const conteudo = document.getElementById('conteudoDetalhes');
+    
+    // Mostra loading
+    conteudo.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+    `;
+    
+    modal.show();
+    
+    // Busca os detalhes
+    fetch(`/tarefas/detalhes/${tarefaId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                conteudo.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                return;
+            }
+            
+            // Atualiza título do modal
+            const statusIcon = data.status === 'concluido' ? '✅' : (data.status === 'em andamento' ? '⏳' : '⏰');
+            document.getElementById('modalTitulo').innerHTML = `${statusIcon} ${data.titulo}`;
+            
+            // Atualiza link de editar
+            document.getElementById('btnEditarTarefa').href = `/editar_tarefa/${tarefaId}`;
+            
+            // Monta HTML dos detalhes
+            conteudo.innerHTML = `
+                <div class="mb-3">
+                    <label class="fw-bold text-info">📝 Descrição</label>
+                    <p class="mt-1 mb-3 p-2 bg-dark bg-opacity-25 rounded">${data.descricao}</p>
+                </div>
+                
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="fw-bold text-info">📊 Status</label>
+                        <p class="mt-1">
+                            <span class="badge ${data.status === 'concluido' ? 'bg-success' : (data.status === 'em andamento' ? 'bg-warning text-dark' : 'bg-danger')} fs-6">
+                                ${data.status_label}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="fw-bold text-info">⚡ Prioridade</label>
+                        <p class="mt-1">
+                            <span class="badge ${data.prioridade === 'alta' ? 'bg-danger' : (data.prioridade === 'media' ? 'bg-warning text-dark' : 'bg-success')} fs-6">
+                                ${data.prioridade_label}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="fw-bold text-info">🏷️ Categoria</label>
+                        <p class="mt-1">
+                            <span class="badge fw-semibold" style="background-color: ${data.categoria_cor}; color: white;">
+                                ${data.categoria}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="fw-bold text-info">📅 Data Início</label>
+                        <p class="mt-1">${data.data_inicio}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="fw-bold text-info">⏰ Data Prazo</label>
+                        <p class="mt-1">${data.data_final}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="fw-bold text-info">✅ Data Conclusão</label>
+                        <p class="mt-1">${data.data_finalizacao !== '-' ? data.data_finalizacao : '<span class="text-white-50">Não concluída</span>'}</p>
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            conteudo.innerHTML = `<div class="alert alert-danger">Erro ao carregar detalhes</div>`;
+        });
+}
+</script>
+
+
 {% endblock %}

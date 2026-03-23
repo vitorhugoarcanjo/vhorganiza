@@ -35,7 +35,7 @@ def ini_tarefas():
     with sqlite3.connect(caminho_banco) as conexao_banco:
         cursor = conexao_banco.cursor()
 
-        query = """SELECT t.tarefa_sequencia, t.descricao, t.status, t.data_inicio, t.data_final, t.data_finalizacao, t.categoria_id, t.prioridade,
+        query = """SELECT t.tarefa_sequencia, t.titulo, t.descricao, t.status, t.data_inicio, t.data_final, t.data_finalizacao, t.categoria_id, t.prioridade,
                        c.nome as categoria_nome, c.cor as categoria_cor
                     FROM tarefas t 
                     LEFT JOIN categorias_tarefas c ON t.categoria_id = c.id   
@@ -111,6 +111,49 @@ def ini_tarefas():
                            prioridade_filtro=prioridade_filtro,
                            descricao_filtro=descricao_filtro
                            )
+
+
+# rotas/pasta_tarefas/tela_tarefas.py
+@bp_tela_tarefas.route('/detalhes/<int:tarefa_seq>')
+@login_required
+def detalhes_tarefa(tarefa_seq):
+    """Retorna os detalhes de uma tarefa via JSON"""
+    with sqlite3.connect(caminho_banco) as conexao:
+        cursor = conexao.cursor()
+        
+        cursor.execute("""
+            SELECT t.tarefa_sequencia, t.titulo, t.descricao, t.status,
+                   t.data_inicio, t.data_final, t.data_finalizacao,
+                   t.prioridade, c.nome as categoria_nome, c.cor as categoria_cor
+            FROM tarefas t 
+            LEFT JOIN categorias_tarefas c ON t.categoria_id = c.id
+            WHERE t.tarefa_sequencia = ? AND t.user_id = ?
+        """, (tarefa_seq, session['user_id']))
+        
+        tarefa = cursor.fetchone()
+        
+        if not tarefa:
+            return {"error": "Tarefa não encontrada"}, 404
+        
+        # Formata datas
+        from .validacoes.formatacoes import formatar_data
+        
+        return {
+            'id': tarefa[0],
+            'titulo': tarefa[1] or 'Sem título',
+            'descricao': tarefa[2] or 'Sem descrição',
+            'status': tarefa[3],
+            'status_label': '✅ Concluída' if tarefa[3] == 'concluido' else '⏳ Em Andamento' if tarefa[3] == 'em andamento' else '⏰ Pendente',
+            'data_inicio': formatar_data(tarefa[4]),
+            'data_final': formatar_data(tarefa[5]),
+            'data_finalizacao': formatar_data(tarefa[6]),
+            'prioridade': tarefa[7],
+            'prioridade_label': '🔴 Alta' if tarefa[7] == 'alta' else '🟡 Média' if tarefa[7] == 'media' else '🟢 Baixa',
+            'categoria': tarefa[8] or 'Sem categoria',
+            'categoria_cor': tarefa[9] or '#6c757d'
+        }
+
+
 
 
 # FUNÇÃO DE CONCLUIR TAREFA
