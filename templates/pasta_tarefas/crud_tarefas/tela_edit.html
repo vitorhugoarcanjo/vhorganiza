@@ -59,17 +59,17 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Status</label>
                                 <select class="form-select form-select-lg" name="status">
-                                    <option value="pendente" {% if tarefa[1] == 'pendente' %}selected{% endif %}>⏳ Pendente</option>
-                                    <option value="em andamento" {% if tarefa[1] == 'em andamento' %}selected{% endif %}>⚡ Em andamento</option>
-                                    <option value="concluido" {% if tarefa[1] == 'concluido' %}selected{% endif %}>✅ Concluído</option>
+                                    <option value="pendente" {% if tarefa[2] == 'pendente' %}selected{% endif %}>⏳ Pendente</option>
+                                    <option value="em andamento" {% if tarefa[2] == 'em andamento' %}selected{% endif %}>⚡ Em andamento</option>
+                                    <option value="concluido" {% if tarefa[2] == 'concluido' %}selected{% endif %}>✅ Concluído</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Prioridade</label>
                                 <select class="form-select form-select-lg" name="prioridade">
-                                    <option value="baixa" {% if tarefa[5] == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
-                                    <option value="media" {% if tarefa[5] == 'media' %}selected{% endif %}>🟡 Média</option>
-                                    <option value="alta" {% if tarefa[5] == 'alta' %}selected{% endif %}>🔴 Alta</option>
+                                    <option value="baixa" {% if tarefa[6] == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
+                                    <option value="media" {% if tarefa[6] == 'media' %}selected{% endif %}>🟡 Média</option>
+                                    <option value="alta" {% if tarefa[6] == 'alta' %}selected{% endif %}>🔴 Alta</option>
                                 </select>
                             </div>
                         </div>
@@ -78,11 +78,11 @@
                         <div class="row g-4 mb-4">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Data Início</label>
-                                <input type="date" class="form-control form-control-lg" name="data_inicio" value="{{ tarefa[2] }}">
+                                <input type="date" class="form-control form-control-lg" name="data_inicio" value="{{ tarefa[3] }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Data Final</label>
-                                <input type="date" class="form-control form-control-lg" name="data_final" value="{{ tarefa[3] }}">
+                                <input type="date" class="form-control form-control-lg" name="data_final" value="{{ tarefa[4] }}">
                             </div>
                         </div>
 
@@ -94,7 +94,7 @@
                                 {% for cat in todas_categorias %}
                                 <option value="{{ cat[0] }}" 
                                         style="background-color: {{ cat[2] }}; color: white !important;" 
-                                        {% if cat[0] == tarefa[4] %}selected{% endif %}>
+                                        {% if cat[0] == tarefa[5] %}selected{% endif %}>
                                     {{ cat[1] }}
                                 </option>
                                 {% endfor %}
