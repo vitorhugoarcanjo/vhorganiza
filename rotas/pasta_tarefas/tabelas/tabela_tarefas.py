@@ -10,12 +10,17 @@ def criar_tabela_tarefas(cursor):
         tarefa_sequencia INTEGER,
                        
         descricao TEXT NOT NULL,
+        titulo VARCHAR(200),
         status TEXT DEFAULT 'pendente',
         prioridade TEXT DEFAULT 'media' CHECK (prioridade IN ('baixa', 'media', 'alta')),
                     
         data_inicio DATE,
         data_final DATE,
         data_finalizacao DATE,
+                       
+        ativo INTEGER DEFAULT 1,
+        excluido_em DATETIME,
+        excluido_por INTEGER,
                     
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -29,9 +34,9 @@ def criar_tabela_tarefas(cursor):
     else:
         # MODELO - ESTRUTURA
         cursor.execute("PRAGMA table_info(tarefas)")
-        if not any(col[1] == 'ativo' for col in cursor.fetchall()):
-            cursor.execute("ALTER TABLE tarefas ADD COLUMN ativo INTEGER DEFAULT 1")
-            print("✅ Coluna ativo adicionada em tarefas!")
+        if not any(col[1] == 'titulo' for col in cursor.fetchall()):
+            cursor.execute("ALTER TABLE tarefas ADD COLUMN titulo VARCHAR(200)")
+            print("✅ Coluna titulo adicionada em tarefas!")
 
         cursor.execute("PRAGMA table_info(tarefas)")
         if not any(col[1] == 'excluido_em' for col in cursor.fetchall()):
