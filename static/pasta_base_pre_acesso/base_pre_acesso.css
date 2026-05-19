@@ -1,0 +1,305 @@
+/* Importação de fonte moderna e limpa (Inter) */
+@import url('googleapis.com');
+
+/* Reset Geral */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: #f9fcf8;
+    color: #1e293b;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Layout Responsivo */
+.layout {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+}
+
+/* ========================================================== */
+/* ESTILOS PADRÃO (MOBILE PRIMEIRO / ABAIXO DE 768px)         */
+/* ========================================================== */
+
+/* Botões de controle do Menu Mobile */
+.menu-toggle {
+    display: block;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 997;
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 1.25rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.menu-close {
+    display: block;
+    background: transparent;
+    color: #94a3b8;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.menu-close:hover {
+    color: #ffffff;
+}
+
+/* Camada de fundo escuro para o mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+}
+
+/* Sidebar vira painel flutuante escondido à esquerda no mobile */
+.sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 1.5rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    position: fixed;
+    left: -280px; /* Esconde a sidebar */
+    top: 0;
+    z-index: 999;
+    transition: left 0.3s ease-in-out;
+}
+
+/* 1. Procure por essa classe e aumente o font-size */
+.sidebar .logo {
+    font-size: 1.8rem; /* Aumentado de 1.5rem para 1.8rem */
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+    color: #f6fcff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+/* 2. Garanta que o link herde o peso correto da fonte */
+.sidebar .logo a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 700; /* Deixa a letra um pouco mais gordinha/destacada */
+    transition: opacity 0.2s ease;
+    font-size: 2rem;
+}
+
+.sidebar .logo a:hover {
+    opacity: 0.85;
+}
+
+
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin: 0.35rem 0;
+}
+
+.sidebar a {
+    color: #94a3b8;
+    background-color: transparent;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar a:hover {
+    color: #ffffff;
+    background-color: #334155;
+}
+
+.sidebar a.active {
+    color: #ffffff;
+    background-color: #2563eb;
+    font-weight: 500;
+}
+
+/* Estados de ativação disparados via JavaScript */
+body.menu-active .sidebar {
+    left: 0; /* Exibe a sidebar no mobile */
+}
+
+body.menu-active .sidebar-overlay {
+    display: block;
+}
+
+body.menu-active {
+    overflow: hidden; /* Previne rolagem da página de fundo */
+}
+
+
+
+.sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+/* Menu de configurações */
+.config-menu {
+    margin-top: 1.5rem;
+    position: relative;
+}
+
+.config-menu summary {
+    list-style: none;
+    display: inline-block;
+}
+
+.config-menu summary::-webkit-details-marker {
+    display: none;
+}
+
+.config-menu summary img {
+    display: block;
+    border-radius: 8px;
+    padding: 8px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    filter: invert(1);
+    opacity: 0.7;
+}
+
+.config-menu summary img:hover {
+    background-color: #334155;
+    opacity: 1;
+}
+
+.config-menu nav {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    display: none;
+    position: absolute;
+    bottom: 60px; /* Abre para cima para não quebrar no mobile */
+    left: 0;
+    width: 220px;
+    box-shadow: 0px 10px 25px -5px rgba(0,0,0,0.1), 0px 8px 10px -6px rgba(0,0,0,0.1);
+    z-index: 10;
+    border: 1px solid #e2e8f0;
+}
+
+.config-menu[open] nav {
+    display: block;
+}
+
+.config-menu nav a {
+    color: #334155;
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.config-menu nav a:hover { 
+    background: #f1f5f9; 
+    color: #0f172a;
+}
+
+/* Conteúdo adaptado para o mobile */
+.content {
+    flex: 1;
+    margin-left: 0; /* Ocupa largura total no mobile */
+    padding: 5rem 1.5rem 2rem 1.5rem; /* Espaço extra no topo para o botão hambúrguer */
+    background: #f8fafc;
+    overflow-y: auto;
+}
+
+/* Rodapé */
+.footer {
+    background: #ffffff;
+    text-align: center;
+    padding: 1.2rem;
+    color: #64748b;
+    font-size: 0.85rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ========================================================== */
+/* COMPORTAMENTO DESKTOP (A PARTIR DE 768px)                  */
+/* ========================================================== */
+@media (min-width: 768px) {
+    .layout {
+        flex-direction: row;
+        min-height: calc(100vh - 58px);
+    }
+
+    /* Esconde os controles específicos de mobile */
+    .menu-toggle, 
+    .menu-close, 
+    .sidebar-overlay {
+        display: none !important;
+    }
+
+    /* Restaura a Sidebar fixa na lateral esquerda */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        width: 280px;
+        min-width: 280px;
+    }
+
+    .sidebar .logo {
+        margin-bottom: 2.5rem;
+        justify-content: flex-start; /* Remove espaçamento do botão oculto */
+    }
+
+    .config-menu {
+        margin-top: auto;
+    }
+
+    .config-menu nav {
+        bottom: 50px; /* Ajuste sutil de alinhamento no PC */
+    }
+
+    /* Restaura o recuo lateral do conteúdo principal no PC */
+    .content {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+        padding: 3rem;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+    }
+}
