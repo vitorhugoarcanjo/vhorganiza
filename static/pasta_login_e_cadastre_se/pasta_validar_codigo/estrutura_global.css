@@ -1,8 +1,8 @@
 /* ========================================================== */
-/* 🔑 ESTILOS EXCLUSIVOS PARA A TELA DE LOGIN (SEM CONFLITOS) */
+/* 🔑 ESTILOS EXCLUSIVOS - VALIDAÇÃO DE CÓDIGO                */
 /* ========================================================== */
 
-/* O container herda o espaço do .content da base e centraliza o card */
+/* O container se integra perfeitamente ao .content da base */
 .login-container {
     width: 100%;
     display: flex;
@@ -10,18 +10,17 @@
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    /* Faz o card menor do login flutuar no centro vertical perfeito do desktop */
     margin: auto 0; 
 }
 
-/* Card isolado com a largura padrão idêntica à do cadastro */
+/* Card com largura padrão idêntica às outras telas */
 .login-card {
     background: #1e293b;
     border: 1px solid rgba(255, 255, 255, 0.08);
     width: 100%;
     max-width: 365px; 
     border-radius: 12px;
-    padding: 1.5rem; /* Um pouco mais de respiro vertical já que o login tem menos campos */
+    padding: 1.5rem; 
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     flex-shrink: 0;
@@ -30,20 +29,25 @@
 /* --- CABEÇALHO DO CARD --- */
 .card-header {
     text-align: center;
-    margin-bottom: 1.25rem; /* Um triz a mais de espaço para o cabeçalho respirar */
+    margin-bottom: 1.25rem; 
 }
 
 .card-header h2 {
     color: #ffffff;
     font-size: 1.4rem; 
     font-weight: 700;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.4rem;
 }
 
 .card-header p {
     color: #94a3b8;
     font-size: 0.8rem;
     margin-bottom: 0;
+    line-height: 1.4;
+}
+
+.card-header strong {
+    color: #f1f5f9;
 }
 
 /* --- ESTRUTURA DO FORMULÁRIO E INPUTS --- */
@@ -56,37 +60,41 @@
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem; 
-    margin-bottom: 0.85rem; /* No login, 0.85rem fica excelente porque sobra espaço na tela */
+    gap: 0.4rem; 
+    margin-bottom: 1.25rem;
 }
 
 .input-group label {
     color: #f1f5f9;
     font-size: 0.8rem; 
     font-weight: 500;
-    text-align: left;
+    text-align: center; /* Centraliza o label para combinar com o input de código */
 }
 
-.input-group input {
+/* Customização pesada para o campo de 6 dígitos */
+.input-group input.code-input {
     background-color: #0f172a;
     border: 1px solid #334155;
     border-radius: 6px;
-    padding: 0.55rem 0.75rem; /* Um tiquinho mais alto para ficar confortável no clique */
+    padding: 0.65rem 0.5rem; 
     color: #ffffff;
-    font-size: 0.875rem;
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.5rem;          /* Mantém o tamanho grande */
+    letter-spacing: 6px;        /* Espaçamento elegante entre os números */
     transition: all 0.2s ease-in-out;
     width: 100%;
     box-sizing: border-box;
 }
 
-/* 🟢 Foco padrão verde sucesso */
-.input-group input:focus {
+/* 🟢 Foco verde sucesso padrão */
+.input-group input.code-input:focus {
     outline: none;
     border-color: #22c55e;
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
 }
 
-/* --- 🔘 GRID DE BOTÕES DO LOGIN --- */
+/* --- 🔘 BOTÕES DA TELA --- */
 .form-actions {
     display: flex;
     gap: 0.5rem;
@@ -100,7 +108,8 @@
     justify-content: center;
 }
 
-.btn-submit, .btn-reset, .nav-btn-secondary, .nav-btn-warning {
+.btn-submit, .nav-btn-secondary {
+    width: 100%;
     flex: 1;
     padding: 0.55rem; 
     border: none;
@@ -115,6 +124,7 @@
     transition: all 0.2s ease;
 }
 
+/* Botão verificar verde sucesso */
 .btn-submit {
     background-color: #22c55e;
     color: #ffffff;
@@ -125,16 +135,7 @@
     transform: translateY(-1px);
 }
 
-.btn-reset {
-    background-color: #ef4444;
-    color: #ffffff;
-}
-
-.btn-reset:hover {
-    background-color: #dc2626;
-    transform: translateY(-1px);
-}
-
+/* Botão de solicitar novo código cinza discreto */
 .nav-btn-secondary {
     background-color: #475569;
     color: #ffffff;
@@ -144,40 +145,8 @@
     background-color: #334155;
 }
 
-.nav-btn-warning {
-    background-color: #f59e0b;
-    color: #0f172a;
-}
-
-.nav-btn-warning:hover {
-    background-color: #d97706;
-}
-
-
-/* --- LINK DE RECUPERAÇÃO DE SENHA --- */
-.form-footer {
-    text-align: center;
-    margin-top: 0.85rem; /* Dá um recuo seguro após os botões de navegação */
-    display: flex;
-    justify-content: center;
-}
-
-.forgot-password-link {
-    color: #94a3b8; /* Cinza suave idêntico ao subtítulo para não gritar na tela */
-    font-size: 0.8rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.2s ease-in-out;
-}
-
-/* 🟢 Efeito Hover sutil acendendo o link em verde sucesso ao passar o mouse */
-.forgot-password-link:hover {
-    color: #22c55e;
-    text-decoration: underline;
-}
-
 /* ========================================================== */
-/* ⚡ ESTILIZAÇÃO MENSAGENS FLASH (ALERTAS)                   */
+/* ⚡ ESTILIZAÇÃO MENSAGENS FLASH (ALERTAS COPIADOS)          */
 /* ========================================================== */
 .flash-wrapper {
     width: 100%;
@@ -229,7 +198,7 @@
 @media (max-width: 767px) {
     .login-card {
         padding: 1.25rem 1.15rem;
-        box-shadow: none; /* Integra ao fundo escuro sem bordas duras */
+        box-shadow: none; 
     }
 
     .card-header h2 {
@@ -237,24 +206,19 @@
     }
 
     .input-group {
-        margin-bottom: 0.75rem;
-        gap: 0.15rem;
+        margin-bottom: 1rem;
     }
 
-    .input-group label {
-        font-size: 0.75rem;
-    }
-
-    .input-group input {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
+    .input-group input.code-input {
+        font-size: 1.35rem;
+        padding: 0.55rem 0.5rem;
     }
 
     .form-actions, .form-navigation {
         gap: 0.4rem;
     }
 
-    .btn-submit, .btn-reset, .nav-btn-secondary, .nav-btn-warning {
+    .btn-submit, .nav-btn-secondary {
         padding: 0.5rem;
         font-size: 0.8rem;
     }

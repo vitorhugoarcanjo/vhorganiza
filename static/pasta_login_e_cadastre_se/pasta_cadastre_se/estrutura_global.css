@@ -1,13 +1,238 @@
-* {
-    margin: 0;
-    padding: 0;
+/* ========================================================== */
+/* 🔑 ESTILOS EXCLUSIVOS PARA TELAS DE ACESSO (SEM CONFLITOS) */
+/* ========================================================== */
+
+/* O container herda o espaço do .content e garante centralização fluida */
+.login-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    /* Deixa margem flexível para centralizar verticalmente no desktop de forma natural */
+    margin: auto 0; 
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #020617;
-    min-height: 100vh;
+/* Card isolado com a mesma largura padrão elegante do login */
+.login-card {
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
+    max-width: 365px; 
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem; 
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* --- CABEÇALHO DO CARD --- */
+.card-header {
+    text-align: center;
+    margin-bottom: 0.85rem; 
+}
+
+.card-header h2 {
+    color: #ffffff;
+    font-size: 1.4rem; 
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.card-header p {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    margin-bottom: 0;
+}
+
+/* --- ESTRUTURA DO FORMULÁRIO E INPUTS --- */
+.login-form {
     display: flex;
+    flex-direction: column;
+    gap: 0; 
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem; 
+    margin-bottom: 0.65rem; /* Compactação para caber os 5 campos sem esticar a tela */
+}
+
+.input-group label {
+    color: #f1f5f9;
+    font-size: 0.8rem; 
+    font-weight: 500;
+    text-align: left;
+}
+
+.input-group input {
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem; 
+    color: #ffffff;
+    font-size: 0.875rem;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 🟢 Foco padrão verde sucesso */
+.input-group input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+/* --- 🔘 GRID DE BOTÕES SUPER COMPACTO --- */
+.form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-navigation {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.btn-submit, .btn-reset, .nav-btn-secondary, .nav-btn-warning {
+    flex: 1;
+    padding: 0.55rem; 
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem; 
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
+    transition: all 0.2s ease;
+}
+
+.btn-submit {
+    background-color: #22c55e;
+    color: #ffffff;
+}
+
+.btn-submit:hover {
+    background-color: #16a34a;
+    transform: translateY(-1px);
+}
+
+.btn-reset {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+.btn-reset:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+.nav-btn-secondary {
+    background-color: #475569;
+    color: #ffffff;
+}
+
+.nav-btn-secondary:hover {
+    background-color: #334155;
+}
+
+.nav-btn-warning {
+    background-color: #f59e0b;
+    color: #0f172a;
+}
+
+.nav-btn-warning:hover {
+    background-color: #d97706;
+}
+
+/* ========================================================== */
+/* ⚡ ESTILIZAÇÃO MENSAGENS FLASH (ALERTAS)                   */
+/* ========================================================== */
+.flash-wrapper {
+    width: 100%;
+    max-width: 365px;
+    margin-bottom: 0.75rem;
+}
+
+.custom-alert {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+}
+
+.alert-success {
+    background-color: rgba(34, 197, 94, 0.15);
+    border: 1px solid #22c55e;
+    color: #86efac;
+}
+
+.close-alert-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0.7;
+    padding-left: 0.5rem;
+}
+
+.close-alert-btn:hover {
+    opacity: 1;
+}
+
+/* ========================================================== */
+/* 📱 AJUSTES DE RESPONSIVIDADE MOBILE                       */
+/* ========================================================== */
+@media (max-width: 767px) {
+    .login-card {
+        padding: 1rem 1.15rem;
+        box-shadow: none; /* Deixa o card liso integrado ao fundo no mobile */
+    }
+
+    .card-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .input-group {
+        margin-bottom: 0.5rem;
+        gap: 0.15rem;
+    }
+
+    .input-group label {
+        font-size: 0.75rem;
+    }
+
+    .input-group input {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .form-actions, .form-navigation {
+        gap: 0.4rem;
+    }
+
+    .btn-submit, .btn-reset, .nav-btn-secondary, .nav-btn-warning {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
 }

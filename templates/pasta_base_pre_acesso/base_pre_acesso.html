@@ -4,75 +4,68 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='pasta_base_pre_acesso/base_pre_acesso.css') }}">
-
     {% block styles %}{% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <!-- Botão Hambúrguer (Apenas Mobile) -->
+
+    <!-- 1. NAVBAR FIXA NO TOPO -->
+<!-- 1. NAVBAR FIXA NO TOPO -->
+    <nav class="main-navbar">
+        <div class="nav-container">
+            <a class="nav-logo" href="{{ url_for('ini_app') }}">
+                ⚡ <span class="text-highlight">VHORGANIZA</span>
+            </a>
+            
+            <!-- Menu unificado: Links + Redes Sociais -->
+            <div class="nav-menu-wrapper">
+                <!-- 🌐 REDES SOCIAIS NO DESKTOP -->
+                <div class="nav-socials-desktop">
+                    <a href="https://linkedin.com/in/vitor-hugo-arcanjo-dias-pereira-5919b5334/" target="_blank" rel="noopener" class="nav-social-icon" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://github.com/vitorhugoarcanjo" target="_blank" rel="noopener" class="nav-social-icon" title="GitHub"><i class="bi bi-github"></i></a>
+                    <a href="https://instagram.com/vitor.hadp/" target="_blank" rel="noopener" class="nav-social-icon" title="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="https://wa.me/5565999757941?text=Olá" target="_blank" rel="noopener" class="nav-social-icon" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Botão Hambúrguer (Mobile) -->
     <button class="menu-toggle" aria-label="Abrir menu" onclick="toggleMenu()">
         ☰
     </button>
 
-    <!-- Camada de fundo escuro ao abrir o menu no mobile -->
+    <!-- Camada de fundo escuro (Mobile) -->
     <div class="sidebar-overlay" onclick="toggleMenu()"></div>
 
+    <!-- Layout estrutural do sistema -->
     <div class="layout">
-        <!-- Sidebar -->
+        
+        <!-- 2. SIDEBAR LATERAL -->
         <aside class="sidebar">
             <div class="logo">
-                <a href="#">LOGO VITOR</a>
-                <!-- Botão para fechar dentro do menu mobile -->
+                <a href="#">⚡ VHORGANIZA</a>
                 <button class="menu-close" onclick="toggleMenu()">✕</button>
             </div>
-            <ul>
-                <li>
-                    <a href="{{ url_for('login.validar_login') }}"
-                    class="{{ 'active' if request.endpoint == 'login.validar_login' }}">
-                        🔑 LOGIN
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ url_for('cadastre_se.tela_cadastre_se') }}"
-                    class="{{ 'active' if request.endpoint == 'cadastre_se.tela_cadastre_se' }}">
-                        👤 CADASTRE-SE
-                    </a>
-                </li>
+            
+            <ul class="sidebar-links">
+                <li><a href="{{ url_for('login.validar_login') }}" class="{{ 'active' if request.endpoint == 'login.validar_login' }}">🔑 LOGIN</a></li>
+                <li><a href="{{ url_for('cadastre_se.tela_cadastre_se') }}" class="{{ 'active' if request.endpoint == 'cadastre_se.tela_cadastre_se' }}">👤 CADASTRE-SE</a></li>
             </ul>
 
-
-            <div class="sidebar-footer">
-                <ul>
-                    <!-- <li>
-                        <a href="{{ url_for('ini_app') }}"
-                        class="{{ 'active' if request.endpoint == '#ini_app' }}">
-                            🏠 Início
-                    </li>
-
-                    <li><a href="#sobre"
-                         class="{{ 'active' if request.endpoint == '#sobre' }}">
-                            👨‍💻 Sobre
-                        </a>
-                    </li>
-
-                    <li><a href="#contato"
-                         class="{{ 'active' if request.endpoint == '#contato' }}">
-                            📞 Contato
-                        </a>
-                    </li> -->
-
+            <!-- 📱 REDES SOCIAIS NO MOBILE (Fica no rodapé da sidebar) -->
+            <div class="nav-socials-mobile">
+                <p>Siga meu trabalho:</p>
+                <div class="socials-mobile-grid">
+                    <a href="https://linkedin.com/in/vitor-hugo-arcanjo-dias-pereira-5919b5334/" target="_blank" rel="noopener"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://github.com/vitorhugoarcanjo" target="_blank" rel="noopener"><i class="bi bi-github"></i></a>
+                    <a href="https://instagram.com/vitor.hadp/" target="_blank" rel="noopener"><i class="bi bi-instagram"></i></a>
+                    <a href="https://wa.me/5565999757941?text=Olá" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i></a>
+                </div>
             </div>
-
         </aside>
 
-
-
-
-
-
-
-        <!-- Conteúdo principal -->
+        <!-- 3. CONTEÚDO PRINCIPAL -->
         <main class="content">
             {% block content %}{% endblock %}
         </main>
@@ -83,15 +76,13 @@
         <p>© Vhorganiza - Sistema de Tarefas e Finanças</p>
     </footer>
 
-    <!-- Script de controle do menu -->
+    <!-- Script de controle do menu lateral -->
     <script>
         function toggleMenu() {
             document.body.classList.toggle('menu-active');
         }
     </script>
 
-    <!-- Igual ao block styles, aceita qualquer arquivo ou código JS das telas filhas -->
     {% block scripts %}{% endblock %}
 </body>
-
 </html>
