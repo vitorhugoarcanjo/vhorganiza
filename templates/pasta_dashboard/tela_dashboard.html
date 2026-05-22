@@ -13,6 +13,45 @@
     padding: 20px !important;
 }
 
+/* CARD DE AVISO: AMBIENTE DE DESENVOLVIMENTO */
+.dev-alert-box {
+    background: rgba(245, 158, 11, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dev-alert-icon {
+    font-size: 1.75rem;
+    color: #f59e0b;
+    animation: pulse 2s infinite;
+}
+
+.dev-alert-text h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.5px;
+}
+
+.dev-alert-text p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 0;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.9; }
+}
+
 /* DASHBOARD CARDS */
 .dashboard-title {
     margin-bottom: 30px;
@@ -56,29 +95,31 @@
 .card-despesa .bi { color: #ef4444; }
 
 /* ============================================ */
-/* TEMA ESCURO (PADRÃO) - DASHBOARD            */
+/* TEMA CLARO - DASHBOARD MUDANÇAS              */
 /* ============================================ */
 
-/* Já está configurado com as classes acima */
-
-/* ============================================ */
-/* TEMA CLARO - DASHBOARD                      */
-/* ============================================ */
-
-/* Fundo do main-content no tema claro */
 body.light-mode .main-content {
     background-color: #f5f7fa !important;
     background-image: none !important;
 }
 
-/* Seção de filtros no tema claro */
+/* Suporte do Alerta no modo claro */
+body.light-mode .dev-alert-box {
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.05);
+}
+
+body.light-mode .dev-alert-text p {
+    color: #b45309 !important;
+}
+
 body.light-mode .filtros-section {
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* Cards no tema claro */
 body.light-mode .card-financeiro {
     background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -90,28 +131,12 @@ body.light-mode .card-financeiro:hover {
     border-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Textos no tema claro */
-body.light-mode .text-white {
-    color: #212529 !important;
-}
+body.light-mode .text-white { color: #212529 !important; }
+body.light-mode .text-white-50 { color: #6c757d !important; }
+body.light-mode .fw-bold.text-white { color: #212529 !important; }
+body.light-mode .h2.fw-bold.mb-3.text-white { color: #212529 !important; }
+body.light-mode .form-label { color: #212529 !important; }
 
-body.light-mode .text-white-50 {
-    color: #6c757d !important;
-}
-
-body.light-mode .fw-bold.text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .h2.fw-bold.mb-3.text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .form-label {
-    color: #212529 !important;
-}
-
-/* Inputs no tema claro */
 body.light-mode .form-control {
     background-color: #ffffff;
     border-color: #ced4da;
@@ -124,7 +149,6 @@ body.light-mode .form-control:focus {
     color: #212529;
 }
 
-/* Botão no tema claro */
 body.light-mode .btn-success {
     background-color: #198754;
     border-color: #198754;
@@ -145,31 +169,14 @@ body.light-mode .btn-outline-light:hover {
     color: #212529;
 }
 
-/* Cores dos valores no tema claro */
-body.light-mode .positivo {
-    color: #10b981 !important;
-}
-
-body.light-mode .negativo {
-    color: #ef4444 !important;
-}
-
-/* Ícones nos cards no tema claro */
-body.light-mode .card-receita .bi {
-    color: #10b981;
-}
-
-body.light-mode .card-despesa .bi {
-    color: #ef4444;
-}
+body.light-mode .positivo { color: #10b981 !important; }
+body.light-mode .negativo { color: #ef4444 !important; }
+body.light-mode .card-receita .bi { color: #10b981; }
+body.light-mode .card-despesa .bi { color: #ef4444; }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- ============================================ -->
-<!-- CONTEÚDO DO DASHBOARD                       -->
-<!-- ============================================ -->
-
 <!-- CABEÇALHO -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -179,6 +186,17 @@ body.light-mode .card-despesa .bi {
     <a href="{{ url_for('pos_login.iniposlogin') }}" class="btn btn-outline-light btn-sm">
         <i class="bi bi-arrow-left"></i> Voltar
     </a>
+</div>
+
+<!-- 🚧 CARD DE ALERTA: LAB DEVELOPMENT (AMBOS OS TEMAS) -->
+<div class="dev-alert-box">
+    <div class="dev-alert-icon">
+        <i class="bi bi-cone-striped"></i>
+    </div>
+    <div class="dev-alert-text">
+        <h4>AMBIENTE DE TESTES / BETA LAB</h4>
+        <p>O ecossistema está recebendo novas integrações. Por se tratar de um ambiente de desenvolvimento ativo, algumas consultas ou ações nos cards abaixo podem oscilar temporariamente.</p>
+    </div>
 </div>
 
 <!-- FILTROS -->

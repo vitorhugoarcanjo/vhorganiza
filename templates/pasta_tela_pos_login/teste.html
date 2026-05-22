@@ -23,6 +23,22 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+/* CARDS DE STATUS DE DESENVOLVIMENTO */
+.status-dev-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.status-dev-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Títulos principais dos cards - Modo Escuro */
+.status-title, .module-title {
+    color: #ffffff !important;
+}
+
 /* ============================================ */
 /* TEMA CLARO - AJUSTES PARA O WELCOME CARD    */
 /* ============================================ */
@@ -47,6 +63,19 @@ body.light-mode .badge.bg-gradient {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     color: white !important;
 }
+
+/* Ajustes do Tema Claro para os Cards de Status */
+body.light-mode .status-dev-card {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+body.light-mode .status-title, 
+body.light-mode .module-title {
+    color: #212529 !important;
+}
+body.light-mode .status-desc {
+    color: #495057 !important;
+}
 </style>
 {% endblock %}
 
@@ -54,7 +83,7 @@ body.light-mode .badge.bg-gradient {
 <div class="container px-3 px-lg-4">
     
     <!-- WELCOME CARD -->
-    <div class="row mb-5">
+    <div class="row mb-4">
         <div class="col-12">
             <div class="welcome-card p-5 rounded-4 shadow-xl text-center text-lg-start">
                 <div class="row align-items-center">
@@ -70,11 +99,51 @@ body.light-mode .badge.bg-gradient {
         </div>
     </div>
 
+    <!-- PAINEL DE ROADMAP / STATUS DE ENTREGA -->
+    <div class="row g-3 mb-5">
+        <div class="col-12">
+            <h4 class="status-title mb-3 fs-5 opacity-75"><i class="bi bi-git"></i> Status de Desenvolvimento dos Módulos</h4>
+        </div>
+
+        <!-- MÓDULO: TAREFAS -->
+        <div class="col-md-4">
+            <div class="status-dev-card p-3 rounded-3 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="fs-5 module-title fw-semibold">📋 Tarefas</span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.65rem;">BÁSICO FUNCIONAL</span>
+                </div>
+                <p class="small text-white-50 status-desc mb-0">Listagem principal, grid de filtros estruturado e persistência de dados já operacionais.</p>
+            </div>
+        </div>
+
+        <!-- MÓDULO: FINANÇAS -->
+        <div class="col-md-4">
+            <div class="status-dev-card p-3 rounded-3 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="fs-5 module-title fw-semibold">💰 Finanças</span>
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1" style="font-size: 0.65rem;">EM PROGRESSO</span>
+                </div>
+                <p class="small text-white-50 status-desc mb-0">Implementando a estrutura básica das transações, regras de filtros por período e fluxo de caixa.</p>
+            </div>
+        </div>
+
+        <!-- MÓDULO: DASHBOARD -->
+        <div class="col-md-4">
+            <div class="status-dev-card p-3 rounded-3 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="fs-5 module-title fw-semibold">📊 Dashboard</span>
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1" style="font-size: 0.65rem;">EM PROGRESSO</span>
+                </div>
+                <p class="small text-white-50 status-desc mb-0">Construindo os blocos de métricas e os componentes dinâmicos para renderização de gráficos.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- MENSAGEM DE BOAS-VINDAS -->
     <div class="row">
         <div class="col-12 text-center">
-            <p class="lead text-white-50">
-                Utilize o menu lateral para navegar entre as funcionalidades do sistema.
+            <p class="lead text-white-50 status-desc">
+                Utilize o menu lateral para navegar entre as funcionalidades e testar os recursos ativos.
             </p>
         </div>
     </div>
