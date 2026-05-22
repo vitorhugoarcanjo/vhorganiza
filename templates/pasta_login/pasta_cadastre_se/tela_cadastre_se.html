@@ -5,6 +5,37 @@
 {% block styles %}
 <!-- Link para o CSS exclusivo da página de cadastro (reaproveitando os mesmos estilos do login) -->
 <link rel="stylesheet" href="{{ url_for('static', filename='pasta_login_e_cadastre_se/pasta_cadastre_se/import_todas_css.css') }}">
+
+<!-- Estilos rápidos para a nossa animação de carregamento acontecer sem depender de arquivos externos -->
+<style>
+    /* Oculta elementos que começam invisíveis */
+    .d-none {
+        display: none !important;
+    }
+
+    /* Criação do ícone giratório (Spinner) */
+    .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        vertical-align: text-bottom;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: girar 0.75s linear infinite;
+        margin-right: 8px;
+    }
+
+    @keyframes girar {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Opacidade para o botão quando estiver desativado para o usuário entender que travou */
+    .btn-submit:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -31,7 +62,8 @@
             <p>Preencha os dados abaixo para se cadastrar no sistema</p>
         </div>
 
-        <form action="/cadastre_se" method="post" class="login-form">
+        <!-- Ajustado: Adicionada a id="formCadastro" para monitorarmos pelo script -->
+        <form id="formCadastro" action="/cadastre_se" method="post" class="login-form">
             <!-- Campo Nome -->
             <div class="input-group">
                 <label for="nome">Digite seu nome:</label>
@@ -63,8 +95,13 @@
             </div>
 
             <!-- Botões de Ação Principais -->
+            <!-- Ajustado: Adicionadas IDs e spans internos no botão para controlar o texto -->
             <div class="form-actions">
-                <button type="submit" class="btn-submit">Cadastrar</button>
+                <button type="submit" id="btnCadastrar" class="btn-submit">
+                    <span id="txtBotao">Cadastrar</span>
+                    <span id="spinnerCarregando" class="spinner d-none"></span>
+                    <span id="txtCarregando" class="d-none">Enviando código...</span>
+                </button>
                 <button type="reset" class="btn-reset">Limpar</button>
             </div>
 
@@ -76,4 +113,24 @@
         </form>
     </div>
 </div>
+
+<!-- Script Javascript para interceptar o envio e animar o botão -->
+<script>
+    document.getElementById('formCadastro').addEventListener('submit', function(e) {
+        const btn = document.getElementById('btnCadastrar');
+        const txtBotao = document.getElementById('txtBotao');
+        const spinner = document.getElementById('spinnerCarregando');
+        const txtCarregando = document.getElementById('txtCarregando');
+
+        // 1. Desativa o botão na hora para evitar múltiplos cliques acidentais
+        btn.disabled = true;
+
+        // 2. Oculta a palavra "Cadastrar" original
+        txtBotao.classList.add('d-none');
+
+        // 3. Torna o círculo giratório e o novo texto visíveis
+        spinner.classList.remove('d-none');
+        txtCarregando.classList.remove('d-none');
+    });
+</script>
 {% endblock %}
