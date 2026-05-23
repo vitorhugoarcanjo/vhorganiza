@@ -1,16 +1,2 @@
 /* IMPORTS DO CABEÇALHO */
-@import url('/static/pasta_tarefas/section_cabecalho/estrutura_global.css');
-@import url('/static/pasta_tarefas/section_cabecalho/cabecalho.css');
-
-
-/* IMPORTS DA TELA DE CONSULTA */
-@import url('/static/pasta_tarefas/section_consulta/estrutura_consulta.css');
-
-
-/* IMPORTS DA SEÇÃO DE BOTOES */
-@import url('/static/pasta_tarefas/section_botoes/estrutura.css');
-
-
-/* IMPORTS DA SEÇÃO DE TABELA */
-@import url('/static/pasta_tarefas/section_tabela/estrutura.css');
-@import url('/static/pasta_tarefas/section_tabela/botoes_tabela.css');
+@import url('/static/pasta_tarefas/estrutura_global.css');

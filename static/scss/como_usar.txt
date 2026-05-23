@@ -1,2 +1,0 @@
-# Novo comando com nova pasta pós criar
-npx sass static/scss/nova_pasta/_global.scss static/nova_pasta/novo.css --style=compressed

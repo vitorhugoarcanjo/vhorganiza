@@ -1,0 +1,44 @@
+:root {
+    --bg-dark: #0f0f0f;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #ffffff;
+    --text-muted: #a0a0a0;
+    --accent: #3b82f6;
+    --danger: #ef4444;
+}
+
+body { background-color: var(--bg-dark); color: var(--text); font-family: sans-serif; margin: 0; }
+body.light-mode { background-color: #f8f9fa; color: #212529; }
+
+.container-custom { max-width: 1000px; margin: 40px auto; padding: 20px; }
+
+/* Cards */
+.card-custom {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+body.light-mode .card-custom { background: #ffffff; border: 1px solid #dee2e6; }
+
+/* Header Flex */
+.header-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+
+/* Tabela Customizada */
+.table-custom { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.table-custom th { color: var(--text-muted); text-align: left; padding: 12px; border-bottom: 1px solid var(--border); }
+.table-custom td { padding: 16px 12px; border-bottom: 1px solid var(--border); }
+body.light-mode .table-custom th { color: #6c757d; }
+
+/* Botões */
+.btn-base { padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-outline { border: 1px solid var(--border); color: var(--text); }
+body.light-mode .btn-outline { border-color: #ced4da; color: #495057; }
+
+/* Ações e Preview */
+.color-preview { width: 32px; height: 32px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
+.action-link { margin-right: 12px; text-decoration: none; color: var(--text-muted); font-size: 0.9rem; }
+.action-link:hover { color: var(--accent); }

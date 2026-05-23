@@ -1,0 +1,37 @@
+/* Container de formulário centralizado */
+.form-wrapper { max-width: 500px; margin: 40px auto; padding: 0 20px; }
+
+.card-custom {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-label { display: block; margin-bottom: 8px; font-weight: 600; color: #fff; }
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    box-sizing: border-box;
+}
+
+.color-group { display: flex; align-items: center; gap: 15px; }
+.color-input { width: 60px; height: 50px; border: none; cursor: pointer; background: none; }
+.color-preview { width: 50px; height: 50px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+
+.btn-row { display: flex; gap: 10px; margin-top: 30px; justify-content: flex-end; }
+.btn-base { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; text-decoration: none; }
+.btn-primary { background: #3b82f6; color: white; }
+.btn-outline { border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+
+/* Ajuste Tema Claro */
+body.light-mode .card-custom { background: white; border: 1px solid #ddd; }
+body.light-mode .form-label { color: #333; }
+body.light-mode .form-input { background: #f9f9f9; border: 1px solid #ccc; color: #333; }
+body.light-mode .btn-outline { border: 1px solid #ccc; color: #333; }

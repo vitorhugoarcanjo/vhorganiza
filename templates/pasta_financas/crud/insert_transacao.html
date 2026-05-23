@@ -1,235 +1,61 @@
 {% extends "tela_base_telas_unificadas/base.html" %}
 
-{% block title %}Nova Transação{% endblock %}
-
-{% block extra_css %}
-<style>
-/* Estilos específicos para a tela de inserir transação */
-.form-insert-card {
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    transition: all 0.3s ease;
-}
-
-.form-insert-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.btn-custom {
-    border-radius: 10px;
-    font-weight: 600;
-    padding: 8px 20px;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-}
-
-/* Ajuste nos inputs */
-.form-control, .form-select {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-}
-
-.input-group-text {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-}
-
-/* ============================================ */
-/* TEMA CLARO */
-/* ============================================ */
-body.light-mode .form-insert-card {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
-}
-
-body.light-mode .form-insert-card:hover {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-body.light-mode .form-label {
-    color: #212529 !important;
-}
-
-body.light-mode .text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .text-white-50 {
-    color: #6c757d !important;
-}
-
-body.light-mode .form-control,
-body.light-mode .form-select {
-    background-color: #ffffff !important;
-    border-color: #ced4da !important;
-    color: #212529 !important;
-}
-
-body.light-mode .input-group-text {
-    background-color: #e9ecef !important;
-    border-color: #ced4da !important;
-    color: #212529 !important;
-}
-
-body.light-mode .btn-outline-light {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-light:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-
-body.light-mode .border-top {
-    border-top-color: #dee2e6 !important;
-}
-
-body.light-mode .bg-warning {
-    background-color: #ffc107 !important;
-}
-
-body.light-mode .text-warning {
-    color: #ffc107 !important;
-}
-
-body.light-mode .border-warning {
-    border-color: #ffc107 !important;
-}
-</style>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pasta_financas/crud/pasta_insert/import_css.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-10">
-            
-            <!-- FORM PRINCIPAL -->
-            <div class="form-insert-card shadow-xl rounded-4 p-4 p-lg-5 mb-4">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold text-white mb-2">
-                        <i class="bi bi-plus-circle-fill text-success me-2"></i>
-                        Nova Transação
-                    </h2>
-                    <p class="text-white-50 mb-0">Crie receitas ou despesas rapidamente</p>
-                </div>
-
-                <form action="{{ url_for('nova_transacao.initransacao') }}" method="post">
-                    <!-- TIPO -->
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-tag me-1"></i>Tipo de Transação
-                            </label>
-                            <select name="tipo" class="form-select bg-dark text-white border-secondary" required>
-                                <option value="">Selecione...</option>
-                                <option value="receita" class="text-success">📈 Receita/Entrada</option>
-                                <option value="despesa" class="text-danger">📉 Despesa/Saída</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <!-- VALOR -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-cash me-1"></i>Valor Total <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-dark text-white border-secondary">
-                                    <i class="bi bi-currency-dollar"></i>
-                                </span>
-                                <input type="number" name="valor_total" step="0.01" 
-                                       class="form-control bg-dark text-white border-secondary" 
-                                       placeholder="0,00" required>
-                            </div>
-                        </div>
-
-                        <!-- DESCRIÇÃO -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-file-text me-1"></i>Descrição <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="descricao" 
-                                   class="form-control bg-dark text-white border-secondary" 
-                                   placeholder="Ex: Salário, Aluguel..." required>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <!-- PARCELAS -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-calendar3 me-1"></i>Parcelas
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-dark text-white border-secondary">
-                                    <i class="bi bi-calendar3"></i>
-                                </span>
-                                <input type="number" name="total_parcelas" min="1" max="60"
-                                       class="form-control bg-dark text-white border-secondary" 
-                                       placeholder="1" value="1">
-                            </div>
-                            <small class="text-white-50">Deixe 1 para pagamento à vista</small>
-                        </div>
-
-                        <!-- DATA EMISSÃO -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-calendar me-1"></i>Data Emissão <span class="text-danger">*</span>
-                            </label>
-                            <input type="date" name="data_emissao" value="{{ hoje }}" 
-                                   class="form-control bg-dark text-white border-secondary" required>
-                        </div>
-                    </div>
-
-                    <!-- DATA VENCIMENTO -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-calendar-check me-1"></i>Data Vencimento
-                            </label>
-                            <input type="date" name="data_vencimento" value="{{ hoje }}"
-                                   class="form-control bg-dark text-white border-secondary">
-                        </div>
-                    </div>
-
-                    <!-- BOTÕES -->
-                    <div class="d-flex gap-3 justify-content-end mt-4 pt-3 border-top" 
-                         style="border-color: rgba(255,255,255,0.1) !important;">
-                        <a href="{{ url_for('financas.inifinancas') }}" 
-                           class="btn btn-outline-light btn-custom">
-                            <i class="bi bi-arrow-left me-1"></i> Voltar
-                        </a>
-                        <button type="reset" class="btn btn-outline-light btn-custom">
-                            <i class="bi bi-arrow-repeat me-1"></i> Limpar
-                        </button>
-                        <button type="submit" class="btn btn-success btn-custom">
-                            <i class="bi bi-save me-1"></i> Salvar
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- SEÇÃO PARCELAS (Em Construção) -->
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="text-center p-4 bg-warning bg-opacity-10 border border-warning border-opacity-25 rounded-4">
-                        <div class="display-6 text-warning mb-3">🔄</div>
-                        <h5 class="text-white mb-2">Geração de Parcelas</h5>
-                        <p class="text-white-50 mb-3 small">Funcionalidade em desenvolvimento</p>
-                        <div class="progress mx-auto" style="width: 200px; height: 6px;">
-                            <div class="progress-bar bg-warning" style="width: 40%"></div>
-                        </div>
-                        <small class="text-white-50 mt-2 d-block">Em breve: Divisão automática de parcelas</small>
-                    </div>
-                </div>
-            </div>
+<div class="container">
+    <div class="form-insert-card">
+        <div class="header">
+            <h2>Nova Transação</h2>
+            <p>Preencha os dados para registrar uma movimentação</p>
         </div>
+
+        <form action="{{ url_for('nova_transacao.initransacao') }}" method="post">
+            <div class="form-group">
+                <label>Tipo de Transação</label>
+                <select name="tipo" required>
+                    <option value="">Selecione...</option>
+                    <option value="receita">Receita (Entrada)</option>
+                    <option value="despesa">Despesa (Saída)</option>
+                </select>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label>Valor Total *</label>
+                    <div class="input-group">
+                        <span>$</span>
+                        <input type="number" name="valor_total" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descrição *</label>
+                    <input type="text" name="descricao" placeholder="Ex: Salário" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Parcelas</label>
+                    <input type="number" name="total_parcelas" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Data Emissão *</label>
+                    <input type="date" name="data_emissao" value="{{ hoje }}" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Data Vencimento</label>
+                    <input type="date" name="data_vencimento" value="{{ hoje }}">
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="{{ url_for('financas.inifinancas') }}" class="btn-link">Voltar</a>
+                <button type="reset">Limpar</button>
+                <button type="submit" class="btn-save">Salvar</button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

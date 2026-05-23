@@ -1,0 +1,56 @@
+:root {
+    --bg-dark: #050505;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --border: 1px solid rgba(255, 255, 255, 0.08);
+    --positivo: #10b981;
+    --negativo: #ef4444;
+}
+
+.dashboard-wrapper { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+/* Cabeçalho */
+.dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+
+/* Alerta */
+.dev-alert { 
+    background: rgba(245, 158, 11, 0.1); 
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 1rem;
+}
+
+/* Filtros */
+.filtros-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+}
+
+/* Cards Financeiros */
+.finance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card-fin {
+    background: var(--card-bg);
+    border: var(--border);
+    padding: 2rem;
+    border-radius: 16px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.card-fin:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
+.valor { font-size: 2.5rem; font-weight: 700; margin: 10px 0; }
+.pos { color: var(--positivo); }
+.neg { color: var(--negativo); }
+
+/* Ajustes de Tema Claro */
+body.light-mode .card-fin, body.light-mode .filtros-form { background: #fff; border: 1px solid #e2e8f0; }
+body.light-mode h2, body.light-mode h3 { color: #1e293b !important; }

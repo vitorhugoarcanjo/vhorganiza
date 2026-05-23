@@ -1,262 +1,54 @@
 {% extends "tela_base_telas_unificadas/base.html" %}
 
-{% block title %}Dashboard - Gestão Financeira{% endblock %}
-
-{% block extra_css %}
-<style>
-/* ============================================ */
-/* TODO O CSS ESPECÍFICO DO DASHBOARD          */
-/* ============================================ */
-
-/* Remove o padding do main-content apenas nesta página */
-.main-content {
-    padding: 20px !important;
-}
-
-/* CARD DE AVISO: AMBIENTE DE DESENVOLVIMENTO */
-.dev-alert-box {
-    background: rgba(245, 158, 11, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(245, 158, 11, 0.25);
-    border-radius: 16px;
-    padding: 1.25rem;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.dev-alert-icon {
-    font-size: 1.75rem;
-    color: #f59e0b;
-    animation: pulse 2s infinite;
-}
-
-.dev-alert-text h4 {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #f59e0b;
-    margin-bottom: 0.25rem;
-    letter-spacing: 0.5px;
-}
-
-.dev-alert-text p {
-    font-size: 0.85rem;
-    color: #94a3b8;
-    margin-bottom: 0;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 0.9; }
-    50% { transform: scale(1.05); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.9; }
-}
-
-/* DASHBOARD CARDS */
-.dashboard-title {
-    margin-bottom: 30px;
-}
-
-.filtros-section {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 2rem;
-    margin-bottom: 2rem;
-}
-
-.card-financeiro {
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
-    transition: all 0.3s ease;
-    height: 100%;
-    background: rgba(0,0,0,0.2);
-    border-radius: 16px;
-}
-
-.card-financeiro:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    border-color: rgba(255,255,255,0.2);
-}
-
-.valor {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 0.5rem;
-}
-
-.positivo { color: #10b981 !important; }
-.negativo { color: #ef4444 !important; }
-
-.card-receita .bi { color: #10b981; }
-.card-despesa .bi { color: #ef4444; }
-
-/* ============================================ */
-/* TEMA CLARO - DASHBOARD MUDANÇAS              */
-/* ============================================ */
-
-body.light-mode .main-content {
-    background-color: #f5f7fa !important;
-    background-image: none !important;
-}
-
-/* Suporte do Alerta no modo claro */
-body.light-mode .dev-alert-box {
-    background: #fffbeb;
-    border: 1px solid #fef3c7;
-    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.05);
-}
-
-body.light-mode .dev-alert-text p {
-    color: #b45309 !important;
-}
-
-body.light-mode .filtros-section {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-body.light-mode .card-financeiro {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-body.light-mode .card-financeiro:hover {
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    border-color: rgba(0, 0, 0, 0.2);
-}
-
-body.light-mode .text-white { color: #212529 !important; }
-body.light-mode .text-white-50 { color: #6c757d !important; }
-body.light-mode .fw-bold.text-white { color: #212529 !important; }
-body.light-mode .h2.fw-bold.mb-3.text-white { color: #212529 !important; }
-body.light-mode .form-label { color: #212529 !important; }
-
-body.light-mode .form-control {
-    background-color: #ffffff;
-    border-color: #ced4da;
-    color: #212529;
-}
-
-body.light-mode .form-control:focus {
-    background-color: #ffffff;
-    border-color: #0d6efd;
-    color: #212529;
-}
-
-body.light-mode .btn-success {
-    background-color: #198754;
-    border-color: #198754;
-}
-
-body.light-mode .btn-success:hover {
-    background-color: #157347;
-    border-color: #146c43;
-}
-
-body.light-mode .btn-outline-light {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-light:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-
-body.light-mode .positivo { color: #10b981 !important; }
-body.light-mode .negativo { color: #ef4444 !important; }
-body.light-mode .card-receita .bi { color: #10b981; }
-body.light-mode .card-despesa .bi { color: #ef4444; }
-</style>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pasta_dashboard/dashboard.css') }}">
 {% endblock %}
 
 {% block content %}
-<!-- CABEÇALHO -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="fw-bold text-white mb-1">📊 Dashboard</h2>
-        <p class="text-white-50 mb-0">Visão geral das suas finanças</p>
+<div class="dashboard-wrapper">
+    
+    <div class="dash-header">
+        <div>
+            <h2 style="margin:0;">📊 Dashboard</h2>
+            <p style="color: #94a3b8;">Visão geral das suas finanças</p>
+        </div>
+        <a href="{{ url_for('pos_login.iniposlogin') }}" class="btn-base btn-outline">Voltar</a>
     </div>
-    <a href="{{ url_for('pos_login.iniposlogin') }}" class="btn btn-outline-light btn-sm">
-        <i class="bi bi-arrow-left"></i> Voltar
-    </a>
-</div>
 
-<!-- 🚧 CARD DE ALERTA: LAB DEVELOPMENT (AMBOS OS TEMAS) -->
-<div class="dev-alert-box">
-    <div class="dev-alert-icon">
-        <i class="bi bi-cone-striped"></i>
+    <div class="dev-alert">
+        <span style="font-size: 2rem;">⚠️</span>
+        <div>
+            <h4 style="margin:0; color: #f59e0b;">AMBIENTE DE TESTES / BETA LAB</h4>
+            <p style="margin:0; font-size: 0.9rem;">Algumas funções podem oscilar enquanto novas integrações são aplicadas.</p>
+        </div>
     </div>
-    <div class="dev-alert-text">
-        <h4>AMBIENTE DE TESTES / BETA LAB</h4>
-        <p>O ecossistema está recebendo novas integrações. Por se tratar de um ambiente de desenvolvimento ativo, algumas consultas ou ações nos cards abaixo podem oscilar temporariamente.</p>
-    </div>
-</div>
 
-<!-- FILTROS -->
-<div class="filtros-section">
-    <form action="{{ url_for('dashboard.inidashboard') }}" method="get" class="row g-4 align-items-end">
-        <div class="col-md-5 col-sm-6">
-            <label class="form-label fw-bold mb-2">
-                <i class="bi bi-calendar-event me-2"></i>Data Início
-            </label>
-            <input type="date" class="form-control form-control-lg" 
-                   name="data_inicio" value="{{ data_inicio }}" required>
+    <form action="{{ url_for('dashboard.inidashboard') }}" method="get" class="filtros-form">
+        <div>
+            <label style="display:block; margin-bottom:8px; font-weight:600;">Data Início</label>
+            <input type="date" name="data_inicio" value="{{ data_inicio }}" class="form-input" required>
         </div>
-        
-        <div class="col-md-5 col-sm-6">
-            <label class="form-label fw-bold mb-2">
-                <i class="bi bi-calendar-check me-2"></i>Data Final
-            </label>
-            <input type="date" class="form-control form-control-lg" 
-                   name="data_final" value="{{ data_final }}" required>
+        <div>
+            <label style="display:block; margin-bottom:8px; font-weight:600;">Data Final</label>
+            <input type="date" name="data_final" value="{{ data_final }}" class="form-input" required>
         </div>
-        
-        <div class="col-md-2 col-sm-12">
-            <button type="submit" class="btn btn-success btn-lg w-100 px-4">
-                <i class="bi bi-search me-2"></i>Filtrar
-            </button>
-        </div>
+        <button type="submit" class="btn-base btn-primary" style="align-self: flex-end;">Filtrar</button>
     </form>
-</div>
 
-<!-- CARDS FINANCEIROS -->
-<div class="row g-4">
-    <!-- RECEITAS -->
-    <div class="col-xl-4 col-lg-6 col-md-12">
-        <div class="card-financeiro card-receita text-center p-4">
-            <i class="bi bi-graph-up-arrow display-4 mb-3"></i>
-            <h3 class="h2 fw-bold mb-3 text-white">Receitas</h3>
-            <div class="valor positivo">R$ {{ "%.2f"|format(total_receitas) }}</div>
-            <p class="text-white-50 mb-0 lead">Total de entradas</p>
+    <div class="finance-grid">
+        <div class="card-fin">
+            <h3>Receitas</h3>
+            <div class="valor pos">R$ {{ "%.2f"|format(total_receitas) }}</div>
         </div>
-    </div>
-    
-    <!-- DESPESAS -->
-    <div class="col-xl-4 col-lg-6 col-md-12">
-        <div class="card-financeiro card-despesa text-center p-4">
-            <i class="bi bi-graph-down-arrow display-4 mb-3"></i>
-            <h3 class="h2 fw-bold mb-3 text-white">Despesas</h3>
-            <div class="valor negativo">R$ {{ "%.2f"|format(total_despesas) }}</div>
-            <p class="text-white-50 mb-0 lead">Total de saídas</p>
+        <div class="card-fin">
+            <h3>Despesas</h3>
+            <div class="valor neg">R$ {{ "%.2f"|format(total_despesas) }}</div>
         </div>
-    </div>
-    
-    <!-- SALDO -->
-    <div class="col-xl-4 col-lg-12 col-md-12">
-        <div class="card-financeiro text-center p-4">
-            <i class="bi bi-cash-coin display-4 mb-3 {% if saldo >= 0 %}text-success{% else %}text-danger{% endif %}"></i>
-            <h3 class="h2 fw-bold mb-3 text-white">Saldo</h3>
-            <div class="valor {% if saldo >= 0 %}positivo{% else %}negativo{% endif %}">
+        <div class="card-fin">
+            <h3>Saldo</h3>
+            <div class="valor {% if saldo >= 0 %}pos{% else %}neg{% endif %}">
                 R$ {{ "%.2f"|format(saldo) }}
             </div>
-            <p class="text-white-50 mb-0 lead">Resultado final</p>
         </div>
     </div>
 </div>

@@ -1,163 +1,41 @@
 {% extends "tela_base_telas_unificadas/base.html" %}
 
-{% block title %}Editar Categoria{% endblock %}
-
-{% block extra_css %}
-<style>
-/* Estilos específicos para a tela de edição */
-.card-custom {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-}
-
-.color-preview {
-    width: 50px;
-    height: 38px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* ============================================ */
-/* TEMA CLARO */
-/* ============================================ */
-body.light-mode .btn-outline-light {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-light:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-
-body.light-mode .card-custom {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-}
-
-body.light-mode .text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .text-white-50 {
-    color: #6c757d !important;
-}
-
-body.light-mode .form-label {
-    color: #212529 !important;
-}
-
-body.light-mode .form-control,
-body.light-mode .form-control-color {
-    background-color: #ffffff !important;
-    border-color: #ced4da !important;
-    color: #212529 !important;
-}
-
-body.light-mode .color-preview {
-    border: 1px solid #dee2e6;
-}
-
-body.light-mode .btn-outline-secondary {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-secondary:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-
-body.light-mode .card-header h2,
-body.light-mode .card-header p {
-    color: #212529 !important;
-}
-
-body.light-mode .text-muted {
-    color: #6c757d !important;
-}
-</style>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pasta_categorias/crud/edit.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card-custom p-4">
-                <div class="card-header bg-transparent border-0 text-center mb-3">
-                    <h2 class="fw-bold text-white">
-                        <i class="bi bi-pencil-square me-2"></i>✏️ Editar Categoria
-                    </h2>
-                    <p class="text-white-50">Altere as informações da sua categoria</p>
-                </div>
+<div class="form-wrapper">
+    <div class="card-custom">
+        <h2 style="margin-top: 0;">✏️ Editar Categoria</h2>
+        <p style="color: #a0a0a0;">Altere as informações da sua categoria</p>
 
-                <!-- MENSAGENS DE ERRO -->
-                {% if msg %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle me-2"></i>{{ msg }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                {% endif %}
-
-                <form method="POST" action="{{ url_for('edit_cat_tar.ini_edit_cat_tar', id=categoria[0]) }}">
-                    <!-- NOME -->
-                    <div class="mb-3">
-                        <label for="nome" class="form-label text-white fw-bold">
-                            <i class="bi bi-tag me-1"></i>Nome da Categoria
-                        </label>
-                        <input type="text" 
-                               class="form-control bg-dark text-white border-secondary" 
-                               id="nome" 
-                               name="nome" 
-                               value="{{ categoria[1] }}" 
-                               required
-                               placeholder="Digite o nome da categoria">
-                    </div>
-
-                    <!-- COR -->
-                    <div class="mb-4">
-                        <label for="cor" class="form-label text-white fw-bold">
-                            <i class="bi bi-palette me-1"></i>Cor da Categoria
-                        </label>
-                        <div class="d-flex gap-3 align-items-center">
-                            <input type="color" 
-                                   class="form-control form-control-color bg-dark" 
-                                   id="cor" 
-                                   name="cor" 
-                                   value="{{ categoria[2] }}" 
-                                   style="width: 80px; height: 45px;">
-                            <div class="color-preview" style="background-color: {{ categoria[2] }};"></div>
-                            <span class="text-white-50 small">Clique no seletor para escolher a cor</span>
-                        </div>
-                    </div>
-
-                    <!-- BOTÕES -->
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                        <a href="{{ url_for('categorias.listar_categorias') }}" class="btn btn-outline-light btn-lg px-4">
-                            <i class="bi bi-arrow-left me-2"></i>Voltar
-                        </a>
-                        <button type="submit" class="btn btn-primary btn-lg px-4">
-                            <i class="bi bi-save me-2"></i>Atualizar
-                        </button>
-                    </div>
-                </form>
+        <form method="POST" action="{{ url_for('edit_cat_tar.ini_edit_cat_tar', id=categoria[0]) }}">
+            
+            <div class="form-group">
+                <label class="form-label">Nome da Categoria</label>
+                <input type="text" name="nome" class="form-input" value="{{ categoria[1] }}" required>
             </div>
-        </div>
+
+            <div class="form-group">
+                <label class="form-label">Cor da Categoria</label>
+                <div class="color-group">
+                    <input type="color" name="cor" id="cor" class="color-input" value="{{ categoria[2] }}">
+                    <div id="preview" class="color-preview" style="background-color: {{ categoria[2] }};"></div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-base btn-outline">Voltar</a>
+                <button type="submit" class="btn-base btn-primary">Atualizar</button>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
-// Atualiza a prévia da cor quando o usuário escolher uma nova cor
-const colorPicker = document.getElementById('cor');
-const colorPreview = document.querySelector('.color-preview');
-
-if (colorPicker && colorPreview) {
-    colorPicker.addEventListener('input', function() {
-        colorPreview.style.backgroundColor = this.value;
-    });
-}
+    const cp = document.getElementById('cor');
+    const prev = document.getElementById('preview');
+    cp.addEventListener('input', () => prev.style.backgroundColor = cp.value);
 </script>
 {% endblock %}

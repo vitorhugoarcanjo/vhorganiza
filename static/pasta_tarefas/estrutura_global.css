@@ -1,0 +1,329 @@
+/* ==========================================================================
+   1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
+   ========================================================================== */
+:root {
+    --fs-micro: 0.62rem;
+    --fs-pequeno: 0.72rem;
+    --fs-normal: 0.8rem;
+}
+
+.content {
+    padding: 0 !important; 
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Otimizado para 98% de largura total */
+.painel-container {
+    display: flex;
+    flex-direction: column;
+    width: 98% !important;
+    max-width: 98% !important;
+    height: 100%;
+    margin: 0 auto !important;
+    padding: 10px 0; /* Ajustado recuo superior/inferior para colar nas bordas laterais */
+    gap: 8px;
+    background-color: var(--bg-principal);
+    font-size: var(--fs-normal);
+}
+/* ==========================================================================
+   2. FILTROS COMPACTOS (UNIFICADO COM SUPORTE A ALINHAMENTO DINÂMICO)
+   ========================================================================== */
+.painel-topo-fixo {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.form-filtros-total {
+    width: 100%;
+}
+
+.filtros-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;       /* Evita quebra de layout caso os filtros esmaguem */
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;  /* Garante que todos os blocos herdem a altura do maior bloco da linha */
+}
+
+.bloco-filtro {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px; 
+    flex: 1;
+    min-width: 130px;      /* Largura mínima segura para os selects */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Dá o mesmo comportamento de largura inteligente para o primeiro bloco (geralmente Data) */
+.bloco-filtro:first-child {
+    flex: 1.8;             
+    min-width: 210px;      /* Espaço necessário para inputs compostos respirarem */
+}
+
+/* Alinha selects e inputs comuns na base do bloco para casar horizontalmente */
+.bloco-filtro .form-select,
+.bloco-filtro .form-control:not(.flex-row .form-control),
+.bloco-filtro .lista-categorias {
+    margin-top: auto;
+}
+
+.bloco-pesquisa-fim {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bloco-titulo {
+    font-size: var(--fs-micro) !important;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    margin-bottom: 4px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flex-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.flex-row:last-child { margin-bottom: 0; }
+.flex-fill { flex: 1; }
+
+.form-control, .form-select {
+    width: 100%;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important; /* Letras e inputs mais finos */
+    border-radius: 4px;
+    font-size: var(--fs-pequeno) !important;
+    outline: none;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.label-categoria { font-size: var(--fs-pequeno); color: var(--texto-principal); display: flex; align-items: center; cursor: pointer; }
+.span_categorias { font-size: var(--fs-pequeno); }
+
+/* Sub-header de Controles */
+.tarefas-controle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px;
+}
+.botoes-esquerda { display: flex; gap: 6px; }
+
+/* ==========================================================================
+   4. ALTURA DE REGISTROS ALTAMENTE COMPACTA E PROFISSIONAL
+   ========================================================================== */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-normal);
+    table-layout: fixed;
+}
+
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
+    color: var(--texto-mutado);
+    font-weight: 600;
+    padding: 4px 6px !important; /* Achata o topo da tabela */
+    border-bottom: 2px solid var(--border-sutil);
+    z-index: 10;
+    text-align: left;
+    font-size: var(--fs-micro) !important;
+}
+
+.custom-table td {
+    padding: 4px 6px !important; /* Linhas ultra-compactas de alta densidade */
+    border-bottom: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--fs-pequeno) !important;
+}
+
+.custom-table tr:hover td {
+    background-color: var(--hover-fino);
+}
+
+.td-id { color: var(--texto-discreto); font-weight: bold; }
+.td-titulo { font-weight: 500; }
+.text-vazio { color: var(--texto-discreto); }
+.td-vazio { text-align: center; padding: 30px; color: var(--texto-mutado); }
+
+/* ==========================================================================
+   5. BOTÕES DE AÇÃO E COMPONENTES INTERNOS
+   ========================================================================== */
+.td-acoes {
+    text-align: center;
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; /* Reduzido para casar com a linha menor */
+    height: 22px;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: var(--fs-pequeno);
+    padding: 0;
+}
+.btn-acao:hover { color: var(--texto-principal); }
+.btn-acao.view:hover { border-color: var(--cor-ativa); color: var(--cor-ativa); }
+.btn-acao.check:hover { background-color: rgba(34, 197, 94, 0.1); border-color: var(--cor-marca); color: var(--cor-marca); }
+.btn-acao.edit:hover { border-color: var(--cor-ativa); color: var(--cor-ativa); }
+.btn-acao.delete:hover { background-color: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444; }
+
+.btn-pure {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    font-size: var(--fs-pequeno) !important;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-pure:hover { background: var(--hover-fino); }
+.btn-success-pure { border-color: var(--cor-marca); color: var(--cor-marca); }
+.btn-info-pure { border-color: var(--cor-ativa); color: var(--cor-ativa); }
+.btn-primary-pure { background: var(--cor-ativa); border-color: var(--cor-ativa); color: #fff; }
+.btn-active-toggle { background: var(--cor-ativa); border-color: var(--cor-ativa); color: #fff; }
+.btn-destaque { font-weight: 600; }
+
+.badge-pure { padding: 1px 4px !important; border-radius: 4px; font-size: var(--fs-micro) !important; font-weight: 600; display: inline-block; }
+.bg-success { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+.bg-warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+.bg-danger { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+.bg-secondary { background: var(--bg-principal); color: var(--texto-mutado); border: 1px solid var(--border-sutil); }
+.tag-categoria { background: transparent; border: 1px solid; }
+
+/* ==========================================================================
+   6. MODAL DETALHES COMPACTO
+   ========================================================================== */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center;
+    justify-content: center; z-index: 9999; opacity: 0; pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-container {
+    background-color: var(--bg-card); border: 1px solid var(--border-sutil); border-radius: 6px;
+    width: 90%; max-width: 440px; overflow: hidden; transform: translateY(-15px); transition: transform 0.15s ease;
+}
+.modal-overlay.active .modal-container { transform: translateY(0); }
+.modal-header { background-color: var(--bg-principal); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-sutil); }
+.modal-title { font-size: var(--fs-normal); font-weight: 600; color: var(--texto-principal); }
+.modal-close { background: transparent; border: none; color: var(--texto-mutado); font-size: 1.2rem; cursor: pointer; }
+.modal-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.modal-field { background-color: var(--bg-principal); border: 1px solid var(--border-sutil); padding: 6px; border-radius: 4px; }
+.modal-field.full-width { grid-column: span 2; }
+.field-label { font-size: 0.58rem; color: var(--cor-ativa); text-transform: uppercase; font-weight: bold; margin-bottom: 2px; }
+.field-value { font-size: var(--fs-pequeno); color: var(--texto-principal); }
+
+
+
+/* ==========================================================================
+   7. RESPONSIVIDADE (MEDIA QUERY PARA MOBILE)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .painel-container {
+        width: 96% !important;
+        max-width: 96% !important;
+        padding: 5px 0;
+        gap: 6px;
+    }
+
+    .filtros-container {
+        flex-direction: column !important;
+        gap: 6px !important;
+    }
+
+    .bloco-filtro {
+        width: 100% !important;
+        flex: none !important;
+        padding: 6px !important;
+    }
+
+    .flex-row.gap-2 {
+        gap: 4px !important;
+    }
+
+    .painel-tabela-conteudo {
+        overflow-x: auto !important;
+        position: relative; /* Garante o contexto de posicionamento para os filhos fixos */
+    }
+
+    .custom-table {
+        table-layout: auto !important;
+    }
+
+    .tarefas-controle-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 6px;
+    }
+
+    .status-direita {
+        align-self: flex-end;
+    }
+
+    /* ----------------------------------------------------------------------
+       LÓGICA DE COLUNA DE AÇÕES FIXA NO MOBILE
+       ---------------------------------------------------------------------- */
+    /* Faz o cabeçalho de AÇÕES grudar na direita */
+    .custom-table th:last-child {
+        position: sticky !important;
+        right: 0;
+        background-color: var(--bg-card) !important; /* Evita transparência ao rolar os dados por baixo */
+        z-index: 12; /* Fica acima dos outros THs comuns */
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra sutil para dar efeito de sobreposição */
+    }
+
+    /* Faz a célula de AÇÕES de cada linha grudar na direita */
+    .custom-table td:last-child {
+        position: sticky !important;
+        right: 0;
+        background-color: var(--bg-card) !important; /* Mesma cor do card para cobrir o texto que passa por baixo */
+        z-index: 5;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Mantém o background correto do hover mesmo com a coluna fixada */
+    .custom-table tr:hover td:last-child {
+        background-color: var(--hover-fino) !important;
+    }
+}

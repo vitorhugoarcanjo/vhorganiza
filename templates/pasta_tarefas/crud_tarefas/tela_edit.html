@@ -2,216 +2,100 @@
 
 {% block title %}Editar Tarefa{% endblock %}
 
-{% block extra_css %}
-<style>
-/* Estilos específicos para a tela de editar tarefa */
-.edit-card {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-}
-
-.card-header-custom {
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px 20px 0 0 !important;
-}
-
-.btn-atualizar {
-    background: linear-gradient(45deg, #11998e, #38ef7d);
-    border: none;
-    transition: all 0.3s ease;
-}
-
-.btn-atualizar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(17, 153, 142, 0.4);
-}
-
-/* Ajuste nos inputs */
-.form-control, .form-select {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-}
-
-/* ============================================ */
-/* TEMA CLARO */
-/* ============================================ */
-body.light-mode .btn-outline-light {
-    border: 1px solid black;
-    color: #000000;
-}
-body.light-mode .btn-outline-light:hover {
-    background-color: #010102;
-    color: #ffffff;
-}
-
-body.light-mode .edit-card {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
-}
-
-body.light-mode .card-header-custom {
-    background: #f8f9fa !important;
-    border-bottom: 1px solid #dee2e6 !important;
-}
-
-body.light-mode .text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .form-label {
-    color: #212529 !important;
-}
-
-body.light-mode .form-control,
-body.light-mode .form-select {
-    background-color: #ffffff !important;
-    border-color: #ced4da !important;
-    color: #212529 !important;
-}
-
-body.light-mode .bg-dark {
-    background-color: #ffffff !important;
-}
-
-body.light-mode .border-secondary {
-    border-color: #ced4da !important;
-}
-
-body.light-mode .btn-outline-secondary {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-secondary:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-
-body.light-mode .btn-atualizar {
-    background: linear-gradient(45deg, #11998e, #38ef7d);
-    color: white;
-}
-</style>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/crud/pasta_insert/insert.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-xl-7">
-            <!-- CARD PRINCIPAL -->
-            <div class="edit-card">
-                <div class="card-header-custom p-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="fw-bold text-white mb-0">
-                            <i class="bi bi-pencil-square me-2"></i>Editar Tarefa
-                        </h2>
-                    </div>
-                    <p class="text-white-50 mb-0 mt-2">Altere os dados da tarefa</p>
-                </div>
-
-                <div class="card-body p-4">
-                    <form method="post" action="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa_seq) }}">
-                        <!-- TÍTULO -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-type me-1"></i>Título
-                            </label>
-                            <input type="text" name="titulo" 
-                                   class="form-control bg-dark text-white border-secondary" 
-                                   value="{{ tarefa[0] }}" required>
-                        </div>
-
-                        <!-- DESCRIÇÃO -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-file-text me-1"></i>Descrição
-                            </label>
-                            <textarea class="form-control bg-dark text-white border-secondary" 
-                                      rows="4" name="descricao" 
-                                      placeholder="Digite a descrição da tarefa...">{{ tarefa[1] }}</textarea>
-                        </div>
-
-                        <div class="row mb-3">
-                            <!-- STATUS -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-white">
-                                    <i class="bi bi-check-circle me-1"></i>Status
-                                </label>
-                                <select class="form-select bg-dark text-white border-secondary" name="status">
-                                    <option value="pendente" {% if tarefa[2] == 'pendente' %}selected{% endif %}>⏳ Pendente</option>
-                                    <option value="em andamento" {% if tarefa[2] == 'em andamento' %}selected{% endif %}>⚡ Em andamento</option>
-                                    <option value="concluido" {% if tarefa[2] == 'concluido' %}selected{% endif %}>✅ Concluído</option>
-                                </select>
-                            </div>
-
-                            <!-- PRIORIDADE -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-white">
-                                    <i class="bi bi-flag me-1"></i>Prioridade
-                                </label>
-                                <select class="form-select bg-dark text-white border-secondary" name="prioridade">
-                                    <option value="baixa" {% if tarefa[6] == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
-                                    <option value="media" {% if tarefa[6] == 'media' %}selected{% endif %}>🟡 Média</option>
-                                    <option value="alta" {% if tarefa[6] == 'alta' %}selected{% endif %}>🔴 Alta</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <!-- DATA INÍCIO -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-white">
-                                    <i class="bi bi-calendar me-1"></i>Data Início
-                                </label>
-                                <input type="date" class="form-control bg-dark text-white border-secondary" 
-                                       name="data_inicio" value="{{ tarefa[3] }}">
-                            </div>
-
-                            <!-- DATA FINAL -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-white">
-                                    <i class="bi bi-calendar-check me-1"></i>Data Final
-                                </label>
-                                <input type="date" class="form-control bg-dark text-white border-secondary" 
-                                       name="data_final" value="{{ tarefa[4] }}">
-                            </div>
-                        </div>
-
-                        <!-- CATEGORIA -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-white">
-                                <i class="bi bi-tags me-1"></i>Categoria
-                            </label>
-                            <select class="form-select bg-dark text-white border-secondary" name="categoria_id">
-                                <option value="">⚠️ Sem categoria</option>
-                                {% for cat in todas_categorias %}
-                                <option value="{{ cat[0] }}" 
-                                        style="background-color: {{ cat[2] }}; color: white !important;" 
-                                        {% if cat[0] == tarefa[5] %}selected{% endif %}>
-                                    {{ cat[1] }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <!-- BOTÕES -->
-                        <div class="d-flex gap-3 justify-content-end mt-4 pt-3 border-top" 
-                             style="border-color: rgba(255,255,255,0.1) !important;">
-                            <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn btn-outline-light">
-                                <i class="bi bi-arrow-left me-1"></i> CANCELAR
-                            </a>
-                            <button type="submit" class="btn btn-atualizar">
-                                <i class="bi bi-save me-1"></i> Atualizar
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<div class="container-task">
+    <div class="card-task">
+        <div class="card-task-header">
+            <div class="header-align">
+                <h2 class="title-main">
+                    <i class="bi bi-pencil-square"></i> Editar Tarefa
+                </h2>
+                <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-action btn-back">
+                    <i class="bi bi-arrow-left"></i> Cancelar
+                </a>
             </div>
+            <p class="subtitle-main">Modifique os campos necessários e salve as alterações</p>
+        </div>
+
+        <div class="card-task-body">
+            <form method="post" action="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa_seq) }}">
+                
+                <div class="form-group">
+                    <label class="label-form"><i class="bi bi-type"></i> Título</label>
+                    <input type="text" name="titulo" class="input-form" value="{{ tarefa[0] }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="label-form"><i class="bi bi-file-text"></i> Descrição</label>
+                    <textarea name="descricao" class="input-form textarea-form">{{ tarefa[1] }}</textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="label-form"><i class="bi bi-check-circle"></i> Status</label>
+                        <select name="status" class="select-form">
+                            <option value="pendente" {% if tarefa[2] == 'pendente' %}selected{% endif %}>⏳ Pendente</option>
+                            <option value="em andamento" {% if tarefa[2] == 'em andamento' %}selected{% endif %}>⚡ Em andamento</option>
+                            <option value="concluido" {% if tarefa[2] == 'concluido' %}selected{% endif %}>✅ Concluído</option>
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <label class="label-form"><i class="bi bi-flag"></i> Prioridade</label>
+                        <select name="prioridade" class="select-form">
+                            <option value="baixa" {% if tarefa[6] == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
+                            <option value="media" {% if tarefa[6] == 'media' %}selected{% endif %}>🟡 Média</option>
+                            <option value="alta" {% if tarefa[6] == 'alta' %}selected{% endif %}>🔴 Alta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="label-form"><i class="bi bi-calendar-plus"></i> Início</label>
+                        <input type="date" name="data_inicio" class="input-form" value="{{ tarefa[3] }}">
+                    </div>
+                    <div class="form-col">
+                        <label class="label-form"><i class="bi bi-calendar-check"></i> Prazo</label>
+                        <input type="date" name="data_final" class="input-form" value="{{ tarefa[4] }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label-form"><i class="bi bi-tags"></i> Categoria</label>
+                    <select name="categoria_id" class="select-form">
+                        <option value="">⚠️ Sem categoria</option>
+                        {% for cat in todas_categorias %}
+                        <option value="{{ cat[0] }}" 
+                                style="background-color: {{ cat[2] }}; color: white !important;" 
+                                {% if cat[0] == tarefa[5] %}selected{% endif %}>
+                            {{ cat[1] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-action btn-submit" style="width: 100%;">
+                        <i class="bi bi-save"></i> Atualizar Tarefa
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    // Ajuste automático da altura do textarea
+    const textarea = document.querySelector('.textarea-form');
+    function adjustHeight() {
+        textarea.style.height = '60px';
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+    }
+    textarea.addEventListener('input', adjustHeight);
+    window.addEventListener('load', adjustHeight); // Ajusta ao carregar
+</script>
 {% endblock %}

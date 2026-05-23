@@ -1,207 +1,55 @@
 {% extends "tela_base_telas_unificadas/base.html" %}
 
-{% block title %}Categorias{% endblock %}
-
-{% block extra_css %}
-<style>
-/* Estilos específicos para a tela de categorias */
-.content-card {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-}
-
-.card-header {
-    background: rgba(0, 0, 0, 0.2) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.color-preview {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.color-preview:hover {
-    transform: scale(1.1);
-}
-
-/* Tabela no tema escuro */
-.table-hover tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-.text-white-50 {
-    color: #ffffff !important;
-    background-color: transparent !important;
-}
-
-td {
-    background-color: transparent !important;
-}
-
-/* ============================================ */
-/* TEMA CLARO */
-/* ============================================ */
-body.light-mode .text-white-50{
-    color: #050607 !important;
-}
-
-body.light-mode .content-card {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-body.light-mode .card-header {
-    border-bottom: 1px solid #dee2e6 !important;
-}
-
-body.light-mode .table-hover tbody tr:hover {
-    background-color: #f5f5f5;
-}
-
-body.light-mode .color-preview {
-    border: 2px solid #dee2e6;
-}
-
-body.light-mode .text-muted {
-    color: #6c757d !important;
-}
-
-body.light-mode h4, 
-body.light-mode h5, 
-body.light-mode h6 {
-    color: #212529 !important;
-}
-
-body.light-mode .btn-outline-light {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-light:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-</style>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pasta_categorias/categorias.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="container px-3 px-lg-4 py-4">
+<div class="container-custom">
     
-    <!-- HEADER -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="content-card p-4">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div>
-                        <h4 class="mb-1 text-white fw-semibold">🏷️ Categorias</h4>
-                        <p class="text-white-50 mb-0 small">Gerencie suas categorias de tarefas</p>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn btn-outline-light">
-                            <i class="bi bi-arrow-left"></i> Voltar
-                        </a>
-                        <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> Nova Categoria
-                        </a>
-                    </div>
-                </div>
+    <div class="card-custom">
+        <div class="header-flex">
+            <div>
+                <h2 style="margin: 0;">🏷️ Categorias</h2>
+                <p style="color: var(--text-muted); margin: 5px 0 0 0;">Gerencie suas categorias de tarefas</p>
+            </div>
+            <div>
+                <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-base btn-outline">Voltar</a>
+                <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn-base btn-primary">Nova Categoria</a>
             </div>
         </div>
     </div>
 
-    <!-- FLASH MESSAGES -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="row mb-3">
-                <div class="col-12">
-                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' if category == 'danger' else 'warning' }} alert-dismissible fade show" role="alert">
-                        <i class="bi bi-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' if category == 'danger' else 'info-circle' }} me-2"></i>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <!-- TABELA CATEGORIAS -->
     {% if categoria_tarefas %}
-    <div class="row">
-        <div class="col-12">
-            <div class="content-card">
-                <div class="card-header py-3">
-                    <h6 class="mb-0 text-white fw-semibold">
-                        <i class="bi bi-list-ul me-2"></i>Categorias de Tarefas
-                    </h6>
-                </div>
-                <div class="card-body p-4">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-white-50">Nome</th>
-                                    <th class="text-white-50">Cor</th>
-                                    <th class="text-white-50">Ações</th>
-                                </thead>
-                                <tbody>
-                                    {% for row in categoria_tarefas %}
-                                    <tr>
-                                        <td class="fw-medium text-white">{{ row[1] }}</td>
-                                        <td>
-                                            <div class="color-preview" 
-                                                 style="background-color: {{ row[2] }};" 
-                                                 title="{{ row[2] }}"></div>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ url_for('edit_cat_tar.ini_edit_cat_tar', id=row[0]) }}" 
-                                                   class="btn btn-outline-light" 
-                                                   title="Editar">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a href="{{ url_for('categorias.excluir_categoria', id=row[0]) }}" 
-                                                   class="btn btn-outline-light" 
-                                                   title="Excluir"
-                                                   onclick='return confirm("Tem certeza que deseja excluir a categoria {{ row[1] }}?")'>
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="card-custom">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Cor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in categoria_tarefas %}
+                <tr>
+                    <td>{{ row[1] }}</td>
+                    <td><div class="color-preview" style="background-color: {{ row[2] }};"></div></td>
+                    <td>
+                        <a href="{{ url_for('edit_cat_tar.ini_edit_cat_tar', id=row[0]) }}" class="action-link">Editar</a>
+                        <a href="{{ url_for('categorias.excluir_categoria', id=row[0]) }}" class="action-link" onclick="return confirm('Excluir?')">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card-custom" style="text-align: center; padding: 60px;">
+        <h3>Nenhuma categoria criada</h3>
+        <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn-base btn-primary">Criar Primeira</a>
     </div>
     {% endif %}
 
-    <!-- VAZIO -->
-    {% if not categoria_tarefas %}
-    <div class="row">
-        <div class="col-md-6 mx-auto">
-            <div class="content-card text-center p-5">
-                <i class="bi bi-tags display-1 text-white-50 mb-4"></i>
-                <h5 class="fw-semibold text-white mb-3">Nenhuma categoria criada</h5>
-                <p class="text-white-50 mb-4">Crie sua primeira categoria para organizar melhor suas tarefas</p>
-                <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn btn-primary btn-lg px-4">
-                    <i class="bi bi-plus-circle me-2"></i>Criar Primeira Categoria
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}

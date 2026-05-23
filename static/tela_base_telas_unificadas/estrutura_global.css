@@ -1,0 +1,294 @@
+
+/* Importação da fonte Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ==========================================================================
+    1. VARIÁVEIS DE COR E TEMA (MÁGICA DO CSS PURO)
+    ========================================================================== */
+:root {
+    /* Tema Escuro (Seu padrão rico em Slate/Navy) */
+    --bg-principal: #0f172a;
+    --bg-card: #1e293b;
+    --border-sutil: rgba(255, 255, 255, 0.06);
+    
+    --texto-principal: #f8fafc;
+    --texto-mutado: #94a3b8;
+    --texto-discreto: #64748b;
+    
+    --cor-marca: #22c55e; /* Verde Destaque */
+    --cor-ativa: #2563eb; /* Azul de Destaque Fino */
+    --hover-fino: rgba(255, 255, 255, 0.03);
+    --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+}
+
+body.light-mode {
+    /* Tema Claro Customizado - Confortável para os olhos */
+    --bg-principal: #e2e8f0;   /* Um cinza azulado bem mais fosco e calmo */
+    --bg-card: #f1f5f9;        /* Um tom levemente mais claro para destacar os blocos */
+    --border-sutil: rgba(15, 23, 42, 0.12);
+    
+    --texto-principal: #1e293b; /* Texto escuro, mas não 100% preto */
+    --texto-mutado: #475569;
+    --texto-discreto: #64748b;
+    
+    --cor-marca: #16a34a;
+    --cor-ativa: #1d4ed8;
+    --hover-fino: rgba(0, 0, 0, 0.04);
+    --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+    2. RESET E ESTRUTURA BASE (MOBILE FIRST)
+    ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-principal);
+    color: var(--texto-principal);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+    4. SIDEBAR (LINHA FINA EXCLUSIVA)
+    ========================================================================== */
+.menu-toggle {
+    display: block;
+    position: fixed;
+    top: 0.75rem; 
+    right: 1rem;  
+    z-index: 997;
+    background: var(--bg-card);
+    color: var(--texto-principal);
+    border: 1px solid var(--border-sutil);
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.menu-close {
+    display: block;
+    background: transparent;
+    color: var(--texto-mutado);
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.menu-close:hover { color: var(--texto-principal); }
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 998;
+}
+
+.sidebar {
+    width: 150px;
+    min-width: 150px;
+    background-color: var(--bg-principal);
+    border-right: 1px solid var(--border-sutil);
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: -250px; 
+    top: 0;
+    z-index: 999;
+    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease;
+}
+
+.sidebar .logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    margin-bottom: 2rem;
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 0.25rem;
+}
+
+/* 👑 ESTILIZAÇÃO DO MENU EM LINHA FINA */
+.sidebar a, .btn-theme-toggle {
+    color: var(--texto-mutado);
+    background: transparent;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 400; /* Linha mais fina e elegante */
+    border: 1px solid transparent; /* Evita jitter no hover */
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+.sidebar a:hover, .btn-theme-toggle:hover {
+    color: var(--texto-principal);
+    background-color: var(--hover-fino);
+    border-color: var(--border-sutil); /* Detalhe fino de borda ao passar o mouse */
+}
+
+/* Linha Fina Ativa (Sem preenchimentos pesados) */
+.sidebar a.active {
+    color: var(--texto-principal);
+    font-weight: 600;
+    background-color: var(--hover-fino);
+    border-color: var(--cor-ativa); /* Apenas uma linha sutil demarcando o item ativo */
+}
+
+.nav-socials-mobile {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-sutil);
+}
+
+.nav-socials-mobile p {
+    font-size: 0.7rem;
+    color: var(--texto-discreto);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.socials-mobile-grid {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.socials-mobile-grid a {
+    color: var(--texto-discreto);
+    font-size: 1.15rem;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+.socials-mobile-grid a:hover { color: var(--texto-principal); }
+
+/* Classes de Controle do Javascript */
+body.menu-active .sidebar { left: 0; }
+body.menu-active .sidebar-overlay { display: block; }
+body.menu-active { overflow: hidden; }
+
+/* ========================================================== */
+/* 5. ÁREA DE CONTEÚDO E COMPONENTES LIMPOS                   */
+/* ========================================================== */
+.content {
+    flex: 1;
+    margin-left: 0;
+    padding: 76px 1.25rem 1.5rem 1.25rem; 
+    background-color: var(--bg-principal); 
+    overflow-y: auto;
+    transition: background-color 0.25s ease;
+}
+
+/* Alertas Customizados Limpos (Sem Bootstrap) */
+.custom-alert {
+    padding: 12px 16px;
+    margin-bottom: 1.25rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+.custom-alert-success { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
+.custom-alert-danger { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+.custom-alert-warning { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.btn-alert-close { background: none; border: none; color: inherit; font-size: 1.15rem; cursor: pointer; line-height: 1; }
+
+.footer {
+    background-color: var(--bg-principal);
+    text-align: center;
+    padding: 1.25rem;
+    color: var(--texto-discreto);
+    font-size: 0.75rem;
+    border-top: 1px solid var(--border-sutil);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Customização fina de Scrollbars */
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 20px; }
+
+/* ========================================================== */
+/* 6. REGRAS PARA COMPUTADOR / DESKTOP (PC)                   */
+/* ========================================================== */
+@media (min-width: 768px) {
+    .layout {
+        flex-direction: row;
+        min-height: calc(100vh - 56px);
+    }
+
+    .nav-social-icon {
+        color: var(--texto-discreto);
+        font-size: 1.05rem;
+        transition: color 0.15s ease;
+        text-decoration: none;
+    }
+
+    .nav-social-icon:hover {
+        color: var(--texto-principal);
+    }
+
+    .menu-toggle, .menu-close, .sidebar-overlay, .nav-socials-mobile {
+        display: none !important;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 180px; 
+        height: 100vh;
+    }
+
+    .sidebar .logo {
+        margin-bottom: 2.5rem;
+        justify-content: flex-start;
+    }
+
+    .content {
+        margin-left: 180px;
+        width: calc(100% - 180px);
+        padding: 5rem 2.5rem 2.5rem 2.5rem; 
+    }
+}

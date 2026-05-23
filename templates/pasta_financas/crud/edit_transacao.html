@@ -1,203 +1,71 @@
 {% extends "tela_base_telas_unificadas/base.html" %}
 
 {% block title %}Editar Transação #{{ sequencia }}{% endblock %}
-
-{% block extra_css %}
-<style>
-/* Estilos específicos para a tela de editar transação */
-.card-custom {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-}
-
-.card-header-custom {
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px 20px 0 0 !important;
-}
-
-/* ============================================ */
-/* TEMA CLARO */
-/* ============================================ */
-body.light-mode .card-custom {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
-}
-
-body.light-mode .card-header-custom {
-    background: #f8f9fa !important;
-    border-bottom: 1px solid #dee2e6 !important;
-}
-
-body.light-mode .text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .text-white-50 {
-    color: #6c757d !important;
-}
-
-body.light-mode .form-label {
-    color: #212529 !important;
-}
-
-body.light-mode .form-control,
-body.light-mode .form-select {
-    background-color: #ffffff !important;
-    border-color: #ced4da !important;
-    color: #212529 !important;
-}
-
-body.light-mode .bg-dark {
-    background-color: #ffffff !important;
-}
-
-body.light-mode .border-secondary {
-    border-color: #ced4da !important;
-}
-
-body.light-mode .btn-outline-light {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-light:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-</style>
-{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='pasta_financas/crud/pasta_edit/edit.css') }}">{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
-            <div class="card-custom">
-                <div class="card-header-custom p-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="fw-bold text-white mb-0">
-                            <i class="bi bi-pencil-square me-2"></i>Editar Transação #{{ sequencia }}
-                        </h2>
-                        <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-outline-light">
-                            <i class="bi bi-arrow-left me-1"></i> Voltar
-                        </a>
-                    </div>
-                    <p class="text-white-50 mb-0 mt-2">Altere os dados da transação</p>
-                </div>
-
-                <div class="card-body p-4">
-                    <form method="POST">
-                        <!-- Tipo -->
-                        <div class="mb-3">
-                            <label class="form-label text-white fw-bold">
-                                <i class="bi bi-tag me-1"></i>Tipo
-                            </label>
-                            <select name="tipo" class="form-select bg-dark text-white border-secondary" required>
-                                <option value="receita" {% if transacao[2] == 'receita' %}selected{% endif %}>
-                                    📈 Receita
-                                </option>
-                                <option value="despesa" {% if transacao[2] == 'despesa' %}selected{% endif %}>
-                                    📉 Despesa
-                                </option>
-                            </select>
-                        </div>
-
-                        <!-- Valor -->
-                        <div class="mb-3">
-                            <label class="form-label text-white fw-bold">
-                                <i class="bi bi-cash me-1"></i>Valor
-                            </label>
-                            <input type="number" 
-                                   name="valor_total" 
-                                   step="0.01" 
-                                   class="form-control bg-dark text-white border-secondary" 
-                                   value="{{ transacao[3] }}" 
-                                   required>
-                        </div>
-
-                        <!-- Descrição -->
-                        <div class="mb-3">
-                            <label class="form-label text-white fw-bold">
-                                <i class="bi bi-file-text me-1"></i>Descrição
-                            </label>
-                            <input type="text" 
-                                   name="descricao" 
-                                   class="form-control bg-dark text-white border-secondary" 
-                                   value="{{ transacao[4] }}" 
-                                   required>
-                        </div>
-
-                        <div class="row">
-                            <!-- Data Emissão -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white fw-bold">
-                                    <i class="bi bi-calendar me-1"></i>Data Emissão
-                                </label>
-                                <input type="date" 
-                                       name="data_emissao" 
-                                       class="form-control bg-dark text-white border-secondary" 
-                                       value="{{ transacao[5] }}" 
-                                       required>
-                            </div>
-
-                            <!-- Data Vencimento -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white fw-bold">
-                                    <i class="bi bi-calendar-check me-1"></i>Data Vencimento
-                                </label>
-                                <input type="date" 
-                                       name="data_vencimento" 
-                                       class="form-control bg-dark text-white border-secondary" 
-                                       value="{{ transacao[8] }}">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <!-- Categoria -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white fw-bold">
-                                    <i class="bi bi-tags me-1"></i>Categoria
-                                </label>
-                                <input type="text" 
-                                       name="categoria" 
-                                       class="form-control bg-dark text-white border-secondary" 
-                                       value="{{ transacao[6] }}">
-                            </div>
-
-                            <!-- Status -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white fw-bold">
-                                    <i class="bi bi-check-circle me-1"></i>Status
-                                </label>
-                                <select name="status" class="form-select bg-dark text-white border-secondary">
-                                    <option value="aberto" {% if transacao[7] == 'aberto' %}selected{% endif %}>
-                                        🟡 Aberto
-                                    </option>
-                                    <option value="quitado" {% if transacao[7] == 'quitado' %}selected{% endif %}>
-                                        ✅ Quitado
-                                    </option>
-                                    <option value="recebido" {% if transacao[7] == 'recebido' %}selected{% endif %}>
-                                        💰 Recebido
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Botões -->
-                        <div class="d-flex gap-3 justify-content-end mt-4">
-                            <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-outline-light">
-                                <i class="bi bi-x-circle me-1"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-save me-1"></i> Salvar
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<div class="container">
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <div>
+                <h2 style="margin: 0;">Editar Transação #{{ sequencia }}</h2>
+                <p style="margin: 5px 0 0 0; color: var(--text-muted);">Altere os dados abaixo</p>
             </div>
+            <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-outline">Voltar</a>
+        </div>
+
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select name="tipo" required>
+                        <option value="receita" {% if transacao[2] == 'receita' %}selected{% endif %}>Receita</option>
+                        <option value="despesa" {% if transacao[2] == 'despesa' %}selected{% endif %}>Despesa</option>
+                    </select>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Valor</label>
+                        <input type="number" name="valor_total" step="0.01" value="{{ transacao[3] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" name="descricao" value="{{ transacao[4] }}" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Data Emissão</label>
+                        <input type="date" name="data_emissao" value="{{ transacao[5] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data Vencimento</label>
+                        <input type="date" name="data_vencimento" value="{{ transacao[8] }}">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <input type="text" name="categoria" value="{{ transacao[6] }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status">
+                            <option value="aberto" {% if transacao[7] == 'aberto' %}selected{% endif %}>Aberto</option>
+                            <option value="quitado" {% if transacao[7] == 'quitado' %}selected{% endif %}>Quitado</option>
+                            <option value="recebido" {% if transacao[7] == 'recebido' %}selected{% endif %}>Recebido</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-outline">Cancelar</a>
+                    <button type="submit" class="btn btn-save">Salvar Alterações</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

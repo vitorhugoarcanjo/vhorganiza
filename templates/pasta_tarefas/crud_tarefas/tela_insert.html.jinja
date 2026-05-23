@@ -2,199 +2,97 @@
 
 {% block title %}Nova Tarefa{% endblock %}
 
-{% block extra_css %}
-<style>
-/* Estilos específicos para a tela de inserir tarefa */
-.card-custom {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-}
-
-.card-header-custom {
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px 20px 0 0 !important;
-}
-
-/* ============================================ */
-/* TEMA CLARO */
-/* ============================================ */
-body.light-mode .btn-outline-light {
-    border: 1px solid black;
-    color: #000000;
-}
-body.light-mode .btn-outline-light:hover {
-    background-color: #010102;
-    color: #ffffff;
-}
-
-body.light-mode .card-custom {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
-}
-
-body.light-mode .card-header-custom {
-    background: #f8f9fa !important;
-    border-bottom: 1px solid #dee2e6 !important;
-}
-
-body.light-mode .text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .text-white-50 {
-    color: #6c757d !important;
-}
-
-body.light-mode .form-label {
-    color: #212529 !important;
-}
-
-body.light-mode .form-control,
-body.light-mode .form-select {
-    background-color: #ffffff !important;
-    border-color: #ced4da !important;
-    color: #212529 !important;
-}
-
-body.light-mode .bg-dark {
-    background-color: #ffffff !important;
-}
-
-body.light-mode .border-secondary {
-    border-color: #ced4da !important;
-}
-
-body.light-mode .btn-outline-secondary {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-secondary:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-</style>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/crud/pasta_insert/insert.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
-            <div class="card-custom">
-                <div class="card-header-custom p-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="fw-bold text-white mb-0">
-                            <i class="bi bi-plus-circle me-2"></i>Nova Tarefa
-                        </h2>
-                        <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn btn-outline-light">
-                            <i class="bi bi-arrow-left me-1"></i> Voltar
-                        </a>
-                    </div>
-                    <p class="text-white-50 mb-0 mt-2">Preencha os dados para criar uma nova tarefa</p>
-                </div>
-
-                <div class="card-body p-4">
-                    <form action="{{ url_for('insert_tarefas.ini_insert') }}" method="post">
-                        <!-- TÍTULO -->
-                        <div class="mb-3">
-                            <label class="form-label text-white fw-bold">
-                                <i class="bi bi-type me-1"></i>Título
-                            </label>
-                            <input type="text" 
-                                   name="titulo" 
-                                   value="{{ titulo }}" 
-                                   class="form-control bg-dark text-white border-secondary" 
-                                   placeholder="Digite um título para a tarefa"
-                                   required>
-                        </div>
-
-                        <!-- DESCRIÇÃO -->
-                        <div class="mb-3">
-                            <label class="form-label text-white fw-bold">
-                                <i class="bi bi-file-text me-1"></i>Descrição
-                            </label>
-                            <textarea class="form-control bg-dark text-white border-secondary" 
-                                      rows="4" 
-                                      name="descricao"
-                                      required
-                                      placeholder="Digite a descrição da tarefa...">{{ descricao }}</textarea>
-                        </div>
-
-                        <div class="row">
-                            <!-- STATUS -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white fw-bold">
-                                    <i class="bi bi-check-circle me-1"></i>Status
-                                </label>
-                                <select class="form-select bg-dark text-white border-secondary" name="status">
-                                    <option value="pendente" {% if status == 'pendente' %}selected{% endif %}>⏳ Pendente</option>
-                                    <option value="em andamento" {% if status == 'em andamento' %}selected{% endif %}>⚡ Em andamento</option>
-                                    <option value="concluido" {% if status == 'concluido' %}selected{% endif %}>✅ Concluído</option>
-                                </select>
-                            </div>
-
-                            <!-- PRIORIDADE -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white fw-bold">
-                                    <i class="bi bi-flag me-1"></i>Prioridade
-                                </label>
-                                <select class="form-select bg-dark text-white border-secondary" name="prioridade">
-                                    <option value="baixa" {% if prioridade == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
-                                    <option value="media" {% if prioridade == 'media' %}selected{% endif %}>🟡 Média</option>
-                                    <option value="alta" {% if prioridade == 'alta' %}selected{% endif %}>🔴 Alta</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <!-- DATAS -->
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white fw-bold">
-                                    <i class="bi bi-calendar me-1"></i>Data Início
-                                </label>
-                                <input type="date" class="form-control bg-dark text-white border-secondary" name="data_inicio" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label text-white fw-bold">
-                                    <i class="bi bi-calendar-check me-1"></i>Data Final
-                                </label>
-                                <input type="date" class="form-control bg-dark text-white border-secondary" name="data_final">
-                            </div>
-                        </div>
-
-                        <!-- CATEGORIA -->
-                        <div class="mb-4">
-                            <label class="form-label text-white fw-bold">
-                                <i class="bi bi-tags me-1"></i>Categoria
-                            </label>
-                            <select class="form-select bg-dark text-white border-secondary" name="categoria_id">
-                                <option value="">⚠️ Sem categoria</option>
-                                {% for cat in categorias %}
-                                <option value="{{ cat[0] }}" 
-                                        style="background-color: {{ cat[2] }}; color: white;">
-                                    {{ cat[1] }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <!-- BOTÕES -->
-                        <div class="d-flex gap-3 justify-content-end mt-4">
-                            <button type="reset" class="btn btn-outline-light">
-                                <i class="bi bi-eraser me-1"></i> Limpar
-                            </button>
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-save me-1"></i> Salvar
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<div class="container-task">
+    <div class="card-task">
+        <div class="card-task-header">
+            <div class="header-align">
+                <h2 class="title-main">
+                    <i class="bi bi-plus-circle"></i> Nova Tarefa
+                </h2>
+                <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-action btn-back">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
             </div>
+            <p class="subtitle-main">Preencha os dados abaixo para registrar o fluxo</p>
+        </div>
+
+        <div class="card-task-body">
+            <form action="{{ url_for('insert_tarefas.ini_insert') }}" method="post">
+                
+                <div class="form-group">
+                    <label class="label-form"><i class="bi bi-type"></i> Título</label>
+                    <input type="text" name="titulo" class="input-form" value="{{ titulo if titulo else '' }}" placeholder="Título da tarefa..." required>
+                </div>
+
+                <div class="form-group">
+                    <label class="label-form"><i class="bi bi-file-text"></i> Descrição</label>
+                    <textarea name="descricao" class="input-form textarea-form" rows="2" placeholder="O que deve ser feito?"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="label-form"><i class="bi bi-check-circle"></i> Status</label>
+                        <select name="status" class="select-form">
+                            <option value="pendente">⏳ Pendente</option>
+                            <option value="em andamento">⚡ Em andamento</option>
+                            <option value="concluido">✅ Concluído</option>
+                        </select>
+                    </div>
+                    <div class="form-col">
+                        <label class="label-form"><i class="bi bi-flag"></i> Prioridade</label>
+                        <select name="prioridade" class="select-form">
+                            <option value="baixa">🟢 Baixa</option>
+                            <option value="media">🟡 Média</option>
+                            <option value="alta">🔴 Alta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="label-form"><i class="bi bi-calendar-plus"></i> Início</label>
+                        <input type="date" name="data_inicio" class="input-form" required>
+                    </div>
+                    <div class="form-col">
+                        <label class="label-form"><i class="bi bi-calendar-check"></i> Prazo</label>
+                        <input type="date" name="data_final" class="input-form">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label-form"><i class="bi bi-tags"></i> Categoria</label>
+                    <select name="categoria_id" class="select-form">
+                        <option value="">⚠️ Sem categoria</option>
+                        {% for cat in categorias %}
+                        <option value="{{ cat[0] }}" style="background-color: {{ cat[2] }}; color: white;">{{ cat[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="reset" class="btn-action btn-clear"><i class="bi bi-eraser"></i> Limpar</button>
+                    <button type="submit" class="btn-action btn-submit"><i class="bi bi-save"></i> Salvar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+
+<script>
+    const textarea = document.querySelector('.textarea-form');
+    
+    textarea.addEventListener('input', function() {
+        // Reseta a altura para calcular corretamente
+        this.style.height = '80px'; 
+        // Ajusta baseado no conteúdo (scrollHeight)
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+</script>
+
 {% endblock %}

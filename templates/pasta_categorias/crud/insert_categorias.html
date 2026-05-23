@@ -1,155 +1,56 @@
 {% extends "tela_base_telas_unificadas/base.html" %}
 
-{% block title %}Nova Categoria{% endblock %}
-
-{% block extra_css %}
-<style>
-/* Ajustes específicos para tela de formulário */
-.form-control::placeholder {
-    color: #9ca3af !important;  /* cinza claro para visibilidade */
-    opacity: 1;
-}
-
-
-.card-custom {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
-}
-
-/* TEMA CLARO */
-body.light-mode .card-custom {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-body.light-mode .text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .text-white-50 {
-    color: #6c757d !important;
-}
-
-body.light-mode .form-label {
-    color: #212529 !important;
-}
-
-body.light-mode .form-control, 
-body.light-mode .form-select {
-    background-color: #ffffff !important;
-    border-color: #ced4da !important;
-    color: #212529 !important;
-}
-
-body.light-mode .btn-outline-light {
-    border-color: #6c757d;
-    color: #495057;
-}
-
-body.light-mode .btn-outline-light:hover {
-    background-color: #e9ecef;
-    color: #212529;
-}
-</style>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pasta_categorias/crud/insert.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card-custom p-4">
-                <!-- CABEÇALHO -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="text-white mb-0">
-                        <i class="bi bi-tag me-2"></i>Nova Categoria
-                    </h2>
-                </div>
+<div class="form-wrapper">
+    <div class="card-custom">
+        <h2>🏷️ Nova Categoria</h2>
 
-                <!-- MENSAGENS DE ERRO -->
-                {% if msg %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle me-2"></i>{{ msg }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                {% endif %}
-
-                <!-- FORMULÁRIO -->
-                <form method="post" action="{{ url_for('categorias.insert_categorias_global') }}">
-                    <!-- NOME -->
-                    <div class="mb-3">
-                        <label for="nome" class="form-label text-white fw-bold">
-                            <i class="bi bi-pencil me-1"></i>Nome da Categoria
-                        </label>
-                        <input type="text" 
-                               class="form-control bg-dark text-white border-secondary" 
-                               id="nome" 
-                               name="nome" 
-                               value="{{ nome or '' }}" 
-                               placeholder="Ex: Faculdade, Trabalho, Pessoal..."
-                               required>
-                    </div>
-
-                    <!-- COR -->
-                    <div class="mb-3">
-                        <label for="cor" class="form-label text-white fw-bold">
-                            <i class="bi bi-palette me-1"></i>Cor da Categoria
-                        </label>
-                        <div class="d-flex gap-3 align-items-center">
-                            <input type="color" 
-                                   class="form-control form-control-color" 
-                                   id="cor" 
-                                   name="cor" 
-                                   value="{{ cor or '#667eea' }}" 
-                                   style="width: 80px; height: 45px;">
-                            <div class="color-preview" style="width: 45px; height: 45px; border-radius: 8px; background-color: {{ cor or '#667eea' }}; border: 2px solid rgba(255,255,255,0.2);"></div>
-                            <span class="text-white-50 small">Clique no seletor para escolher a cor</span>
-                        </div>
-                    </div>
-
-                    <!-- MÓDULO -->
-                    <div class="mb-4">
-                        <label for="modulo" class="form-label text-white fw-bold">
-                            <i class="bi bi-grid-3x3-gap-fill me-1"></i>Módulo
-                        </label>
-                        <select class="form-select bg-dark text-white border-secondary" id="modulo" name="modulo" required>
-                            <option value="" disabled {% if not modulo %}selected{% endif %}>Selecione o módulo</option>
-                            <option value="tarefas" {% if modulo == 'tarefas' %}selected{% endif %}>
-                                <i class="bi bi-check2-square"></i> 📋 Tarefas
-                            </option>
-                            <option value="financas" {% if modulo == 'financas' %}selected{% endif %}>
-                                <i class="bi bi-currency-dollar"></i> 💰 Finanças
-                            </option>
-                        </select>
-                        <small class="text-white-50">A categoria será usada neste módulo específico</small>
-                    </div>
-
-                    <!-- BOTÕES -->
-                    <div class="d-flex gap-3 mt-4">
-                        <button type="submit" class="btn btn-primary flex-grow-1">
-                            <i class="bi bi-save me-2"></i> Salvar Categoria
-                        </button>
-                        <a href="{{ url_for('categorias.listar_categorias') }}" class="btn btn-outline-light">
-                            Cancelar
-                        </a>
-                    </div>
-                </form>
-            </div>
+        {% if msg %}
+        <div style="background: var(--danger); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
+            {{ msg }}
         </div>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('categorias.insert_categorias_global') }}">
+            
+            <div class="form-group">
+                <label class="form-label">Nome da Categoria</label>
+                <input type="text" name="nome" class="form-input" value="{{ nome or '' }}" placeholder="Ex: Trabalho, Estudos..." required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Cor da Categoria</label>
+                <div class="color-group">
+                    <input type="color" name="cor" id="cor" class="color-input" value="{{ cor or '#3b82f6' }}">
+                    <div id="preview" class="color-preview" style="background-color: {{ cor or '#3b82f6' }};"></div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Escolha a cor</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Módulo</label>
+                <select name="modulo" class="form-input" required>
+                    <option value="" disabled {% if not modulo %}selected{% endif %}>Selecione o módulo</option>
+                    <option value="tarefas" {% if modulo == 'tarefas' %}selected{% endif %}>📋 Tarefas</option>
+                    <option value="financas" {% if modulo == 'financas' %}selected{% endif %}>💰 Finanças</option>
+                </select>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn-base btn-primary">Salvar Categoria</button>
+                <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-base btn-outline">Cancelar</a>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
-// Atualiza a prévia da cor em tempo real
-const colorPicker = document.getElementById('cor');
-const colorPreview = document.querySelector('.color-preview');
-
-if (colorPicker && colorPreview) {
-    colorPicker.addEventListener('input', function() {
-        colorPreview.style.backgroundColor = this.value;
-    });
-}
+    const cp = document.getElementById('cor');
+    const prev = document.getElementById('preview');
+    cp.addEventListener('input', () => prev.style.backgroundColor = cp.value);
 </script>
 {% endblock %}

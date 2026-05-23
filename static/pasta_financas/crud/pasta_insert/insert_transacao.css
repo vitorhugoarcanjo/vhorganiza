@@ -1,102 +1,61 @@
-/* CONTAINER CONSULTA */
-.container_insert {
-    width: 100%;
-    height: 15rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: aliceblue;
+:root {
+    /* Modo Escuro (Padrão) */
+    --bg-card: #1a1a1a;
+    --bg-input: #262626;
+    --text: #ffffff;
+    --text-muted: #a0a0a0;
+    --accent: #28a745;
+    --border: #404040;
+    --input-group-bg: #333;
 }
 
-    .container_insert form {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
+body.light-mode {
+    /* Modo Claro */
+    --bg-card: #ffffff;
+    --bg-input: #f8f9fa;
+    --text: #212529;
+    --text-muted: #6c757d;
+    --accent: #198754;
+    --border: #dee2e6;
+    --input-group-bg: #e9ecef;
+}
 
-    /* TITULO NOVA CONSULTA */
-    .container_insert .h1_transacao {
-        display: flex;
-        justify-content: center;
-        font-size: 25px;
-    }
+/* Layout Principal */
+.container { max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
 
-    /* ESTRUTURA DA NOVA TRANSAÇÃO */
-    .sub_container_insert {
-        display: flex;
-        gap: 15px;
-    }
-    /* ESTRUTURA DA NOVA TRANSAÇÃO */
+.form-insert-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    color: var(--text);
+}
 
-    
-    /* CONTAINER ESTRUTURA - LABEL, INPUT E SELECT */
-    .container_campos_insert {
-        display: grid;
-        margin-bottom: 15px;
-    }
+.header { text-align: center; margin-bottom: 30px; }
+.header h2 { margin: 0; color: var(--text); }
+.header p { color: var(--text-muted); }
 
-    .container_campos_insert input {
-        font-size: 1rem;
-    }
-    /* CONTAINER ESTRUTURA - LABEL, INPUT E SELECT */
+/* Grid Manual */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.full-width { grid-column: span 2; }
+.form-group { display: flex; flex-direction: column; margin-bottom: 20px; }
 
+/* Inputs */
+label { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+input, select {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px;
+    border-radius: 8px;
+    outline: none;
+}
 
+.input-group { display: flex; align-items: center; }
+.input-group span { background: var(--input-group-bg); padding: 12px; border: 1px solid var(--border); border-right: none; border-radius: 8px 0 0 8px; color: var(--text-muted); }
+.input-group input { border-radius: 0 8px 8px 0; width: 100%; }
 
-    /* BOTÕES - SALVAR, LIMPAR E VOLTAR */
-    .buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-    }
-
-        .buttons button, a {
-            width: 7.3rem;
-            cursor: pointer;
-            font-size: 17px;
-            border: none;
-            padding: 5px;
-            transition: background-color 0.7s ease, transform 0.7s ease;
-            border-radius: 5px;
-        }
-
-        /* BOTÃO SALVAR */
-        .buttons .btn_salvar {
-            background-color: rgb(35, 111, 27);
-        }
-
-        .buttons .btn_salvar:hover {
-            background-color: rgb(56, 181, 34);
-            transform: scale(1.1);
-        }
-        /* BOTÃO SALVAR */
-
-        /* BOTÃO LIMPAR */
-        .buttons .btn_limpar {
-            background-color: tomato;
-        }
-
-        .buttons .btn_limpar:hover {
-            background-color: brown;
-            transform: scale(1.1);
-        }
-        /* BOTÃO LIMPAR */
-
-        /* BOTÃO VOLTAR */
-        .buttons .btn_voltar {
-            text-decoration: none;
-            font-family: Arial, Helvetica, sans-serif;
-            color: black;
-            background-color: tan;
-        }
-
-        .buttons .btn_voltar:hover {
-            background-color: rgb(179, 136, 83);
-            transform: scale(1.1);
-        }
-        /* BOTÃO VOLTAR */
-
-    /* BOTÕES - SALVAR, LIMPAR E VOLTAR */
-
-
-/* CONTAINER CONSULTA */
+/* Botões */
+.actions { display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border); padding-top: 20px; }
+button, .btn-link { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); text-decoration: none; }
+.btn-save { background: var(--accent); border: none; color: white; }

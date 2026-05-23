@@ -2,783 +2,325 @@
 
 {% block title %}Gestão de Tarefas{% endblock %}
 
-{% block extra_css %}
-<style>
-/* ============================================ */
-/* TODO O CSS ESPECÍFICO DA TELA DE TAREFAS     */
-/* ============================================ */
-
-
-
-
-
-
-/* Remove o padding do main-content apenas nesta página pois na base tem um valor diferente */
-.main-content {
-    padding: 5px !important;
-}
-
-/* SEU LAYOUT ORIGINAL - 2 COLUNAS VERTICAIS */
-.container-fluid {
-    height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    padding: 0 !important;
-}
-
-.row.g-0 {
-    height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    flex-wrap: nowrap !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* COLUNAS FIXAS (FILTROS) */
-.col-filtros { 
-    flex: 0 0 16% !important;
-    max-height: 16% !important;
-    width: 100% !important;
-    background: #16213e !important;
-    overflow-y: visible !important;
-    border-radius: 5px;
-}
-
-.col-filtros .h-100 {
-    height: 100% !important;
-    overflow-y: visible !important;
-}
-
-/* COLUNA DA TABELA - SÓ ESTA TEM SCROLL */
-.col-tarefas { 
-    flex: 1 !important;
-    width: 100% !important;
-    background: #0f0f23 !important;
-    overflow-y: auto !important;
-}
-
-/* FILTROS */
-.filtros-container {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    height: 100%;
-    align-items: stretch;
-    flex-wrap: nowrap;
-    width: 100%;
-}
-
-.bloco-filtro {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    background: rgba(0,0,0,0.2);
-    border-radius: 6px;
-    padding: 3px;
-    gap: 2px;
-    height: 100%;
-    overflow-y: auto;
-}
-
-.bloco-filtro:first-child {
-    flex: 1.3;
-}
-
-.bloco-filtro:not(:first-child) {
-    flex: 1;
-}
-
-.bloco-filtro:last-child {
-    flex: 0.4;
-    justify-content: center;
-}
-
-.bloco-titulo {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #ffffff;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 2px;
-    margin-bottom: 1px;
-    flex-shrink: 0;
-}
-
-.grupo-botoes-linha {
-    display: flex;
-    flex-direction: row;
-    gap: 2px;
-    flex-shrink: 0;
-    width: 100%;
-}
-
-.grupo-inputs-data {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    width: 100%;
-    flex-shrink: 0;
-}
-
-.input-label {
-    font-size: 1rem;
-    color: #6c757d;
-    white-space: nowrap;
-    width: 100%;
-}
-
-.input-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 4px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 4px;
-}
-
-.input-data {
-    flex: 1;
-    font-size: 0.8rem;
-    height: auto;
-    background: transparent;
-    border: none;
-    color: white;
-}
-
-.btn-data {
-    padding: 2px 2px;
-    font-size: 0.7rem;
-    min-width: 35px;
-    width: 100%;
-}
-
-.lista-categorias {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    font-size: 0.65rem;
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-}
-
-.lista-categorias label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 3px 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.lista-categorias label .span_categorias {
-    color: #e0e0e0;
-    font-size: 0.7rem;
-}
-
-.status-select,
-.prioridade-select {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 4px;
-    color: white;
-    font-size: 0.7rem;
-    padding: 4px 6px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.nav-icon {
-    display: inline-block !important;
-    margin: 0 !important;
-}
-
-.content-wrapper {
-    background: rgba(239, 236, 236, 0.2);
-    border-radius: 12px;
-}
-
-/* TAREFAS */
-.btn-edit-tar {
-    border-radius: 12px !important;
-}
-
-
-/* ============================================ */
-/* 1. CONFIGURAÇÕES GERAIS DA TABELA           */
-/* ============================================ */
-
-.custom-table {
-    width: 100%;
-    margin-bottom: 0;
-}
-
-
-
-/* ============================================ */
-/* 2. TEMA ESCURO (PADRÃO) - TABELA            */
-/* ============================================ */
-.container_list_taf {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.custom-table thead th {
-    color: #e0e0e0;
-    background: transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    font-weight: 600;
-    padding: 12px 8px;
-}
-
-.custom-table tbody td {
-    color: #e0e0e0;
-    background: transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 10px 8px;
-    vertical-align: middle;
-}
-
-.custom-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-
-
-
-/* ============================================ */
-/* 3. TEMA CLARO - TABELA                      */
-/* ============================================ */
-/* Sobrescreve o fundo do main-content no tema claro */
-body.light-mode .main-content {
-    background-color: #bbcdd1 !important;
-    background-image: none !important; /* remove o gradiente do tema escuro */
-}
-
-body.light-mode .col-tarefas {
-    background-color: transparent !important;
-}
-
-
-body.light-mode .custom-table {
-    background: #ffffff;
-}
-
-body.light-mode .custom-table thead th {
-    color: #212529 !important;
-    background: #f8f9fa !important;
-    border-bottom-color: #dee2e6 !important;
-}
-
-body.light-mode .custom-table tbody td {
-    color: #212529 !important;
-    border-bottom-color: #e9ecef !important;
-}
-
-body.light-mode .custom-table tbody tr:hover {
-    background: #f5f5f5 !important;
-}
-
-/* CONTAINER FILTRO E GERAL */
-body.light-mode .col-filtros {
-    background-color: #1c589c !important;
-}
-body.light-mode .bloco-filtro {
-    background-color: #dbe3e8;
-}
-
-body.light-mode .bloco-titulo {
-    color: #0f0f23;
-    font-size: 0.8rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.497);
-}
-
-/* BLOCO DATA */
-body.light-mode .input-data, body.light-mode .btn-data {
-    color: #0f0f23;
-}
-
-body.light-mode .input-wrapper {
-    color: #0f0f23;
-    background-color: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-}
-
-/* BLOCO CATEGORIAS */
-body.light-mode .label-categoria {
-    color: #0f0f23;
-}
-body.light-mode .span_categorias {
-    color: #000000;
-    font-size: 0.7rem;
-}
-
-/* BLOCO STATUS E PRIORIDADE */
-body.light-mode .status-select,
-body.light-mode .prioridade-select {
-    background: rgb(249, 249, 249);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: rgb(0, 0, 0);
-
-}
-
-/* BLOCO ACOES */
-body.light-mode .btn-outline-light {
-    border-color: #252729;
-    color: #232628;
-}
-
-/* BLOCO TAREFAS */
-body.light-mode .text-white {
-    color: #212529 !important;
-}
-
-body.light-mode .text-white-50 {
-    color: #000000 !important;
-}
-
-body.light-mode .badge.bg-secondary {
-    background-color: #cdcdcd !important;
-    color: white;
-}
-body.light-mode .container_list_taf{
-    background-color: #cdcdcd !important;
-}
-
-
-
-@media (max-width: 768px) {
-    .col-filtros { 
-        flex: 0 0 40vh !important;
-        max-height: 40vh !important;
-    }
-    .col-tarefas { 
-        flex: 1 !important;
-    }
-}
-</style>
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/import_css.css') }}">
 {% endblock %}
 
 {% block content %}
-<!-- ============================================ -->
-<!-- SEU CONTEÚDO COMPLETO (SEM O MENU LATERAL)   -->
-<!-- ============================================ -->
-<div class="container-fluid px-0">
-    <div class="row g-0">
+<div class="painel-container">
 
-        <!-- BLOCO 1: FILTROS (16% da altura) -->
-        <div class="col col-filtros">
-            <div class="h-100 p-1" style="overflow: visible;">
-                <form action="{{ url_for('tarefas.ini_tarefas') }}" method="POST" class="h-100">
-                    <div class="filtros-container">
-                        
-                        <!-- BLOCO 1: DATA (COMPACTO) -->
-                        <div class="bloco-filtro" style="padding: 2px;">
-                            <div class="bloco-titulo" style="font-size: 0.7rem; margin-bottom: 2px;">📅 DATA</div>
-                            
-                            <!-- Primeira linha: botões rápidos -->
-                            <div class="d-flex gap-1 mb-1">
-                                <button type="submit" name="tipo_filtro" value="ontem" class="btn btn-sm btn-outline-light flex-fill" style="font-size: 0.6rem; padding: 2px 0;">-1</button>
-                                <button type="submit" name="tipo_filtro" value="hoje" class="btn btn-sm btn-outline-success flex-fill" style="font-size: 0.6rem; padding: 2px 0;">HOJE</button>
-                                <button type="submit" name="tipo_filtro" value="amanha" class="btn btn-sm btn-outline-light flex-fill" style="font-size: 0.6rem; padding: 2px 0;">+1</button>
-                            </div>
-                            
-                            <!-- Segunda linha: botões de mês -->
-                            <div class="d-flex gap-1 mb-1">
-                                <button type="submit" name="tipo_filtro" value="mes_passado" class="btn btn-sm btn-outline-light flex-fill" style="font-size: 0.6rem; padding: 2px 0;">-1m</button>
-                                <button type="submit" name="tipo_filtro" value="mes" class="btn btn-sm btn-outline-info flex-fill" style="font-size: 0.6rem; padding: 2px 0;">I/F</button>
-                                <button type="submit" name="tipo_filtro" value="mes_proximo" class="btn btn-sm btn-outline-light flex-fill" style="font-size: 0.6rem; padding: 2px 0;">+1m</button>
-                            </div>
-                            
-                            <!-- Terceira linha: inputs de data (lado a lado) -->
-                            <div class="d-flex gap-1">
-                                <div class="input-wrapper" style="flex: 1; padding: 0 2px;">
-                                    <span class="input-label" style="font-size: 0.6rem;">Início:</span>
-                                    <input type="date" name="data_inicio" class="form-control form-control-sm input-data" style="font-size: 0.7rem; padding: 2px;" value="{{ data_inicio or '' }}">
-                                </div>
-                                <div class="input-wrapper" style="flex: 1; padding: 0 2px;">
-                                    <span class="input-label" style="font-size: 0.6rem;">Fim:</span>
-                                    <input type="date" name="data_fim" class="form-control form-control-sm input-data" style="font-size: 0.7rem; padding: 2px;" value="{{ data_fim or '' }}">
-                                </div>
-                            </div>
-                            
-                            <!-- Opcional: tipo de data (compacto) -->
-                            <div class="mt-1">
-                                <select name="tipo_data" class="form-select form-select-sm" style="font-size: 0.6rem; padding: 2px 4px; background: rgba(0,0,0,0.3); color: white;">
-                                    <option value="inicio" {% if tipo_data == 'inicio' %}selected{% endif %}>📅 DATA INICIO</option>
-                                    <option value="final" {% if tipo_data == 'final' %}selected{% endif %}>⏰ DATA FINAL</option>
-                                    <option value="finalizacao" {% if tipo_data == 'finalizacao' %}selected{% endif %}>✅ DATA FINALIZAÇÃO</option>
-                                </select>
-                            </div>
-                            <input type="hidden" name="mostrar_inativas" value="{{ mostrar_inativas }}">
-
-                        </div>
-                        
-                        <!-- BLOCO 2: CATEGORIAS -->
-                        <div class="bloco-filtro">
-                            <div class="bloco-titulo">🏷️ CATEGORIAS</div>
-                            
-                            <div class="lista-categorias">
-                                <label class="d-flex align-items-center label-categoria" style="cursor: pointer;">
-                                    <input type="checkbox" name="categorias" value="null" class="me-1" style="transform: scale(0.9);" {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
-                                    <span class="span_categorias">📭 SEM CATEGORIA</span>
-                                </label>
-
-                                {% for cat in categorias_usuario %}
-                                <label class="d-flex align-items-center label-categoria" style="cursor: pointer;">
-                                    <input type="checkbox" name="categorias" value="{{ cat[0] }}" class="me-1" style="accent-color: {{ cat[2] }}; transform: scale(0.9);" {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
-                                    <span class="span_categorias">{{ cat[1] }}</span>
-                                </label>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <!-- BLOCO 3: STATUS + PRIORIDADE + ATIVO (EM LINHA) -->
-                        <div class="bloco-filtro" style="flex: 1;">
-                            <div class="bloco-titulo">📊 OUTROS FILTROS </div>
-                            
-                            <!-- Primeira linha: Status + Prioridade -->
-                            <div class="d-flex gap-3 mb-0">
-                                <div style="flex: 1;">
-                                    <label class="small text-white-50">Status</label>
-                                    <select name="status" class="status-select">
-                                        <option value="" {% if status_filtro == '' %}selected{% endif %}>Todos</option>
-                                        <option value="vazio" {% if status_filtro == 'vazio' %}selected{% endif %}>📋 Vazio</option>
-                                        <option value="pendente" {% if status_filtro == 'pendente' %}selected{% endif %}>⏰ Pendente</option>
-                                        <option value="em andamento" {% if status_filtro == 'em andamento' %}selected{% endif %}>⏳ Andamento</option>
-                                        <option value="concluido" {% if status_filtro == 'concluido' %}selected{% endif %}>✅ Concluído</option>
-                                        <option value="pendente_em_andamento" {% if status_filtro == 'pendente_em_andamento' %}selected{% endif %}>🔄 Pend+Andam</option>
-                                    </select>
-                                </div>
-                                
-                                <div style="flex: 1;">
-                                    <label class="small text-white-50">Prioridade</label>
-                                    <select name="prioridade" class="prioridade-select">
-                                        <option value="" {% if prioridade_filtro == '' %}selected{% endif %}>Todos</option>
-                                        <option value="vazio" {% if prioridade_filtro == 'vazio' %}selected{% endif %}>📋 Vazio</option>
-                                        <option value="baixa" {% if prioridade_filtro == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
-                                        <option value="media" {% if prioridade_filtro == 'media' %}selected{% endif %}>🟡 Média</option>
-                                        <option value="alta" {% if prioridade_filtro == 'alta' %}selected{% endif %}>🔴 Alta</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <!-- Segunda linha: Ativo/Inativo/Todas (horizontal) -->
-                            <div>
-                                <label class="small text-white-50 d-block">Tarefa:</label>
-                                <div class="d-flex gap-1 mt-1">
-                                    <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='0') }}" 
-                                    class="btn btn-sm flex-fill {% if mostrar_inativas == '0' %}btn-primary{% else %}btn-outline-light{% endif %}"
-                                    style="font-size: 0.65rem; padding: 4px 0;">
-                                        <i class="bi bi-check-circle"></i> Ativas
-                                    </a>
-                                    <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='1') }}" 
-                                    class="btn btn-sm flex-fill {% if mostrar_inativas == '1' %}btn-primary{% else %}btn-outline-light{% endif %}"
-                                    style="font-size: 0.65rem; padding: 4px 0;">
-                                        <i class="bi bi-archive"></i> Inativas
-                                    </a>
-                                    <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='2') }}" 
-                                    class="btn btn-sm flex-fill {% if mostrar_inativas == '2' %}btn-primary{% else %}btn-outline-light{% endif %}"
-                                    style="font-size: 0.65rem; padding: 4px 0;">
-                                        <i class="bi bi-list-ul"></i> Todas
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- BLOCO 4: DESCRIÇÃO -->
-                        <div class="bloco-filtro">
-                            <div class="bloco-titulo">🔍 DESCRIÇÃO</div>
-                            
-                            <input type="text" name="descricao" class="form-control form-control-sm text-black" style="font-size: 0.7rem; padding: 3px 6px;" placeholder="buscar..." value="{{ descricao_filtro or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
-                        </div>
-
-                        <!-- BLOCO 5: AÇÕES RÁPIDAS -->
-                        <div class="bloco-filtro">
-                            <div class="bloco-titulo">⚙️ AÇÕES</div>
-                            
-                            <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; justify-content: center;">
-                                <a href="{{ url_for('tarefas.limpar_filtros') }}" class="btn btn-sm btn-outline-light w-100" style="font-size: 0.8rem; padding: 4px;">
-                                    <i class="bi bi-eraser"></i> Limpar Todos
-                                </a>
-                                <button type="submit" name="tipo_filtro" value="consultar" class="btn btn-sm btn-primary w-100" style="font-size: 0.8rem; padding: 4px;">
-                                    <i class="bi bi-search"></i> Consultar
-                                </button>
-                            </div>
-                        </div>
-
-
-                        
+    <div class="painel-topo-fixo">
+        <form action="{{ url_for('tarefas.ini_tarefas') }}" method="POST" class="form-filtros-total">
+            <div class="filtros-container">
+                
+                <div class="bloco-filtro">
+                    <div class="bloco-titulo">📅 DATA</div>
+                    <div class="flex-row gap-1">
+                        <button type="submit" name="tipo_filtro" value="ontem" class="btn-pure flex-fill">-1</button>
+                        <button type="submit" name="tipo_filtro" value="hoje" class="btn-pure btn-success-pure flex-fill">HOJE</button>
+                        <button type="submit" name="tipo_filtro" value="amanha" class="btn-pure flex-fill">+1</button>
                     </div>
-                </form>
+                    <div class="flex-row gap-1" style="margin-top: 2px;">
+                        <button type="submit" name="tipo_filtro" value="mes_passado" class="btn-pure flex-fill">-1m</button>
+                        <button type="submit" name="tipo_filtro" value="mes" class="btn-pure btn-info-pure flex-fill">I/F</button>
+                        <button type="submit" name="tipo_filtro" value="mes_proximo" class="btn-pure flex-fill">+1m</button>
+                    </div>
+                    <div class="flex-row gap-1" style="margin-top: 3px;">
+                        <div class="flex-fill">
+                            <input type="date" name="data_inicio" class="form-control" value="{{ data_inicio or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                        </div>
+                        <div class="flex-fill">
+                            <input type="date" name="data_fim" class="form-control" value="{{ data_fim or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                        </div>
+                    </div>
+                    <div style="margin-top: 3px;">
+                        <select name="tipo_data" class="form-select">
+                            <option value="inicio" {% if tipo_data == 'inicio' %}selected{% endif %}>📅 DATA INICIO</option>
+                            <option value="final" {% if tipo_data == 'final' %}selected{% endif %}>⏰ DATA FINAL</option>
+                            <option value="finalizacao" {% if tipo_data == 'finalizacao' %}selected{% endif %}>✅ DATA FINALIZAÇÃO</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="mostrar_inativas" value="{{ mostrar_inativas }}">
+                </div>
+                
+                <div class="bloco-filtro">
+                    <div class="bloco-titulo">🏷️ CATEGORIAS</div>
+                    <div class="lista-categorias">
+                        <label class="label-categoria">
+                            <input type="checkbox" name="categorias" value="null" class="me-1" {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
+                            <span class="span_categorias">📭 SEM CATEGORIA</span>
+                        </label>
+                        {% for cat in categorias_usuario %}
+                        <label class="label-categoria">
+                            <input type="checkbox" name="categorias" value="{{ cat[0] }}" class="me-1" {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
+                            <span class="span_categorias" style="color: {{ cat[2] }}; font-weight: 500;">{{ cat[1] }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="bloco-filtro">
+                    <div class="bloco-titulo">📊 OUTROS FILTROS</div>
+                    
+                    <div class="flex-row gap-2">
+                        <div class="flex-fill">
+                            <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="" {% if status_filtro == '' %}selected{% endif %}>Todos</option>
+                                <option value="vazio" {% if status_filtro == 'vazio' %}selected{% endif %}>📋 Vazio</option>
+                                <option value="pendente" {% if status_filtro == 'pendente' %}selected{% endif %}>⏰ Pendente</option>
+                                <option value="em andamento" {% if status_filtro == 'em andamento' %}selected{% endif %}>⏳ Andamento</option>
+                                <option value="concluido" {% if status_filtro == 'concluido' %}selected{% endif %}>✅ Concluído</option>
+                                <option value="pendente_em_andamento" {% if status_filtro == 'pendente_em_andamento' %}selected{% endif %}>🔄 Pend+Andam</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex-fill">
+                            <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Prioridade</label>
+                            <select name="prioridade" class="form-select">
+                                <option value="" {% if prioridade_filtro == '' %}selected{% endif %}>Todos</option>
+                                <option value="vazio" {% if prioridade_filtro == 'vazio' %}selected{% endif %}>📋 Vazio</option>
+                                <option value="baixa" {% if prioridade_filtro == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
+                                <option value="media" {% if prioridade_filtro == 'media' %}selected{% endif %}>🟡 Média</option>
+                                <option value="alta" {% if prioridade_filtro == 'alta' %}selected{% endif %}>🔴 Alta</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 4px;">
+                        <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Tarefa:</label>
+                        <div class="flex-row gap-1">
+                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='0') }}" class="btn-pure flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">Ativas</a>
+                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='1') }}" class="btn-pure flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">Inativas</a>
+                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='2') }}" class="btn-pure flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">Todas</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bloco-filtro bloco-pesquisa-fim">
+                    <div>
+                        <div class="bloco-titulo">🔍 DESCRIÇÃO</div>
+                        <input type="text" name="descricao" class="form-control" placeholder="buscar..." value="{{ descricao_filtro or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                    </div>
+                    <div class="flex-row gap-1" style="margin-top: 6px;">
+                        <a href="{{ url_for('tarefas.limpar_filtros') }}" class="btn-pure flex-fill" style="text-align: center;">Limpar Todos</a>
+                        <button type="submit" name="tipo_filtro" value="consultar" class="btn-pure btn-primary-pure flex-fill">Consultar</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <div class="tarefas-controle-header">
+            <div class="botoes-esquerda">
+                <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn-pure btn-success-pure btn-destaque">+ Nova Tarefa</a>
+                <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-pure btn-info-pure">Categorias</a>
+            </div>
+            <div class="status-direita">
+                <span class="badge-pure bg-primary">{{ tarefas|length }} tarefas</span>
             </div>
         </div>
+    </div>
 
-        <!-- BLOCO 2: TAREFAS (80% da altura) - SÓ ESTA TEM SCROLL -->
-        <div class="col col-tarefas">
-            <div class="p-1">
-                
-                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn btn-success btn-sm">
-                            <i class="bi bi-plus-circle"></i> Nova Tarefa
-                        </a>
-                        <a href="{{ url_for('categorias.listar_categorias') }}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-tags"></i> Categorias
-                        </a>
-                    </div>
-                </div>
-
-                <div class="content-wrapper rounded-4 overflow-hidden">
-                    <div class="p-2 border-bottom container_list_taf">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="fw-bold text-white mb-0">
-                                <i class="bi bi-list-task me-2"></i>Lista de Tarefas
-                            </h5>
-                            <span class="badge bg-primary fs-6">{{ tarefas|length }} tarefas</span>
-                        </div>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 custom-table">
-                            <thead>
-                                <tr>
-                                    <th class="border-0"><small>Nº_REG.</small></th>
-                                    <th class="border-0"><small>TÍTULO</small></th>
-                                    <th class="border-0"><small>STATUS</small></th>
-                                    <th class="border-0"><small>DATA_INICIO</small></th>
-                                    <th class="border-0"><small>DATA_FINAL</small></th>
-                                    <th class="border-0"><small>DATA_FINALIZAÇÃO</small></th>
-                                    <th class="border-0"><small>CATEGORIA</small></th>
-                                    <th class="border-0"><small>PRIORIDADE</small></th>
-                                    <th class="border-0"><small>AÇÕES</small></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if tarefas %}
-                                    {% for tarefa in tarefas %}
-                                    <tr class="align-middle">
-                                        <td class="fw-semibold text-white-50">{{ tarefa[0] }}</td>
-                                        <td class="text-white">{{ tarefa[1] }}</td>
-                                        <td>
-                                            {% if tarefa[3] == 'concluido' %}
-                                                <span class="badge bg-success">✅ Concluída</span>
-                                            {% elif tarefa[3] == 'em andamento' %}
-                                                <span class="badge bg-warning text-dark">⏳ Andamento</span>
-                                            {% else %}
-                                                <span class="badge bg-danger">⏰ Pendente</span>
-                                            {% endif %}
-                                        </td>
-                                        <td><span class="text-white-50">{{ tarefa[4] or '-' }}</span></td>
-                                        <td><span class="text-white-50">{{ tarefa[5] or '-' }}</span></td>
-                                        <td>
-                                            {% if tarefa[6] and tarefa[6] != '-' %}
-                                                <span class="badge bg-success">{{ tarefa[6] }}</span>
-                                            {% else %}
-                                                <span class="text-white-50">-</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if tarefa[9] %}
-                                                <span class="badge fw-semibold" style="background-color: {{ tarefa[10] }}; color: white;">
-                                                    {{ tarefa[9] }}
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-secondary">-</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if tarefa[8] %}
-                                                {% set prio_class = 'bg-danger' if tarefa[8] == 'alta' else 'bg-warning text-dark' if tarefa[8] == 'media' else 'bg-success' %}
-                                                <span class="badge {{ prio_class }} fw-semibold">{{ tarefa[8]|title }}</span>
-                                            {% else %}
-                                                <span class="badge bg-secondary">-</span>
-                                            {% endif %}
-                                        </td>
-
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <!-- Botão Ver Detalhes -->
-                                                <button type="button" class="btn btn-sm btn-info" 
-                                                        onclick="verDetalhes({{ tarefa[0] }})" 
-                                                        title="Ver detalhes">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-
-                                                <!-- Botão Auditoria (Histórico) -->
-                                                <a href="{{ url_for('auditoria.historico_tarefa', 
-                                                            tarefa_seq=tarefa[0],
-                                                            mostrar_inativas=request.args.get('mostrar_inativas', '0'),
-                                                            data_inicio=request.args.get('data_inicio'),
-                                                            data_fim=request.args.get('data_fim'),
-                                                            tipo_data=request.args.get('tipo_data', 'inicio')) }}" 
-                                                class="btn btn-sm btn-secondary" 
-                                                title="Ver histórico de alterações">
-                                                    <i class="bi bi-clock-history"></i>
-                                                </a>
-
-                                                {% if tarefa[3] != 'concluido' %}
-                                                    <form method="post" action="{{ url_for('tarefas.concluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;">
-                                                        <button class="btn btn-success btn-sm" title="Concluir">
-                                                            <i class="bi bi-check-lg"></i>
-                                                        </button>
-                                                    </form>
-                                                    <a href="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa[0]) }}" class="btn btn-primary btn-sm btn-edit-tar" title="Editar">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <form method="post" action="{{ url_for('tarefas.excluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;" onsubmit="return confirm('Confirmar exclusão?')">
-                                                        <button class="btn btn-danger btn-sm" title="Excluir">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    {% endfor %}
+    <div class="painel-tabela-conteudo">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 65px;">Nº_REG.</th>
+                        <th>TÍTULO</th>
+                        <th style="width: 100px;">STATUS</th>
+                        <th style="width: 95px;">DATA_INICIO</th>
+                        <th style="width: 95px;">DATA_FINAL</th>
+                        <th style="width: 115px;">DATA_FINALIZAÇÃO</th>
+                        <th style="width: 120px;">CATEGORIA</th>
+                        <th style="width: 95px;">PRIORIDADE</th>
+                        <th style="width: 145px; text-align: center;">AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if tarefas %}
+                        {% for tarefa in tarefas %}
+                        <tr>
+                            <td class="td-id">{{ tarefa[0] }}</td>
+                            <td class="td-titulo" title="{{ tarefa[1] }}">{{ tarefa[1] }}</td>
+                            <td>
+                                {% if tarefa[3] == 'concluido' %}
+                                    <span class="badge-pure bg-success">✅ Concluída</span>
+                                {% elif tarefa[3] == 'em andamento' %}
+                                    <span class="badge-pure bg-warning text-dark">⏳ Andamento</span>
                                 {% else %}
-                                    <tr>
-                                        <td colspan="8" class="text-center py-5">
-                                            <div class="text-center text-white-50 py-5">
-                                                <i class="bi bi-calendar-check display-1 mb-4 opacity-50"></i>
-                                                <h4 class="fw-bold mb-3">Nenhuma tarefa cadastrada ou nesse período</h4>
-                                                <p class="lead mb-4">Comece criando sua primeira tarefa</p>
-                                                <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn btn-success btn-lg px-5">
-                                                    <i class="bi bi-plus-circle me-2"></i>Nova Tarefa
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    <span class="badge-pure bg-danger">⏰ Pendente</span>
                                 {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                            </td>
+                            <td>{{ tarefa[4] or '-' }}</td>
+                            <td>{{ tarefa[5] or '-' }}</td>
+                            <td>
+                                {% if tarefa[6] and tarefa[6] != '-' %}
+                                    <span class="badge-pure bg-success">{{ tarefa[6] }}</span>
+                                {% else %}
+                                    <span class="text-vazio">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if tarefa[9] %}
+                                    <span class="badge-pure tag-categoria" style="background-color: {{ tarefa[10] }}; color: white; border: none;">
+                                        {{ tarefa[9] }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-vazio">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if tarefa[8] %}
+                                    {% set prio_class = 'bg-danger' if tarefa[8] == 'alta' else 'bg-warning text-dark' if tarefa[8] == 'media' else 'bg-success' %}
+                                    <span class="badge-pure {{ prio_class }}">{{ tarefa[8]|title }}</span>
+                                {% else %}
+                                    <span class="text-vazio">-</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="td-acoes">
+                                <button type="button" class="btn-acao view" title="Ver detalhes" onclick="verDetalhes({{ tarefa[0] }})">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+
+                                <a href="{{ url_for('auditoria.historico_tarefa', 
+                                                    tarefa_seq=tarefa[0],
+                                                    mostrar_inativas=request.args.get('mostrar_inativas', '0'),
+                                                    data_inicio=request.args.get('data_inicio'),
+                                                    data_fim=request.args.get('data_fim'),
+                                                    tipo_data=request.args.get('tipo_data', 'inicio')) }}" 
+                                   class="btn-acao audit" 
+                                   title="Ver histórico de alterações">
+                                    <i class="bi bi-clock-history"></i>
+                                </a>
+
+                                {% if tarefa[3] != 'concluido' %}
+                                    <form method="post" action="{{ url_for('tarefas.concluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;">
+                                        <button class="btn-acao check" title="Concluir">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                    
+                                    <a href="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa[0]) }}" class="btn-acao edit" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    
+                                    <form method="post" action="{{ url_for('tarefas.excluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;" onsubmit="return confirm('Confirmar exclusão?')">
+                                        <button class="btn-acao delete" title="Excluir">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-white-50">Nenhuma tarefa cadastrada ou nesse período</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-
-<!-- MODAL DE DETALHES -->
-<div class="modal fade" id="modalDetalhesTarefa" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title">
-                    <i class="bi bi-info-circle me-2"></i>
-                    <span id="modalTitulo">Detalhes da Tarefa</span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="conteudoDetalhes">
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Carregando...</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <a href="#" id="btnEditarTarefa" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Editar
-                </a>
-            </div>
+<div class="modal-overlay" id="modalDetalhesTarefa" onclick="fecharModalDetalhes(event)">
+    <div class="modal-container" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <span class="modal-title" id="modalTitulo">
+                <i class="bi bi-info-circle me-2"></i>Detalhes da Tarefa
+            </span>
+            <button type="button" class="modal-close" onclick="fecharModalDetalhes(null)">&times;</button>
+        </div>
+        
+        <div class="modal-body" id="conteudoDetalhes"></div>
+        
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; border-top: 1px solid var(--border-sutil); padding-top: 10px;">
+            <button type="button" class="btn-pure" style="background: var(--bg-principal);" onclick="fecharModalDetalhes(null)">Fechar</button>
+            <a href="#" id="btnEditarTarefa" class="btn-pure btn-primary-pure">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
         </div>
     </div>
 </div>
 
 <script>
 function verDetalhes(tarefaId) {
-    const modal = new bootstrap.Modal(document.getElementById('modalDetalhesTarefa'));
+    const modal = document.getElementById('modalDetalhesTarefa');
     const conteudo = document.getElementById('conteudoDetalhes');
     
-    // Mostra loading
     conteudo.innerHTML = `
-        <div class="text-center py-4">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Carregando...</span>
-            </div>
+        <div style="text-align: center; padding: 30px; color: var(--texto-mutado);">
+            <div class="spinner-pure"></div>
+            <p style="margin-top: 10px; font-size: var(--fs-micro);">Carregando dados da tarefa...</p>
         </div>
     `;
     
-    modal.show();
+    modal.classList.add('active');
     
-    // Busca os detalhes
     fetch(`/tarefas/detalhes/${tarefaId}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                conteudo.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                conteudo.innerHTML = `<div class="badge-pure bg-danger" style="width: 100%; padding: 10px;">${data.error}</div>`;
                 return;
             }
             
-            // Atualiza título do modal
             const statusIcon = data.status === 'concluido' ? '✅' : (data.status === 'em andamento' ? '⏳' : '⏰');
             document.getElementById('modalTitulo').innerHTML = `${statusIcon} ${data.titulo}`;
-            
-            // Atualiza link de editar
             document.getElementById('btnEditarTarefa').href = `/editar_tarefa/${tarefaId}`;
             
-            // Monta HTML dos detalhes
             conteudo.innerHTML = `
-                <div class="mb-3">
-                    <label class="fw-bold text-info">📝 Descrição</label>
-                    <p class="mt-1 mb-3 p-2 bg-dark bg-opacity-25 rounded">${data.descricao}</p>
+                <div class="modal-field full-width" style="margin-bottom: 12px;">
+                    <div class="field-label" style="color: var(--cor-marca); font-weight: 600;">📝 Descrição Detalhada</div>
+                    <div class="field-value-scroll" style="font-size: var(--fs-pequeno);">${data.descricao || '<span style="opacity: 0.5;">Sem descrição.</span>'}</div>
                 </div>
                 
-                <div class="row g-3">
-                    <div class="col-sm-6">
-                        <label class="fw-bold text-info">📊 Status</label>
-                        <p class="mt-1">
-                            <span class="badge ${data.status === 'concluido' ? 'bg-success' : (data.status === 'em andamento' ? 'bg-warning text-dark' : 'bg-danger')} fs-6">
-                                ${data.status_label}
-                            </span>
-                        </p>
+                <div class="modal-grid" style="font-size: var(--fs-pequeno);">
+                    <div class="modal-field">
+                        <div class="field-label">📊 Status</div>
+                        <div class="field-value"><span class="badge-pure ${data.status === 'concluido' ? 'bg-success' : (data.status === 'em andamento' ? 'bg-warning text-dark' : 'bg-danger')}">${data.status_label}</span></div>
                     </div>
-                    <div class="col-sm-6">
-                        <label class="fw-bold text-info">⚡ Prioridade</label>
-                        <p class="mt-1">
-                            <span class="badge ${data.prioridade === 'alta' ? 'bg-danger' : (data.prioridade === 'media' ? 'bg-warning text-dark' : 'bg-success')} fs-6">
-                                ${data.prioridade_label}
-                            </span>
-                        </p>
+                    <div class="modal-field">
+                        <div class="field-label">⚡ Prioridade</div>
+                        <div class="field-value"><span class="badge-pure ${data.prioridade === 'alta' ? 'bg-danger' : (data.prioridade === 'media' ? 'bg-warning text-dark' : 'bg-success')}">${data.prioridade_label}</span></div>
                     </div>
-                    <div class="col-sm-6">
-                        <label class="fw-bold text-info">🏷️ Categoria</label>
-                        <p class="mt-1">
-                            <span class="badge fw-semibold" style="background-color: ${data.categoria_cor}; color: white;">
+                    <div class="modal-field">
+                        <div class="field-label">🏷️ Categoria</div>
+                        <div class="field-value">
+                            <span class="badge-pure" style="background-color: ${data.categoria_cor || 'var(--border-sutil)'}; color: white;">
                                 ${data.categoria}
                             </span>
-                        </p>
+                        </div>
                     </div>
-                    <div class="col-sm-6">
-                        <label class="fw-bold text-info">📅 Data Início</label>
-                        <p class="mt-1">${data.data_inicio}</p>
+                    <div class="modal-field">
+                        <div class="field-label">📅 Data Início</div>
+                        <div class="field-value">${data.data_inicio}</div>
                     </div>
-                    <div class="col-sm-6">
-                        <label class="fw-bold text-info">⏰ Data Prazo</label>
-                        <p class="mt-1">${data.data_final}</p>
+                    <div class="modal-field">
+                        <div class="field-label">⏰ Data Prazo</div>
+                        <div class="field-value">${data.data_final}</div>
                     </div>
-                    <div class="col-sm-6">
-                        <label class="fw-bold text-info">✅ Data Conclusão</label>
-                        <p class="mt-1">${data.data_finalizacao !== '-' ? data.data_finalizacao : '<span class="text-white-50">Não concluída</span>'}</p>
+                    <div class="modal-field">
+                        <div class="field-label">✅ Data Conclusão</div>
+                        <div class="field-value">${data.data_finalizacao !== '-' ? data.data_finalizacao : '<span style="opacity: 0.5;">Não concluída</span>'}</div>
                     </div>
                 </div>
             `;
         })
         .catch(error => {
             console.error('Erro:', error);
-            conteudo.innerHTML = `<div class="alert alert-danger">Erro ao carregar detalhes</div>`;
+            conteudo.innerHTML = `<div class="badge-pure bg-danger" style="width: 100%; padding: 10px;">Erro ao carregar detalhes</div>`;
         });
 }
+
+function fecharModalDetalhes(event) {
+    if (!event || event.target.classList.contains('modal-overlay')) {
+        document.getElementById('modalDetalhesTarefa').classList.remove('active');
+    }
+}
 </script>
-
-
 {% endblock %}

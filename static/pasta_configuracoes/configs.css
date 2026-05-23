@@ -1,0 +1,58 @@
+:root {
+    --bg-dark: #050505;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --border: 1px solid rgba(255, 255, 255, 0.08);
+    --primary: #6366f1;
+    --warning: #d97706;
+}
+
+.config-wrapper { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+/* Hero */
+.hero-config {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 30px;
+    border-radius: 20px;
+    color: white;
+    margin-bottom: 30px;
+}
+
+/* Grid */
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+/* Card */
+.config-card {
+    background: var(--card-bg);
+    border: var(--border);
+    padding: 30px;
+    border-radius: 20px;
+    transition: 0.3s;
+}
+
+.config-card:hover { border-color: rgba(255,255,255,0.2); }
+
+/* Formulários */
+.input-group { margin-bottom: 15px; }
+.label-style { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: #cbd5e1; }
+.input-style {
+    width: 100%; padding: 12px; border-radius: 10px;
+    background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* Botões */
+.btn-base { padding: 12px 20px; border-radius: 10px; text-decoration: none; display: inline-block; text-align: center; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
+.btn-primary { background: var(--primary); color: white; width: 100%; margin-top: 10px; }
+.btn-primary:hover { background: #4f46e5; }
+.btn-warning { background: var(--warning); color: white; width: 100%; margin-top: 10px; }
+.btn-outline { border: 1px solid rgba(255,255,255,0.2); color: white; }
+.btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+/* Ajuste Tema Claro */
+body.light-mode .config-card { background: #fff; border: 1px solid #e2e8f0; }
+body.light-mode .label-style { color: #475569; }
+body.light-mode .input-style { background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; }
