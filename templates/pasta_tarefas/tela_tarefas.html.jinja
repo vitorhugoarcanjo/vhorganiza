@@ -4,6 +4,9 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/import_css.css') }}">
+
+    <!-- CSS MODAL - CONCLUIR TAREFA -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/modais/concluir_tarefa.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -197,11 +200,16 @@
                                 </a>
 
                                 {% if tarefa[3] != 'concluido' %}
-                                    <form method="post" action="{{ url_for('tarefas.concluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;">
-                                        <button class="btn-acao check" title="Concluir">
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
-                                    </form>
+                                    
+                                    <button 
+                                        type="button"
+                                        class="btn-acao check"
+                                        title="Concluir"
+                                        onclick="abrirModalConcluir(this)"
+                                        data-url="{{ url_for('tarefas.concluir_tarefa', tarefa_seq=tarefa[0]) }}">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    
                                     
                                     <a href="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa[0]) }}" class="btn-acao edit" title="Editar">
                                         <i class="bi bi-pencil"></i>
@@ -240,9 +248,6 @@
         
         <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; border-top: 1px solid var(--border-sutil); padding-top: 10px;">
             <button type="button" class="btn-pure" style="background: var(--bg-principal);" onclick="fecharModalDetalhes(null)">Fechar</button>
-            <a href="#" id="btnEditarTarefa" class="btn-pure btn-primary-pure">
-                <i class="bi bi-pencil"></i> Editar
-            </a>
         </div>
     </div>
 </div>
@@ -271,7 +276,6 @@ function verDetalhes(tarefaId) {
             
             const statusIcon = data.status === 'concluido' ? '✅' : (data.status === 'em andamento' ? '⏳' : '⏰');
             document.getElementById('modalTitulo').innerHTML = `${statusIcon} ${data.titulo}`;
-            document.getElementById('btnEditarTarefa').href = `/editar_tarefa/${tarefaId}`;
             
             conteudo.innerHTML = `
                 <div class="modal-field full-width" style="margin-bottom: 12px;">
@@ -284,10 +288,12 @@ function verDetalhes(tarefaId) {
                         <div class="field-label">📊 Status</div>
                         <div class="field-value"><span class="badge-pure ${data.status === 'concluido' ? 'bg-success' : (data.status === 'em andamento' ? 'bg-warning text-dark' : 'bg-danger')}">${data.status_label}</span></div>
                     </div>
+
                     <div class="modal-field">
                         <div class="field-label">⚡ Prioridade</div>
                         <div class="field-value"><span class="badge-pure ${data.prioridade === 'alta' ? 'bg-danger' : (data.prioridade === 'media' ? 'bg-warning text-dark' : 'bg-success')}">${data.prioridade_label}</span></div>
                     </div>
+
                     <div class="modal-field">
                         <div class="field-label">🏷️ Categoria</div>
                         <div class="field-value">
@@ -296,17 +302,27 @@ function verDetalhes(tarefaId) {
                             </span>
                         </div>
                     </div>
+
                     <div class="modal-field">
                         <div class="field-label">📅 Data Início</div>
                         <div class="field-value">${data.data_inicio}</div>
                     </div>
+
                     <div class="modal-field">
                         <div class="field-label">⏰ Data Prazo</div>
                         <div class="field-value">${data.data_final}</div>
                     </div>
+
                     <div class="modal-field">
                         <div class="field-label">✅ Data Conclusão</div>
                         <div class="field-value">${data.data_finalizacao !== '-' ? data.data_finalizacao : '<span style="opacity: 0.5;">Não concluída</span>'}</div>
+                    </div>
+                </div>
+
+                <div class="modal-field full-width">
+                    <div class="field-label">💬 Motivo da Conclusão</div>
+                    <div class="field-value" style="font-style: italic; color: var(--texto-discreto);">
+                        ${data.motivo_conclusao ? data.motivo_conclusao : '<span style="opacity: 0.5;">Sem observações.</span>'}
                     </div>
                 </div>
             `;
@@ -323,4 +339,10 @@ function fecharModalDetalhes(event) {
     }
 }
 </script>
+
+    <!-- JS, CSS E HTML MODAL - CONCLUIR TAREFA-->
+    {% block scripts %}<script src="{{ url_for('static', filename='js/pasta_tarefas/modais/concluir_tarefas.js') }}"></script>{% endblock %}
+    {% include 'pasta_tarefas/modais/concluir_tarefa.html' %}
+    <!-- CSS NO TOPO -->
+
 {% endblock %}

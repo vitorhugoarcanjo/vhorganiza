@@ -160,7 +160,7 @@ def detalhes_tarefa(tarefa_seq):
         cursor.execute("""
             SELECT t.tarefa_sequencia, t.titulo, t.descricao, t.status,
                    t.data_inicio, t.data_final, t.data_finalizacao,
-                   t.prioridade, c.nome as categoria_nome, c.cor as categoria_cor
+                   t.prioridade, t.motivo_conclusao, c.nome as categoria_nome, c.cor as categoria_cor
             FROM tarefas t 
             LEFT JOIN categorias_tarefas c ON t.categoria_id = c.id
             WHERE t.tarefa_sequencia = ? AND t.user_id = ?
@@ -184,9 +184,10 @@ def detalhes_tarefa(tarefa_seq):
             'data_final': formatar_data(tarefa[5]),
             'data_finalizacao': formatar_data(tarefa[6]),
             'prioridade': tarefa[7],
+            'motivo_conclusao': tarefa[8],
             'prioridade_label': '🔴 Alta' if tarefa[7] == 'alta' else '🟡 Média' if tarefa[7] == 'media' else '🟢 Baixa',
-            'categoria': tarefa[8] or 'Sem categoria',
-            'categoria_cor': tarefa[9] or '#6c757d'
+            'categoria': tarefa[9] or 'Sem categoria',
+            'categoria_cor': tarefa[10] or '#6c757d'
         }
 
 
@@ -194,32 +195,40 @@ def detalhes_tarefa(tarefa_seq):
 @bp_tela_tarefas.route('/concluir/<int:tarefa_seq>', methods=['POST'])
 @login_required
 def concluir_tarefa(tarefa_seq):
+    motivo = request.form.get('motivo_conclusao', '').strip()
+
     with sqlite3.connect(caminho_banco) as conexao:
         cursor = conexao.cursor()
         
         # Busca dados da tarefa ANTES de concluir (para auditoria)
-        cursor.execute("SELECT titulo, descricao FROM tarefas WHERE tarefa_sequencia = ? AND user_id = ?", 
+        cursor.execute("SELECT titulo, descricao, status FROM tarefas WHERE tarefa_sequencia = ? AND user_id = ?", 
                        (tarefa_seq, session['user_id']))
         tarefa_antes = cursor.fetchone()
+
+        if not tarefa_antes:
+            flash('Tarefa não encontrada.', 'danger')
+            return redirect(url_for('tarefas.ini_tarefas'))
         
         # Usa horário local do servidor (Cuiabá GMT-4)
         cursor.execute('''
             UPDATE tarefas 
             SET status = 'concluido', 
                 data_finalizacao = datetime('now', 'localtime'),
-                updated_at = datetime('now', 'localtime')
+                updated_at = datetime('now', 'localtime'),
+                motivo_conclusao = ?
             WHERE tarefa_sequencia = ? AND user_id = ?
-        ''', (tarefa_seq, session['user_id']))
+        ''', (motivo if motivo else None, tarefa_seq, session['user_id']))
         
         conexao.commit()
         
         # REGISTRA AUDITORIA
-        if tarefa_antes:
-            AuditoriaService.registrar(
-                tarefa_id=tarefa_seq,
-                acao='concluida',
-                valor_novo=f"Tarefa '{tarefa_antes[0] or 'Sem título'}' concluída em {datetime.now().strftime('%d/%m/%Y %H:%M')}"
-            )
+        AuditoriaService.registrar(
+            tarefa_id=tarefa_seq,
+            acao='concluir_tarefa',
+            campo_alterado='status_e_motivo',
+            valor_antigo=f"Status: {tarefa_antes[2]}",
+            valor_novo=f"Status: concluido | Motivo: {motivo if motivo else 'Sem observações'}"
+        )
 
         flash('Tarefa concluída com sucesso!', 'success')
         return redirect(url_for('tarefas.ini_tarefas'))

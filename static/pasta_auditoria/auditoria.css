@@ -1,0 +1,51 @@
+:root {
+    --bg-card: #1f1f1f; /* Ajuste conforme seu tema */
+    --bg-principal: #121212;
+    --border-sutil: #333;
+    --texto-principal: #fff;
+    --texto-mutado: #a0a0a0;
+    --cor-ativa: #2563eb;
+}
+
+.dashboard-container { max-width: 900px; margin: 0 auto; padding: 20px; color: var(--texto-principal); }
+
+.historico-wrapper { display: flex; flex-direction: column; gap: 15px; }
+
+/* Cabeçalho */
+.header-audit { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.btn-voltar { 
+    padding: 6px 14px; 
+    border: 1px solid var(--border-sutil); 
+    border-radius: 6px; 
+    color: var(--texto-principal); 
+    text-decoration: none; 
+    font-size: 0.8rem; 
+}
+.btn-voltar:hover { background: var(--border-sutil); }
+
+/* Cartões de Log */
+.log-entry { 
+    background: var(--bg-card); 
+    border: 1px solid var(--border-sutil); 
+    border-radius: 8px; 
+    padding: 15px; 
+}
+
+.log-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+.badge { 
+    background: var(--cor-ativa); 
+    color: white; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+    font-size: 0.7rem; 
+    text-transform: uppercase; 
+}
+
+.diff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.diff-box { background: var(--bg-principal); padding: 8px; border-radius: 4px; border: 1px solid var(--border-sutil); }
+
+.diff-label { display: block; font-size: 0.65rem; color: var(--texto-mutado); margin-bottom: 4px; }
+.val-old { color: #f87171; font-size: 0.75rem; text-decoration: line-through; display: block; }
+.val-new { color: #4ade80; font-size: 0.75rem; font-weight: 600; display: block; }
+
+.log-footer { margin-top: 10px; font-size: 0.65rem; color: var(--texto-mutado); border-top: 1px solid var(--border-sutil); padding-top: 8px; }

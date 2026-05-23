@@ -1,0 +1,24 @@
+<!-- Fundo escuro (Overlay) -->
+<div id="modalConcluir" class="modal-overlay">
+    <!-- Caixa do Modal -->
+    <div class="modal-container">
+        <div class="modal-header">
+            <span class="modal-title">Concluir Tarefa</span>
+            <button class="modal-close" onclick="fecharModalConcluir()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <form id="formConcluir" method="POST">
+                <div class="modal-field full-width">
+                    <label class="field-label">Motivo (Opcional)</label>
+                    <textarea name="motivo_conclusao" class="form-control" style="height: 80px;"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px;">
+                    <button type="button" class="btn-pure" onclick="fecharModalConcluir()">Cancelar</button>
+                    <button type="submit" class="btn-pure btn-primary-pure">Concluir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

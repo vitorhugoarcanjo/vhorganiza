@@ -7,60 +7,49 @@
 {% block content %}
 <div class="dashboard-container">
     
-    <div class="hero-card">
-        <div>
-            <h1 style="margin: 0; font-size: 2.5rem;">👋 Bem-vindo, {{ user_nome }}!</h1>
-            <p style="opacity: 0.8; font-size: 1.2rem;">Sistema de Gestão de Tarefas e Financeiro</p>
+    <header class="hero-card">
+        <div class="hero-welcome">
+            <h1>👋 Bem-vindo, {{ user_nome }}</h1>
         </div>
-        <div class="badge-status" style="background: rgba(255,255,255,0.2);">PREMIUM</div>
-    </div>
+    </header>
 
-    <h3 style="margin-bottom: 20px;">⚙️ Status de Desenvolvimento</h3>
+    <h3 class="section-title">⚙️ Status de Desenvolvimento</h3>
     <div class="status-grid">
-        
         <div class="status-card">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="font-weight: 600;">📋 Tarefas</span>
-                <span class="badge-status bg-success">BÁSICO FUNCIONAL</span>
-            </div>
-            <p style="font-size: 0.9rem; opacity: 0.7;">Listagem, filtros e persistência de dados operacionais.</p>
+            <div class="card-header"><span>📋 Tarefas</span><span class="badge-status bg-success">BÁSICO</span></div>
+            <p>Listagem, filtros e persistência de dados.</p>
         </div>
-
         <div class="status-card">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="font-weight: 600;">💰 Finanças</span>
-                <span class="badge-status bg-warning">EM PROGRESSO</span>
-            </div>
-            <p style="font-size: 0.9rem; opacity: 0.7;">Implementando transações, filtros e fluxo de caixa.</p>
+            <div class="card-header"><span>💰 Finanças</span><span class="badge-status bg-warning">EM PROGRESSO</span></div>
+            <p>Transações e fluxo de caixa em construção.</p>
         </div>
-
         <div class="status-card">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span style="font-weight: 600;">📊 Dashboard</span>
-                <span class="badge-status bg-warning">EM PROGRESSO</span>
-            </div>
-            <p style="font-size: 0.9rem; opacity: 0.7;">Construindo métricas e componentes de gráficos dinâmicos.</p>
+            <div class="card-header"><span>📊 Dashboard</span><span class="badge-status bg-warning">EM PROGRESSO</span></div>
+            <p>Métricas e gráficos dinâmicos.</p>
         </div>
     </div>
 
-
-
-    <div class="alert-box alert-info">
-        <span>💡</span>
+    <!-- SEÇÃO NOVIDADES (Destaque Separado) -->
+    <h3 class="section-title">✨ Novidades</h3>
+    <div class="news-spotlight">
+        <div class="icon">🚀</div>
         <div>
-            <strong>Dica de Produtividade:</strong> Utilize a barra de navegação lateral para alternar rapidamente entre seus módulos ativos.
+            <strong>Nova funcionalidade: Motivo na Conclusão da Tarefa</strong>
+            <p>Agora você pode registrar observações ao concluir tarefas. Detalhes disponíveis na visualização da tarefa.</p>
         </div>
     </div>
 
-    <div class="alert-box alert-warning">
-        <span>🚧</span>
-        <div>
-            <strong>Ambiente em Evolução:</strong> Alguns módulos podem receber atualizações constantes. Reporte qualquer comportamento inesperado.
+    <!-- SEÇÃO AVISOS (Padrão) -->
+    <h3 class="section-title">📢 Avisos do Sistema</h3>
+    <div class="alerts-section">
+        <div class="alert-box">
+            <span>💡</span>
+            <div><strong>Dica:</strong> Use o menu lateral para alternar rapidamente entre módulos.</div>
         </div>
-    </div>
-
-    <div style="text-align: center; opacity: 0.6;">
-        <p>Use o menu lateral para navegar entre as funcionalidades.</p>
+        <div class="alert-box">
+            <span>🚧</span>
+            <div><strong>Ambiente:</strong> Módulos em constante evolução. Reporte erros.</div>
+        </div>
     </div>
 </div>
 {% endblock %}

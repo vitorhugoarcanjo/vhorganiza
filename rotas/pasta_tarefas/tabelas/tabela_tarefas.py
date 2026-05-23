@@ -16,7 +16,6 @@ def criar_tabela_tarefas(cursor):
                     
         data_inicio DATE,
         data_final DATE,
-        data_finalizacao DATE,
                        
         ativo INTEGER DEFAULT 1,
         excluido_em DATETIME,
@@ -24,6 +23,8 @@ def criar_tabela_tarefas(cursor):
                     
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        data_finalizacao DATE,
+        motivo_conclusao TEXT,
                     
         FOREIGN KEY (user_id) REFERENCES cadastre_se(id) ON DELETE CASCADE,
         FOREIGN KEY(categoria_id) REFERENCES categorias_tarefas(id) ON DELETE SET NULL
@@ -34,18 +35,12 @@ def criar_tabela_tarefas(cursor):
     else:
         # MODELO - ESTRUTURA
         cursor.execute("PRAGMA table_info(tarefas)")
-        if not any(col[1] == 'titulo' for col in cursor.fetchall()):
-            cursor.execute("ALTER TABLE tarefas ADD COLUMN titulo VARCHAR(200)")
-            print("✅ Coluna titulo adicionada em tarefas!")
+        if not any(col[1] == 'motivo_conclusao' for col in cursor.fetchall()):
+            cursor.execute("ALTER TABLE tarefas ADD COLUMN motivo_conclusao TEXT")
+            print("✅ Coluna motivo_conclusao adicionada em tarefas!")
 
-        cursor.execute("PRAGMA table_info(tarefas)")
-        if not any(col[1] == 'excluido_em' for col in cursor.fetchall()):
-            cursor.execute("ALTER TABLE tarefas ADD COLUMN excluido_em DATETIME")
-            print("✅ Coluna excluido_em adicionada em tarefas!")
+
            
-        cursor.execute("PRAGMA table_info(tarefas)")
-        if not any(col[1] == 'excluido_por' for col in cursor.fetchall()):
-            cursor.execute("ALTER TABLE tarefas ADD COLUMN excluido_por INTEGER")
-            print("✅ Coluna excluido_por adicionada em tarefas!")
+
 
         print("ℹ️ Tabela tarefas já existe.")

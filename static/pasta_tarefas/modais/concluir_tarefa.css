@@ -1,0 +1,12 @@
+/* Isso garante que ele fique invisível quando não tiver a classe active */
+.modal-overlay {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+
+/* E isso garante que ele apareça quando o JS adicionar a classe */
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
