@@ -54,6 +54,10 @@ def ini_app():
     """ INICIO DO MEU APP """
     return render_template('pasta_inicial_pre_login/paginainicial.html')
 
+with app.app_context():
+    criar_todas_tabelas()
+
+
 # INICIALIZA O APP
 if __name__ == '__main__':
     criar_todas_tabelas()
