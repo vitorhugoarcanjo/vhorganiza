@@ -106,8 +106,9 @@ body.light-mode .btn-outline-secondary:hover {
                             </label>
                             <input type="text" 
                                    name="titulo" 
+                                   value="{{ titulo }}" 
                                    class="form-control bg-dark text-white border-secondary" 
-                                   placeholder="Digite um título para a tarefa" 
+                                   placeholder="Digite um título para a tarefa"
                                    required>
                         </div>
 
@@ -118,8 +119,9 @@ body.light-mode .btn-outline-secondary:hover {
                             </label>
                             <textarea class="form-control bg-dark text-white border-secondary" 
                                       rows="4" 
-                                      name="descricao" 
-                                      placeholder="Digite a descrição da tarefa..."></textarea>
+                                      name="descricao"
+                                      required
+                                      placeholder="Digite a descrição da tarefa...">{{ descricao }}</textarea>
                         </div>
 
                         <div class="row">
@@ -129,9 +131,9 @@ body.light-mode .btn-outline-secondary:hover {
                                     <i class="bi bi-check-circle me-1"></i>Status
                                 </label>
                                 <select class="form-select bg-dark text-white border-secondary" name="status">
-                                    <option value="pendente">⏳ Pendente</option>
-                                    <option value="em andamento">⚡ Em andamento</option>
-                                    <option value="concluido">✅ Concluído</option>
+                                    <option value="pendente" {% if status == 'pendente' %}selected{% endif %}>⏳ Pendente</option>
+                                    <option value="em andamento" {% if status == 'em andamento' %}selected{% endif %}>⚡ Em andamento</option>
+                                    <option value="concluido" {% if status == 'concluido' %}selected{% endif %}>✅ Concluído</option>
                                 </select>
                             </div>
 
@@ -141,9 +143,9 @@ body.light-mode .btn-outline-secondary:hover {
                                     <i class="bi bi-flag me-1"></i>Prioridade
                                 </label>
                                 <select class="form-select bg-dark text-white border-secondary" name="prioridade">
-                                    <option value="baixa">🟢 Baixa</option>
-                                    <option value="media">🟡 Média</option>
-                                    <option value="alta">🔴 Alta</option>
+                                    <option value="baixa" {% if prioridade == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
+                                    <option value="media" {% if prioridade == 'media' %}selected{% endif %}>🟡 Média</option>
+                                    <option value="alta" {% if prioridade == 'alta' %}selected{% endif %}>🔴 Alta</option>
                                 </select>
                             </div>
                         </div>
@@ -154,7 +156,7 @@ body.light-mode .btn-outline-secondary:hover {
                                 <label class="form-label text-white fw-bold">
                                     <i class="bi bi-calendar me-1"></i>Data Início
                                 </label>
-                                <input type="date" class="form-control bg-dark text-white border-secondary" name="data_inicio">
+                                <input type="date" class="form-control bg-dark text-white border-secondary" name="data_inicio" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label text-white fw-bold">

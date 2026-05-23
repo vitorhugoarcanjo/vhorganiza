@@ -26,6 +26,10 @@ def ini_insert():
         else:
             categoria_tarefa = int(categoria_tarefa) if categoria_tarefa else None
 
+        if data_inicio == '':
+            return render_template('pasta_tarefas/crud_tarefas/tela_insert.html.jinja', titulo=titulo, descricao=descricao, status=status, data_final=data_final, categoria_tarefa=categoria_tarefa, prioridade=prioridade_tarefa)
+
+
         try:
             conexao_banco = sqlite3.connect(caminho_banco)
             cursor = conexao_banco.cursor()
@@ -52,6 +56,7 @@ def ini_insert():
             status_map = {'pendente': '⏰ Pendente', 'em andamento': '⏳ Andamento', 'concluido': '✅ Concluído'}
             prioridade_map = {'baixa': '🟢 Baixa', 'media': '🟡 Média', 'alta': '🔴 Alta'}
             
+
             # Formata data_inicio
             data_inicio_fmt = ''
             if data_inicio:
