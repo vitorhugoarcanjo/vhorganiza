@@ -12,11 +12,7 @@
     <!-- 1. NAVBAR FIXA NO TOPO -->
 <!-- 1. NAVBAR FIXA NO TOPO -->
     <nav class="main-navbar">
-        <div class="nav-container">
-            <a class="nav-logo" href="{{ url_for('ini_app') }}">
-                ⚡ <span class="text-highlight">VHORGANIZA</span>
-            </a>
-            
+        <div class="nav-container">            
             <!-- Menu unificado: Links + Redes Sociais -->
             <div class="nav-menu-wrapper">
                 <!-- 🌐 REDES SOCIAIS NO DESKTOP -->
@@ -44,7 +40,7 @@
         <!-- 2. SIDEBAR LATERAL -->
         <aside class="sidebar">
             <div class="logo">
-                <a href="#">⚡ VHORGANIZA</a>
+                <a href="{{ url_for('ini_app') }}">⚡ VHORGANIZA</a>
                 <button class="menu-close" onclick="toggleMenu()">✕</button>
             </div>
             

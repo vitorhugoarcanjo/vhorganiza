@@ -52,7 +52,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=60) # SESSÃO DE LO
 @app.route('/')
 def ini_app():
     """ INICIO DO MEU APP """
-    return render_template('pasta_tela_inicial/paginainicial.html')
+    return render_template('pasta_inicial_pre_login/paginainicial.html')
 
 # INICIALIZA O APP
 if __name__ == '__main__':
