@@ -1,0 +1,240 @@
+/* ==========================================================
+   CONTAINER BASE
+========================================================== */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ==========================================================
+   HEADER
+========================================================== */
+.header-audit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card);
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-sutil);
+}
+
+.header-audit h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.header-audit p {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    margin-top: 2px;
+}
+
+.btn-voltar {
+    text-decoration: none;
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    border: 1px solid var(--border-sutil);
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.btn-voltar:hover {
+    color: var(--texto-principal);
+    border-color: var(--cor-ativa);
+}
+
+/* ==========================================================
+   FILTROS
+========================================================== */
+.filters-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.filter-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-form input {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    outline: none;
+    min-width: 150px;
+}
+
+.filter-form input:focus {
+    border-color: var(--cor-ativa);
+}
+
+.filter-form button {
+    background: var(--hover-fino);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.filter-form button:hover {
+    border-color: var(--cor-ativa);
+}
+
+.filter-form a {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.filter-form a:hover {
+    color: var(--texto-principal);
+}
+
+/* TOTAL */
+.filter-total {
+    margin-top: 0.25rem;
+}
+
+.badge {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+}
+
+.badge-primary {
+    color: var(--cor-ativa);
+}
+
+/* ==========================================================
+   TABELA
+========================================================== */
+.table-wrapper {
+    overflow-x: auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+.table-custom thead {
+    background: transparent;
+}
+
+.table-custom th {
+    text-align: left;
+    padding: 10px;
+    font-weight: 500;
+    color: var(--texto-mutado);
+    border-bottom: 1px solid var(--border-sutil);
+}
+
+.table-custom td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border-sutil);
+}
+
+.table-custom tbody tr:hover {
+    background: var(--hover-fino);
+}
+
+/* TEXTOS */
+.muted {
+    color: var(--texto-discreto);
+}
+
+.text-danger {
+    color: #ef4444;
+}
+
+/* ==========================================================
+   BOTÕES DE AÇÃO (PADRÃO)
+========================================================== */
+.btn-action {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 5px;
+    text-decoration: none;
+    border: 1px solid var(--border-sutil);
+    margin-right: 4px;
+    transition: all 0.15s ease;
+}
+
+.btn-action:hover {
+    border-color: var(--cor-ativa);
+}
+
+.btn-action.info {
+    color: #38bdf8;
+}
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+.empty-state {
+    text-align: center;
+    padding: 20px;
+    color: #22c55e;
+}
+
+/* ==========================================================
+   PAGINAÇÃO
+========================================================== */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.pagination {
+    display: flex;
+    gap: 0.4rem;
+    list-style: none;
+}
+
+.pagination li a,
+.pagination li span {
+    padding: 5px 9px;
+    font-size: 0.75rem;
+    border-radius: 5px;
+    border: 1px solid var(--border-sutil);
+    text-decoration: none;
+    color: var(--texto-mutado);
+}
+
+.pagination li a:hover {
+    border-color: var(--cor-ativa);
+    color: var(--texto-principal);
+}
+
+.pagination li.active span {
+    border-color: var(--cor-ativa);
+    color: var(--texto-principal);
+}
+
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+@media (min-width: 768px) {
+    .filters-grid {
+        grid-template-columns: 1fr 1fr auto;
+        align-items: center;
+    }
+}

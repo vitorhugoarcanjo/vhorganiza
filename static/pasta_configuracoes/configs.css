@@ -1,58 +1,134 @@
-:root {
-    --bg-dark: #050505;
-    --card-bg: rgba(255, 255, 255, 0.03);
-    --border: 1px solid rgba(255, 255, 255, 0.08);
-    --primary: #6366f1;
-    --warning: #d97706;
+/* ==========================================================
+   BASE
+========================================================== */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 }
 
-.config-wrapper { max-width: 1000px; margin: 0 auto; padding: 20px; }
-
-/* Hero */
-.hero-config {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 30px;
-    border-radius: 20px;
-    color: white;
-    margin-bottom: 30px;
+/* ==========================================================
+   HEADER
+========================================================== */
+.header-dashboard {
+    background: var(--bg-card);
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-sutil);
 }
 
-/* Grid */
-.config-grid {
+.header-dashboard h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.header-dashboard p {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    margin-top: 2px;
+}
+
+/* ==========================================================
+   GRID
+========================================================== */
+.cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
 }
 
-/* Card */
+/* FULL WIDTH */
+.config-card.full {
+    grid-column: 1 / -1;
+}
+
+/* ==========================================================
+   CARD
+========================================================== */
 .config-card {
-    background: var(--card-bg);
-    border: var(--border);
-    padding: 30px;
-    border-radius: 20px;
-    transition: 0.3s;
+    text-align: left;
 }
 
-.config-card:hover { border-color: rgba(255,255,255,0.2); }
-
-/* Formulários */
-.input-group { margin-bottom: 15px; }
-.label-style { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: #cbd5e1; }
-.input-style {
-    width: 100%; padding: 12px; border-radius: 10px;
-    background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);
-    color: white;
+/* ==========================================================
+   FORM
+========================================================== */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    font-size: 0.75rem;
 }
 
-/* Botões */
-.btn-base { padding: 12px 20px; border-radius: 10px; text-decoration: none; display: inline-block; text-align: center; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
-.btn-primary { background: var(--primary); color: white; width: 100%; margin-top: 10px; }
-.btn-primary:hover { background: #4f46e5; }
-.btn-warning { background: var(--warning); color: white; width: 100%; margin-top: 10px; }
-.btn-outline { border: 1px solid rgba(255,255,255,0.2); color: white; }
-.btn-outline:hover { background: rgba(255,255,255,0.1); }
+.input-group label {
+    margin-bottom: 4px;
+    color: var(--texto-mutado);
+}
 
-/* Ajuste Tema Claro */
-body.light-mode .config-card { background: #fff; border: 1px solid #e2e8f0; }
-body.light-mode .label-style { color: #475569; }
-body.light-mode .input-style { background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; }
+.input-group input {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+.input-group input:focus {
+    border-color: var(--cor-ativa);
+}
+
+/* ==========================================================
+   BOTÕES
+========================================================== */
+button,
+.btn-outline {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+button:hover,
+.btn-outline:hover {
+    border-color: var(--cor-ativa);
+}
+
+/* BOTÃO WARNING */
+.btn-warning {
+    color: #f59e0b;
+}
+
+/* ==========================================================
+   TEXTOS
+========================================================== */
+.muted {
+    font-size: 0.7rem;
+    color: var(--texto-discreto);
+}
+
+/* ==========================================================
+   AÇÕES
+========================================================== */
+.actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+/* ==========================================================
+   LIGHT MODE (RESUMIDO E LIMPO)
+========================================================== */
+body.light-mode .input-group input {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+}
+
+body.light-mode .btn-outline {
+    background: #f1f5f9;
+    color: #1e293b;
+}

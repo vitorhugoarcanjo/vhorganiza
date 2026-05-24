@@ -2,117 +2,147 @@
 
 {% block title %}Detalhe do Ataque #{{ ataque.id }}{% endblock %}
 
-{% block content %}
-<div class="container px-3 px-lg-4">
-    
-    <!-- CABEÇALHO -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="welcome-card p-4 rounded-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="fw-bold text-white mb-2">🛡️ Detalhe do Ataque #{{ ataque.id }}</h1>
-                        <p class="text-white-50 mb-0">Informações completas da tentativa de invasão</p>
-                    </div>
-                    <a href="{{ url_for('logs_ataques.ataques') }}" class="btn btn-outline-light">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='logs/pasta_logs_ataques/logs_ataques_detalhe.css') }}">
+{% endblock %}
 
-    <!-- INFORMAÇÕES DO ATAQUE -->
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card bg-dark bg-opacity-50">
-                <div class="card-header">
-                    <h5 class="text-white mb-0"><i class="bi bi-info-circle me-2"></i>Informações do Atacante</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-dark table-borderless">
-                         <tr>
-                            <th style="width: 140px">ID:</th>
-                            <td>{{ ataque.id }}</td>
-                        </tr>
-                        <tr>
-                            <th>Data/Hora:</th>
-                            <td>{{ ataque.data_hora }}</td>
-                        </tr>
-                        <tr>
-                            <th>IP:</th>
-                            <td>
-                                <code class="text-danger">{{ ataque.ip }}</code>
-                                {% if ataque.ip %}
-                                <a href="https://ipinfo.io/{{ ataque.ip }}" target="_blank" 
-                                   class="btn btn-sm btn-outline-info ms-2">
-                                    <i class="bi bi-info-circle"></i> Consultar IP
+{% block content %}
+<div class="dashboard-container">
+
+    <!-- HEADER -->
+    <section class="header-detalhe">
+        <div>
+            <h1>🛡️ Ataque #{{ ataque.id }}</h1>
+            <p>Informações completas da tentativa</p>
+        </div>
+
+        <a href="{{ url_for('logs_ataques.ataques') }}" class="btn-voltar">
+            ← Voltar
+        </a>
+    </section>
+
+    <!-- GRID -->
+    <section class="grid-detalhe">
+
+        <!-- INFO -->
+        <div class="card-detalhe">
+            <div class="card-header">Informações do Atacante</div>
+
+            <div class="card-body">
+                <table class="table-detalhe">
+
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ ataque.id }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Data/Hora</th>
+                        <td>{{ ataque.data_hora }}</td>
+                    </tr>
+
+                    <!-- 🔥 IP HACKER -->
+                    <tr>
+                        <th>IP</th>
+                        <td>
+                            {% if ataque.ip %}
+                            <div class="ip-hacker-box">
+
+                                <a href="https://ipinfo.io/{{ ataque.ip }}" target="_blank" class="ip-main danger">
+                                    {{ ataque.ip }}
                                 </a>
-                                <button onclick="copiarIP('{{ ataque.ip }}')" 
-                                        class="btn btn-sm btn-outline-secondary ms-1">
-                                    <i class="bi bi-copy"></i> Copiar
-                                </button>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Padrão Detectado:</th>
-                            <td><span class="badge bg-danger fs-6">{{ ataque.padrao_detectado }}</span></td>
-                        </tr>
-                        <tr>
-                            <th>Método:</th>
-                            <td><span class="badge bg-secondary">{{ ataque.metodo }}</span></td>
-                        </tr>
-                        <tr>
-                            <th>Rota:</th>
-                            <td><code>{{ ataque.rota }}</code></td>
-                        </tr>
-                    </table>
+
+                                <div class="ip-actions">
+                                    <a href="https://ipinfo.io/{{ ataque.ip }}" target="_blank" class="ip-btn info">🔍</a>
+                                    <a href="https://whatismyipaddress.com/ip/{{ ataque.ip }}" target="_blank" class="ip-btn danger">🌐</a>
+                                    <button onclick="copiarIP('{{ ataque.ip }}')" class="ip-btn" title="Copiar IP">
+                                        📋
+                                    </button>
+                                </div>
+
+                            </div>
+                            {% else %}
+                            <span class="muted">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Padrão</th>
+                        <td>
+                            <span class="badge danger">
+                                {{ ataque.padrao_detectado }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Método</th>
+                        <td>
+                            <span class="badge secondary">
+                                {{ ataque.metodo }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Rota</th>
+                        <td><code>{{ ataque.rota }}</code></td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        <!-- USER AGENT -->
+        <div class="card-detalhe">
+            <div class="card-header">User Agent</div>
+
+            <div class="card-body">
+                <div class="box-agent">
+                    {{ ataque.user_agent or 'Não informado' }}
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6">
-            <div class="card bg-dark bg-opacity-50">
-                <div class="card-header">
-                    <h5 class="text-white mb-0"><i class="bi bi-browser-chrome me-2"></i>User Agent</h5>
+
+        <!-- AÇÕES DE SEGURANÇA -->
+        <div class="card-detalhe full">
+            <div class="card-header">Ações Recomendadas</div>
+
+            <div class="card-body">
+
+                <div class="alert-warning">
+                    ⚠️ Recomendações de segurança
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-secondary bg-dark text-white-50 border-secondary" style="word-break: break-all;">
-                        <small>{{ ataque.user_agent or 'Não informado' }}</small>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card bg-dark bg-opacity-50 mt-3">
-                <div class="card-header">
-                    <h5 class="text-white mb-0"><i class="bi bi-shield-lock me-2"></i>Ações Recomendadas</h5>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        <strong>Recomendações de segurança:</strong>
-                    </div>
-                    <ul class="text-white-50 mb-0">
-                        <li>Bloquear o IP no firewall: 
-                            <code>iptables -A INPUT -s {{ ataque.ip }} -j DROP</code>
-                        </li>
-                        <li>Consultar mais informações sobre o IP em 
-                            <a href="https://www.abuseipdb.com/check/{{ ataque.ip }}" target="_blank">AbuseIPDB</a>
-                        </li>
-                        <li>Verificar se há mais tentativas do mesmo IP</li>
-                        <li>Considerar adicionar rate limiting no Nginx</li>
-                    </ul>
-                </div>
+
+                <ul class="lista-acoes">
+                    <li>
+                        Bloquear IP:
+                        <code>iptables -A INPUT -s {{ ataque.ip }} -j DROP</code>
+                    </li>
+
+                    <li>
+                        Consultar IP:
+                        <a href="https://www.abuseipdb.com/check/{{ ataque.ip }}" target="_blank">
+                            AbuseIPDB
+                        </a>
+                    </li>
+
+                    <li>Verificar repetição do IP</li>
+                    <li>Adicionar rate limit no servidor</li>
+                </ul>
+
             </div>
         </div>
-    </div>
+
+    </section>
+
 </div>
 
 <script>
 function copiarIP(ip) {
     navigator.clipboard.writeText(ip);
-    alert('IP ' + ip + ' copiado para a área de transferência!');
 }
 </script>
+
 {% endblock %}

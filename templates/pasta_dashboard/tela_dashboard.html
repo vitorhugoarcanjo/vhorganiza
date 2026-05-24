@@ -5,51 +5,68 @@
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-wrapper">
+<div class="dashboard-container">
     
-    <div class="dash-header">
+    <!-- HEADER -->
+    <section class="header-dashboard">
         <div>
-            <h2 style="margin:0;">📊 Dashboard</h2>
-            <p style="color: #94a3b8;">Visão geral das suas finanças</p>
+            <h1>📊 Dashboard</h1>
+            <p>Visão geral das suas finanças</p>
         </div>
-        <a href="{{ url_for('pos_login.iniposlogin') }}" class="btn-base btn-outline">Voltar</a>
-    </div>
 
-    <div class="dev-alert">
-        <span style="font-size: 2rem;">⚠️</span>
-        <div>
-            <h4 style="margin:0; color: #f59e0b;">AMBIENTE DE TESTES / BETA LAB</h4>
-            <p style="margin:0; font-size: 0.9rem;">Algumas funções podem oscilar enquanto novas integrações são aplicadas.</p>
-        </div>
-    </div>
+        <a href="{{ url_for('pos_login.iniposlogin') }}" class="btn-voltar">
+            ← Voltar
+        </a>
+    </section>
 
-    <form action="{{ url_for('dashboard.inidashboard') }}" method="get" class="filtros-form">
+    <!-- ALERTA -->
+    <section class="alert-dev">
+        <span>⚠️</span>
         <div>
-            <label style="display:block; margin-bottom:8px; font-weight:600;">Data Início</label>
-            <input type="date" name="data_inicio" value="{{ data_inicio }}" class="form-input" required>
+            <strong>AMBIENTE DE TESTES / BETA LAB</strong>
+            <p>Algumas funções podem oscilar enquanto novas integrações são aplicadas.</p>
         </div>
-        <div>
-            <label style="display:block; margin-bottom:8px; font-weight:600;">Data Final</label>
-            <input type="date" name="data_final" value="{{ data_final }}" class="form-input" required>
-        </div>
-        <button type="submit" class="btn-base btn-primary" style="align-self: flex-end;">Filtrar</button>
-    </form>
+    </section>
 
-    <div class="finance-grid">
-        <div class="card-fin">
+    <!-- FILTROS -->
+    <section class="filters-grid">
+        <form action="{{ url_for('dashboard.inidashboard') }}" method="get" class="filter-form">
+
+            <div class="input-group">
+                <label>Data Início</label>
+                <input type="date" name="data_inicio" value="{{ data_inicio }}" required>
+            </div>
+
+            <div class="input-group">
+                <label>Data Final</label>
+                <input type="date" name="data_final" value="{{ data_final }}" required>
+            </div>
+
+            <button type="submit">Filtrar</button>
+        </form>
+    </section>
+
+    <!-- CARDS -->
+    <section class="cards-grid">
+
+        <div class="card-metric">
             <h3>Receitas</h3>
             <div class="valor pos">R$ {{ "%.2f"|format(total_receitas) }}</div>
         </div>
-        <div class="card-fin">
+
+        <div class="card-metric">
             <h3>Despesas</h3>
             <div class="valor neg">R$ {{ "%.2f"|format(total_despesas) }}</div>
         </div>
-        <div class="card-fin">
+
+        <div class="card-metric">
             <h3>Saldo</h3>
             <div class="valor {% if saldo >= 0 %}pos{% else %}neg{% endif %}">
                 R$ {{ "%.2f"|format(saldo) }}
             </div>
         </div>
-    </div>
+
+    </section>
+
 </div>
 {% endblock %}

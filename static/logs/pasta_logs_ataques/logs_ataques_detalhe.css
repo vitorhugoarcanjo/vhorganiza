@@ -1,0 +1,238 @@
+/* ============================= */
+/* CONTAINER */
+/* ============================= */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ============================= */
+/* HEADER */
+/* ============================= */
+.header-detalhe {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+.header-detalhe h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.header-detalhe p {
+    font-size: 0.85rem;
+    color: var(--texto-mutado);
+}
+
+/* BOTÃO VOLTAR */
+.btn-voltar {
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 8px 14px;
+    border-radius: 6px;
+    color: var(--texto-principal);
+    border: 1px solid var(--border-sutil);
+    transition: all 0.2s ease;
+}
+
+.btn-voltar:hover {
+    background: var(--hover-fino);
+}
+
+/* ============================= */
+/* GRID */
+/* ============================= */
+.grid-detalhe {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .grid-detalhe {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .grid-detalhe .full {
+        grid-column: span 2;
+    }
+}
+
+/* ============================= */
+/* CARDS */
+/* ============================= */
+.card-detalhe {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--border-sutil);
+    background: rgba(255,255,255,0.02);
+}
+
+.card-body {
+    padding: 1.1rem;
+}
+
+/* ============================= */
+/* TABLE */
+/* ============================= */
+.table-detalhe {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-detalhe th {
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--texto-discreto);
+    padding: 8px 0;
+    width: 120px;
+}
+
+.table-detalhe td {
+    font-size: 0.85rem;
+    color: var(--texto-principal);
+    padding: 8px 0;
+}
+
+/* ============================= */
+/* BADGES */
+/* ============================= */
+.badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.badge.danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.badge.secondary {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--texto-mutado);
+}
+
+/* ============================= */
+/* IP HACKER BOX */
+/* ============================= */
+.ip-hacker-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ip-main {
+    font-family: monospace;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.ip-main.danger {
+    color: #ef4444;
+}
+
+.ip-main:hover {
+    text-decoration: underline;
+}
+
+/* BOTÕES IP */
+.ip-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.ip-btn {
+    font-size: 0.75rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-sutil);
+    background: transparent;
+    cursor: pointer;
+    color: var(--texto-mutado);
+    transition: all 0.15s ease;
+}
+
+.ip-btn:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+}
+
+.ip-btn.info {
+    border-color: rgba(59,130,246,0.3);
+    color: #3b82f6;
+}
+
+.ip-btn.danger {
+    border-color: rgba(239,68,68,0.3);
+    color: #ef4444;
+}
+
+/* ============================= */
+/* USER AGENT */
+/* ============================= */
+.box-agent {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    word-break: break-all;
+    background: rgba(0,0,0,0.25);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+}
+
+/* ============================= */
+/* ALERTA */
+/* ============================= */
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    color: #f59e0b;
+}
+
+/* ============================= */
+/* LISTA */
+/* ============================= */
+.lista-acoes {
+    padding-left: 18px;
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+}
+
+.lista-acoes li {
+    margin-bottom: 6px;
+}
+
+.lista-acoes code {
+    background: rgba(0,0,0,0.25);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+/* ============================= */
+/* MUTED */
+/* ============================= */
+.muted {
+    color: var(--texto-discreto);
+}

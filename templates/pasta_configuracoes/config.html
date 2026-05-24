@@ -5,62 +5,72 @@
 {% endblock %}
 
 {% block content %}
-<div class="config-wrapper">
+<div class="dashboard-container">
 
-    <div class="hero-config">
-        <h1 style="margin:0; font-size: 1.8rem;">⚙️ Configurações</h1>
-        <p style="opacity: 0.8;">Gerencie seus dados e preferências</p>
-    </div>
+    <!-- HEADER -->
+    <section class="header-dashboard">
+        <div>
+            <h1>⚙️ Configurações</h1>
+            <p>Gerencie seus dados e preferências</p>
+        </div>
+    </section>
 
-    <div class="config-grid">
-        
-        <div class="config-card">
-            <h3 style="margin-top:0;">Perfil</h3>
+    <!-- GRID -->
+    <section class="cards-grid">
+
+        <!-- PERFIL -->
+        <div class="card-metric config-card">
+            <h3>Perfil</h3>
+
             <form action="#" method="POST">
                 <div class="input-group">
-                    <label class="label-style">Nome</label>
-                    <input type="text" name="nome" class="input-style" value="{{ usuario.nome if usuario else '' }}" required>
+                    <label>Nome</label>
+                    <input type="text" name="nome" value="{{ usuario.nome if usuario else '' }}" required>
                 </div>
+
                 <div class="input-group">
-                    <label class="label-style">E-mail</label>
-                    <input type="email" name="email" class="input-style" value="{{ usuario.email if usuario else '' }}" required>
+                    <label>E-mail</label>
+                    <input type="email" name="email" value="{{ usuario.email if usuario else '' }}" required>
                 </div>
-                <button type="submit" class="btn-base btn-primary">Salvar Alterações</button>
+
+                <button type="submit">Salvar Alterações</button>
             </form>
         </div>
 
-        <div class="config-card">
-            <h3 style="margin-top:0;">Segurança</h3>
+        <!-- SEGURANÇA -->
+        <div class="card-metric config-card">
+            <h3>Segurança</h3>
+
             <form action="#" method="POST">
                 <div class="input-group">
-                    <label class="label-style">Senha Atual</label>
-                    <input type="password" name="senha_atual" class="input-style" required>
+                    <label>Senha Atual</label>
+                    <input type="password" name="senha_atual" required>
                 </div>
+
                 <div class="input-group">
-                    <label class="label-style">Nova Senha</label>
-                    <input type="password" name="nova_senha" class="input-style" required>
+                    <label>Nova Senha</label>
+                    <input type="password" name="nova_senha" required>
                 </div>
-                <button type="submit" class="btn-base btn-warning">Alterar Senha</button>
+
+                <button type="submit" class="btn-warning">Alterar Senha</button>
             </form>
         </div>
 
         {% if session.get('is_master') == 1 %}
-        <div class="config-card" style="grid-column: 1 / -1;">
-            <h3 style="margin-top:0;">📊 Logs do Sistema</h3>
-            <p style="opacity:0.7;">Área restrita ao administrador.</p>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
-                <a href="{{ url_for('painel_logs.dashboard_logs') }}" 
-                   class="btn-base btn-outline">Dashboard Logs</a>
-                
-                <a href="{{ url_for('logs_erros.logs_erros') }}" 
-                   class="btn-base" style="background: #ef4444; color: white;">Logs de Erro</a>
-                
-                <a href="{{ url_for('painel_acessos.logs_acessos') }}" 
-                   class="btn-base" style="background: #10b981; color: white;">Logs de Acesso</a>
+        <!-- LOGS -->
+        <div class="card-metric config-card full">
+            <h3>📊 Logs do Sistema</h3>
+            <p class="muted">Área restrita ao administrador.</p>
+
+            <div class="actions">
+                <a href="{{ url_for('painel_logs.dashboard_logs') }}" class="btn-outline">
+                    Dashboard Logs
+                </a>
             </div>
         </div>
         {% endif %}
-    </div>
+
+    </section>
 
 </div>
 {% endblock %}

@@ -1,0 +1,134 @@
+/* ==========================================================
+   CONTAINER BASE
+========================================================== */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ==========================================================
+   HEADER
+========================================================== */
+.header-dashboard {
+    background: var(--bg-card);
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-sutil);
+}
+
+.header-dashboard h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.header-dashboard p {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    margin-top: 2px;
+}
+
+/* ==========================================================
+   GRID DE CARDS
+========================================================== */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+}
+
+/* ==========================================================
+   CARD MÉTRICA
+========================================================== */
+.card-metric {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.15s ease;
+}
+
+.card-metric:hover {
+    background: var(--hover-fino);
+    transform: translateY(-2px);
+}
+
+/* ÍCONE */
+.icon {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+}
+
+/* CORES PADRÃO */
+.icon.blue { color: #3b82f6; }
+.icon.cyan { color: #06b6d4; }
+.icon.green { color: #22c55e; }
+.icon.yellow { color: #f59e0b; }
+.icon.red { color: #ef4444; }
+
+/* TEXTO */
+.card-metric h3 {
+    font-size: 1rem;
+    margin: 4px 0;
+    font-weight: 600;
+}
+
+.card-metric p {
+    font-size: 0.7rem;
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   LINKS / CARDS DE NAVEGAÇÃO
+========================================================== */
+.section-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+}
+
+.card-link {
+    display: block;
+    background: var(--bg-card);
+    padding: 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--texto-principal);
+    border: 1px solid var(--border-sutil);
+    transition: all 0.15s ease;
+}
+
+.card-link:hover {
+    background: var(--hover-fino);
+    transform: translateY(-2px);
+}
+
+/* CARD PERIGO */
+.card-link.danger {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.card-link.danger:hover {
+    background: rgba(239, 68, 68, 0.08);
+}
+
+/* TEXTOS */
+.card-link h3 {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.card-link p {
+    font-size: 0.7rem;
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+@media (min-width: 768px) {
+    .cards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}

@@ -1,0 +1,208 @@
+/* ==========================================================
+   CONTAINER
+========================================================== */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ==========================================================
+   HEADER
+========================================================== */
+.header-detalhe {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card);
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-sutil);
+}
+
+.header-detalhe h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.header-detalhe p {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+}
+
+/* BOTÃO VOLTAR */
+.btn-voltar {
+    text-decoration: none;
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    border: 1px solid var(--border-sutil);
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.btn-voltar:hover {
+    color: var(--texto-principal);
+    border-color: var(--cor-ativa);
+}
+
+/* ==========================================================
+   GRID
+========================================================== */
+.grid-detalhe {
+    display: grid;
+    gap: 1rem;
+}
+
+/* ==========================================================
+   CARDS
+========================================================== */
+.card-detalhe {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+}
+
+.card-header {
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    border-bottom: 1px solid var(--border-sutil);
+}
+
+.card-body {
+    padding: 12px 14px;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================
+   TABELA
+========================================================== */
+.table-detalhe {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-detalhe th {
+    text-align: left;
+    width: 120px;
+    color: var(--texto-mutado);
+    padding: 6px 0;
+    font-weight: 500;
+}
+
+.table-detalhe td {
+    padding: 6px 0;
+}
+
+/* ==========================================================
+   IP HACKER (🔥 destaque)
+========================================================== */
+.ip-hacker-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ip-main {
+    color: #38bdf8;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.ip-main:hover {
+    color: var(--texto-principal);
+    text-decoration: underline;
+}
+
+.ip-actions {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.ip-btn {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.ip-btn:hover {
+    border-color: var(--cor-ativa);
+    color: var(--texto-principal);
+}
+
+.ip-btn.info {
+    color: #38bdf8;
+}
+
+.ip-btn.danger {
+    color: #ef4444;
+}
+
+/* ==========================================================
+   USER AGENT
+========================================================== */
+.box-agent {
+    background: var(--hover-fino);
+    border: 1px solid var(--border-sutil);
+    padding: 10px;
+    border-radius: 6px;
+    color: var(--texto-discreto);
+    font-size: 0.75rem;
+    word-break: break-all;
+}
+
+/* ==========================================================
+   BADGES
+========================================================== */
+.badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--border-sutil);
+}
+
+.badge.success {
+    color: #22c55e;
+}
+
+.badge.danger {
+    color: #ef4444;
+}
+
+.badge.warning {
+    color: #f59e0b;
+}
+
+.badge.info {
+    color: #38bdf8;
+}
+
+/* ==========================================================
+   UTIL
+========================================================== */
+.muted {
+    color: var(--texto-discreto);
+}
+
+code {
+    background: var(--hover-fino);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+@media (min-width: 768px) {
+    .grid-detalhe {
+        grid-template-columns: 1fr 1fr;
+    }
+}

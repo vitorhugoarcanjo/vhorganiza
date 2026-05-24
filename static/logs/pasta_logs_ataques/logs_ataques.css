@@ -1,0 +1,213 @@
+/* ==========================================================
+   CONTAINER
+========================================================== */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ==========================================================
+   HEADER
+========================================================== */
+.header-ataques {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card);
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-sutil);
+}
+
+.header-ataques h1 {
+    font-size: 1.2rem;
+}
+
+.header-ataques p {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+}
+
+
+.btn-voltar {
+    text-decoration: none;
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    border: 1px solid var(--border-sutil);
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-voltar:hover {
+    color: var(--texto-principal);
+    border-color: var(--cor-ativa);
+    background: var(--hover-fino);
+}
+
+
+/* ==========================================================
+   ALERTA
+========================================================== */
+.alert-ataque {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================
+   TABELA
+========================================================== */
+.table-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-sutil);
+    font-size: 0.8rem;
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+
+.table-custom th {
+    text-align: left;
+    padding: 10px;
+    color: var(--texto-mutado);
+    border-bottom: 1px solid var(--border-sutil);
+}
+
+.table-custom td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--border-sutil);
+}
+
+.table-custom tr:hover {
+    background: var(--hover-fino);
+}
+
+/* ==========================================================
+   BADGES
+========================================================== */
+.badge {
+    font-size: 0.65rem;
+    padding: 3px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--border-sutil);
+}
+
+.badge.danger { color: #ef4444; }
+.badge.secondary { color: var(--texto-mutado); }
+
+/* ==========================================================
+   IP HACKER
+========================================================== */
+.ip-hacker-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ip-main {
+    color: #38bdf8;
+    text-decoration: none;
+}
+
+.ip-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.ip-btn {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-sutil);
+    text-decoration: none;
+    color: var(--texto-mutado);
+}
+
+.ip-btn:hover {
+    border-color: var(--cor-ativa);
+    color: var(--texto-principal);
+}
+
+/* ==========================================================
+   AÇÕES
+========================================================== */
+.acoes {
+    display: flex;
+    gap: 4px;
+}
+
+.btn-action {
+    font-size: 0.65rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-sutil);
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+}
+
+.btn-action:hover {
+    border-color: var(--cor-ativa);
+    color: var(--texto-principal);
+}
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--texto-discreto);
+}
+
+.empty-state small {
+    display: block;
+    margin-top: 6px;
+}
+
+/* ==========================================================
+   CARD INFO
+========================================================== */
+.card-info {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.card-info h6 {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+}
+
+.card-info ul {
+    padding-left: 16px;
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+}
+
+code {
+    background: var(--hover-fino);
+    padding: 2px 4px;
+    border-radius: 4px;
+}

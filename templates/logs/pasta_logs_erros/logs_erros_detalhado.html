@@ -2,97 +2,110 @@
 
 {% block title %}Detalhe do Erro #{{ erro.id }}{% endblock %}
 
-{% block content %}
-<div class="container px-3 px-lg-4">
-    
-    <!-- CABEÇALHO -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="welcome-card p-4 rounded-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h1 class="fw-bold text-white mb-2">🔍 Detalhe do Erro #{{ erro.id }}</h1>
-                        <p class="text-white-50 mb-0">Informações completas do erro</p>
-                    </div>
-                    <div>
-                        <a href="{{ url_for('logs_erros.logs_erros') }}" class="btn btn-outline-light me-2">
-                            <i class="bi bi-arrow-left"></i> Voltar
-                        </a>
-                        <a href="javascript:window.print()" class="btn btn-outline-light">
-                            <i class="bi bi-printer"></i> Imprimir
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='logs/pasta_logs_erros/logs_erros_detalhes.css') }}">
+{% endblock %}
 
-    <!-- INFORMAÇÕES DO ERRO -->
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card bg-dark bg-opacity-50">
-                <div class="card-header">
-                    <h5 class="text-white mb-0"><i class="bi bi-info-circle me-2"></i>Informações Gerais</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-dark table-borderless">
-                        <tr>
-                            <th style="width: 120px">ID:</th>
-                            <td>{{ erro.id }}</td>
-                        </tr>
-                        <tr>
-                            <th>Data/Hora:</th>
-                            <td>{{ erro.data_hora }}</td>
-                        </tr>
-                        <tr>
-                            <th>Usuário:</th>
-                            <td>{{ erro.usuario_nome or 'Sistema' }} (ID: {{ erro.usuario_id or 'N/A' }})</td>
-                        </tr>
-                        <tr>
-                            <th>Rota:</th>
-                            <td><code>{{ erro.rota or '-' }}</code></td>
-                        </tr>
-                        <tr>
-                            <th>Método:</th>
-                            <td><span class="badge bg-info">{{ erro.metodo or '-' }}</span></td>
-                        </tr>
-                        <tr>
-                            <th>Arquivo:</th>
-                            <td><code>{{ erro.arquivo or '-' }}</code></td>
-                        </tr>
-                        <tr>
-                            <th>Linha:</th>
-                            <td>{{ erro.linha or '-' }}</td>
-                        </tr>
-                    </table>
+{% block content %}
+<div class="dashboard-container">
+
+    <!-- HEADER -->
+    <section class="header-detalhe">
+        <div>
+            <h1>🔍 Erro #{{ erro.id }}</h1>
+            <p>Informações completas do erro</p>
+        </div>
+
+        <div class="header-actions">
+            <a href="{{ url_for('logs_erros.logs_erros') }}" class="btn-voltar">
+                ← Voltar
+            </a>
+
+            <a href="javascript:window.print()" class="btn-print">
+                🖨️ Imprimir
+            </a>
+        </div>
+    </section>
+
+    <!-- GRID -->
+    <section class="grid-detalhe">
+
+        <!-- INFO -->
+        <div class="card-detalhe">
+            <div class="card-header">Informações Gerais</div>
+
+            <div class="card-body">
+                <table class="table-detalhe">
+
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ erro.id }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Data/Hora</th>
+                        <td>{{ erro.data_hora }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Usuário</th>
+                        <td>
+                            {{ erro.usuario_nome or 'Sistema' }}
+                            (ID: {{ erro.usuario_id or 'N/A' }})
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Rota</th>
+                        <td><code>{{ erro.rota or '-' }}</code></td>
+                    </tr>
+
+                    <tr>
+                        <th>Método</th>
+                        <td>
+                            <span class="badge info">
+                                {{ erro.metodo or '-' }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Arquivo</th>
+                        <td><code>{{ erro.arquivo or '-' }}</code></td>
+                    </tr>
+
+                    <tr>
+                        <th>Linha</th>
+                        <td>{{ erro.linha or '-' }}</td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        <!-- MENSAGEM -->
+        <div class="card-detalhe">
+            <div class="card-header">Mensagem de Erro</div>
+
+            <div class="card-body">
+                <div class="alert-danger">
+                    ⚠️ {{ erro.mensagem }}
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6">
-            <div class="card bg-dark bg-opacity-50">
-                <div class="card-header">
-                    <h5 class="text-white mb-0"><i class="bi bi-envelope-exclamation me-2"></i>Mensagem de Erro</h5>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-danger">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        {{ erro.mensagem }}
-                    </div>
-                </div>
+
+        <!-- STACK TRACE -->
+        <div class="card-detalhe full">
+            <div class="card-header">Stack Trace</div>
+
+            <div class="card-body">
+                <pre class="stack-box">
+{{ erro.stack_trace or 'Nenhum stack trace disponível' }}
+                </pre>
             </div>
         </div>
-        
-        <div class="col-12">
-            <div class="card bg-dark bg-opacity-50">
-                <div class="card-header">
-                    <h5 class="text-white mb-0"><i class="bi bi-stack me-2"></i>Stack Trace</h5>
-                </div>
-                <div class="card-body">
-                    <pre class="text-white-50 bg-black p-3 rounded" style="font-size: 0.8rem; overflow-x: auto;">{{ erro.stack_trace or 'Nenhum stack trace disponível' }}</pre>
-                </div>
-            </div>
-        </div>
-    </div>
+
+    </section>
+
 </div>
 {% endblock %}

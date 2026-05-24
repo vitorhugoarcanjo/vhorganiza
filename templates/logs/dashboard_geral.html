@@ -2,119 +2,86 @@
 
 {% block title %}Dashboard de Logs{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='logs/dashboard_geral/dashboard_logs.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="container px-3 px-lg-4">
-    
-    <!-- CABEÇALHO -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="welcome-card p-4 rounded-4">
-                <h1 class="fw-bold text-white mb-2">📊 Dashboard de Logs</h1>
-                <p class="text-white-50 mb-0">Monitoramento do sistema</p>
-            </div>
-        </div>
-    </div>
+<div class="dashboard-container">
 
-    <!-- CARDS -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="card bg-dark bg-opacity-50 h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-bar-chart fs-1 text-primary"></i>
-                    <h3 class="mt-3 text-white">{{ stats.total_acessos }}</h3>
-                    <p class="text-white-50 mb-0">Total de Acessos</p>
-                </div>
-            </div>
+    <!-- HEADER -->
+    <section class="header-dashboard">
+        <div>
+            <h1>📊 Dashboard de Logs</h1>
+            <p>Monitoramento do sistema</p>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card bg-dark bg-opacity-50 h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-people fs-1 text-info"></i>
-                    <h3 class="mt-3 text-white">{{ stats.total_usuarios }}</h3>
-                    <p class="text-white-50 mb-0">Usuários Únicos</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card bg-dark bg-opacity-50 h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-exclamation-triangle fs-1 text-warning"></i>
-                    <h3 class="mt-3 text-white">{{ stats.total_erros }}</h3>
-                    <p class="text-white-50 mb-0">Total de Erros</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card bg-dark bg-opacity-50 h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-person-check fs-1 text-success"></i>
-                    <h3 class="mt-3 text-white">{{ stats.usuarios_ativos }}</h3>
-                    <p class="text-white-50 mb-0">Usuários Ativos (7d)</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card bg-dark bg-opacity-50 h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-person-plus fs-1 text-success"></i>
-                    <h3 class="mt-3 text-white">{{ stats.novos_cadastros }}</h3>
-                    <p class="text-white-50 mb-0">Novos Cadastros (7d)</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="card bg-dark bg-opacity-50 h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-calendar-week fs-1 text-danger"></i>
-                    <h3 class="mt-3 text-white">{{ stats.erros_7dias }}</h3>
-                    <p class="text-white-50 mb-0">Erros (7 dias)</p>
-                </div>
-            </div>
+    </section>
+
+    <!-- CARDS DE MÉTRICAS -->
+    <section class="cards-grid">
+
+        <div class="card-metric">
+            <div class="icon blue">📈</div>
+            <h3>{{ stats.total_acessos }}</h3>
+            <p>Total de Acessos</p>
         </div>
 
-        <div class="col-md-4">
-            <a href="{{ url_for('logs_ataques.ataques') }}" class="text-decoration-none">
-                <div class="card bg-dark bg-opacity-50 h-100">
-                    <div class="card-body text-center py-5">
-                        <i class="bi bi-shield-shaded fs-1 text-danger"></i>
-                        <h3 class="mt-3 text-white">Ver Tentativas de Ataque</h3>
-                        <p class="text-white-50">Monitor de segurança</p>
-                    </div>
-                </div>
-            </a>
+        <div class="card-metric">
+            <div class="icon cyan">👥</div>
+            <h3>{{ stats.total_usuarios }}</h3>
+            <p>Usuários Únicos</p>
         </div>
-    </div>
 
-    <!-- LINKS RÁPIDOS -->
-    <div class="row g-4">
-        <div class="col-md-6">
-            <a href="{{ url_for('logs_erros.logs_erros') }}" class="text-decoration-none">
-                <div class="card bg-dark bg-opacity-50 h-100">
-                    <div class="card-body text-center py-5">
-                        <i class="bi bi-bug fs-1 text-danger"></i>
-                        <h3 class="mt-3 text-white">Ver Logs de Erro</h3>
-                        <p class="text-white-50">Analise os erros do sistema</p>
-                    </div>
-                </div>
-            </a>
+        <div class="card-metric">
+            <div class="icon yellow">⚠️</div>
+            <h3>{{ stats.total_erros }}</h3>
+            <p>Total de Erros</p>
         </div>
-        
-        <div class="col-md-6">
-            <a href="{{ url_for('painel_acessos.logs_acessos') }}" class="text-decoration-none">
-                <div class="card bg-dark bg-opacity-50 h-100">
-                    <div class="card-body text-center py-5">
-                        <i class="bi bi-people fs-1 text-info"></i>
-                        <h3 class="mt-3 text-white">Ver Logs de Acesso</h3>
-                        <p class="text-white-50">Veja quem acessou o sistema</p>
-                    </div>
-                </div>
-            </a>
+
+        <div class="card-metric">
+            <div class="icon green">✅</div>
+            <h3>{{ stats.usuarios_ativos }}</h3>
+            <p>Usuários Ativos (7d)</p>
         </div>
-    </div>
+
+        <div class="card-metric">
+            <div class="icon green">🆕</div>
+            <h3>{{ stats.novos_cadastros }}</h3>
+            <p>Novos Cadastros (7d)</p>
+        </div>
+
+        <div class="card-metric">
+            <div class="icon red">🔥</div>
+            <h3>{{ stats.erros_7dias }}</h3>
+            <p>Erros (7 dias)</p>
+        </div>
+
+    </section>
+
+    <!-- SEGURANÇA -->
+    <section class="section-links">
+
+        <a href="{{ url_for('logs_ataques.ataques') }}" class="card-link danger">
+            <h3>🛡️ Tentativas de Ataque</h3>
+            <p>Monitor de segurança do sistema</p>
+        </a>
+
+    </section>
+
+    <!-- LINKS PRINCIPAIS -->
+    <section class="section-links">
+
+        <a href="{{ url_for('logs_erros.logs_erros') }}" class="card-link">
+            <h3>❌ Logs de Erro</h3>
+            <p>Análise detalhada de erros</p>
+        </a>
+
+        <a href="{{ url_for('painel_acessos.logs_acessos') }}" class="card-link">
+            <h3>👁️ Logs de Acesso</h3>
+            <p>Monitoramento de usuários</p>
+        </a>
+
+    </section>
+
 </div>
 {% endblock %}
