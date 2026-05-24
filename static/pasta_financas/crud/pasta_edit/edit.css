@@ -1,82 +1,144 @@
-:root {
-    /* Mantenha as variáveis aqui para o Modo Escuro (Padrão) */
-    --bg-page: #121212;
-    --bg-card: #1a1a1a;
-    --bg-input: #262626;
-    --text-main: #ffffff;
-    --text-muted: #a0a0a0;
-    --border: #404040;
-    --accent: #28a745;
+/* ==========================================================
+   PADRÃO FINANÇAS - EDIT (IGUAL INSERT)
+========================================================== */
+
+.finance-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #e2e8f0;
 }
 
-body.light-mode {
-    /* Sobrescreva APENAS as variáveis no Modo Claro */
-    --bg-page: #f4f4f9;
-    --bg-card: #ffffff;
-    --bg-input: #eeeeee;
-    --text-main: #212529;
-    --text-muted: #6c757d;
-    --border: #ced4da;
-    --accent: #198754;
-}
-
-/* Aplicação das Variáveis */
-body { background-color: var(--bg-page); }
-
-.card-custom {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--text-main);
+/* CARD PRINCIPAL */
+.form-fin-card {
+    background: #020617;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
     overflow: hidden;
 }
 
-.card-header-custom {
-    padding: 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* HEADER */
+.form-fin-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: linear-gradient(135deg, #0f172a, #1e293b);
 }
 
-.card-body { padding: 24px; }
+.form-fin-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
 
-label { 
-    font-size: 0.85rem; 
-    font-weight: 600; 
-    color: var(--text-main); 
-    margin-bottom: 8px; 
+.form-fin-header p {
+    margin: 5px 0 0;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+/* BODY */
+.form-body {
+    padding: 20px;
+}
+
+/* FORM */
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
     display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 6px;
 }
 
-input, select {
-    background: var(--bg-input) !important;
-    border: 1px solid var(--border) !important;
-    color: var(--text-main) !important;
-    padding: 12px;
-    border-radius: 8px;
-    outline: none;
+/* INPUTS PADRÃO IGUAL INSERT */
+.form-input,
+.form-select {
     width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #1e293b;
+    background: #0b1220;
+    color: #fff;
+    outline: none;
 }
 
-input:focus, select:focus { border-color: var(--accent) !important; }
-
-/* Botões */
-.btn { 
-    padding: 10px 20px; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    font-weight: 600; 
-    border: 1px solid var(--border); 
-    background: transparent; 
-    color: var(--text-main); 
-    text-decoration: none; 
+.form-input:focus,
+.form-select:focus {
+    border-color: #3b82f6;
 }
 
-.btn-save { background: var(--accent); border: none; color: #fff; }
-.btn-outline { border-color: var(--border); }
+/* GRID IGUAL INSERT */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
 
-/* Layout Grid */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
-.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+/* ACTIONS PADRÃO */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* BOTÕES IGUAL INSERT */
+.btn {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: #e2e8f0;
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* LIGHT MODE IGUAL INSERT */
+body.light-mode .finance-wrapper {
+    color: #1e293b;
+}
+
+body.light-mode .form-fin-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+}
+
+body.light-mode .form-fin-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+body.light-mode .form-input,
+body.light-mode .form-select {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+
+body.light-mode .btn-secondary {
+    background: #e2e8f0;
+    color: #1e293b;
+}

@@ -1,121 +1,187 @@
-/* ==========================================================================
-   CONFIGURAÇÃO DE ALTA DENSIDADE (TUDO NA TELA)
-   ========================================================================== */
-.container-task { 
-    max-width: 600px; 
-    margin: 0.5rem auto; 
-    padding: 0 1rem; 
+/* ==========================================================
+   BASE
+========================================================== */
+.container-task {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #e2e8f0;
 }
 
-.card-task { 
-    background: rgba(18, 18, 22, 0.6); 
-    border: 1px solid rgba(255, 255, 255, 0.08); 
-    border-radius: 12px; 
-    backdrop-filter: blur(10px); 
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+/* ==========================================================
+   CARD PRINCIPAL
+========================================================== */
+.card-task {
+    background: #020617;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-.card-task-header { 
-    padding: 1rem 1.25rem; 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06); 
+/* HEADER */
+.card-task-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: #0f172a;
 }
 
-.header-align { display: flex; justify-content: space-between; align-items: center; }
-
-.title-main { 
-    font-size: 1.1rem; 
-    font-weight: 700; 
-    color: #ffffff; 
-    margin: 0; 
-    display: flex; 
-    align-items: center; 
-    gap: 0.5rem; 
+.title-main {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.title-main i { color: #3b82f6; }
-
-.subtitle-main { 
-    font-size: 0.75rem; 
-    color: rgba(255, 255, 255, 0.4); 
-    margin: 0.2rem 0 0 0; 
+.subtitle-main {
+    margin: 5px 0 0 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
 }
 
-.card-task-body { padding: 1rem 1.25rem; }
-
-.form-group { margin-bottom: 0.6rem; }
-
-.form-row { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; }
-.form-col { flex: 1; }
-
-.label-form { 
-    font-size: 0.7rem; 
-    font-weight: 600; 
-    text-transform: uppercase; 
-    color: rgba(255, 255, 255, 0.6); 
-    margin-bottom: 0.2rem; 
-    display: flex; 
-    align-items: center; 
-    gap: 0.3rem; 
+/* BODY */
+.card-task-body {
+    padding: 20px;
 }
 
-.input-form, .select-form { 
-    width: 100%; 
-    padding: 0.45rem 0.8rem; 
-    font-size: 0.85rem; 
-    background-color: rgba(30, 30, 38, 0.8) !important; 
-    border: 1px solid rgba(255, 255, 255, 0.1) !important; 
-    color: #ffffff !important; 
-    border-radius: 6px; 
-    outline: none; 
+/* ==========================================================
+   FORM
+========================================================== */
+.form-group {
+    margin-bottom: 12px;
 }
 
-/* Remove a altura fixa e permite crescimento */
-.textarea-form { 
-    min-height: 60px; 
-    max-height: 200px; /* Limite para não tomar a tela toda */
-    overflow-y: auto; 
-    resize: vertical;  /* Permite que você puxe se quiser */
+.form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
 }
 
-
-.input-form:focus, .select-form:focus { 
-    border-color: #3b82f6 !important; 
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); 
+.form-col {
+    flex: 1;
 }
 
-.form-actions { 
-    display: flex; 
-    justify-content: flex-end; 
-    gap: 0.5rem; 
-    margin-top: 0.8rem; 
-    padding-top: 0.5rem; 
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+.label-form {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
-.btn-action { 
-    padding: 0.45rem 1rem; 
-    font-size: 0.85rem; 
-    font-weight: 600; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 0.4rem; 
+/* INPUTS PADRÃO (IGUAL LOGS) */
+.input-form,
+.select-form,
+.textarea-form {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    background: #020617;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #e2e8f0;
+    outline: none;
+    font-size: 0.85rem;
+}
+
+.input-form:focus,
+.select-form:focus,
+.textarea-form:focus {
+    border-color: #3b82f6;
+}
+
+/* TEXTAREA */
+.textarea-form {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* ==========================================================
+   BOTÕES PADRÃO DO SISTEMA
+========================================================== */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-action {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+}
+
+/* VARIAÇÕES */
+.btn-back {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+.btn-clear {
+    background: transparent;
+    color: #94a3b8;
+}
+
+.btn-submit {
+    background: #3b82f6;
+    color: #fff;
     border: none;
 }
 
-.btn-back { background: rgba(255, 255, 255, 0.08); color: #fff; }
-.btn-clear { background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #aaa; }
-.btn-submit { background: #3b82f6; color: #fff; }
-
-/* SUPORTE TEMA CLARO */
-body.light-mode .card-task { background: #ffffff; border: 1px solid #e2e8f0; }
-body.light-mode .title-main { color: #1e293b; }
-body.light-mode .label-form { color: #475569; }
-body.light-mode .input-form, body.light-mode .select-form { 
-    background: #f8fafc !important; 
-    border: 1px solid #cbd5e1 !important; 
-    color: #1e293b !important; 
+.btn-back:hover,
+.btn-clear:hover,
+.btn-submit:hover {
+    opacity: 0.9;
 }
-body.light-mode .btn-back { background: #f1f5f9; color: #334155; }
-body.light-mode .btn-clear { border-color: #cbd5e1; color: #64748b; }
+
+/* ==========================================================
+   LIGHT MODE
+========================================================== */
+body.light-mode .card-task {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+}
+
+body.light-mode .card-task-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+body.light-mode .title-main {
+    color: #1e293b;
+}
+
+body.light-mode .subtitle-main {
+    color: #64748b;
+}
+
+body.light-mode .label-form {
+    color: #475569;
+}
+
+body.light-mode .input-form,
+body.light-mode .select-form,
+body.light-mode .textarea-form {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+
+body.light-mode .btn-back {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+body.light-mode .btn-clear {
+    color: #64748b;
+}
+
+body.light-mode .btn-submit {
+    background: #2563eb;
+}

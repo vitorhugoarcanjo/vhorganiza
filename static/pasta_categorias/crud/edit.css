@@ -1,37 +1,114 @@
-/* Container de formulário centralizado */
-.form-wrapper { max-width: 500px; margin: 40px auto; padding: 0 20px; }
+/* =========================================================
+   FORM EDIT PADRÃO (COMPATÍVEL SISTEMA)
+   ========================================================= */
 
-.card-custom {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 30px;
+.form-wrapper {
+    max-width: 520px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
-.form-group { margin-bottom: 20px; }
-.form-label { display: block; margin-bottom: 8px; font-weight: 600; color: #fff; }
+.card-custom {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+    padding: 22px;
+}
+
+/* TITULOS */
+.card-custom h2 {
+    margin-top: 0;
+    font-size: var(--fs-normal);
+    color: var(--texto-principal);
+}
+
+.card-custom p {
+    color: var(--texto-mutado);
+    font-size: var(--fs-pequeno);
+}
+
+/* FORM */
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--texto-principal);
+    font-size: var(--fs-pequeno);
+}
 
 .form-input {
     width: 100%;
-    padding: 12px;
-    background: #1a1a1a;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: white;
-    box-sizing: border-box;
+    padding: 10px;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    color: var(--texto-principal);
+    font-size: var(--fs-pequeno);
+    outline: none;
 }
 
-.color-group { display: flex; align-items: center; gap: 15px; }
-.color-input { width: 60px; height: 50px; border: none; cursor: pointer; background: none; }
-.color-preview { width: 50px; height: 50px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+/* COLOR PICKER */
+.color-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-.btn-row { display: flex; gap: 10px; margin-top: 30px; justify-content: flex-end; }
-.btn-base { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; text-decoration: none; }
-.btn-primary { background: #3b82f6; color: white; }
-.btn-outline { border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+.color-input {
+    width: 50px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
 
-/* Ajuste Tema Claro */
-body.light-mode .card-custom { background: white; border: 1px solid #ddd; }
-body.light-mode .form-label { color: #333; }
-body.light-mode .form-input { background: #f9f9f9; border: 1px solid #ccc; color: #333; }
-body.light-mode .btn-outline { border: 1px solid #ccc; color: #333; }
+.color-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+}
+
+/* BOTÕES */
+.btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.btn-base {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: var(--fs-pequeno);
+}
+
+.btn-primary {
+    background: var(--cor-ativa);
+    color: #fff;
+    border-color: var(--cor-ativa);
+}
+
+.btn-outline {
+    background: var(--bg-principal);
+    color: var(--texto-principal);
+}
+
+/* HOVER BASE (somente outline) */
+.btn-base.btn-outline:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+}
+
+/* HOVER PRIMARY (mantém identidade) */
+.btn-primary:hover {
+    filter: brightness(1.08);
+}

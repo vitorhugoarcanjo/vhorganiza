@@ -29,7 +29,7 @@
     font-size: var(--fs-normal);
 }
 /* ==========================================================================
-   2. FILTROS COMPACTOS (UNIFICADO COM SUPORTE A ALINHAMENTO DINÂMICO)
+   2. FILTROS COMPACTOS (AJUSTADO PARA ALINHAMENTO DINÂMICO)
    ========================================================================== */
 .painel-topo-fixo {
     flex-shrink: 0;
@@ -46,10 +46,10 @@
 .filtros-container {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;       /* Evita quebra de layout caso os filtros esmaguem */
+    flex-wrap: wrap;       /* Se a tela encolher um pouco, ele quebra linha em vez de estourar */
     gap: 10px;
     width: 100%;
-    align-items: stretch;  /* Garante que todos os blocos herdem a altura do maior bloco da linha */
+    align-items: stretch;  /* Faz todos os blocos vizinhos herdarem a altura do maior (Data) */
 }
 
 .bloco-filtro {
@@ -58,19 +58,19 @@
     border-radius: 6px;
     padding: 8px; 
     flex: 1;
-    min-width: 130px;      /* Largura mínima segura para os selects */
+    min-width: 130px;      /* Evita que selects fiquem ilegíveis ou sumam */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 }
 
-/* Dá o mesmo comportamento de largura inteligente para o primeiro bloco (geralmente Data) */
+/* Identifica o bloco de data (geralmente o primeiro ou o que tem flex-rows) para dar mais espaço de largura */
 .bloco-filtro:first-child {
-    flex: 1.8;             
-    min-width: 210px;      /* Espaço necessário para inputs compostos respirarem */
+    flex: 1.8;             /* Dá prioridade de largura para a Data não esmagar os inputs */
+    min-width: 210px;      /* Espaço seguro para os botões e inputs de data respirarem */
 }
 
-/* Alinha selects e inputs comuns na base do bloco para casar horizontalmente */
+/* Empurra selects e inputs simples para a base do bloco, alinhando com o final do bloco de data */
 .bloco-filtro .form-select,
 .bloco-filtro .form-control:not(.flex-row .form-control),
 .bloco-filtro .lista-categorias {
@@ -101,7 +101,7 @@
     background-color: var(--bg-principal);
     border: 1px solid var(--border-sutil);
     color: var(--texto-principal);
-    padding: 2px 4px !important; /* Letras e inputs mais finos */
+    padding: 2px 4px !important; 
     border-radius: 4px;
     font-size: var(--fs-pequeno) !important;
     outline: none;
@@ -126,6 +126,30 @@
     margin-top: 2px;
 }
 .botoes-esquerda { display: flex; gap: 6px; }
+
+/* ==========================================================================
+   3. CONTAINER DA TABELA (100% DA SOBRA DA TELA)
+   ========================================================================== */
+.painel-tabela-conteudo {
+    flex: 1;
+    width: 100%;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-responsive {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Scrollbar discreta */
+.table-responsive::-webkit-scrollbar { width: 5px; height: 5px; }
+.table-responsive::-webkit-scrollbar-thumb { background: var(--texto-discreto); border-radius: 3px; }
 
 /* ==========================================================================
    4. ALTURA DE REGISTROS ALTAMENTE COMPACTA E PROFISSIONAL

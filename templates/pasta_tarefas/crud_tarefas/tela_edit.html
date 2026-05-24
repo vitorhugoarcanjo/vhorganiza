@@ -9,21 +9,19 @@
 {% block content %}
 <div class="container-task">
     <div class="card-task">
+
         <div class="card-task-header">
             <div class="header-align">
                 <h2 class="title-main">
                     <i class="bi bi-pencil-square"></i> Editar Tarefa
                 </h2>
-                <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-action btn-back">
-                    <i class="bi bi-arrow-left"></i> Cancelar
-                </a>
             </div>
             <p class="subtitle-main">Modifique os campos necessários e salve as alterações</p>
         </div>
 
         <div class="card-task-body">
             <form method="post" action="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa_seq) }}">
-                
+
                 <div class="form-group">
                     <label class="label-form"><i class="bi bi-type"></i> Título</label>
                     <input type="text" name="titulo" class="input-form" value="{{ tarefa[0] }}" required>
@@ -43,6 +41,7 @@
                             <option value="concluido" {% if tarefa[2] == 'concluido' %}selected{% endif %}>✅ Concluído</option>
                         </select>
                     </div>
+
                     <div class="form-col">
                         <label class="label-form"><i class="bi bi-flag"></i> Prioridade</label>
                         <select name="prioridade" class="select-form">
@@ -58,6 +57,7 @@
                         <label class="label-form"><i class="bi bi-calendar-plus"></i> Início</label>
                         <input type="date" name="data_inicio" class="input-form" value="{{ tarefa[3] }}">
                     </div>
+
                     <div class="form-col">
                         <label class="label-form"><i class="bi bi-calendar-check"></i> Prazo</label>
                         <input type="date" name="data_final" class="input-form" value="{{ tarefa[4] }}">
@@ -78,24 +78,32 @@
                     </select>
                 </div>
 
+                <!-- BOTÕES (AGORA PADRÃO IGUAL SISTEMA) -->
                 <div class="form-actions">
-                    <button type="submit" class="btn-action btn-submit" style="width: 100%;">
+                    <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-action btn-back">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+
+                    <button type="submit" class="btn-action btn-submit">
                         <i class="bi bi-save"></i> Atualizar Tarefa
                     </button>
                 </div>
+
             </form>
         </div>
     </div>
 </div>
 
 <script>
-    // Ajuste automático da altura do textarea
-    const textarea = document.querySelector('.textarea-form');
-    function adjustHeight() {
-        textarea.style.height = '60px';
-        textarea.style.height = (textarea.scrollHeight) + 'px';
-    }
-    textarea.addEventListener('input', adjustHeight);
-    window.addEventListener('load', adjustHeight); // Ajusta ao carregar
+const textarea = document.querySelector('.textarea-form');
+
+function adjustHeight() {
+    textarea.style.height = '60px';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+}
+
+textarea.addEventListener('input', adjustHeight);
+window.addEventListener('load', adjustHeight);
 </script>
+
 {% endblock %}

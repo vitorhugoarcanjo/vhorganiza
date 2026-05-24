@@ -14,9 +14,6 @@
                 <h2 class="title-main">
                     <i class="bi bi-plus-circle"></i> Nova Tarefa
                 </h2>
-                <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-action btn-back">
-                    <i class="bi bi-arrow-left"></i> Voltar
-                </a>
             </div>
             <p class="subtitle-main">Preencha os dados abaixo para registrar o fluxo</p>
         </div>
@@ -76,6 +73,9 @@
 
                 <div class="form-actions">
                     <button type="reset" class="btn-action btn-clear"><i class="bi bi-eraser"></i> Limpar</button>
+                    <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-action btn-back">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
                     <button type="submit" class="btn-action btn-submit"><i class="bi bi-save"></i> Salvar</button>
                 </div>
             </form>

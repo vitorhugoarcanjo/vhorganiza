@@ -5,57 +5,81 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="form-insert-card">
-        <div class="header">
-            <h2>Nova Transação</h2>
-            <p>Preencha os dados para registrar uma movimentação</p>
+
+<div class="finance-wrapper">
+
+    <div class="form-fin-card">
+
+        <!-- HEADER -->
+        <div class="form-fin-header">
+            <h2><i class="bi bi-cash-coin"></i> Nova Transação</h2>
+            <p>Registre uma entrada ou saída financeira no sistema</p>
         </div>
 
-        <form action="{{ url_for('nova_transacao.initransacao') }}" method="post">
-            <div class="form-group">
-                <label>Tipo de Transação</label>
-                <select name="tipo" required>
-                    <option value="">Selecione...</option>
-                    <option value="receita">Receita (Entrada)</option>
-                    <option value="despesa">Despesa (Saída)</option>
-                </select>
-            </div>
+        <!-- BODY -->
+        <div class="form-body">
 
-            <div class="grid">
+            <form action="{{ url_for('nova_transacao.initransacao') }}" method="post">
+
                 <div class="form-group">
-                    <label>Valor Total *</label>
-                    <div class="input-group">
-                        <span>$</span>
-                        <input type="number" name="valor_total" step="0.01" required>
+                    <label>Tipo de Transação</label>
+                    <select name="tipo" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="receita">💰 Receita (Entrada)</option>
+                        <option value="despesa">💸 Despesa (Saída)</option>
+                    </select>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Valor Total</label>
+                        <input type="number" name="valor_total" step="0.01" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" name="descricao" class="form-input" placeholder="Ex: Salário" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Parcelas</label>
+                        <input type="number" name="total_parcelas" class="form-input" value="1" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Data Emissão</label>
+                        <input type="date" name="data_emissao" class="form-input" value="{{ hoje }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Data Vencimento</label>
+                        <input type="date" name="data_vencimento" class="form-input" value="{{ hoje }}">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Descrição *</label>
-                    <input type="text" name="descricao" placeholder="Ex: Salário" required>
+
+                <div class="form-actions">
+
+                    <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+
+                    <button type="reset" class="btn btn-secondary">
+                        Limpar
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Salvar Transação
+                    </button>
+
                 </div>
 
-                <div class="form-group">
-                    <label>Parcelas</label>
-                    <input type="number" name="total_parcelas" value="1" min="1">
-                </div>
-                <div class="form-group">
-                    <label>Data Emissão *</label>
-                    <input type="date" name="data_emissao" value="{{ hoje }}" required>
-                </div>
+            </form>
 
-                <div class="form-group full-width">
-                    <label>Data Vencimento</label>
-                    <input type="date" name="data_vencimento" value="{{ hoje }}">
-                </div>
-            </div>
+        </div>
 
-            <div class="actions">
-                <a href="{{ url_for('financas.inifinancas') }}" class="btn-link">Voltar</a>
-                <button type="reset">Limpar</button>
-                <button type="submit" class="btn-save">Salvar</button>
-            </div>
-        </form>
     </div>
+
 </div>
+
 {% endblock %}

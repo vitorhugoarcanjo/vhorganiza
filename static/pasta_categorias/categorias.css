@@ -1,44 +1,293 @@
+/* =========================================================
+   BASE PADRÃO (COMPATÍVEL COM TAREFAS)
+   ========================================================= */
+
 :root {
-    --bg-dark: #0f0f0f;
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --border: rgba(255, 255, 255, 0.1);
-    --text: #ffffff;
-    --text-muted: #a0a0a0;
-    --accent: #3b82f6;
-    --danger: #ef4444;
+    --fs-micro: 0.62rem;
+    --fs-pequeno: 0.72rem;
+    --fs-normal: 0.8rem;
 }
 
-body { background-color: var(--bg-dark); color: var(--text); font-family: sans-serif; margin: 0; }
-body.light-mode { background-color: #f8f9fa; color: #212529; }
+/* =========================================================
+   CONTAINER PRINCIPAL
+   ========================================================= */
 
-.container-custom { max-width: 1000px; margin: 40px auto; padding: 20px; }
-
-/* Cards */
-.card-custom {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
+.painel-container {
+    display: flex;
+    flex-direction: column;
+    width: 98% !important;
+    max-width: 98% !important;
+    height: 100%;
+    margin: 0 auto;
+    padding: 10px 0;
+    gap: 10px;
 }
-body.light-mode .card-custom { background: #ffffff; border: 1px solid #dee2e6; }
 
-/* Header Flex */
-.header-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+/* =========================================================
+   HEADER PADRÃO (IGUAL TAREFAS)
+   ========================================================= */
 
-/* Tabela Customizada */
-.table-custom { width: 100%; border-collapse: collapse; margin-top: 10px; }
-.table-custom th { color: var(--text-muted); text-align: left; padding: 12px; border-bottom: 1px solid var(--border); }
-.table-custom td { padding: 16px 12px; border-bottom: 1px solid var(--border); }
-body.light-mode .table-custom th { color: #6c757d; }
+.painel-topo-fixo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-/* Botões */
-.btn-base { padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
-.btn-primary { background: var(--accent); color: white; }
-.btn-outline { border: 1px solid var(--border); color: var(--text); }
-body.light-mode .btn-outline { border-color: #ced4da; color: #495057; }
+.tarefas-controle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 4px 0;
+}
 
-/* Ações e Preview */
-.color-preview { width: 32px; height: 32px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
-.action-link { margin-right: 12px; text-decoration: none; color: var(--text-muted); font-size: 0.9rem; }
-.action-link:hover { color: var(--accent); }
+.botoes-esquerda {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.status-direita {
+    display: flex;
+    align-items: center;
+}
+
+/* =========================================================
+   GRID DE CATEGORIAS (NOVO - DIFERENCIAL VISUAL)
+   ========================================================= */
+
+.categorias-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+}
+
+/* CARD BASE (BRILHO LEVE DIFERENCIAL) */
+.categoria-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+
+    /* BRILHO SUTIL (IDENTIDADE CATEGORIAS) */
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.02);
+}
+
+/* HEADER INTERNO DOS BOXES */
+.box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.box-title {
+    font-size: var(--fs-normal);
+    font-weight: 600;
+    color: var(--texto-principal);
+}
+
+/* =========================================================
+   TABELA (PADRÃO TAREFAS)
+   ========================================================= */
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: var(--fs-pequeno);
+}
+
+.custom-table th {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    text-align: left;
+    padding: 6px;
+    border-bottom: 1px solid var(--border-sutil);
+}
+
+.custom-table td {
+    padding: 6px;
+    color: var(--texto-principal);
+    border-bottom: 1px solid var(--border-sutil);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* hover igual tarefas */
+.custom-table tr:hover td {
+    background: var(--hover-fino);
+}
+
+/* =========================================================
+   COR DA CATEGORIA
+   ========================================================= */
+
+.cor-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    display: inline-block;
+    border: 1px solid var(--border-sutil);
+}
+
+/* =========================================================
+   AÇÕES (IGUAL TAREFAS)
+   ========================================================= */
+
+.td-acoes {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-acao {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border-sutil);
+    border-radius: 4px;
+    background: var(--bg-principal);
+    color: var(--texto-mutado);
+
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-acao:hover {
+    color: var(--texto-principal);
+}
+
+.btn-acao.edit:hover {
+    color: var(--cor-ativa);
+}
+
+.btn-acao.delete:hover {
+    color: #ef4444;
+}
+
+
+/* =========================================================
+   BOTÃO DE NAVEGAÇÃO PADRÃO (TAREFAS / FINANÇAS)
+   ========================================================= */
+
+.btn-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+
+    padding: 3px 8px;
+    border-radius: 4px;
+
+    font-size: var(--fs-pequeno);
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+/* hover padrão neutro */
+.btn-nav:hover {
+    background: var(--hover-fino);
+    border-color: var(--border-sutil);
+}
+
+/* opcional: leve destaque sem “colorir”
+   (só para feedback visual) */
+.btn-nav:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.td-vazio {
+    text-align: center;
+    padding: 40px;
+    color: var(--texto-mutado);
+}
+
+/* =========================================================
+   BADGES (COMPATÍVEL TAREFAS/FINANÇAS)
+   ========================================================= */
+
+.badge-pure {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+}
+
+/* =========================================================
+   BOTÕES PADRÃO (IGUAL TAREFAS)
+   ========================================================= */
+
+.btn-pure {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: var(--fs-pequeno);
+
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-pure:hover {
+    background: var(--hover-fino);
+}
+
+.btn-success-pure {
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
+}
+
+.btn-info-pure {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-destaque {
+    font-weight: 600;
+}
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .categorias-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tarefas-controle-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .status-direita {
+        align-self: flex-end;
+    }
+}

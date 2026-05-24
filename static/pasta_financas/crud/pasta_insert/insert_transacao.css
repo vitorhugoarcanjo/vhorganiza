@@ -1,61 +1,213 @@
-:root {
-    /* Modo Escuro (Padrão) */
-    --bg-card: #1a1a1a;
-    --bg-input: #262626;
-    --text: #ffffff;
-    --text-muted: #a0a0a0;
-    --accent: #28a745;
-    --border: #404040;
-    --input-group-bg: #333;
+/* ==========================================================
+   BASE
+========================================================== */
+.finance-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #e2e8f0;
 }
 
-body.light-mode {
-    /* Modo Claro */
-    --bg-card: #ffffff;
-    --bg-input: #f8f9fa;
-    --text: #212529;
-    --text-muted: #6c757d;
-    --accent: #198754;
-    --border: #dee2e6;
-    --input-group-bg: #e9ecef;
+/* ==========================================================
+   CARD PRINCIPAL
+========================================================== */
+.form-fin-card {
+    background: #020617;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.2s;
 }
 
-/* Layout Principal */
-.container { max-width: 800px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
-
-.form-insert-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px;
-    color: var(--text);
+.form-fin-card:hover {
+    border-color: rgba(255,255,255,0.15);
 }
 
-.header { text-align: center; margin-bottom: 30px; }
-.header h2 { margin: 0; color: var(--text); }
-.header p { color: var(--text-muted); }
+/* HEADER */
+.form-fin-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
 
-/* Grid Manual */
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.full-width { grid-column: span 2; }
-.form-group { display: flex; flex-direction: column; margin-bottom: 20px; }
+.form-fin-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
 
-/* Inputs */
-label { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-input, select {
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 12px;
+.form-fin-header p {
+    margin: 5px 0 0;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+/* ==========================================================
+   FORM
+========================================================== */
+.form-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+
+/* INPUTS */
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 10px;
     border-radius: 8px;
+    border: 1px solid #1e293b;
+    background: #0b1220;
+    color: #fff;
     outline: none;
 }
 
-.input-group { display: flex; align-items: center; }
-.input-group span { background: var(--input-group-bg); padding: 12px; border: 1px solid var(--border); border-right: none; border-radius: 8px 0 0 8px; color: var(--text-muted); }
-.input-group input { border-radius: 0 8px 8px 0; width: 100%; }
+.form-input:focus,
+.form-select:focus {
+    border-color: #3b82f6;
+}
 
-/* Botões */
-.actions { display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border); padding-top: 20px; }
-button, .btn-link { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); text-decoration: none; }
-.btn-save { background: var(--accent); border: none; color: white; }
+/* GRID */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+/* INPUT GROUP (R$) */
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0b1220;
+}
+
+.input-group span {
+    padding: 0 10px;
+    color: #94a3b8;
+    background: #0f172a;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #fff;
+}
+
+/* ==========================================================
+   ACTIONS
+========================================================== */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    flex-wrap: wrap;
+}
+
+/* BOTÕES BASE */
+.btn {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* PRINCIPAL */
+.btn-primary {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+/* SECUNDÁRIO (Cancelar / Limpar) */
+.btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: #e2e8f0;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* ==========================================================
+   LIGHT MODE (CORRIGIDO)
+========================================================== */
+body.light-mode .finance-wrapper {
+    color: #1e293b;
+}
+
+body.light-mode .form-fin-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+}
+
+body.light-mode .form-fin-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+body.light-mode .form-fin-header p {
+    color: #64748b;
+}
+
+/* INPUTS LIGHT */
+body.light-mode .form-input,
+body.light-mode .form-select,
+body.light-mode .input-group {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+
+body.light-mode .input-group span {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* BOTÕES LIGHT (CORREÇÃO PRINCIPAL) */
+body.light-mode .btn-secondary {
+    background: #e2e8f0;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+}
+
+body.light-mode .btn-secondary:hover {
+    background: #cbd5e0;
+}
+
+body.light-mode .btn-primary {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+body.light-mode .btn-primary:hover {
+    background: #1d4ed8;
+}
