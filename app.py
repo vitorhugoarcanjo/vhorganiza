@@ -31,7 +31,7 @@ def inject_global_contexts():
             filename = values.get('filename', None)
             if filename:
                 # Conecta com a pasta static do projeto
-                file_path = os.path.join(app.root_path, endpoint, filename)
+                file_path = os.path.join(app.static_folder, filename)
 
                 try:
                     # Adiciona a data da última modificação do arquivo (?v=timestamp)
