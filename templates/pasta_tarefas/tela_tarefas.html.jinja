@@ -3,13 +3,13 @@
 {% block title %}Gestão de Tarefas{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/import_css.css') }}">
+    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/import_css.css') }}">
 
     <!-- CSS MODAL - CONCLUIR TAREFA -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/modais/concluir_tarefa.css') }}">
+    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/concluir_tarefa.css') }}">
 
     <!-- CSS MODAL - DETALHES AUDITORIA -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_tarefas/modais/detalhes_auditoria.css') }}">
+    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/detalhes_auditoria.css') }}">
 {% endblock %}
 
 {% block content %}

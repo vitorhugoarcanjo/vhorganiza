@@ -26,28 +26,22 @@ app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 # BLOCO - VERSIONAMENTO E VARIAVEIS GLOBAIS
 @app.context_processor
 def inject_global_contexts():
-    def date_url_for(endpoint, **values):
-        if endpoint == 'static':
-            filename = values.get('filename', None)
-            if filename:
-                # Conecta com a pasta static do projeto
-                file_path = os.path.join(app.static_folder, filename)
+    def static_v(filename):
+        file_path = os.path.join(app.static_folder, filename)
 
-                try:
-                    # Adiciona a data da última modificação do arquivo (?v=timestamp)
-                    values['v'] = int(os.stat(file_path).st_mtime)
+        try:
+            version = int(os.stat(file_path).st_mtime)
+        except OSError:
+            version = 1  # fallback seguro
 
-                except OSError:
-                    pass
-        return url_for(endpoint, **values)
-    
+        return url_for('static', filename=filename, v=version)
+
     return {
-        'url_for': date_url_for,
+        'static_v': static_v,
         'versao_sistema': '1.0.0'
     }
 
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=240) # SESSÃO DE LOGIN 60
-    
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=240) # SESSÃO DE LOGIN 60    
 
 @app.route('/')
 def ini_app():
