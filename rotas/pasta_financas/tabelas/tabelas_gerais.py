@@ -6,11 +6,12 @@ def tabela_transacoes(cursor):
         CREATE TABLE IF NOT EXISTS transacoes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
+            sequencia_transacoes INTEGER,
             
             -- dados básicos da transação
             tipo TEXT,
             descricao TEXT,
-            categoria TEXT,
+            categoria_id INTEGER,
             
             -- Datas importantes
             data_emissao DATE, -- Quando foi criada
@@ -30,7 +31,10 @@ def tabela_transacoes(cursor):
             status TEXT DEFAULT 'aberto',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     
-            FOREIGN KEY (user_id) REFERENCES cadastre_se(id) ON DELETE CASCADE       
+            FOREIGN KEY (user_id) REFERENCES cadastre_se(id) ON DELETE CASCADE,
+            FOREIGN KEY (categoria_id) REFERENCES categorias_financas(id) ON DELETE SET NULL
+                       
+                             
         )
     """)
         print("✅ tabela tabela_transacoes criada com sucesso")

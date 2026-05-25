@@ -30,6 +30,18 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label>Categoria</label>
+
+                    <select name="categoria_id" class="form-select" required>
+                        <option value="">Selecione a categoria...</option>
+
+                        {% for cat in categorias %}
+                            <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
                 <div class="form-grid">
 
                     <div class="form-group">

@@ -1,4 +1,4 @@
-import os
+"""import os
 import shutil
 from datetime import datetime
 
@@ -104,3 +104,4 @@ def migrar_transacoes_com_backup(cursor, caminho_banco):
     print("✅ Dados migrados com sucesso")
 
     print("🎯 MIGRAÇÃO FINALIZADA COM BACKUP SEGURO")
+    """

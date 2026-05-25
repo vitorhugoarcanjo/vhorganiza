@@ -1,6 +1,6 @@
-import os
+"""import os
 import sqlite3
-from script_migrar_bd import migrar_transacoes_com_backup
+from utils.migrar_tabela_nova.script_migrar_bd import migrar_transacoes_com_backup
 
 caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
@@ -16,4 +16,4 @@ def rodar():
     print("🚀 Migração executada com sucesso!")
 
 if __name__ == "__main__":
-    rodar()
+    r---()"""

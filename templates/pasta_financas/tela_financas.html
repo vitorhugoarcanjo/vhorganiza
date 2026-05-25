@@ -160,18 +160,28 @@
                     <td class="td-titulo">{{ transacao[4] }}</td>
 
                     <td>
-                        {% if transacao[7] == 'aberto' %}
+                        {% if transacao[8] == 'aberto' %}
                             <span class="badge-pure bg-danger">Aberto</span>
-                        {% elif transacao[7] == 'quitado' %}
+                        {% elif transacao[8] == 'quitado' %}
                             <span class="badge-pure bg-success">Quitado</span>
                         {% else %}
                             <span class="badge-pure bg-success">Recebido</span>
                         {% endif %}
                     </td>
 
-                    <td>{{ transacao[6] or '-' }}</td>
+                    <td>
+                        {% if transacao[6] %}
+                            <span class="categoria-tag" style="background: {{ transacao[7] }};">
+                                <span class="dot"></span>
+                                {{ transacao[6] }}
+                            </span>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
                     <td>{{ transacao[5] or '-' }}</td>
-                    <td>{{ transacao[8] or '-' }}</td>
+                    <td>{{ transacao[9] or '-' }}</td>
 
                     <td class="td-acoes">
 
@@ -186,7 +196,7 @@
                             <i class="bi bi-trash"></i>
                         </a>
 
-                        {% if transacao[2] == 'despesa' and transacao[7] == 'aberto' %}
+                        {% if transacao[2] == 'despesa' and transacao[8] == 'aberto' %}
                         <a href="{{ url_for('quitar_transacao.iniquitacao', sequencia=transacao[0]) }}"
                            class="btn-acao check">
                             <i class="bi bi-check-lg"></i>

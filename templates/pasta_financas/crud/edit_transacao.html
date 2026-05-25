@@ -12,13 +12,11 @@
 
     <div class="form-fin-card">
 
-        <!-- HEADER -->
         <div class="form-fin-header">
             <h2>Editar Transação #{{ sequencia }}</h2>
             <p>Altere os dados abaixo</p>
         </div>
 
-        <!-- BODY -->
         <div class="form-body">
 
             <form method="POST">
@@ -27,51 +25,69 @@
                 <div class="form-group">
                     <label>Tipo de Transação</label>
                     <select name="tipo" class="form-select" required>
-                        <option value="receita" {% if transacao[2] == 'receita' %}selected{% endif %}>
-                            💰 Receita
-                        </option>
-                        <option value="despesa" {% if transacao[2] == 'despesa' %}selected{% endif %}>
-                            💸 Despesa
-                        </option>
+                        <option value="receita" {% if transacao[2] == 'receita' %}selected{% endif %}>💰 Receita</option>
+                        <option value="despesa" {% if transacao[2] == 'despesa' %}selected{% endif %}>💸 Despesa</option>
                     </select>
                 </div>
 
-                <!-- GRID PRINCIPAL (IGUAL INSERT) -->
+                <!-- CATEGORIA -->
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select name="categoria_id" class="form-select">
+                        <option value="">Sem categoria</option>
+
+                        {% for cat in categorias %}
+                        <option value="{{ cat[0] }}"
+                            {% if transacao[6] == cat[0] %}selected{% endif %}>
+                            {{ cat[1] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- GRID -->
                 <div class="form-grid">
 
                     <div class="form-group">
                         <label>Valor Total</label>
-                        <input type="number" name="valor_total" class="form-input"
-                               step="0.01" value="{{ transacao[3] }}" required>
+                        <input type="number" name="valor_total"
+                               step="0.01"
+                               value="{{ transacao[3] }}"
+                               class="form-input"
+                               required>
                     </div>
 
                     <div class="form-group">
                         <label>Descrição</label>
-                        <input type="text" name="descricao" class="form-input"
-                               value="{{ transacao[4] }}" required>
+                        <input type="text"
+                               name="descricao"
+                               value="{{ transacao[4] }}"
+                               class="form-input"
+                               required>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label>Parcelas</label>
-                        <input type="number" name="total_parcelas" class="form-input"
-                               value="{{ transacao[6] or 1 }}" min="1">
-                    </div>
-
+                <div class="form-grid">
                     <div class="form-group">
                         <label>Data Emissão</label>
-                        <input type="date" name="data_emissao" class="form-input"
-                               value="{{ transacao[5] }}" required>
+                        <input type="date"
+                               name="data_emissao"
+                               value="{{ transacao[5] }}"
+                               class="form-input"
+                               required>
                     </div>
 
                     <div class="form-group">
                         <label>Data Vencimento</label>
-                        <input type="date" name="data_vencimento" class="form-input"
-                               value="{{ transacao[8] }}">
+                        <input type="date"
+                               name="data_vencimento"
+                               value="{{ transacao[10] }}"
+                               class="form-input">
                     </div>
 
                 </div>
 
-                <!-- ACTIONS IGUAL INSERT -->
+                <!-- ACTIONS -->
                 <div class="form-actions">
 
                     <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-secondary">
