@@ -10,7 +10,7 @@
         <h2 style="margin-top: 0;">✏️ Editar Categoria</h2>
         <p style="color: #a0a0a0;">Altere as informações da sua categoria</p>
 
-        <form method="POST" action="{{ url_for('edit_cat_tar.ini_edit_cat_tar', id=categoria[0]) }}">
+        <form method="POST" action="{{ url_for('categorias.editar_categoria_salvar', id=categoria[0], tipo=tipo) }}">
             
             <div class="form-group">
                 <label class="form-label">Nome da Categoria</label>

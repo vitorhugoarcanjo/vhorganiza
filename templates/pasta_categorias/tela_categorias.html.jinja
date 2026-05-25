@@ -37,12 +37,6 @@
 
             </div>
 
-            <div class="status-direita">
-                <span class="badge-pure bg-primary">
-                    {{ categoria_tarefas|length }} categorias
-                </span>
-            </div>
-
         </div>
 
     </div>
@@ -57,6 +51,14 @@
 
             <div class="box-header">
                 <div class="box-title">🏷️ Categorias - Tarefas</div>
+
+                <span class="badge-pure bg-primary">
+                    {{ categoria_tarefas|length }} Categorias
+                </span>
+            </div>
+
+            <div class="status-direita">
+
             </div>
 
             <table class="custom-table">
@@ -87,13 +89,13 @@
 
                         <td class="td-acoes">
 
-                            <a href="{{ url_for('edit_cat_tar.ini_edit_cat_tar', id=row[0]) }}"
-                               class="btn-acao edit"
-                               title="Editar">
+                            <a href="{{ url_for('categorias.editar_categoria_form', id=row[0], tipo='tarefas') }}"
+                            class="btn-acao edit"
+                            title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
 
-                            <a href="{{ url_for('categorias.excluir_categoria', id=row[0]) }}"
+                            <a href="{{ url_for('categorias.excluir_categoria', modulo='tarefas', id=row[0]) }}"
                                class="btn-acao delete"
                                title="Excluir"
                                onclick="return confirm('Excluir categoria?')">
@@ -127,13 +129,72 @@
 
             <div class="box-header">
                 <div class="box-title">💰 Categorias - Finanças</div>
+
+                <span class="badge-pure bg-primary">
+                    {{ categoria_financas|length }} Categorias
+                </span>
             </div>
 
-            <div class="empty-box">
-                <i class="bi bi-cash-stack" style="font-size: 2rem; opacity: 0.4;"></i>
-                <p>Nenhuma categoria de finanças ainda</p>
-                <small>Será implementado futuramente</small>
-            </div>
+            <table class="custom-table">
+
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th style="width: 80px;">Cor</th>
+                        <th style="width: 90px; text-align:center;">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% if categoria_financas %}
+
+                    {% for row in categoria_financas %}
+                    <tr>
+
+                        <td class="td-titulo">
+                            {{ row[1] }}
+                        </td>
+
+                        <td>
+                            <span class="cor-dot"
+                                  style="background: {{ row[2] }};"></span>
+                        </td>
+
+                        <td class="td-acoes">
+
+                            <a href="{{ url_for('categorias.editar_categoria_form', id=row[0], tipo='financas') }}"
+                            class="btn-acao edit"
+                            title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a href="{{ url_for('categorias.excluir_categoria', modulo='financas', id=row[0]) }}"
+                               class="btn-acao delete"
+                               title="Excluir"
+                               onclick="return confirm('Excluir categoria?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="3" class="td-vazio">
+                            <i class="bi bi-tags" style="font-size: 2rem; opacity: 0.5;"></i>
+                            <p>Nenhuma categoria de Finanças</p>
+                        </td>
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
 
         </div>
 

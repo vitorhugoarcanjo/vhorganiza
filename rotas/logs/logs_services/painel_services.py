@@ -13,7 +13,7 @@ class LogService:
     
     @staticmethod
     def get_db_connection():
-        conn = sqlite3.connect(caminho_banco)
+        conn = sqlite3.connect(caminho_banco, timeout=10)
         conn.row_factory = sqlite3.Row
         return conn
     
@@ -23,6 +23,11 @@ class LogService:
         try:
             conn = LogService.get_db_connection()
             cursor = conn.cursor()
+
+            user_id = session.get('user_id') if session else None
+            rota = request.path if request else None
+            metodo = request.method if request else None
+
             
             cursor.execute("""
                 INSERT INTO logs_erros (mensagem, arquivo, linha, user_id, rota, metodo, stack_trace)
@@ -31,9 +36,9 @@ class LogService:
                 mensagem[:500],
                 arquivo,
                 linha,
-                session.get('user_id'),  # ← mudou para user_id
-                request.path if request else None,
-                request.method if request else None,
+                user_id,  # ← mudou para user_id
+                rota,
+                metodo,
                 stack_trace[:1000] if stack_trace else None
             ))
             

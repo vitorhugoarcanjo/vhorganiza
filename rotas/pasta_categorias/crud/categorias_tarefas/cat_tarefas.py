@@ -6,4 +6,4 @@ def insert_cat_tarefa(nome, cor, user_id, cursor):
         return False, f"Nome {nome} já existe!"
     
     cursor.execute('INSERT INTO categorias_tarefas (user_id, nome, cor) VALUES (?, ?, ?)', (user_id, nome, cor))
-    return True, f"Categoria {resultado} criado com sucesso!"
+    return True, f"Categoria {nome} criado com sucesso!"

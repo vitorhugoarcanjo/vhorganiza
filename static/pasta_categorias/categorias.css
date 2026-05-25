@@ -47,10 +47,6 @@
     flex-wrap: wrap;
 }
 
-.status-direita {
-    display: flex;
-    align-items: center;
-}
 
 /* =========================================================
    GRID DE CATEGORIAS (NOVO - DIFERENCIAL VISUAL)
@@ -287,7 +283,4 @@
         gap: 6px;
     }
 
-    .status-direita {
-        align-self: flex-end;
-    }
 }
