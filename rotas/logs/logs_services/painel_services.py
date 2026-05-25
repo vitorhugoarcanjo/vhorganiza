@@ -53,6 +53,23 @@ class LogService:
     def registrar_acesso(user_id, ip, user_agent, rota, metodo, status_code, tempo_resposta):
         """Registra um acesso no banco"""
         try:
+            # ROTAS IGNORADAS 
+            rotas_ignoradas = [
+                '/static/',
+                '/favicon.ico',
+                '/tarefas/detalhes/',
+                '/tarefas/limpar_filtros/',
+                '/tarefas/',
+                '/categorias/',
+                '/financas/',
+                '/config/',
+                '/dashboard',
+            ]
+
+            # VALIDAÇÃO DAS ROTAS IGNORADAS
+            if any(rota.startswith(r) for r in rotas_ignoradas):
+                return True
+
             conn = LogService.get_db_connection()
             cursor = conn.cursor()
             

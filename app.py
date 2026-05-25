@@ -46,7 +46,7 @@ def inject_global_contexts():
         'versao_sistema': '1.0.0'
     }
 
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=60) # SESSÃO DE LOGIN 60
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=240) # SESSÃO DE LOGIN 60
     
 
 @app.route('/')
