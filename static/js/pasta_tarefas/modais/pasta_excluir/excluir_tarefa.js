@@ -12,8 +12,20 @@ function excluirTarefa(id, titulo) {
                 method: "POST",
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
-            if (response.ok) location.reload();
-            else alert("Erro ao excluir tarefa");
+            if (response.ok) {
+                // Remove a linha da tabela sem recarregar a página
+                const linha = document.querySelector(`button[onclick*="excluirTarefa(${id},"]`).closest('tr');
+                if (linha) linha.remove();
+                
+                // Opcional: atualiza contador de tarefas
+                const contador = document.querySelector('.badge-pure.bg-primary');
+                if (contador) {
+                    const qtdAtual = parseInt(contador.innerText);
+                    contador.innerText = `${qtdAtual - 1} tarefas`;
+                }
+            } else {
+                alert("Erro ao excluir tarefa");
+            }
         }
     });
 }
