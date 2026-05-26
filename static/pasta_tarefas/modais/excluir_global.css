@@ -1,16 +1,27 @@
+/* Modal Overlay - Base (invisível por padrão) */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
+/* Quando ativo, mostra o modal */
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Box */
 .modal-box {
     background: #1e1e1e;
     padding: 20px;
@@ -18,12 +29,24 @@
     width: 350px;
     color: white;
     text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-box h3 {
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.modal-box p {
+    margin: 15px 0;
+    color: #ddd;
 }
 
 .modal-actions {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .btn-cancelar {
@@ -32,6 +55,12 @@
     border: none;
     padding: 8px 12px;
     cursor: pointer;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.btn-cancelar:hover {
+    background: #555;
 }
 
 .btn-confirmar {
@@ -40,4 +69,10 @@
     border: none;
     padding: 8px 12px;
     cursor: pointer;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.btn-confirmar:hover {
+    background: #c0392b;
 }

@@ -223,7 +223,8 @@
                                     
                                     <button type="button"
                                             class="btn-acao delete"
-                                            onclick="excluirTarefa({{ tarefa[0] }}, '{{ tarefa[1] }}')">
+                                            onclick="excluirTarefa({{ tarefa[0] }}, '{{ tarefa[1] }}')"
+                                            console.log("CONFIRM clicado");>
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 {% endif %}
@@ -248,11 +249,12 @@
     <!-- CSS NO TOPO -->
 
     <!-- JS MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA -->
+    <!-- JS MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA -->
     {% block scripts %}
-    <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/concluir_tarefas.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/detalhes_auditoria.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/excluir_tarefa.js') }}"></script>
-
+        <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/concluir_tarefas.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/detalhes_auditoria.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/pasta_excluir/excluir_tarefa.js') }}"></script>
     {% endblock %}
 
 
