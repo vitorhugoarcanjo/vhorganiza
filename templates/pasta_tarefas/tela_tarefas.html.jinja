@@ -10,6 +10,9 @@
 
     <!-- CSS MODAL - DETALHES AUDITORIA -->
     <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/detalhes_auditoria.css') }}">
+
+    <!-- CSS MODAL - EXCLUIR TAREFA -->
+    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/excluir_global.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -218,11 +221,11 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     
-                                    <form method="post" action="{{ url_for('tarefas.excluir_tarefa', tarefa_seq=tarefa[0]) }}" style="display:inline;" onsubmit="return confirm('Confirmar exclusão?')">
-                                        <button class="btn-acao delete" title="Excluir">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                            class="btn-acao delete"
+                                            onclick="excluirTarefa({{ tarefa[0] }}, '{{ tarefa[1] }}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 {% endif %}
                             </td>
                         </tr>
@@ -238,15 +241,18 @@
     </div>
 </div>
 
-    <!-- HTML MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA -->
+    <!-- HTML MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA / EXCLUIR TAREFA -->
     {% include 'pasta_tarefas/modais/concluir_tarefa.html' %}
     {% include 'pasta_tarefas/modais/detalhes_auditoria.html' %}
+    {% include 'pasta_tarefas/modais/excluir_tarefa.html' %}
     <!-- CSS NO TOPO -->
 
     <!-- JS MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA -->
     {% block scripts %}
     <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/concluir_tarefas.js') }}"></script>
     <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/detalhes_auditoria.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pasta_tarefas/modais/excluir_tarefa.js') }}"></script>
+
     {% endblock %}
 
 
