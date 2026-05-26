@@ -1,7 +1,7 @@
 {% extends "tela_base_pos_login/base.html" %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='pasta_financas/crud/pasta_insert/import_css.css') }}">
+<link rel="stylesheet" href="{{ static_v('pasta_financas/crud/pasta_insert/import_css.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -97,7 +97,7 @@
 </div>
 
 {% block scripts %}
-    <script src="{{ url_for('static', filename='js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
+    <script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
 {% endblock %}
 
 {% endblock %}
