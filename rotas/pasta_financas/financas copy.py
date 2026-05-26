@@ -15,33 +15,24 @@ def inifinancas():
     data_hoje = date.today()
     user_id = session['user_id']
 
-    # ===== FILTRO DE DATA (COM PREFIXO) =====
+    # 🔥 FILTRO DE DATA (processa POST e GET)
     data_inicio, data_fim, tipo_data = filtro_datas(data_hoje, prefixo='financas')
-    
-    # 🔥 CORREÇÃO: Se tipo_data for 'inicio' (padrão do tarefas), muda para 'emissao'
-    if tipo_data == 'inicio':
-        tipo_data = 'emissao'
-        session['financas_tipo_data'] = 'emissao'
-    else:
-        session['financas_tipo_data'] = tipo_data
 
-    # ===== PROCESSAMENTO DOS FILTROS (POST) =====
+    # ===== PROCESSA POST E SALVA NA SESSION =====
     if request.method == 'POST':
         descricao = request.form.get('descricao', '')
         tipo = request.form.get('tipo', '')
         status = request.form.get('status', '')
         categorias = request.form.getlist('categorias')
         
-        # Salva na session para persistir entre requisições
         session['financas_descricao'] = descricao
         session['financas_tipo'] = tipo
         session['financas_status'] = status
         session['financas_categorias'] = categorias
         
-        # 🔥 IMPORTANTE: NÃO FAZ REDIRECT
-        # O filtro_datas já processou o tipo_filtro do POST
+        # 🔥 NÃO FAZ REDIRECT - deixa a função filtro_datas processar o POST
     
-    # ===== RECUPERA OS FILTROS DA SESSION =====
+    # ===== RECUPERA DA SESSION =====
     descricao = session.get('financas_descricao', '')
     tipo = session.get('financas_tipo', '')
     status = session.get('financas_status', '')
@@ -51,22 +42,16 @@ def inifinancas():
     categorias_usuario = []
     with sqlite3.connect(caminho_banco) as conn:
         cur = conn.cursor()
-        cur.execute("""
-            SELECT id, nome, cor 
-            FROM categorias_financas 
-            WHERE user_id = ? 
-            ORDER BY nome
-        """, (user_id,))
+        cur.execute("SELECT id, nome, cor FROM categorias_financas WHERE user_id = ? ORDER BY nome", (user_id,))
         categorias_usuario = cur.fetchall()
 
-    # ===== MONTA A QUERY =====
+    # ===== MONTA QUERY =====
     conexao = sqlite3.connect(caminho_banco)
     cursor = conexao.cursor()
 
     query = """
-        SELECT t.sequencia_transacoes, t.id, t.tipo, t.valor_total, t.descricao, 
-               t.data_emissao, c.nome AS categoria_nome, c.cor AS categoria_cor, 
-               t.status, t.data_vencimento
+        SELECT t.sequencia_transacoes, t.id, t.tipo, t.valor_total, t.descricao, t.data_emissao, 
+               c.nome AS categoria_nome, c.cor AS categoria_cor, t.status, t.data_vencimento
         FROM transacoes t
         LEFT JOIN categorias_financas c ON c.id = t.categoria_id
         WHERE t.user_id = ?
@@ -76,10 +61,10 @@ def inifinancas():
     # ===== FILTRO DATA =====
     if data_inicio and data_fim:
         if tipo_data == 'emissao':
-            query += " AND DATE(t.data_emissao) BETWEEN ? AND ?"
+            query += " AND t.data_emissao BETWEEN ? AND ?"
             params.extend([data_inicio, data_fim])
         elif tipo_data == 'vencimento':
-            query += " AND DATE(t.data_vencimento) BETWEEN ? AND ?"
+            query += " AND t.data_vencimento BETWEEN ? AND ?"
             params.extend([data_inicio, data_fim])
 
     # ===== FILTRO CATEGORIAS =====
@@ -110,14 +95,13 @@ def inifinancas():
         query += " AND t.status = ?"
         params.append(status)
 
-    # ===== ORDENAÇÃO =====
     query += " ORDER BY t.data_emissao DESC, t.sequencia_transacoes DESC"
 
     cursor.execute(query, params)
     transacoes_raw = cursor.fetchall()
     conexao.close()
 
-    # ===== FORMATA OS VALORES =====
+    # Formata valores
     transacoes = []
     for t in transacoes_raw:
         transacao_lista = list(t)
@@ -140,22 +124,20 @@ def inifinancas():
                           user_nome=session.get('user_nome'))
 
 
-# ===== LIMPAR FILTROS =====
 @bp_financas.route('/limpar_filtros')
 @login_required
 def limpar_filtros():
-    """ Limpa todos os filtros da sessão (igual ao tarefas) """
-    
+    """ Limpa todos os filtros da sessão """
+
     prefixo = 'financas'
 
-    # LIMPA FILTROS GERAIS
+    # FILTROS GERAIS DA TELA
     session.pop('financas_descricao', None)
     session.pop('financas_tipo', None)
     session.pop('financas_status', None)
     session.pop('financas_categorias', None)
-    session.pop('financas_tipo_data', None)
 
-    # LIMPA FILTROS DE DATA (COM PREFIXO)
+    # FILTROS DE DATA (COM PREFIXO)
     session.pop(f'{prefixo}_data_inicio_intervalo', None)
     session.pop(f'{prefixo}_data_fim_intervalo', None)
     session.pop(f'{prefixo}_modo', None)

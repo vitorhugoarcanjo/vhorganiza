@@ -15,9 +15,6 @@
     flex-direction: column;
 }
 
-
-
-
 /* Otimizado para 98% de largura total */
 .painel-container {
     display: flex;
@@ -35,34 +32,45 @@
 /* ==========================================
    SCROLLBAR GLOBAL (PADRÃO PROFISSIONAL)
    ========================================== */
+/* SCROLL PADRÃO */
+.scroll-fino::-webkit-scrollbar {
+    width: 5px;
+}
 
-/* SCROLL SÓ NA TABELA */
+.scroll-fino::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-fino::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.35);
+    border-radius: 10px;
+}
+
+.scroll-fino::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 120, 120, 0.6);
+}
+
+/* FIREFOX */
+.scroll-fino {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(120,120,120,0.5) transparent;
+}
+
+.scroll-fino {
+    overflow-y: auto;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+}
+
 .painel-tabela-conteudo {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
 }
 
-/* largura bem fina */
-.painel-tabela-conteudo::-webkit-scrollbar {
-    width: 5px;
-}
-
-/* fundo invisível */
-.painel-tabela-conteudo::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-/* thumb discreto */
-.painel-tabela-conteudo::-webkit-scrollbar-thumb {
-    background: rgba(120, 120, 120, 0.35);
-    border-radius: 10px;
-}
-
-/* hover leve (sem exagero) */
-.painel-tabela-conteudo::-webkit-scrollbar-thumb:hover {
-    background: rgba(120, 120, 120, 0.6);
-}
 
 /* ==========================================================================
    2. FILTROS COMPACTOS (UNIFICADO COM SUPORTE A ALINHAMENTO DINÂMICO)

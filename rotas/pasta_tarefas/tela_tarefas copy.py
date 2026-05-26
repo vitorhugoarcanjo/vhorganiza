@@ -25,7 +25,7 @@ bp_tela_tarefas = Blueprint('tarefas', __name__)
 def ini_tarefas():
     # LÓGICA PARA O FILTRO DATA
     data_hoje = date.today()
-    data_inicio, data_fim, tipo_data = filtro_datas(data_hoje, prefixo='tarefas')
+    data_inicio, data_fim, tipo_data = filtro_datas(data_hoje)
 
     # FILTRO CATEGORIAS
     categorias_filtro, categorias_usuario = filtro_categorias(session['user_id'])
@@ -281,22 +281,17 @@ def excluir_tarefa(tarefa_seq):
 @login_required
 def limpar_filtros():
     """ Limpa todos os filtros da sessão """
-
-    prefixo = 'tarefas'
-
-    # FILTROS GERAIS
+    
+    # Remove todas as variáveis de filtro da sessão
     session.pop('status_filtro', None)
     session.pop('prioridade_filtro', None)
-    session.pop('descricao_filtro', None)
-    session.pop('mostrar_inativas', None)
-
-    # FILTROS DE DATA (COM PREFIXO)
-    session.pop(f'{prefixo}_data_inicio_intervalo', None)
-    session.pop(f'{prefixo}_data_fim_intervalo', None)
-    session.pop(f'{prefixo}_modo', None)
-    session.pop(f'{prefixo}_mes_corrente', None)
-    session.pop(f'{prefixo}_dia_corrente', None)
-    session.pop(f'{prefixo}_dia_referencia', None)
-    session.pop(f'{prefixo}_tipo_data', None)
-
+    session.pop('descricao_filtro', None)  # <-- ADICIONADO
+    session.pop('data_inicio_intervalo', None)
+    session.pop('data_fim_intervalo', None)
+    session.pop('modo', None)
+    session.pop('mes_corrente', None)
+    session.pop('dia_corrente', None)
+    session.pop('dia_referencia', None)
+    session.pop('mostrar_inativas', None)  # ← ADICIONAR
+    
     return redirect(url_for('tarefas.ini_tarefas'))

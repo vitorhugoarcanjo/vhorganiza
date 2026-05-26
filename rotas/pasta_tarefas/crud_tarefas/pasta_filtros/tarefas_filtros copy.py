@@ -6,9 +6,9 @@ import sqlite3
 
 caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
-# FUNÇÃO - FILTRA DATAS
+# FUNÇÃO - FILTRA DATAS# FUNÇÃO - FILTRA DATAS
 def filtro_datas(data_hoje):
-    """ FUNÇÃO QUE PROCESSA OS FILTROS E RETORNA DATAS """
+    """ FUNÇÃO QUE PROCESSA OS FILTROS E RETORNA DATAS E TIPO """
 
     # Limpa sessão antiga se necessário
     if 'dia_corrente' in session and isinstance(session['dia_corrente'], str) and 'GMT' in session['dia_corrente']:
@@ -16,10 +16,32 @@ def filtro_datas(data_hoje):
 
     data_inicio = None
     data_fim = None
+    tipo_data = session.get('tipo_data', 'inicio')
+
+    # ===== NOVO: PADRÃO DIA ATUAL (quando não há filtros) =====
+    if (request.method == 'GET' and 
+        not request.args.get('tipo_filtro') and 
+        not request.args.get('data_inicio') and 
+        not request.args.get('data_fim') and
+        not session.get('modo') and
+        not session.get('data_inicio_intervalo')):
+        
+        data_inicio = data_hoje.strftime('%Y-%m-%d')
+        data_fim = data_hoje.strftime('%Y-%m-%d')
+        
+        session['modo'] = 'dia'
+        session['mes_corrente'] = (data_hoje.year, data_hoje.month)
+        session['dia_corrente'] = data_inicio
+        session['dia_referencia'] = data_hoje.day
+        session['data_inicio_intervalo'] = data_inicio
+        session['data_fim_intervalo'] = data_fim
+        session['tipo_data'] = tipo_data
+        
+        return data_inicio, data_fim, tipo_data
 
     # Inicializa os modos na sessão
     if 'modo' not in session:
-        session['modo'] = 'dia'  # 'dia', 'mes_completo', 'intervalo'
+        session['modo'] = 'dia'
     if 'mes_corrente' not in session:
         session['mes_corrente'] = (data_hoje.year, data_hoje.month)
     if 'dia_corrente' not in session:
@@ -33,6 +55,11 @@ def filtro_datas(data_hoje):
 
     if request.method == 'POST':
         tipo_filtro = request.form.get('tipo_filtro')
+        
+        # NOVO: captura o tipo de data do formulário
+        if request.form.get('tipo_data'):
+            tipo_data = request.form.get('tipo_data')
+            session['tipo_data'] = tipo_data
 
         # ===== FILTRO HOJE (reseta tudo) =====
         if tipo_filtro == 'hoje':
@@ -48,7 +75,6 @@ def filtro_datas(data_hoje):
         # ===== NAVEGAÇÃO DE DIAS =====
         elif tipo_filtro == 'ontem':
             if session['modo'] == 'intervalo':
-                # Modo intervalo: mexe nas duas datas
                 inicio = datetime.strptime(session['data_inicio_intervalo'], '%Y-%m-%d').date()
                 fim = datetime.strptime(session['data_fim_intervalo'], '%Y-%m-%d').date()
                 novo_inicio = inicio - timedelta(days=1)
@@ -58,7 +84,6 @@ def filtro_datas(data_hoje):
                 data_inicio = novo_inicio
                 data_fim = novo_fim
             elif session['modo'] == 'mes_completo':
-                # Modo mês completo: vira intervalo deslocado
                 ano, mes = session['mes_corrente']
                 primeiro_dia = date(ano, mes, 1)
                 ultimo_dia = date(ano, mes, monthrange(ano, mes)[1])
@@ -70,7 +95,6 @@ def filtro_datas(data_hoje):
                 data_inicio = novo_inicio
                 data_fim = novo_fim
             else:
-                # Modo dia único
                 dia_atual = datetime.strptime(session['dia_corrente'], '%Y-%m-%d').date()
                 dia_novo = dia_atual - timedelta(days=1)
                 session['modo'] = 'dia'
@@ -82,7 +106,6 @@ def filtro_datas(data_hoje):
         
         elif tipo_filtro == 'amanha':
             if session['modo'] == 'intervalo':
-                # Modo intervalo: mexe nas duas datas
                 inicio = datetime.strptime(session['data_inicio_intervalo'], '%Y-%m-%d').date()
                 fim = datetime.strptime(session['data_fim_intervalo'], '%Y-%m-%d').date()
                 novo_inicio = inicio + timedelta(days=1)
@@ -92,7 +115,6 @@ def filtro_datas(data_hoje):
                 data_inicio = novo_inicio
                 data_fim = novo_fim
             elif session['modo'] == 'mes_completo':
-                # Modo mês completo: vira intervalo deslocado
                 ano, mes = session['mes_corrente']
                 primeiro_dia = date(ano, mes, 1)
                 ultimo_dia = date(ano, mes, monthrange(ano, mes)[1])
@@ -104,7 +126,6 @@ def filtro_datas(data_hoje):
                 data_inicio = novo_inicio
                 data_fim = novo_fim
             else:
-                # Modo dia único
                 dia_atual = datetime.strptime(session['dia_corrente'], '%Y-%m-%d').date()
                 dia_novo = dia_atual + timedelta(days=1)
                 session['modo'] = 'dia'
@@ -188,8 +209,8 @@ def filtro_datas(data_hoje):
                 data_inicio = data_ref
                 data_fim = data_ref
 
-        # ===== FILTRO PERSONALIZADO =====
-        else:  # 'personalizado'
+        # ===== FILTRO PERSONALIZADO (consultar) =====
+        elif tipo_filtro == 'consultar' or not tipo_filtro:
             data_inicio = request.form.get('data_inicio')
             data_fim = request.form.get('data_fim')
             if data_inicio and data_fim:
@@ -206,8 +227,23 @@ def filtro_datas(data_hoje):
                 session['dia_corrente'] = data_inicio
                 session['dia_referencia'] = data_obj.day
                 session['mes_corrente'] = (data_obj.year, data_obj.month)
+                data_fim = data_inicio
 
-    return data_inicio, data_fim
+    # Recupera valores da sessão se ainda não foram definidos
+    if not data_inicio and session.get('data_inicio_intervalo'):
+        data_inicio = session['data_inicio_intervalo']
+    if not data_fim and session.get('data_fim_intervalo'):
+        data_fim = session['data_fim_intervalo']
+    
+    if not data_inicio and session.get('modo') == 'dia' and session.get('dia_corrente'):
+        data_inicio = session['dia_corrente']
+        data_fim = session['dia_corrente']
+    elif not data_inicio and session.get('modo') == 'mes_completo' and session.get('mes_corrente'):
+        ano, mes = session['mes_corrente']
+        data_inicio = date(ano, mes, 1).strftime('%Y-%m-%d')
+        data_fim = date(ano, mes, monthrange(ano, mes)[1]).strftime('%Y-%m-%d')
+
+    return data_inicio, data_fim, tipo_data
 
 
 # FUNÇÃO - FILTRA CATEGORIAS

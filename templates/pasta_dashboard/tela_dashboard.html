@@ -6,63 +6,121 @@
 
 {% block content %}
 <div class="dashboard-container">
-    
-    <!-- HEADER -->
-    <section class="header-dashboard">
-        <div>
-            <h1>📊 Dashboard</h1>
-            <p>Visão geral das suas finanças</p>
-        </div>
-    </section>
 
-    <!-- ALERTA -->
-    <section class="alert-dev">
-        <span>⚠️</span>
-        <div>
-            <strong>AMBIENTE DE TESTES / BETA LAB</strong>
-            <p>Algumas funções podem oscilar enquanto novas integrações são aplicadas.</p>
-        </div>
-    </section>
+    <div class="painel-topo-fixo">
 
-    <!-- FILTROS -->
-    <section class="filters-grid">
-        <form action="{{ url_for('dashboard.inidashboard') }}" method="get" class="filter-form">
+        <form action="{{ url_for('dashboard.inidashboard') }}" method="POST" class="form-filtros-total">
 
-            <div class="input-group">
-                <label>Data Início</label>
-                <input type="date" name="data_inicio" value="{{ data_inicio }}" required>
+            <div class="filtros-container">
+
+                <!-- DATA -->
+                <div class="bloco-filtro">
+                    <div class="bloco-titulo">📅 PERÍODO</div>
+
+                    <div class="flex-row">
+                        <button type="submit" name="tipo_filtro" value="ontem" class="btn-pure flex-fill">-1</button>
+                        <button type="submit" name="tipo_filtro" value="hoje" class="btn-pure btn-success-pure flex-fill">HOJE</button>
+                        <button type="submit" name="tipo_filtro" value="amanha" class="btn-pure flex-fill">+1</button>
+                    </div>
+
+                    <div class="flex-row" style="margin-top: 2px;">
+                        <button type="submit" name="tipo_filtro" value="mes_passado" class="btn-pure flex-fill">-1m</button>
+                        <button type="submit" name="tipo_filtro" value="mes" class="btn-pure btn-info-pure flex-fill">MÊS</button>
+                        <button type="submit" name="tipo_filtro" value="mes_proximo" class="btn-pure flex-fill">+1m</button>
+                    </div>
+
+                    <div class="flex-row" style="margin-top: 3px;">
+                        <div class="flex-fill">
+                            <input type="date" name="data_inicio" class="form-control" value="{{ data_inicio or '' }}">
+                        </div>
+                        <div class="flex-fill">
+                            <input type="date" name="data_fim" class="form-control" value="{{ data_fim or '' }}">
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 3px;">
+                        <select name="tipo_data" class="form-select">
+                            <option value="vencimento" {% if tipo_data == 'vencimento' %}selected{% endif %}>📅 DATA VENCIMENTO</option>
+                            <option value="emissao" {% if tipo_data == 'emissao' %}selected{% endif %}>📄 DATA EMISSÃO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- AÇÕES -->
+                <div class="bloco-filtro">
+                    <div>
+                        <div class="bloco-titulo">⚡ AÇÕES</div>
+                    </div>
+                    <div class="flex-row" style="margin-top: 6px;">
+                        <a href="{{ url_for('dashboard.limpar_filtros') }}" class="btn-pure flex-fill" style="text-align: center;">Limpar</a>
+                        <button type="submit" name="tipo_filtro" value="consultar" class="btn-pure btn-primary-pure flex-fill">Atualizar</button>
+                    </div>
+                </div>
+
             </div>
-
-            <div class="input-group">
-                <label>Data Final</label>
-                <input type="date" name="data_final" value="{{ data_final }}" required>
-            </div>
-
-            <button type="submit">Filtrar</button>
         </form>
-    </section>
 
-    <!-- CARDS -->
-    <section class="cards-grid">
+    </div>
 
+    <!-- CARDS PRINCIPAIS -->
+    <div class="cards-grid">
         <div class="card-metric">
+            <div class="card-icon">💰</div>
             <h3>Receitas</h3>
             <div class="valor pos">R$ {{ "%.2f"|format(total_receitas) }}</div>
+            <div class="card-trend up">↑ +12%</div>
         </div>
 
         <div class="card-metric">
+            <div class="card-icon">📉</div>
             <h3>Despesas</h3>
             <div class="valor neg">R$ {{ "%.2f"|format(total_despesas) }}</div>
+            <div class="card-trend down">↓ -5%</div>
         </div>
 
         <div class="card-metric">
-            <h3>Saldo</h3>
+            <div class="card-icon">⚖️</div>
+            <h3>Saldo Líquido</h3>
             <div class="valor {% if saldo >= 0 %}pos{% else %}neg{% endif %}">
                 R$ {{ "%.2f"|format(saldo) }}
             </div>
+            <div class="card-sub">últimos 30 dias</div>
         </div>
+    </div>
 
-    </section>
+    <!-- SEÇÃO DE ANÁLISES (ESTRUTURA PRONTA PARA FUTURO) -->
+    <div class="analytics-section">
+        <div class="section-header">
+            <h3>📊 Análises</h3>
+            <span class="section-badge">Beta</span>
+        </div>
+        
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <h4>📅 Média Mensal</h4>
+                <div class="analytics-value">R$ 0,00</div>
+                <div class="analytics-label">últimos 12 meses</div>
+            </div>
+            
+            <div class="analytics-card">
+                <h4>🏆 Melhor Mês</h4>
+                <div class="analytics-value">R$ 0,00</div>
+                <div class="analytics-label">em breve</div>
+            </div>
+            
+            <div class="analytics-card">
+                <h4>⚠️ Pior Mês</h4>
+                <div class="analytics-value">R$ 0,00</div>
+                <div class="analytics-label">em breve</div>
+            </div>
+            
+            <div class="analytics-card">
+                <h4>📈 Projeção</h4>
+                <div class="analytics-value">R$ 0,00</div>
+                <div class="analytics-label">próximos 30 dias</div>
+            </div>
+        </div>
+    </div>
 
 </div>
 {% endblock %}

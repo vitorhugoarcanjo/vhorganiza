@@ -3,123 +3,132 @@
 {% block title %}Finanças - Gestão Financeira{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='pasta_financas/import_css.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='pasta_financas/import_css.css') }}">
 {% endblock %}
 
 {% block content %}
 <div class="painel-container">
 
-
-<div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin: 10px; font-weight: 500;">
-    <strong>🔧 Manutenção:</strong> Os filtros desta tela estão sendo ajustados e podem não funcionar corretamente no momento.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-
-
-
     <div class="painel-topo-fixo">
-        <form action="{{ url_for('financas.inifinancas') }}" method="get" class="form-filtros-total">
+
+        <form action="{{ url_for('financas.inifinancas') }}" method="POST" class="form-filtros-total">
+
             <div class="filtros-container">
-                
+
+                <!-- DATA (IGUALZINHO TAREFAS) -->
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">📅 DATA</div>
-                    <div class="flex-row">
-                        <button type="submit" name="periodo" value="ontem" class="btn-pure flex-fill btn-destaque">-1</button>
-                        <button type="submit" name="periodo" value="hoje" class="btn-pure btn-success-pure flex-fill btn-destaque">HOJE</button>
-                        <button type="submit" name="periodo" value="amanha" class="btn-pure flex-fill btn-destaque">+1</button>
+
+                    <div class="flex-row gap-1">
+                        <button type="submit" name="tipo_filtro" value="ontem" class="btn-pure flex-fill">-1</button>
+                        <button type="submit" name="tipo_filtro" value="hoje" class="btn-pure btn-success-pure flex-fill">HOJE</button>
+                        <button type="submit" name="tipo_filtro" value="amanha" class="btn-pure flex-fill">+1</button>
                     </div>
-                    <div class="flex-row" style="margin-top: 2px;">
-                        <button type="submit" name="periodo" value="mes_passado" class="btn-pure flex-fill btn-destaque">-1m</button>
-                        <button type="submit" name="periodo" value="mes" class="btn-pure btn-info-pure flex-fill btn-destaque">I/F</button>
-                        <button type="submit" name="periodo" value="mes_proximo" class="btn-pure flex-fill btn-destaque">+1m</button>
+
+                    <div class="flex-row gap-1" style="margin-top: 2px;">
+                        <button type="submit" name="tipo_filtro" value="mes_passado" class="btn-pure flex-fill">-1m</button>
+                        <button type="submit" name="tipo_filtro" value="mes" class="btn-pure btn-info-pure flex-fill">I/F</button>
+                        <button type="submit" name="tipo_filtro" value="mes_proximo" class="btn-pure flex-fill">+1m</button>
                     </div>
-                    <div class="flex-row" style="margin-top: 3px; gap: 4px;">
-                        <input type="date" name="data_inicio" class="form-control flex-fill" value="{{ data_inicio or '' }}" style="padding: 2px 4px; height: 22px; font-size: var(--fs-micro);">
-                        <input type="date" name="data_fim" class="form-control flex-fill" value="{{ data_fim or '' }}" style="padding: 2px 4px; height: 22px; font-size: var(--fs-micro);">
+
+                    <div class="flex-row gap-1" style="margin-top: 3px;">
+                        <div class="flex-fill">
+                            <input type="date" name="data_inicio" class="form-control" value="{{ data_inicio or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                        </div>
+                        <div class="flex-fill">
+                            <input type="date" name="data_fim" class="form-control" value="{{ data_fim or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 3px;">
+                        <select name="tipo_data" class="form-select">
+                            <option value="emissao" {% if tipo_data == 'emissao' %}selected{% endif %}>📅 DATA EMISSÃO</option>
+                            <option value="vencimento" {% if tipo_data == 'vencimento' %}selected{% endif %}>⏰ DATA VENCIMENTO</option>
+                        </select>
                     </div>
                 </div>
-                
+
+                <!-- TIPO -->
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">🏷️ TIPO</div>
                     <select name="tipo" class="form-select">
-                        <option value="" {% if request.args.get('tipo') == '' %}selected{% endif %}>Todos</option>
-                        <option value="receita" {% if request.args.get('tipo') == 'receita' %}selected{% endif %}>📈 Receita</option>
-                        <option value="despesa" {% if request.args.get('tipo') == 'despesa' %}selected{% endif %}>📉 Despesa</option>
+                        <option value="" {% if tipo == '' %}selected{% endif %}>Todos</option>
+                        <option value="receita" {% if tipo == 'receita' %}selected{% endif %}>📈 Receita</option>
+                        <option value="despesa" {% if tipo == 'despesa' %}selected{% endif %}>📉 Despesa</option>
                     </select>
                 </div>
 
+                <!-- CATEGORIAS -->
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">🏷️ CATEGORIAS</div>
-                    
-                    <div class="lista-categorias">
-                        <label class="d-flex align-items-center label-categoria" style="cursor: pointer;">
-                            <input type="checkbox" name="categorias" value="null" class="me-1" style="transform: scale(0.9);" {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
+                    <div class="lista-categorias scroll-fino">
+                        <label class="label-categoria">
+                            <input type="checkbox" name="categorias" value="null" class="me-1" {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
                             <span class="span_categorias">📭 SEM CATEGORIA</span>
                         </label>
-
                         {% for cat in categorias_usuario %}
-                        <label class="d-flex align-items-center label-categoria" style="cursor: pointer;">
-                            <input type="checkbox" name="categorias" value="{{ cat[0] }}" class="me-1" style="accent-color: {{ cat[2] }}; transform: scale(0.9);" {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
+                        <label class="label-categoria">
+                            <input type="checkbox" name="categorias" value="{{ cat[0] }}" class="me-1" {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
                             <span class="span_categorias" style="color: {{ cat[2] }}; font-weight: 500;">{{ cat[1] }}</span>
                         </label>
                         {% endfor %}
                     </div>
                 </div>
 
+                <!-- STATUS -->
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">📊 STATUS</div>
                     <select name="status" class="form-select">
-                        <option value="" {% if request.args.get('status') == '' %}selected{% endif %}>Todos</option>
-                        <option value="aberto" {% if request.args.get('status') == 'aberto' %}selected{% endif %}>🟡 Aberto</option>
-                        <option value="quitado" {% if request.args.get('status') == 'quitado' %}selected{% endif %}>✅ Quitado</option>
-                        <option value="recebido" {% if request.args.get('status') == 'recebido' %}selected{% endif %}>💰 Recebido</option>
+                        <option value="" {% if status == '' %}selected{% endif %}>Todos</option>
+                        <option value="aberto" {% if status == 'aberto' %}selected{% endif %}>🔴 Aberto</option>
+                        <option value="quitado" {% if status == 'quitado' %}selected{% endif %}>✅ Quitado</option>
+                        <option value="recebido" {% if status == 'recebido' %}selected{% endif %}>💰 Recebido</option>
                     </select>
                 </div>
 
-                <div class="bloco-filtro">
-                    <div class="bloco-titulo">🔍 DESCRIÇÃO</div>
-                    <input type="text" name="descricao" class="form-control" placeholder="buscar..." value="{{ request.args.get('descricao', '') }}">
-                </div>
-
+                <!-- BUSCA + LIMPAR -->
                 <div class="bloco-filtro bloco-pesquisa-fim">
-                    <div class="bloco-titulo">⚙️ AÇÕES</div>
-                    <div class="flex-row" style="flex-direction: column; height: 100%; justify-content: center; gap: 4px;">
-                        <button type="submit" class="btn-pure btn-primary-pure btn-destaque" style="width: 100%;">
-                            <i class="bi bi-search"></i> Consultar
-                        </button>
-                        <a href="{{ url_for('financas.inifinancas') }}" class="btn-pure btn-destaque" style="width: 100%; text-align: center;">
-                            <i class="bi bi-eraser"></i> Limpar Todos
-                        </a>
+                    <div>
+                        <div class="bloco-titulo">🔍 DESCRIÇÃO</div>
+                        <input type="text" name="descricao" class="form-control" placeholder="buscar..." value="{{ descricao or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                    </div>
+                    <div class="flex-row gap-1" style="margin-top: 6px;">
+                        <a href="{{ url_for('financas.limpar_filtros') }}" class="btn-pure flex-fill" style="text-align: center;">Limpar Todos</a>
+                        <button type="submit" name="tipo_filtro" value="consultar" class="btn-pure btn-primary-pure flex-fill">Consultar</button>
                     </div>
                 </div>
-                
+
             </div>
         </form>
 
+        <!-- HEADER -->
         <div class="tarefas-controle-header">
             <div class="botoes-esquerda">
-                <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-pure btn-success-pure btn-destaque">
-                    <i class="bi bi-plus-circle"></i> Nova Transação
-                </a>
+                <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-pure btn-success-pure btn-destaque">+ Nova Transação</a>
+                <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-pure btn-info-pure">Categorias</a>
+            </div>
+            <div class="status-direita">
                 <span class="badge-pure bg-primary">{{ transacoes|length }} transações</span>
             </div>
         </div>
+
     </div>
 
-    <div class="painel-tabela-conteudo">
+    <!-- TABELA -->
+    <div class="painel-tabela-conteudo scroll-fino">
         <div class="table-responsive">
             <table class="custom-table">
                 <thead>
                     <tr>
-                        <th style="width: 50px;">Seq</th>
-                        <th style="width: 100px;">Tipo</th>
-                        <th style="width: 110px;">Valor</th>
-                        <th>Descrição</th>
-                        <th style="width: 100px;">Status</th>
-                        <th style="width: 120px;">Categoria</th>
-                        <th style="width: 110px;">Data Criação</th>
-                        <th style="width: 110px;">Vencimento</th>
-                        <th style="width: 100px; text-align: center;">Ações</th>
+                        <th style="width: 65px;">SEQ</th>
+                        <th style="width: 100px;">TIPO</th>
+                        <th style="width: 120px;">VALOR</th>
+                        <th>DESCRIÇÃO</th>
+                        <th style="width: 110px;">STATUS</th>
+                        <th style="width: 130px;">CATEGORIA</th>
+                        <th style="width: 105px;">EMISSÃO</th>
+                        <th style="width: 105px;">VENCIMENTO</th>
+                        <th style="width: 145px; text-align: center;">AÇÕES</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,58 +138,51 @@
                             <td class="td-id">{{ transacao[0] }}</td>
                             <td>
                                 {% if transacao[2] == 'receita' %}
-                                    <span class="badge-pure bg-success">📈 Entrada</span>
+                                    <span class="badge-pure bg-success">📈 Receita</span>
                                 {% else %}
-                                    <span class="badge-pure bg-warning">📉 Despesa</span>
+                                    <span class="badge-pure bg-warning text-dark">📉 Despesa</span>
                                 {% endif %}
                             </td>
-                            <td class="td-titulo {% if transacao[2] == 'receita' %}text-success{% else %}text-danger{% endif %}" style="font-weight: bold;">
-                                R$ {{ "%.2f"|format(transacao[3]) }}
-                            </td>
+                            <td class="td-titulo">R$ {{ "%.2f"|format(transacao[3]) }}</td>
                             <td class="td-titulo" title="{{ transacao[4] }}">{{ transacao[4] }}</td>
                             <td>
-                                {% if transacao[2] == 'despesa' %}
-                                    {% if transacao[7] == 'aberto' %}
-                                        <span class="badge-pure bg-danger">ABERTO</span>
-                                    {% elif transacao[7] == 'quitado' %}
-                                        <span class="badge-pure bg-success">QUITADO</span>
-                                    {% endif %}
+                                {% if transacao[8] == 'aberto' %}
+                                    <span class="badge-pure bg-danger">🔴 Aberto</span>
+                                {% elif transacao[8] == 'quitado' %}
+                                    <span class="badge-pure bg-success">✅ Quitado</span>
                                 {% else %}
-                                    <span class="badge-pure bg-success">RECEBIDO</span>
+                                    <span class="badge-pure bg-success">💰 Recebido</span>
                                 {% endif %}
                             </td>
-                            <td>{{ transacao[6] or "Geral" }}</td>
-                            <td><span class="text-vazio">{{ transacao[5] or '-' }}</span></td>
-                            <td><span class="text-vazio">{{ transacao[8] or '-' }}</span></td>
                             <td>
-                                <div class="td-acoes">
-                                    <a href="{{ url_for('edit_transacoes.inieditar', sequencia=transacao[0]) }}" class="btn-acao edit" title="Editar">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="{{ url_for('deletar_transacao.inideletar', sequencia=transacao[0]) }}" class="btn-acao delete" title="Excluir"
-                                        onclick="return confirm('Tem certeza que deseja excluir esta transação?')">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                    {% if transacao[2] == 'despesa' and transacao[7] == 'aberto' %}
-                                        <a href="{{ url_for('quitar_transacao.iniquitacao', sequencia=transacao[0]) }}" class="btn-acao check" title="Quitar"
-                                            onclick="return confirm('Quitar esta despesa?')">
-                                            <i class="bi bi-check-lg"></i>
-                                        </a>
-                                    {% endif %}
-                                </div>
+                                {% if transacao[6] %}
+                                    <span class="badge-pure tag-categoria" style="background-color: {{ transacao[7] }}; color: white; border: none;">
+                                        {{ transacao[6] }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-vazio">-</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ transacao[5] or '-' }}</td>
+                            <td>{{ transacao[9] or '-' }}</td>
+                            <td class="td-acoes">
+                                <a href="{{ url_for('edit_transacoes.inieditar', sequencia=transacao[0]) }}" class="btn-acao edit" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{{ url_for('deletar_transacao.inideletar', sequencia=transacao[0]) }}" class="btn-acao delete" title="Excluir" onclick="return confirm('Confirmar exclusão?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                {% if transacao[2] == 'despesa' and transacao[8] == 'aberto' %}
+                                <a href="{{ url_for('quitar_transacao.iniquitacao', sequencia=transacao[0]) }}" class="btn-acao check" title="Quitar">
+                                    <i class="bi bi-check-lg"></i>
+                                </a>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="9" class="td-vazio">
-                                <i class="bi bi-calendar-check" style="font-size: 2.5rem; opacity: 0.5; display: block; margin-bottom: 10px;"></i>
-                                <h4 style="font-weight: bold; margin-bottom: 5px;">Nenhuma transação cadastrada</h4>
-                                <p style="color: var(--texto-discreto); margin-bottom: 15px;">Comece criando sua primeira transação</p>
-                                <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-pure btn-success-pure btn-destaque" style="padding: 6px 20px !important;">
-                                    <i class="bi bi-plus-circle me-2"></i>Nova Transação
-                                </a>
-                            </td>
+                            <td colspan="9" class="text-center py-4 text-white-50">Nenhuma transação cadastrada ou nesse período</td>
                         </tr>
                     {% endif %}
                 </tbody>
