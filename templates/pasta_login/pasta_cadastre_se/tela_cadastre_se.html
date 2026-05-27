@@ -7,35 +7,7 @@
 <link rel="stylesheet" href="{{ static_v('pasta_login_e_cadastre_se/pasta_cadastre_se/import_todas_css.css') }}">
 
 <!-- Estilos rápidos para a nossa animação de carregamento acontecer sem depender de arquivos externos -->
-<style>
-    /* Oculta elementos que começam invisíveis */
-    .d-none {
-        display: none !important;
-    }
-
-    /* Criação do ícone giratório (Spinner) */
-    .spinner {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        vertical-align: text-bottom;
-        border: 2px solid currentColor;
-        border-right-color: transparent;
-        border-radius: 50%;
-        animation: girar 0.75s linear infinite;
-        margin-right: 8px;
-    }
-
-    @keyframes girar {
-        to { transform: rotate(360deg); }
-    }
-
-    /* Opacidade para o botão quando estiver desativado para o usuário entender que travou */
-    .btn-submit:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-</style>
+<link rel="stylesheet" href="{{ static_v('js/pasta_login/btn_atualizador_cadastrar/btn_cadastrar.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -115,22 +87,10 @@
 </div>
 
 <!-- Script Javascript para interceptar o envio e animar o botão -->
-<script>
-    document.getElementById('formCadastro').addEventListener('submit', function(e) {
-        const btn = document.getElementById('btnCadastrar');
-        const txtBotao = document.getElementById('txtBotao');
-        const spinner = document.getElementById('spinnerCarregando');
-        const txtCarregando = document.getElementById('txtCarregando');
+{% block scripts %}
+<script src="{{ static_v('js/pasta_login/btn_atualizador_cadastrar/btn_cadastrar.js') }}"></script>
+{% endblock %}
 
-        // 1. Desativa o botão na hora para evitar múltiplos cliques acidentais
-        btn.disabled = true;
 
-        // 2. Oculta a palavra "Cadastrar" original
-        txtBotao.classList.add('d-none');
 
-        // 3. Torna o círculo giratório e o novo texto visíveis
-        spinner.classList.remove('d-none');
-        txtCarregando.classList.remove('d-none');
-    });
-</script>
 {% endblock %}

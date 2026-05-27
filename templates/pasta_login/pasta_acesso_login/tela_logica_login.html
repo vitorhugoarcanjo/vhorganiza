@@ -5,6 +5,8 @@
 {% block styles %}
 <!-- Link para o CSS exclusivo da página de login -->
 <link rel="stylesheet" href="{{ static_v('pasta_login_e_cadastre_se/pasta_login/import_todas_css.css') }}">
+
+<link rel="stylesheet" href="{{ static_v('js/pasta_login/btn_atualizador_acessar/btn_acessar.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -31,7 +33,7 @@
             <p>Entre com suas credenciais para gerenciar suas tarefas</p>
         </div>
 
-        <form action="/login" method="post" class="login-form">
+        <form action="/login" method="post" class="login-form" id="formLogin">
             <!-- Campo Usuário/E-mail -->
             <div class="input-group">
                 <label for="nome_ou_email">Digite seu nome ou E-mail:</label>
@@ -46,7 +48,12 @@
 
             <!-- Botões de Ação Principais -->
             <div class="form-actions">
-                <button type="submit" class="btn-submit">Acessar</button>
+                <button type="submit" id="btnAcessar" class="btn-submit">
+                    <span id="txtBotao">Acessar</span>
+                    <span id="spinnerCarregando" class="spinner d-none"></span>
+                    <span id="txtCarregando" class="d-none">Acessando...</span>
+                </button>
+
                 <button type="reset" class="btn-reset">Limpar</button>
             </div>
 
@@ -63,4 +70,10 @@
         </form>
     </div>
 </div>
+
+
+{% block scripts %}
+    <script src="{{ static_v('js/pasta_login/btn_atualizador_acessar/btn_acessar.js') }}"></script>
+{% endblock %}
+
 {% endblock %}
