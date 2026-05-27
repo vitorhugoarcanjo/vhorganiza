@@ -3,9 +3,9 @@ from flask import Blueprint, render_template, request, session, url_for
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.services_auditoria import AuditoriaService
 
-bp_auditoria = Blueprint('auditoria', __name__)
+bp_auditoria_tarefas = Blueprint('auditoria', __name__)
 
-@bp_auditoria.route('/tarefa/<int:tarefa_seq>')
+@bp_auditoria_tarefas.route('/tarefa/<int:tarefa_seq>')
 @login_required
 def historico_tarefa(tarefa_seq):
     """Ver histórico de alterações de uma tarefa"""

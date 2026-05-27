@@ -1,4 +1,4 @@
-// Mascará para valor em reais
+// Mascará para valor em reais com R$ na frente
 (function() {
     'use strict';
     
@@ -6,35 +6,50 @@
         const valorInput = document.querySelector('input[name="valor_total"]');
         if (!valorInput) return;
         
-        // Muda de number para text
-        valorInput.type = 'text';
-        valorInput.placeholder = 'R$ 0,00';
+        // Se já tiver um valor, formata ele primeiro
+        let valorAtual = valorInput.value;
+        if (valorAtual && !isNaN(parseFloat(valorAtual))) {
+            let numero = parseFloat(valorAtual);
+            valorInput.value = 'R$ ' + numero.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
         
         valorInput.addEventListener('input', function(e) {
+            // Remove tudo que não é número e remove R$
             let value = this.value.replace(/\D/g, '');
+            
             if (value === '') {
                 this.value = '';
                 return;
             }
             
-            // Converte para centavos (ex: 1234 = R$ 12,34)
-            let valorEmCentavos = parseInt(value);
-            let reais = Math.floor(valorEmCentavos / 100);
-            let centavos = valorEmCentavos % 100;
+            // Converte para número (divide por 100 para pegar os centavos)
+            let numero = parseFloat(value) / 100;
             
-            // Formata com 2 casas decimais
-            let formatted = reais.toLocaleString('pt-BR', {
+            // Formata como moeda brasileira com R$
+            this.value = 'R$ ' + numero.toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
+        });
+        
+        // Quando perder o foco, garante que tem R$ e 2 casas decimais
+        valorInput.addEventListener('blur', function() {
+            if (this.value === '') return;
             
-            // Substitui os centavos (porque toLocaleString pode não funcionar 100% sozinho)
-            formatted = formatted.replace(/\d+$/, String(centavos).padStart(2, '0'));
-            
-            this.value = formatted;
+            // Remove R$ se tiver
+            let cleanValue = this.value.replace('R$', '').trim();
+            let numero = parseFloat(cleanValue.replace(/\./g, '').replace(',', '.'));
+            if (!isNaN(numero)) {
+                this.value = 'R$ ' + numero.toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
         });
     }
     
-    // Inicializa quando o DOM carregar
     document.addEventListener('DOMContentLoaded', initMoneyMask);
 })();

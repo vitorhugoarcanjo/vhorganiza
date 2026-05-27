@@ -22,6 +22,7 @@ from rotas.logs.logs_ataques.tabela import tabela_ataque
 
 # TABELAS AUDITORIA
 from rotas.auditoria_geral.pasta_tarefas.tabela import tabela_auditoria_tarefas
+from rotas.auditoria_geral.pasta_financas.tabela import tabela_auditoria_financas
 
 def criar_todas_tabelas():
     conexao = sqlite3.connect(caminho_banco)
@@ -46,6 +47,7 @@ def criar_todas_tabelas():
 
     # AUDITORIA
     tabela_auditoria_tarefas(cursor)
+    tabela_auditoria_financas(cursor)
 
     # CRIA ÍNDICES
     criar_indices(cursor)

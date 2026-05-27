@@ -8,8 +8,8 @@
     <!-- CSS MODAL - CONCLUIR TAREFA -->
     <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/concluir_tarefa.css') }}">
 
-    <!-- CSS MODAL - DETALHES AUDITORIA -->
-    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/detalhes_auditoria.css') }}">
+    <!-- CSS MODAL - DETALHES COMPLETO -->
+    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/detalhes_completo.css') }}">
 
     <!-- CSS MODAL - EXCLUIR TAREFA -->
     <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/excluir_global.css') }}">
@@ -244,16 +244,16 @@
 
     <!-- HTML MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA / EXCLUIR TAREFA -->
     {% include 'pasta_tarefas/modais/concluir_tarefa.html' %}
-    {% include 'pasta_tarefas/modais/detalhes_auditoria.html' %}
+    {% include 'pasta_tarefas/modais/detalhes_completo.html' %}
     {% include 'pasta_tarefas/modais/excluir_tarefa.html' %}
     <!-- CSS NO TOPO -->
 
-    <!-- JS MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA -->
-    <!-- JS MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA -->
+    <!-- JS MODAL - CONCLUIR TAREFA / DETALHES COMPLETO -->
+    <!-- JS MODAL - CONCLUIR TAREFA / DETALHES COMPLETO -->
     {% block scripts %}
         <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js') }}"></script>
         <script src="{{ static_v('js/pasta_tarefas/modais/concluir_tarefas.js') }}"></script>
-        <script src="{{ static_v('js/pasta_tarefas/modais/detalhes_auditoria.js') }}"></script>
+        <script src="{{ static_v('js/pasta_tarefas/modais/detalhes_completo.js') }}"></script>
         <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/excluir_tarefa.js') }}"></script>
     {% endblock %}
 

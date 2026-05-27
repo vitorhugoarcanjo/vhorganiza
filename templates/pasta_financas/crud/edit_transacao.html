@@ -50,10 +50,12 @@
 
                     <div class="form-group">
                         <label>Valor Total</label>
-                        <input type="number" name="valor_total"
-                               step="0.01"
+                        <!-- 🔥 MUDOU para text com classe money-input -->
+                        <input type="text" 
+                               name="valor_total" 
+                               id="valor_total"
+                               class="form-input money-input" 
                                value="{{ transacao[3] }}"
-                               class="form-input"
                                required>
                     </div>
 
@@ -107,5 +109,10 @@
     </div>
 
 </div>
+
+<!-- 🔥 ADICIONA O JS DE FORMATAÇÃO -->
+{% block scripts %}
+    <script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
+{% endblock %}
 
 {% endblock %}

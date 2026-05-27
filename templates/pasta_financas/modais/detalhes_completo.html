@@ -1,0 +1,16 @@
+<div class="modal-overlay" id="modalDetalhesTransacao" onclick="fecharModalDetalhesTransacao(event)">
+    <div class="modal-container" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <span class="modal-title" id="modalTituloTransacao">
+                <i class="bi bi-info-circle me-2"></i>Detalhes da Transação
+            </span>
+            <button type="button" class="modal-close" onclick="fecharModalDetalhesTransacao(null)">&times;</button>
+        </div>
+        
+        <div class="modal-body" id="conteudoDetalhesTransacao"></div>
+        
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; border-top: 1px solid var(--border-sutil); padding-top: 10px;">
+            <button type="button" class="btn-pure" style="background: var(--bg-principal);" onclick="fecharModalDetalhesTransacao(null)">Fechar</button>
+        </div>
+    </div>
+</div>

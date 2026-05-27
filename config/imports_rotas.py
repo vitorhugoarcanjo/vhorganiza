@@ -30,7 +30,8 @@ from rotas.logs import importar_logs
 from rotas.middleware.logs_middleware import log_acesso_middleware
 
 # PASTA AUDITORIA
-from rotas.auditoria_geral.logica_auditoria import bp_auditoria
+from rotas.auditoria_geral.logica_auditoria import bp_auditoria_tarefas
+from rotas.auditoria_geral.pasta_financas.logica_auditoria import bp_auditoria_financas
 
 # IMPORTS ROTAS
 def logica_imports(app):
@@ -62,7 +63,9 @@ def logica_imports(app):
     app.register_blueprint(bp_categorias, url_prefix="/categorias")
 
     # AUDITORIA
-    app.register_blueprint(bp_auditoria, url_prefix="/auditoria")
+    app.register_blueprint(bp_auditoria_tarefas, url_prefix="/auditoria")
+    app.register_blueprint(bp_auditoria_financas, url_prefix="/auditoria_financas")
+
 
     # PAINEL LOGS
     importar_logs(app)

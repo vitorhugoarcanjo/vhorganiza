@@ -39,12 +39,21 @@ def tabela_transacoes(cursor):
     """)
         print("✅ tabela tabela_transacoes criada com sucesso")
 
-    # MODELO - ESTRUTURA
-    cursor.execute("PRAGMA table_info(transacoes)")
-    if not any(col[1] == 'sequencia_transacoes' for col in cursor.fetchall()):
-        cursor.execute("ALTER TABLE transacoes ADD COLUMN sequencia_transacoes INTEGER")
-        print("✅ Coluna sequencia_transacoes adicionada em transacoes!")
-
-
     else:
-        print("ℹ️ tabela tabela_transacoes já está criada.")
+        # Verifica e adiciona colunas faltantes
+        cursor.execute("PRAGMA table_info(transacoes)")
+        colunas = [col[1] for col in cursor.fetchall()]
+        
+        if 'ativo' not in colunas:
+            cursor.execute("ALTER TABLE transacoes ADD COLUMN ativo INTEGER DEFAULT 1")
+            print("✅ Coluna ativo adicionada em transacoes!")
+            
+        if 'excluido_em' not in colunas:
+            cursor.execute("ALTER TABLE transacoes ADD COLUMN excluido_em DATETIME")
+            print("✅ Coluna excluido_em adicionada em transacoes!")
+            
+        if 'excluido_por' not in colunas:
+            cursor.execute("ALTER TABLE transacoes ADD COLUMN excluido_por INTEGER")
+            print("✅ Coluna excluido_por adicionada em transacoes!")
+            
+        print("ℹ️ tabela transacoes já existe. Verificação concluída.")
