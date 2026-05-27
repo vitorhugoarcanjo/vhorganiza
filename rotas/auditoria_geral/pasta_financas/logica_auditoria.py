@@ -24,7 +24,7 @@ def historico_transacao(transacao_id):
         cursor.execute("""
             SELECT id, descricao, tipo, valor_total
             FROM transacoes
-            WHERE id = ? AND user_id = ?
+            WHERE sequencia_transacoes = ? AND user_id = ?
         """, (transacao_id, session['user_id']))
         
         transacao = cursor.fetchone()

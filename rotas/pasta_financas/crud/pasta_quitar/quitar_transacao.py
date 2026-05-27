@@ -2,6 +2,7 @@ from flask import Blueprint, redirect, url_for, session, flash
 import sqlite3
 import os
 from datetime import date
+from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 
 caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
@@ -14,6 +15,21 @@ def iniquitacao(sequencia):
     
     with sqlite3.connect(caminho_banco) as conn:
         cursor = conn.cursor()
+        
+        # 🔥 Busca dados ANTES de quitar (pra auditoria)
+        cursor.execute("""
+            SELECT descricao, status 
+            FROM transacoes 
+            WHERE sequencia_transacoes = ? AND user_id = ?
+        """, (sequencia, user_id))
+        
+        transacao = cursor.fetchone()
+        
+        if not transacao:
+            flash('Transação não encontrada!', 'danger')
+            return redirect(url_for('financas.inifinancas'))
+        
+        # Faz o UPDATE
         cursor.execute("""
             UPDATE transacoes 
             SET status = 'quitado', 
@@ -21,6 +37,21 @@ def iniquitacao(sequencia):
             WHERE sequencia_transacoes = ? AND user_id = ?
         """, (hoje, sequencia, user_id))
         conn.commit()
+        
+        # 🔥 REGISTRA AUDITORIA
+        status_map = {
+            'aberto': '🔴 Aberto', 
+            'quitado': '✅ Quitado', 
+            'recebido': '💰 Recebido'
+        }
+        
+        AuditoriaFinanceiraService.registrar(
+            transacao_id=sequencia,
+            acao='quitada',
+            campo_alterado='status',
+            valor_antigo=status_map.get(transacao[1], transacao[1]),
+            valor_novo='✅ Quitado'
+        )
     
     flash('Despesa quitada com sucesso!', 'success')
     return redirect(url_for('financas.inifinancas'))

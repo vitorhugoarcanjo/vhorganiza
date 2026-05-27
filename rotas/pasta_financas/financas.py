@@ -193,7 +193,7 @@ def excluir_transacao(transacao_id):
         cursor.execute("""
             SELECT descricao, tipo, valor_total 
             FROM transacoes 
-            WHERE id = ? AND user_id = ? AND ativo = 1
+            WHERE sequencia_transacoes = ? AND user_id = ? AND ativo = 1
         """, (transacao_id, session['user_id']))
         
         transacao = cursor.fetchone()
@@ -202,19 +202,19 @@ def excluir_transacao(transacao_id):
             flash('Transação não encontrada ou já inativada.', 'danger')
             return redirect(url_for('financas.inifinancas'))
         
-        # INATIVA a transação (soft delete)
+        # 🔥 CORREÇÃO: Atualizar por sequencia_transacoes também!
         cursor.execute('''
             UPDATE transacoes 
             SET ativo = 0, 
                 excluido_em = datetime('now', 'localtime'),
                 excluido_por = ?,
                 data_alteracao = datetime('now', 'localtime')
-            WHERE id = ? AND user_id = ?
+            WHERE sequencia_transacoes = ? AND user_id = ?
         ''', (session['user_id'], transacao_id, session['user_id']))
         
         conexao.commit()
         
-        # 🔥 REGISTRA AUDITORIA (igual tarefas)
+        # Agora transacao_id já é a sequencia, então registra certo ✅
         AuditoriaFinanceiraService.registrar(
             transacao_id=transacao_id,
             acao='inativacao',
@@ -223,7 +223,6 @@ def excluir_transacao(transacao_id):
         
         flash(f'Transação "{transacao[0]}" inativada com sucesso!', 'success')
         return redirect(url_for('financas.inifinancas'))
-
 
 
 # ===== DETALHES DA TRANSAÇÃO =====

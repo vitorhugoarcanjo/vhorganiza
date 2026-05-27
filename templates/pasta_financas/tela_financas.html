@@ -155,7 +155,10 @@
                     {% if transacoes %}
                         {% for transacao in transacoes %}
                         <tr>
+                            <!-- SEQ (índice 0 = sequencia_transacoes) -->
                             <td class="td-id">{{ transacao[0] }}</td>
+                            
+                            <!-- TIPO (índice 2) -->
                             <td>
                                 {% if transacao[2] == 'receita' %}
                                     <span class="badge-pure bg-success">📈 Receita</span>
@@ -164,9 +167,13 @@
                                 {% endif %}
                             </td>
 
+                            <!-- VALOR (índice 3) -->
                             <td class="td-titulo">{{ transacao[3] }}</td>
                             
+                            <!-- DESCRIÇÃO (índice 4) -->
                             <td class="td-titulo" title="{{ transacao[4] }}">{{ transacao[4] }}</td>
+                            
+                            <!-- STATUS (índice 8) -->
                             <td>
                                 {% if transacao[8] == 'aberto' %}
                                     <span class="badge-pure bg-danger">🔴 Aberto</span>
@@ -176,6 +183,8 @@
                                     <span class="badge-pure bg-success">💰 Recebido</span>
                                 {% endif %}
                             </td>
+                            
+                            <!-- CATEGORIA (índice 6 e 7) -->
                             <td>
                                 {% if transacao[6] %}
                                     <span class="badge-pure tag-categoria" style="background-color: {{ transacao[7] }}; color: white; border: none;">
@@ -185,39 +194,52 @@
                                     <span class="text-vazio">-</span>
                                 {% endif %}
                             </td>
+                            
+                            <!-- EMISSÃO (índice 5) -->
                             <td>{{ transacao[5] or '-' }}</td>
+                            
+                            <!-- VENCIMENTO (índice 9) -->
                             <td>{{ transacao[9] or '-' }}</td>
+                            
+                            <!-- AÇÕES -->
                             <td class="td-acoes">
-                                <button type="button" class="btn-acao view" title="Ver detalhes" onclick="verDetalhesTransacao({{ transacao[1] }})">
+                                <!-- 🔥 DETALHES: Passa transacao[1] que é o ID real -->
+                                <button type="button" class="btn-acao view" title="Ver detalhes" 
+                                        onclick="verDetalhesTransacao({{ transacao[1] }})">
                                     <i class="bi bi-eye"></i>
                                 </button>
 
+                                <!-- 🔥 AUDITORIA: Passa transacao[0] que é a SEQUENCIA -->
                                 <a href="{{ url_for('auditoria_financas.historico_transacao', 
-                                                    transacao_id=transacao[1],
+                                                    transacao_id=transacao[0],
                                                     mostrar_inativas=mostrar_inativas,
                                                     data_inicio=data_inicio,
                                                     data_fim=data_fim,
                                                     tipo_data=tipo_data) }}" 
-                                    class="btn-acao audit" 
-                                    title="Ver histórico de alterações">
+                                class="btn-acao audit" 
+                                title="Ver histórico de alterações">
                                     <i class="bi bi-clock-history"></i>
                                 </a>
 
-                                <a href="{{ url_for('edit_transacoes.inieditar', sequencia=transacao[0]) }}" class="btn-acao edit" title="Editar">
+                                <!-- 🔥 EDITAR: Passa transacao[0] que é a SEQUENCIA -->
+                                <a href="{{ url_for('edit_transacoes.inieditar', sequencia=transacao[0]) }}" 
+                                class="btn-acao edit" title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </a>
 
-                                <!-- BOTÃO DE INATIVAR com modal -->
+                                <!-- 🔥 EXCLUIR: Passa transacao[0] que é a SEQUENCIA -->
+                                <!-- MAS CUIDADO: sua função JS tá usando transacao[1] (ID) -->
                                 <button type="button" 
                                         class="btn-acao delete" 
-                                        onclick="excluirTransacao({{ transacao[1] }}, '{{ transacao[4] }}')"
+                                        onclick="excluirTransacao({{ transacao[0] }}, '{{ transacao[4] }}')"
                                         title="Inativar">
                                     <i class="bi bi-trash"></i>
                                 </button>
 
-
+                                <!-- 🔥 QUITAR: Só se for despesa aberta -->
                                 {% if transacao[2] == 'despesa' and transacao[8] == 'aberto' %}
-                                <a href="{{ url_for('quitar_transacao.iniquitacao', sequencia=transacao[0]) }}" class="btn-acao check" title="Quitar">
+                                <a href="{{ url_for('quitar_transacao.iniquitacao', sequencia=transacao[0]) }}" 
+                                class="btn-acao check" title="Quitar">
                                     <i class="bi bi-check-lg"></i>
                                 </a>
                                 {% endif %}
