@@ -3,7 +3,7 @@
 {% block title %}Finanças - Gestão Financeira{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{ static_v('pasta_financas/import_css.css') }}">
+    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/import_css.css') }}">
 
     <!-- CSS MODAL DE EXCLUIR/INATIVAR FINANÇAS-->
     <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/excluir_global.css') }}">
@@ -125,6 +125,7 @@
         <div class="tarefas-controle-header">
             <div class="botoes-esquerda">
                 <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-pure btn-success-pure btn-destaque">+ Nova Transação</a>
+
                 <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-pure btn-info-pure">Categorias</a>
             </div>
             <div class="status-direita">
@@ -227,22 +228,26 @@
                                     <i class="bi bi-pencil"></i>
                                 </a>
 
+
                                 <!-- 🔥 EXCLUIR: Passa transacao[0] que é a SEQUENCIA -->
                                 <!-- MAS CUIDADO: sua função JS tá usando transacao[1] (ID) -->
-                                <button type="button" 
-                                        class="btn-acao delete" 
-                                        onclick="excluirTransacao({{ transacao[0] }}, '{{ transacao[4] }}')"
-                                        title="Inativar">
+                                <button 
+                                    type="button"
+                                    class="btn-acao delete btn-excluir"
+                                    data-id="{{ transacao[0] }}"
+                                    data-desc="{{ transacao[4] }}">
                                     <i class="bi bi-trash"></i>
                                 </button>
 
+
                                 <!-- 🔥 QUITAR: Só se for despesa aberta -->
                                 {% if transacao[2] == 'despesa' and transacao[8] == 'aberto' %}
-                                <a href="{{ url_for('quitar_transacao.iniquitacao', sequencia=transacao[0]) }}" 
-                                class="btn-acao check" title="Quitar">
+                                <button onclick="quitarTransacao({{ transacao[0] }}, this)" 
+                                        class="btn-acao check" title="Quitar">
                                     <i class="bi bi-check-lg"></i>
-                                </a>
+                                </button>
                                 {% endif %}
+
                             </td>
                         </tr>
                         {% endfor %}
@@ -265,9 +270,11 @@
 <!-- MODAIS (igual tarefas) -->
 
 {% block scripts %}
-    <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js') }}"></script>
-    <script src="{{ static_v('js/pasta_financas/modais/pasta_excluir/excluir_financas.js') }}"></script>
-    <script src="{{ static_v('js/pasta_financas/modais/detalhes_completo.js') }}"></script>
+    <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js') }}"></script> <!-- MODAL GLOBAL - PARA EXCLUIR -->
+    <script src="{{ static_v('js/pasta_financas/modais/detalhes_completo.js') }}"></script> <!-- DETALHES DA TAREFA -->
+    <script src="{{ static_v('js/pasta_financas/pasta_quitar/btn_quitar.js') }}"></script> <!-- BOTÃO QUITAMENTO -->
+    <script src="{{ static_v('js/pasta_financas/modais/pasta_excluir/btn_excluir.js') }}"></script> <!-- BOTÃO DE EXCLUIR/INATIVAR -->
+
 {% endblock %}
 
 {% endblock %}

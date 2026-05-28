@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, session, redirect, url_for, flash, request
+from flask import Blueprint, render_template, session, redirect, url_for, flash, request, jsonify
 import os, sqlite3
 from datetime import date
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.services_auditoria import AuditoriaService
+
+from datetime import datetime, timedelta, timezone
 
 # FILTROS
 from .crud_tarefas.pasta_filtros.tarefas_filtros import (
@@ -203,31 +205,46 @@ def detalhes_tarefa(tarefa_seq):
 def concluir_tarefa(tarefa_seq):
     motivo = request.form.get('motivo_conclusao', '').strip()
 
+    fuso = timezone(timedelta(hours=-4))
+    agora = datetime.now(fuso).strftime("%Y-%m-%d %H:%M:%S")
+    
     with sqlite3.connect(caminho_banco) as conexao:
         cursor = conexao.cursor()
         
-        # Busca dados da tarefa ANTES de concluir (para auditoria)
-        cursor.execute("SELECT titulo, descricao, status FROM tarefas WHERE tarefa_sequencia = ? AND user_id = ?", 
-                       (tarefa_seq, session['user_id']))
+        cursor.execute("""
+            SELECT titulo, descricao, status 
+            FROM tarefas 
+            WHERE tarefa_sequencia = ? AND user_id = ?
+        """, (tarefa_seq, session['user_id']))
+
         tarefa_antes = cursor.fetchone()
 
         if not tarefa_antes:
-            flash('Tarefa não encontrada.', 'danger')
-            return redirect(url_for('tarefas.ini_tarefas'))
-        
-        # Usa horário local do servidor (Cuiabá GMT-4)
-        cursor.execute('''
+            return jsonify({
+                'success': False,
+                'error': 'Tarefa não encontrada.'
+            })
+
+        cursor.execute("""
             UPDATE tarefas 
             SET status = 'concluido', 
-                data_finalizacao = datetime('now', 'localtime'),
-                updated_at = datetime('now', 'localtime'),
+                data_finalizacao = ?,
+                updated_at = ?,
                 motivo_conclusao = ?
             WHERE tarefa_sequencia = ? AND user_id = ?
-        ''', (motivo if motivo else None, tarefa_seq, session['user_id']))
+        """, (
+            agora,
+            agora,
+            motivo if motivo else None,
+            tarefa_seq,
+            session['user_id']
+        ))
         
         conexao.commit()
+
+        data_finalizacao = agora
+
         
-        # REGISTRA AUDITORIA
         AuditoriaService.registrar(
             tarefa_id=tarefa_seq,
             acao='concluir_tarefa',
@@ -236,8 +253,11 @@ def concluir_tarefa(tarefa_seq):
             valor_novo=f"Status: concluido | Motivo: {motivo if motivo else 'Sem observações'}"
         )
 
-        flash('Tarefa concluída com sucesso!', 'success')
-        return redirect(url_for('tarefas.ini_tarefas'))
+        return jsonify({
+            'success': True,
+            'message': f'Tarefa "{tarefa_antes[0]}" concluída com sucesso!',
+            'data_finalizacao': data_finalizacao
+        })
 
 
 # FUNÇÃO PARA EXCLUIR TAREFA (AGORA É INATIVAR - COM AUDITORIA)
@@ -247,12 +267,22 @@ def excluir_tarefa(tarefa_seq):
     with sqlite3.connect(caminho_banco) as conexao:
         cursor = conexao.cursor()
         
-        # Busca dados da tarefa ANTES de inativar
-        cursor.execute("SELECT titulo, descricao FROM tarefas WHERE tarefa_sequencia = ? AND user_id = ?", 
-                       (tarefa_seq, session['user_id']))
-        tarefa_antes = cursor.fetchone()
+        # Busca dados antes
+        cursor.execute("""
+            SELECT titulo 
+            FROM tarefas 
+            WHERE tarefa_sequencia = ? AND user_id = ? AND ativo = 1
+        """, (tarefa_seq, session['user_id']))
         
-        # INATIVA a tarefa (exclusão lógica) - NÃO DELETA!
+        tarefa = cursor.fetchone()
+        
+        if not tarefa:
+            return jsonify({
+                'success': False,
+                'error': 'Tarefa não encontrada ou já inativada.'
+            })
+
+        # INATIVA
         cursor.execute('''
             UPDATE tarefas 
             SET ativo = 0, 
@@ -264,17 +294,18 @@ def excluir_tarefa(tarefa_seq):
         
         conexao.commit()
         
-        # REGISTRA AUDITORIA
-        if tarefa_antes:
-            AuditoriaService.registrar(
-                tarefa_id=tarefa_seq,
-                acao='excluida',
-                valor_novo=f"Tarefa '{tarefa_antes[0] or 'Sem título'}' inativada"
-            )
+        # Auditoria
+        AuditoriaService.registrar(
+            tarefa_id=tarefa_seq,
+            acao='inativacao',
+            valor_novo=f"Tarefa '{tarefa[0] or 'Sem título'}' inativada"
+        )
 
-        flash('Tarefa inativada com sucesso!', 'success')
-        return redirect(url_for('tarefas.ini_tarefas'))
-
+        return jsonify({
+            'success': True,
+            'message': f'Tarefa "{tarefa[0]}" inativada com sucesso!'
+        })
+    
 
 # FUNÇÃO PARA LIMPAR SESSION DE CONSULTA
 @bp_tela_tarefas.route('/limpar_filtros')

@@ -19,15 +19,16 @@
 
         <div class="form-body">
 
-            <form method="POST">
+            <form method="POST" id="form-edit-transacao" action="">
 
                 <!-- TIPO -->
                 <div class="form-group">
                     <label>Tipo de Transação</label>
-                    <select name="tipo" class="form-select" required>
-                        <option value="receita" {% if transacao[2] == 'receita' %}selected{% endif %}>💰 Receita</option>
-                        <option value="despesa" {% if transacao[2] == 'despesa' %}selected{% endif %}>💸 Despesa</option>
-                    </select>
+                    <input 
+                        type="text" 
+                        class="form-input"
+                        value="{% if transacao[2] == 'receita' %}💰 Receita{% else %}💸 Despesa{% endif %}"
+                        disabled>
                 </div>
 
                 <!-- CATEGORIA -->
@@ -96,7 +97,11 @@
                         Cancelar
                     </a>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button 
+                        type="submit" 
+                        id="btn-submit"
+                        class="btn btn-primary"
+                        >
                         Salvar Alterações
                     </button>
 
@@ -113,6 +118,7 @@
 <!-- 🔥 ADICIONA O JS DE FORMATAÇÃO -->
 {% block scripts %}
     <script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
+    <script src="{{ static_v('js/pasta_financas/pasta_edit/btn_edit.js') }}"></script>
 {% endblock %}
 
 {% endblock %}

@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, session, flash
+from flask import Blueprint, redirect, url_for, session, flash, request, jsonify
 import sqlite3
 import os
 from datetime import date
@@ -26,9 +26,9 @@ def iniquitacao(sequencia):
         transacao = cursor.fetchone()
         
         if not transacao:
-            flash('Transação não encontrada!', 'danger')
-            return redirect(url_for('financas.inifinancas'))
-        
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'error': 'Transação não encontrada'})
+
         # Faz o UPDATE
         cursor.execute("""
             UPDATE transacoes 
@@ -52,6 +52,6 @@ def iniquitacao(sequencia):
             valor_antigo=status_map.get(transacao[1], transacao[1]),
             valor_novo='✅ Quitado'
         )
-    
-    flash('Despesa quitada com sucesso!', 'success')
-    return redirect(url_for('financas.inifinancas'))
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': True})

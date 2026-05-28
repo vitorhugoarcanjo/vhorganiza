@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, request, redirect, url_for, flash
+from flask import Blueprint, render_template, session, request, redirect, url_for, flash, jsonify
 import sqlite3
 import os
 from rotas.middleware.autenticacao import login_required
@@ -199,10 +199,11 @@ def excluir_transacao(transacao_id):
         transacao = cursor.fetchone()
         
         if not transacao:
-            flash('Transação não encontrada ou já inativada.', 'danger')
-            return redirect(url_for('financas.inifinancas'))
-        
-        # 🔥 CORREÇÃO: Atualizar por sequencia_transacoes também!
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': False, 'error': 'Transação não encontrada ou já inativada.'})
+
+
+        # 🔥 INATIVA a transação (soft delete)
         cursor.execute('''
             UPDATE transacoes 
             SET ativo = 0, 
@@ -220,11 +221,10 @@ def excluir_transacao(transacao_id):
             acao='inativacao',
             valor_novo=f"Transação '{transacao[0]}' inativada"
         )
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': True, 'message': f'Transação "{transacao[0]}" inativada com sucesso!'})
         
-        flash(f'Transação "{transacao[0]}" inativada com sucesso!', 'success')
-        return redirect(url_for('financas.inifinancas'))
-
-
 # ===== DETALHES DA TRANSAÇÃO =====
 @bp_financas.route('/detalhes/<int:transacao_id>')
 @login_required

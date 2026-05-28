@@ -207,11 +207,11 @@
 
                                 {% if tarefa[3] != 'concluido' %}
                                     
+
+                                    <!-- BOTÃO CONCLUIR TAREFAS -->
                                     <button 
                                         type="button"
-                                        class="btn-acao check"
-                                        title="Concluir"
-                                        onclick="abrirModalConcluir(this)"
+                                        class="btn-acao check btn-concluir"
                                         data-url="{{ url_for('tarefas.concluir_tarefa', tarefa_seq=tarefa[0]) }}">
                                         <i class="bi bi-check-lg"></i>
                                     </button>
@@ -221,10 +221,12 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     
-                                    <button type="button"
-                                            class="btn-acao delete"
-                                            onclick="excluirTarefa({{ tarefa[0] }}, '{{ tarefa[1] }}')"
-                                            console.log("CONFIRM clicado");>
+                                    <!-- BOTAO INATIVAR / EXCLUIR -->
+                                    <button 
+                                        type="button"
+                                        class="btn-acao delete btn-excluir"
+                                        data-id="{{ tarefa[0] }}"
+                                        data-desc="{{ tarefa[1] }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 {% endif %}
@@ -254,7 +256,7 @@
         <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js') }}"></script>
         <script src="{{ static_v('js/pasta_tarefas/modais/concluir_tarefas.js') }}"></script>
         <script src="{{ static_v('js/pasta_tarefas/modais/detalhes_completo.js') }}"></script>
-        <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/excluir_tarefa.js') }}"></script>
+        <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/btn_excluir.js') }}"></script>
     {% endblock %}
 
 

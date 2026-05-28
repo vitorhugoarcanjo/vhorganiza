@@ -2,6 +2,7 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ static_v('pasta_financas/crud/pasta_insert/import_css.css') }}">
+
 {% endblock %}
 
 {% block content %}
@@ -19,7 +20,7 @@
         <!-- BODY -->
         <div class="form-body">
 
-            <form action="{{ url_for('nova_transacao.initransacao') }}" method="post">
+            <form action="{{ url_for('nova_transacao.initransacao') }}" method="post" id="form-transacao">
 
                 <div class="form-group">
                     <label>Tipo de Transação</label>
@@ -83,8 +84,11 @@
                         Limpar
                     </button>
 
-                    <button type="submit" class="btn btn-primary">
-                        Salvar Transação
+                    <button 
+                    type="submit" 
+                    id="btn-submit" 
+                    class="btn btn-primary">
+                        ✅ Salvar Transação
                     </button>
 
                 </div>
@@ -96,9 +100,12 @@
     </div>
 
 </div>
-
+<script>
+console.log("FLASH:", {{ get_flashed_messages() | tojson }});
+</script>
 {% block scripts %}
-    <script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
+    <script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script> <!-- FORMATA O VALOR -->
+    <script src="{{ static_v('js/pasta_financas/pasta_insert/btn_insert.js') }}"></script> <!-- JS PARA SALVAR -->
 {% endblock %}
 
 {% endblock %}

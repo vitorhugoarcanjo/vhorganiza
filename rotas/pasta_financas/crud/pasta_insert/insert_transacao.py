@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 import json
@@ -42,6 +42,15 @@ def initransacao():
     """, (user_id,))
     categorias = cursor.fetchall()
 
+    # 🔥 Se for GET, renderiza o formulário normal
+    if request.method == 'GET':
+        return render_template(
+            'pasta_financas/crud/insert_transacao.html',
+            hoje=hoje,
+            categorias=categorias
+        )
+
+    # 🔥 Se for POST, processa via AJAX
     if request.method == 'POST':
         try:
             tipo = request.form.get('tipo')
@@ -56,76 +65,68 @@ def initransacao():
 
             status = 'recebido' if tipo == 'receita' else 'aberto'
 
-            sequencia = get_proxima_sequencia(cursor, user_id)
+            with sqlite3.connect(caminho_banco) as conexao:
+                cursor = conexao.cursor()
+                sequencia = get_proxima_sequencia(cursor, user_id)
 
-            cursor.execute("""
-                INSERT INTO transacoes (
-                    user_id, sequencia_transacoes, tipo,
+                cursor.execute("""
+                    INSERT INTO transacoes (
+                        user_id, sequencia_transacoes, tipo,
+                        valor_total, descricao,
+                        data_emissao, data_vencimento,
+                        total_parcelas, status, categoria_id
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    user_id, sequencia, tipo,
                     valor_total, descricao,
                     data_emissao, data_vencimento,
                     total_parcelas, status, categoria_id
+                ))
+                conexao.commit()
+
+                # ==========================================
+                # 🔥 REGISTRA AUDITORIA (depois do commit)
+                # ==========================================
+                # Busca nome da categoria
+                categoria_nome = ''
+                if categoria_id:
+                        cursor.execute("SELECT nome FROM categorias_financas WHERE id = ?", (categoria_id,))
+                        cat = cursor.fetchone()
+                        if cat:
+                            categoria_nome = cat[0]
+                    
+
+                # Cria lista de alterações
+                alteracoes = [
+                    {'campo': 'tipo', 'antes': None, 'depois': '📈 Receita' if tipo == 'receita' else '📉 Despesa'},
+                    {'campo': 'descrição', 'antes': None, 'depois': descricao},
+                    {'campo': 'valor', 'antes': None, 'depois': f'R$ {valor_total:.2f}'},
+                    {'campo': 'data emissão', 'antes': None, 'depois': data_emissao},
+                ]
+
+            
+                if data_vencimento:
+                    alteracoes.append({'campo': 'data vencimento', 'antes': None, 'depois': data_vencimento})
+                
+                if categoria_nome:
+                    alteracoes.append({'campo': 'categoria', 'antes': None, 'depois': categoria_nome})
+                    
+                # Registra no banco
+                AuditoriaFinanceiraService.registrar(
+                    transacao_id=sequencia,
+                    acao='criada',
+                    campo_alterado='todos',
+                    valor_antigo=None,
+                    valor_novo=json.dumps(alteracoes, ensure_ascii=False)
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                user_id, sequencia, tipo,
-                valor_total, descricao,
-                data_emissao, data_vencimento,
-                total_parcelas, status, categoria_id
-            ))
 
-            conexao.commit()
 
-            # ==========================================
-            # 🔥 REGISTRA AUDITORIA (depois do commit)
-            # ==========================================
-            # Busca nome da categoria
-            categoria_nome = ''
-            if categoria_id:
-                try:
-                    c_cursor = conexao.cursor()
-                    c_cursor.execute("SELECT nome FROM categorias_financas WHERE id = ?", (categoria_id,))
-                    cat = c_cursor.fetchone()
-                    if cat:
-                        categoria_nome = cat[0]
-                except:
-                    pass
-            
-            # Cria lista de alterações
-            alteracoes = [
-                {'campo': 'tipo', 'antes': None, 'depois': '📈 Receita' if tipo == 'receita' else '📉 Despesa'},
-                {'campo': 'descrição', 'antes': None, 'depois': descricao},
-                {'campo': 'valor', 'antes': None, 'depois': f'R$ {valor_total:.2f}'},
-                {'campo': 'data emissão', 'antes': None, 'depois': data_emissao},
-            ]
-            
-            if data_vencimento:
-                alteracoes.append({'campo': 'data vencimento', 'antes': None, 'depois': data_vencimento})
-            
-            if categoria_nome:
-                alteracoes.append({'campo': 'categoria', 'antes': None, 'depois': categoria_nome})
-            
-            # Registra no banco
-            AuditoriaFinanceiraService.registrar(
-                transacao_id=sequencia,
-                acao='criada',
-                campo_alterado='todos',
-                valor_antigo=None,
-                valor_novo=json.dumps(alteracoes, ensure_ascii=False)
-            )
-
-            conexao.close()
-
-            flash('Transação cadastrada com sucesso!', 'success')
-            return redirect(url_for('financas.inifinancas'))
-
+            return jsonify({
+                'success': True,
+                'message': f'Transação "{descricao}" cadastrada com sucesso!',
+                'sequencia': sequencia
+            })
+        
         except Exception as e:
-            conexao.close()
-            flash(f'Erro ao cadastrar: {str(e)}', 'danger')
-            return redirect(url_for('nova_transacao.initransacao'))
-
-    conexao.close()
-    return render_template(
-        'pasta_financas/crud/insert_transacao.html',
-        hoje=hoje,
-        categorias=categorias
-    )
+            return jsonify({'success': False, 'error': f'Erro ao cadastrar: {str(e)}'})
