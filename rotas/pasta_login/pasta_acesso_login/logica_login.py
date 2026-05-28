@@ -1,7 +1,7 @@
 """ LÓGICA DO LOGIN  - INICIO """
 import os
 import sqlite3
-from flask import Blueprint, render_template, redirect, request, flash, url_for, session
+from flask import Blueprint, render_template, redirect, request, flash, url_for, session, jsonify
 
 
 # VALIDAÇÃO DE LOGIN
@@ -21,8 +21,12 @@ def validar_login():
 
         # VALIDAÇÃO 1
         if not nome_ou_email or not senha:
-            flash('Preencha todos os campos!', 'warning')
-            return redirect(url_for('login.validar_login'))
+            # RETORNO COM JSON
+            return jsonify({
+                'success': False,
+                'message': 'Preencha todos os campos!',
+                'type': 'aviso'
+            }), 400
 
         # PRIMEIRO: VERIFICA SE O USUÁRIO EXISTE E SE O EMAIL FOI CONFIRMADO
         with sqlite3.connect(caminho_banco) as conexao_banco:
@@ -33,13 +37,20 @@ def validar_login():
             usuario = cursor.fetchone()
             
             if not usuario:
-                flash('Usuário não encontrado!', 'error')
-                return redirect(url_for('login.validar_login'))
+                return jsonify({
+                    'success': False,
+                    'message': 'Usuário não encontrado',
+                    'type': 'erro'
+                }), 404
             
             # VERIFICA SE EMAIL FOI CONFIRMADO
             if usuario[2] != 1:  # email_verificado = 0
-                flash('Email não confirmado! Verifique sua caixa de entrada.', 'warning')
-                return redirect(url_for('cadastre_se.confirmar_email', user_id=usuario[0]))
+                return jsonify({
+                    'success': False,
+                    'message': 'Email não confirmado! Verifique sua caixa de entrada.',
+                    'type': 'aviso',
+                    'user_id': usuario[0]
+                }), 403
 
         # SEGUNDO: VALIDA SENHA
         resultado = validar_usuario_bd(caminho_banco, nome_ou_email, senha)
@@ -51,10 +62,18 @@ def validar_login():
             session['user_nome'] = usuario[1]    # nome
             session['is_master'] = usuario[3] if len(usuario) > 3 else 0  # ← ADICIONA ESTA LINHA
 
-            flash('Logado com sucesso!', 'success')
-            return redirect(url_for('pos_login.iniposlogin'))
+            return jsonify({
+                'success': True,
+                'message': 'Logado com sucesso!',
+                'type': 'sucesso',
+                'redirect': url_for('pos_login.iniposlogin')
+            })
+        
         else:
-            flash('Senha incorreta!', 'error')
-            return redirect(url_for('login.validar_login'))
+            return jsonify({
+                'success': False,
+                'message': 'Senha incorreta',
+                'type': 'erro'
+            }), 401
 
     return render_template('pasta_login/pasta_acesso_login/tela_logica_login.html')

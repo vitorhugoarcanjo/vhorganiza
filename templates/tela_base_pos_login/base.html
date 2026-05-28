@@ -35,8 +35,9 @@
                 </button>
             </div>
             
-            <nav>
-                <ul>
+            <!-- MENU DE NAVEGAÇÃO BASE -->
+            <nav id="main-nav-pos-login">
+                <ul id="nav-list-base-pos-login">
                     <li>
                         <a href="{{ url_for('pos_login.iniposlogin') }}" class="{% if request.endpoint == 'pos_login.iniposlogin' %}active{% endif %}">
                             <i class="bi bi-house-door"></i> Início
@@ -90,22 +91,12 @@
 
         <!-- CONTEÚDO PRINCIPAL (ONDE ENTRAM AS TELAS FILHAS) -->
         <main class="content">
-            <!-- Renderização Automática dos Alertas de Sucesso/Erro do Flask -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                    <div class="custom-alert custom-alert-{{ 'success' if category == 'success' else 'danger' if category == 'danger' else 'warning' }}">
-                        <span>{{ message }}</span>
-                        <button type="button" class="btn-alert-close" onclick="this.parentElement.remove()">×</button>
-                    </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            
             {% block content %}{% endblock %}
         </main>
     </div>
 
+    <!-- MENU COM JS - TELAS / CONFIG / INICIO -->
+    <!-- <script src="{{ static_v('js/pasta_base_pos_login/menu-menager.js') }}"></script> -->
 
     <!-- NOTIFICAÇÕES GLOBAIS NOTIFICACAO DE QUITAR / EXCLUIR / INSERIR -->
     <script src="{{ static_v('js/componentes/notificacoes_globais_pos_login/notificacoes_tela.js') }}"></script>

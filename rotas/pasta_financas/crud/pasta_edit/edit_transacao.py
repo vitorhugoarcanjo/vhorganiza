@@ -83,9 +83,10 @@ def inieditar(sequencia):
         categoria_id = request.form.get('categoria_id') or None
 
         cursor.execute("""
-            SELECT descricao, valor_total, data_emissao, data_vencimento
-            FROM transacoes 
-            WHERE sequencia_transacoes = ? AND user_id = ?
+            SELECT t.descricao, t.valor_total, t.data_emissao, t.data_vencimento, t.categoria_id, ct.nome AS categoria_nome 
+            FROM transacoes t
+            LEFT JOIN categorias_financas ct ON t.categoria_id = ct.id
+            WHERE t.sequencia_transacoes = ? AND t.user_id = ?
         """, (sequencia, user_id))
 
         dados_antes = cursor.fetchone()
@@ -138,6 +139,19 @@ def inieditar(sequencia):
                 'depois': data_vencimento
             })
 
+        # Se quiser mostrar o nome da nova categoria (mais amigável):
+        if dados_antes[4] != categoria_id:
+            nome_novo = 'Sem categoria'
+            if categoria_id:
+                cursor.execute("SELECT nome FROM categorias_financas WHERE id = ?", (categoria_id,))
+                nova_categoria = cursor.fetchone()
+                nome_novo = nova_categoria[0] if nova_categoria else 'Sem categoria'
+            
+            alteracoes.append({
+                'campo': 'Categoria',
+                'antes': dados_antes[5] or 'Sem categoria',  # Se None, mostra 'Sem categoria'
+                'depois': nome_novo
+            })
 
         if alteracoes:
             AuditoriaFinanceiraService.registrar(
