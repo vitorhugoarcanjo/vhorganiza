@@ -13,15 +13,19 @@
 
         if (!form) return;
 
+        function setLoading(state) {
+            if (!btnSubmit) return;
+
+            btnSubmit.disabled = state;
+            btnSubmit.innerHTML = state ? '⏳ Salvando...' : 'Salvar Alterações';
+        }
+
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             console.log("EDIT SUBMIT");
 
-            if (btnSubmit) {
-                btnSubmit.disabled = true;
-                btnSubmit.innerHTML = '⏳ Salvando...';
-            }
+            setLoading(true);
 
             const formData = new FormData(form);
 
@@ -35,6 +39,7 @@
                 });
 
                 let data;
+
                 try {
                     data = await response.json();
                 } catch {
@@ -46,18 +51,15 @@
 
                     setTimeout(() => {
                         window.location.href = '/financas/';
-                    }, 1500);
+                    }, 1000);
                 } else {
                     Notificacao.erro(data.error || 'Erro ao atualizar');
+                    setLoading(false);
                 }
 
             } catch (error) {
                 Notificacao.erro('Erro de conexão');
-            } finally {
-                if (btnSubmit) {
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = 'Salvar Alterações';
-                }
+                setLoading(false);
             }
         });
 

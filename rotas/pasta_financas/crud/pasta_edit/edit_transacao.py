@@ -39,7 +39,6 @@ def inieditar(sequencia):
                 t.categoria_id,
                 c.nome,
                 c.cor,
-                t.status,
                 t.data_vencimento
             FROM transacoes t
             LEFT JOIN categorias_financas c ON c.id = t.categoria_id
@@ -82,10 +81,9 @@ def inieditar(sequencia):
         data_emissao = request.form.get('data_emissao')
         data_vencimento = request.form.get('data_vencimento')
         categoria_id = request.form.get('categoria_id') or None
-        status = request.form.get('status')
 
         cursor.execute("""
-            SELECT descricao, valor_total, status
+            SELECT descricao, valor_total
             FROM transacoes 
             WHERE sequencia_transacoes = ? AND user_id = ?
         """, (sequencia, user_id))
@@ -97,13 +95,12 @@ def inieditar(sequencia):
                 valor_total = ?, 
                 data_emissao = ?,
                 data_vencimento = ?,
-                categoria_id = ?,
-                status = ?
+                categoria_id = ?
             WHERE sequencia_transacoes = ? AND user_id = ?
         """, (
             descricao, valor,
             data_emissao, data_vencimento,
-            categoria_id, status,
+            categoria_id,
             sequencia, user_id
         ))
 
@@ -112,20 +109,12 @@ def inieditar(sequencia):
         # Auditoria
         alteracoes = []
 
-        status_map = {'aberto': '🔴 Aberto', 'quitado': '✅ Quitado', 'recebido': '💰 Recebido'}
-
         if dados_antes[0] != descricao:
             alteracoes.append({'campo': 'descrição', 'antes': dados_antes[0], 'depois': descricao})
 
         if dados_antes[1] != valor:
             alteracoes.append({'campo': 'valor', 'antes': f'R$ {dados_antes[1]:.2f}', 'depois': f'R$ {valor:.2f}'})
 
-        if dados_antes[2] != status:
-            alteracoes.append({
-                'campo': 'status',
-                'antes': status_map.get(dados_antes[2], dados_antes[2]),
-                'depois': status_map.get(status, status)
-            })
 
         if alteracoes:
             AuditoriaFinanceiraService.registrar(
