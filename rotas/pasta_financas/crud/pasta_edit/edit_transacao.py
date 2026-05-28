@@ -78,15 +78,16 @@ def inieditar(sequencia):
     try:
         descricao = request.form.get('descricao')
         valor = converter_valor_br(request.form.get('valor_total'))
-        data_emissao = request.form.get('data_emissao')
-        data_vencimento = request.form.get('data_vencimento')
+        data_vencimento = request.form.get('data_vencimento') or None
+        data_emissao = request.form.get('data_emissao') or None
         categoria_id = request.form.get('categoria_id') or None
 
         cursor.execute("""
-            SELECT descricao, valor_total
+            SELECT descricao, valor_total, data_emissao, data_vencimento
             FROM transacoes 
             WHERE sequencia_transacoes = ? AND user_id = ?
         """, (sequencia, user_id))
+
         dados_antes = cursor.fetchone()
 
         cursor.execute("""
@@ -110,10 +111,32 @@ def inieditar(sequencia):
         alteracoes = []
 
         if dados_antes[0] != descricao:
-            alteracoes.append({'campo': 'descrição', 'antes': dados_antes[0], 'depois': descricao})
+            alteracoes.append({
+                'campo': 'descrição',
+                'antes': dados_antes[0],
+                'depois': descricao
+            })
 
         if dados_antes[1] != valor:
-            alteracoes.append({'campo': 'valor', 'antes': f'R$ {dados_antes[1]:.2f}', 'depois': f'R$ {valor:.2f}'})
+            alteracoes.append({
+                'campo': 'valor',
+                'antes': f'R$ {dados_antes[1]:.2f}',
+                'depois': f'R$ {valor:.2f}'
+            })
+
+        if dados_antes[2] != data_emissao:
+            alteracoes.append({
+                'campo': 'data emissão',
+                'antes': dados_antes[2],
+                'depois': data_emissao
+            })
+
+        if dados_antes[3] != data_vencimento:
+            alteracoes.append({
+                'campo': 'data vencimento',
+                'antes': dados_antes[3],
+                'depois': data_vencimento
+            })
 
 
         if alteracoes:
