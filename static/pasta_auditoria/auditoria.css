@@ -1,51 +1,268 @@
+/* ==========================================================================
+    AUDITORIA - CSS UNIFICADO (FINANÇAS + TAREFAS)
+    Visual compacto, responsivo e profissional
+   ========================================================================== */
+
 :root {
-    --bg-card: #1f1f1f; /* Ajuste conforme seu tema */
-    --bg-principal: #121212;
-    --border-sutil: #333;
-    --texto-principal: #fff;
-    --texto-mutado: #a0a0a0;
+    --bg-card: #1e293b;
+    --bg-principal: #0f172a;
+    --border-sutil: rgba(255, 255, 255, 0.06);
+    --texto-principal: #f8fafc;
+    --texto-mutado: #94a3b8;
+    --texto-discreto: #64748b;
     --cor-ativa: #2563eb;
+    --cor-remove: #f87171;
+    --cor-add: #4ade80;
+    --hover-fino: rgba(255, 255, 255, 0.03);
 }
 
-.dashboard-container { max-width: 900px; margin: 0 auto; padding: 20px; color: var(--texto-principal); }
-
-.historico-wrapper { display: flex; flex-direction: column; gap: 15px; }
-
-/* Cabeçalho */
-.header-audit { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.btn-voltar { 
-    padding: 6px 14px; 
-    border: 1px solid var(--border-sutil); 
-    border-radius: 6px; 
-    color: var(--texto-principal); 
-    text-decoration: none; 
-    font-size: 0.8rem; 
-}
-.btn-voltar:hover { background: var(--border-sutil); }
-
-/* Cartões de Log */
-.log-entry { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-sutil); 
-    border-radius: 8px; 
-    padding: 15px; 
+body.light-mode {
+    --bg-card: #f1f5f9;
+    --bg-principal: #e2e8f0;
+    --border-sutil: rgba(15, 23, 42, 0.12);
+    --texto-principal: #1e293b;
+    --texto-mutado: #475569;
+    --texto-discreto: #64748b;
+    --cor-ativa: #1d4ed8;
+    --cor-remove: #dc2626;
+    --cor-add: #16a34a;
+    --hover-fino: rgba(0, 0, 0, 0.04);
 }
 
-.log-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
-.badge { 
-    background: var(--cor-ativa); 
-    color: white; 
-    padding: 2px 8px; 
-    border-radius: 4px; 
-    font-size: 0.7rem; 
-    text-transform: uppercase; 
+/* Container principal */
+.dashboard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0.75rem;
 }
 
-.diff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-.diff-box { background: var(--bg-principal); padding: 8px; border-radius: 4px; border: 1px solid var(--border-sutil); }
+.historico-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
 
-.diff-label { display: block; font-size: 0.65rem; color: var(--texto-mutado); margin-bottom: 4px; }
-.val-old { color: #f87171; font-size: 0.75rem; text-decoration: line-through; display: block; }
-.val-new { color: #4ade80; font-size: 0.75rem; font-weight: 600; display: block; }
+/* ========== CABEÇALHO ========== */
+.header-audit {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-sutil);
+}
 
-.log-footer { margin-top: 10px; font-size: 0.65rem; color: var(--texto-mutado); border-top: 1px solid var(--border-sutil); padding-top: 8px; }
+.header-audit h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.header-audit span {
+    font-size: 0.7rem;
+}
+
+.btn-voltar {
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    color: var(--texto-mutado);
+    text-decoration: none;
+    font-size: 0.7rem;
+    transition: all 0.15s;
+    background: transparent;
+}
+
+.btn-voltar:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+    border-color: var(--cor-ativa);
+}
+
+/* ========== CARDS DE LOG ========== */
+.log-entry {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.15s;
+}
+
+.log-entry:hover {
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+/* Header do card */
+.log-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid var(--border-sutil);
+}
+
+.badge {
+    background: var(--cor-ativa);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.log-header .data-hora {
+    font-size: 0.7rem;
+    color: var(--texto-mutado);
+}
+
+.log-header .usuario {
+    font-size: 0.65rem;
+    color: var(--texto-discreto);
+}
+
+/* ========== CORPO DO LOG ========== */
+.log-body {
+    padding: 0.7rem 0.9rem;
+}
+
+/* Grid de alterações - versão inline compacta */
+.diff-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Cada alteração em linha única */
+.diff-box {
+    background: var(--bg-principal);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    display: inline-flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    border: 1px solid var(--border-sutil);
+}
+
+.diff-label {
+    color: var(--cor-ativa);
+    font-weight: 600;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.val-old {
+    color: var(--cor-remove);
+    text-decoration: line-through;
+    background: rgba(248, 113, 113, 0.1);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+.val-new {
+    color: var(--cor-add);
+    font-weight: 600;
+    background: rgba(74, 222, 128, 0.1);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+/* Separador visual entre De e Para */
+.val-old::after {
+    content: " →";
+    color: var(--texto-discreto);
+    text-decoration: none;
+    font-weight: normal;
+    margin-left: 0.3rem;
+}
+
+/* ========== FOOTER ========== */
+.log-footer {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.6rem;
+    color: var(--texto-discreto);
+    border-top: 1px solid var(--border-sutil);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Mensagem vazia */
+.empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--texto-mutado);
+    font-size: 0.8rem;
+}
+
+/* ========== RESPONSIVO ========== */
+@media (min-width: 480px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+    
+    .header-audit h2 {
+        font-size: 1.1rem;
+    }
+    
+    .diff-box {
+        padding: 0.3rem 0.8rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .dashboard-container {
+        padding: 1.5rem;
+    }
+    
+    .header-audit h2 {
+        font-size: 1.2rem;
+    }
+    
+    .header-audit span {
+        font-size: 0.8rem;
+    }
+    
+    .btn-voltar {
+        font-size: 0.75rem;
+    }
+    
+    .log-header {
+        padding: 0.7rem 1.2rem;
+    }
+    
+    .log-body {
+        padding: 0.8rem 1.2rem;
+    }
+    
+    .log-footer {
+        padding: 0.5rem 1.2rem;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+    }
+}
+
+/* Scroll fino */
+.dashboard-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.dashboard-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dashboard-container::-webkit-scrollbar-thumb {
+    background-color: var(--border-sutil);
+    border-radius: 10px;
+}

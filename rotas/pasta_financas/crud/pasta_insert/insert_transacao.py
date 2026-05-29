@@ -103,6 +103,7 @@ def initransacao():
                     {'campo': 'descrição', 'antes': None, 'depois': descricao},
                     {'campo': 'valor', 'antes': None, 'depois': f'R$ {valor_total:.2f}'},
                     {'campo': 'data emissão', 'antes': None, 'depois': data_emissao},
+                    {'campo': 'status', 'antes': None, 'depois': status},
                 ]
 
             
@@ -113,10 +114,11 @@ def initransacao():
                     alteracoes.append({'campo': 'categoria', 'antes': None, 'depois': categoria_nome})
                     
                 # Registra no banco
+                # No insert_transacao.py, muda de 'todos' para 'multiplos'
                 AuditoriaFinanceiraService.registrar(
                     transacao_id=sequencia,
                     acao='criada',
-                    campo_alterado='todos',
+                    campo_alterado='multiplos',  # 👈 MUDA AQUI de 'todos' para 'multiplos'
                     valor_antigo=None,
                     valor_novo=json.dumps(alteracoes, ensure_ascii=False)
                 )

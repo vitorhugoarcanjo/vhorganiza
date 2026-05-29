@@ -6,6 +6,7 @@ function quitarTransacao(sequencia, botao) {
     botao.innerHTML = '⏳';
 
     fetch('/quitar_transacao/' + sequencia, {
+        method: 'POST',  // 👈 ADICIONA ISSO
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
         }
@@ -14,12 +15,29 @@ function quitarTransacao(sequencia, botao) {
     .then(data => {
         if (data.success) {
             const linha = botao.closest('tr');
+            
+            // Atualiza o status na tabela (coluna 5 = índice 5)
             const celulaStatus = linha.querySelector('td:nth-child(5)');
-            celulaStatus.innerHTML = '<span class="badge-pure bg-success">✅ Quitado</span>';
+            
+            // Detecta se é receita ou despesa pelo tipo
+            const tipoCelula = linha.querySelector('td:nth-child(2)');
+            const ehReceita = tipoCelula.innerText.includes('Receita');
+            
+            if (ehReceita) {
+                celulaStatus.innerHTML = '<span class="badge-pure bg-success">💰 Recebido</span>';
+                Notificacao.sucesso('Receita recebida com sucesso!');
+            } else {
+                celulaStatus.innerHTML = '<span class="badge-pure bg-success">✅ Quitado</span>';
+                Notificacao.sucesso('Despesa quitada com sucesso!');
+            }
+            
+            // Remove o botão de quitar da linha
             botao.remove();
             
-            // 🔥 NOTIFICAÇÃO PROFISSIONAL
-            Notificacao.sucesso('Despesa quitada com sucesso!');
+            // Opcional: esconde também os botões Editar/Excluir
+            const botoesAcao = linha.querySelectorAll('.edit, .delete');
+            botoesAcao.forEach(btn => btn.remove());
+            
         } else {
             botao.disabled = false;
             botao.style.opacity = '1';

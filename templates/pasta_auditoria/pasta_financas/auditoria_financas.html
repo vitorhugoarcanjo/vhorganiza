@@ -12,8 +12,8 @@
         
         <header class="header-audit">
             <div>
-                <h2 style="margin: 0; font-size: 1.2rem;">📋 Auditoria - Transação #{{ transacao_id }}</h2>
-                <span style="font-size: 0.8rem; color: var(--texto-mutado);">
+                <h2>📋 Auditoria - Transação #{{ transacao_id }}</h2>
+                <span>
                     {{ transacao[1] }} | 
                     {% if transacao[2] == 'receita' %}📈 Receita{% else %}📉 Despesa{% endif %} | 
                     R$ {{ "%.2f"|format(transacao[3]) }}
@@ -25,7 +25,7 @@
                         data_fim=data_fim,
                         tipo_data=tipo_data) }}" 
                class="btn-voltar">
-                Voltar
+                ← Voltar
             </a>
         </header>
 
@@ -35,32 +35,38 @@
                 <div class="log-header">
                     <div>
                         <span class="badge">{{ item.acao }}</span>
-                        <span style="margin-left: 8px; font-size: 0.8rem;">{{ item.data_hora }}</span>
+                        <span class="data-hora">{{ item.data_hora }}</span>
                     </div>
-                    <div style="font-size: 0.75rem; color: var(--texto-mutado);">{{ item.usuario_nome or 'Sistema' }}</div>
+                    <div class="usuario">{{ item.usuario_nome or 'Sistema' }}</div>
                 </div>
 
                 <div class="log-body">
                     {% if item.alteracoes %}
                         <div class="diff-grid">
                             {% for alt in item.alteracoes %}
-                            <div class="diff-box">
-                                <span class="diff-label">{{ alt.campo }}</span>
-                                <span class="val-old">De: {{ alt.antes or '(vazio)' }}</span>
-                                <span class="val-new">Para: {{ alt.depois or '(vazio)' }}</span>
-                            </div>
+                                {% if alt.antes is not none or alt.depois is not none %}
+                                <div class="diff-box">
+                                    <span class="diff-label">{{ alt.campo }}</span>
+                                    {% if alt.antes is not none %}
+                                    <span class="val-old">{{ alt.antes }}</span>
+                                    {% endif %}
+                                    {% if alt.depois is not none %}
+                                    <span class="val-new">{{ alt.depois }}</span>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     {% elif item.campo_alterado %}
                         <div class="diff-grid">
                             <div class="diff-box">
                                 <span class="diff-label">{{ item.campo_alterado }}</span>
-                                <span class="val-old">De: {{ item.valor_antigo or '(vazio)' }}</span>
-                                <span class="val-new">Para: {{ item.valor_novo or '(vazio)' }}</span>
+                                <span class="val-old">{{ item.valor_antigo or '(vazio)' }}</span>
+                                <span class="val-new">{{ item.valor_novo or '(vazio)' }}</span>
                             </div>
                         </div>
                     {% else %}
-                        <p style="font-size: 0.85rem; margin: 0;">{{ item.valor_novo or 'Nenhuma alteração detalhada.' }}</p>
+                        <p class="empty-state">{{ item.valor_novo or 'Nenhuma alteração detalhada.' }}</p>
                     {% endif %}
                 </div>
 
@@ -70,7 +76,7 @@
             </div>
             {% endfor %}
         {% else %}
-            <div style="text-align: center; padding: 40px; color: var(--texto-mutado);">
+            <div class="empty-state">
                 Nenhum histórico registrado para esta transação.
             </div>
         {% endif %}

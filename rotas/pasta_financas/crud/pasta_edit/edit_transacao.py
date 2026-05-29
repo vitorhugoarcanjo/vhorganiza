@@ -140,18 +140,23 @@ def inieditar(sequencia):
             })
 
         # Se quiser mostrar o nome da nova categoria (mais amigável):
-        if dados_antes[4] != categoria_id:
+# Se quiser mostrar o nome da nova categoria (mais amigável):
+        categoria_id_novo = int(categoria_id) if categoria_id else None
+        if dados_antes[4] != categoria_id_novo:
+            nome_antigo = dados_antes[5] or 'Sem categoria'
             nome_novo = 'Sem categoria'
-            if categoria_id:
-                cursor.execute("SELECT nome FROM categorias_financas WHERE id = ?", (categoria_id,))
+            if categoria_id_novo:
+                cursor.execute("SELECT nome FROM categorias_financas WHERE id = ?", (categoria_id_novo,))
                 nova_categoria = cursor.fetchone()
                 nome_novo = nova_categoria[0] if nova_categoria else 'Sem categoria'
             
-            alteracoes.append({
-                'campo': 'Categoria',
-                'antes': dados_antes[5] or 'Sem categoria',  # Se None, mostra 'Sem categoria'
-                'depois': nome_novo
-            })
+            # SÓ adiciona se realmente mudou o NOME
+            if nome_antigo != nome_novo:
+                alteracoes.append({
+                    'campo': 'categoria',
+                    'antes': nome_antigo,
+                    'depois': nome_novo
+                })
 
         if alteracoes:
             AuditoriaFinanceiraService.registrar(

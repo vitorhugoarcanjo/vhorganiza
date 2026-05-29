@@ -234,13 +234,13 @@ def detalhes_transacao(transacao_id):
         cursor = conexao.cursor()
         
         cursor.execute("""
-            SELECT t.id, t.tipo, t.valor_total, t.descricao,
+            SELECT t.sequencia_transacoes, t.tipo, t.valor_total, t.descricao,
                    t.data_emissao, t.data_vencimento, t.data_quitamento,
                    t.status, t.numero_parcela, t.total_parcelas,
                    c.nome as categoria_nome, c.cor as categoria_cor
             FROM transacoes t 
             LEFT JOIN categorias_financas c ON t.categoria_id = c.id
-            WHERE t.id = ? AND t.user_id = ?
+            WHERE t.sequencia_transacoes = ? AND t.user_id = ?
         """, (transacao_id, session['user_id']))
         
         transacao = cursor.fetchone()
@@ -249,7 +249,7 @@ def detalhes_transacao(transacao_id):
             return {"error": "Transação não encontrada"}, 404
         
         return {
-            'id': transacao[0],
+            'sequencia_transacoes': transacao[0],
             'tipo': transacao[1],
             'tipo_label': '📈 Receita' if transacao[1] == 'receita' else '📉 Despesa',
             'valor': formatar_moeda_br(transacao[2]),  # 🔥 NOVA

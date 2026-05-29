@@ -8,7 +8,7 @@ caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 bp_quitar = Blueprint('quitar_transacao', __name__)
 
-@bp_quitar.route('/<int:sequencia>')
+@bp_quitar.route('/<int:sequencia>', methods=['POST'])  # 👈 Adiciona POST
 def iniquitacao(sequencia):
     user_id = session['user_id']
     hoje = date.today().isoformat()
@@ -16,9 +16,9 @@ def iniquitacao(sequencia):
     with sqlite3.connect(caminho_banco) as conn:
         cursor = conn.cursor()
         
-        # 🔥 Busca dados ANTES de quitar (pra auditoria)
+        # Busca dados ANTES
         cursor.execute("""
-            SELECT descricao, status 
+            SELECT descricao, status, tipo 
             FROM transacoes 
             WHERE sequencia_transacoes = ? AND user_id = ?
         """, (sequencia, user_id))
@@ -26,32 +26,32 @@ def iniquitacao(sequencia):
         transacao = cursor.fetchone()
         
         if not transacao:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'error': 'Transação não encontrada'})
-
-        # Faz o UPDATE
+            return jsonify({'success': False, 'error': 'Transação não encontrada'})
+        
+        # Define novo status baseado no tipo
+        if transacao[2] == 'receita':
+            novo_status = 'recebido'
+            acao = 'recebida'
+        else:
+            novo_status = 'quitado'
+            acao = 'quitada'
+        
+        # Update
         cursor.execute("""
             UPDATE transacoes 
-            SET status = 'quitado', 
+            SET status = ?, 
                 data_quitamento = ? 
             WHERE sequencia_transacoes = ? AND user_id = ?
-        """, (hoje, sequencia, user_id))
+        """, (novo_status, hoje, sequencia, user_id))
         conn.commit()
         
-        # 🔥 REGISTRA AUDITORIA
-        status_map = {
-            'aberto': '🔴 Aberto', 
-            'quitado': '✅ Quitado', 
-            'recebido': '💰 Recebido'
-        }
-        
+        # Auditoria
         AuditoriaFinanceiraService.registrar(
             transacao_id=sequencia,
-            acao='quitada',
+            acao=acao,
             campo_alterado='status',
-            valor_antigo=status_map.get(transacao[1], transacao[1]),
-            valor_novo='✅ Quitado'
+            valor_antigo=transacao[1],
+            valor_novo=novo_status
         )
 
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return jsonify({'success': True})
+    return jsonify({'success': True})
