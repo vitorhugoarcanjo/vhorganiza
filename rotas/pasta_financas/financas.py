@@ -80,7 +80,7 @@ def inifinancas():
     query = """
         SELECT t.sequencia_transacoes, t.id, t.tipo, t.valor_total, t.descricao, 
                t.data_emissao, c.nome AS categoria_nome, c.cor AS categoria_cor, 
-               t.status, t.data_vencimento
+               t.status, t.data_vencimento, t.ativo
         FROM transacoes t
         LEFT JOIN categorias_financas c ON c.id = t.categoria_id
         WHERE t.user_id = ?

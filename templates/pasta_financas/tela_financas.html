@@ -225,7 +225,7 @@
                                 <!-- ========================================== -->
                                 <!-- BOTÕES QUE SÓ APARECEM SE NÃO ESTIVER FINALIZADO -->
                                 <!-- ========================================== -->
-                                {% if transacao[8] not in ['quitado', 'recebido'] %}
+                                {% if transacao[8] not in ['quitado', 'recebido'] and transacao[10] == 1 %}
                                     <!-- EDITAR -->
                                     <a href="{{ url_for('edit_transacoes.inieditar', sequencia=transacao[0]) }}" 
                                     class="btn-acao edit" title="Editar">
@@ -236,7 +236,8 @@
                                     <button type="button"
                                             class="btn-acao delete btn-excluir"
                                             data-id="{{ transacao[0] }}"
-                                            data-desc="{{ transacao[4] }}">
+                                            data-desc="{{ transacao[4] }}"
+                                            title="Excluir">
                                         <i class="bi bi-trash"></i>
                                     </button>
 
@@ -246,7 +247,7 @@
                                                 class="btn-acao check" title="Quitar">
                                             <i class="bi bi-check-lg"></i>
                                         </button>
-                                        
+
                                     {% elif transacao[2] == 'receita' and transacao[8] == 'aberto' %}
                                         <button onclick="quitarTransacao({{ transacao[0] }}, this)" 
                                                 class="btn-acao check" title="Receber">
