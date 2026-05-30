@@ -9,116 +9,162 @@
 {% block content %}
 
 <div class="finance-wrapper">
-
     <div class="form-fin-card">
 
         <div class="form-fin-header">
-            <h2>Editar Transação #{{ sequencia }}</h2>
+            <h2><i class="bi bi-pencil-square"></i> Editar Transação #{{ sequencia }}</h2>
             <p>Altere os dados abaixo</p>
         </div>
 
-        <div class="form-body">
+        <form action="{{ url_for('edit_transacoes.inieditar', sequencia=sequencia) }}" method="post" id="form-edit-transacao">
+            <div class="form-body">
 
-            <form method="POST" id="form-edit-transacao" action="">
-
-                <!-- TIPO -->
-                <div class="form-group">
-                    <label>Tipo de Transação</label>
-                    <input 
-                        type="text" 
-                        class="form-input"
-                        value="{% if transacao[2] == 'receita' %}💰 Receita{% else %}💸 Despesa{% endif %}"
-                        disabled>
-                </div>
-
-                <!-- CATEGORIA -->
-                <div class="form-group">
-                    <label>Categoria</label>
-                    <select name="categoria_id" class="form-select">
-                        <option value="">Sem categoria</option>
-
-                        {% for cat in categorias %}
-                        <option value="{{ cat[0] }}"
-                            {% if transacao[6] == cat[0] %}selected{% endif %}>
-                            {{ cat[1] }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- GRID -->
+                <!-- LINHA 1: TIPO + VALOR + EMISSÃO -->
                 <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <div class="tipo-container">
+                            <button type="button" class="tipo-btn" data-tipo="vazio" disabled>
+                                <i class="bi bi-question-circle"></i> Sel.
+                            </button>
+                            <button type="button" class="tipo-btn receita {% if transacao[2] == 'receita' %}active{% endif %}" 
+                                    data-tipo="receita" disabled>
+                                <i class="bi bi-arrow-up-circle-fill"></i> Rec.
+                            </button>
+                            <button type="button" class="tipo-btn despesa {% if transacao[2] == 'despesa' %}active{% endif %}" 
+                                    data-tipo="despesa" disabled>
+                                <i class="bi bi-arrow-down-circle-fill"></i> Desp.
+                            </button>
+                        </div>
+                        <input type="hidden" name="tipo" id="tipoHidden" value="{{ transacao[2] }}">
+                    </div>
 
                     <div class="form-group">
                         <label>Valor Total</label>
-                        <!-- 🔥 MUDOU para text com classe money-input -->
-                        <input type="text" 
-                               name="valor_total" 
-                               id="valor_total"
-                               class="form-input money-input" 
-                               value="{{ transacao[3] }}"
-                               required>
+                        <input type="text" name="valor_total" id="valor_total" class="form-input money-input" value="{{ transacao[3] }}" required>
                     </div>
 
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <input type="text"
-                               name="descricao"
-                               value="{{ transacao[4] }}"
-                               class="form-input"
-                               required>
-                    </div>
-                </div>
-
-                <div class="form-grid">
                     <div class="form-group">
                         <label>Data Emissão</label>
-                        <input type="date"
-                               name="data_emissao"
-                               value="{{ transacao[5] }}"
-                               class="form-input"
-                               required>
+                        <input type="date" name="data_emissao" class="form-input" value="{{ transacao[5] }}" required>
+                    </div>
+
+                    <div class="form-group" id="dataVencimentoGroup">
+                        <label>Data Vencimento</label>
+                        <input type="date" name="data_vencimento" id="data_vencimento_base" class="form-input" value="{{ transacao[9] }}">
+                    </div>
+                </div>
+
+                <!-- LINHA 2: DESCRIÇÃO + CATEGORIA + Nº PARCELAS -->
+                <div class="form-grid">
+                    <div class="form-group descricao-full">
+                        <label>Descrição</label>
+                        <input type="text" name="descricao" class="form-input" value="{{ transacao[4] }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Data Vencimento</label>
-                        <input type="date"
-                               name="data_vencimento"
-                               value="{{ transacao[9] }}"
-                               class="form-input">
+                        <label>Categoria</label>
+                        <select name="categoria_id" class="form-select">
+                            <option value="">Selecione...</option>
+                            {% for cat in categorias %}
+                                <option value="{{ cat[0] }}" {% if transacao[6] == cat[0] %}selected{% endif %}>{{ cat[1] }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
+                    <!-- Nº PARCELAS - SEMPRE VISÍVEL -->
+                    <div class="form-group">
+                        <label>Nº Parcelas</label>
+                        <input type="number" name="total_parcelas" id="totalParcelas" 
+                               class="form-input" value="{{ total_parcelas }}" min="1" max="100" 
+                               inputmode="numeric" style="text-align: center;">
+                    </div>
                 </div>
 
-                <!-- ACTIONS -->
-                <div class="form-actions">
-
-                    <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-secondary">
-                        Cancelar
-                    </a>
-
-                    <button 
-                        type="submit" 
-                        id="btn-submit"
-                        class="btn btn-primary"
-                        >
-                        Salvar Alterações
-                    </button>
-
+                <!-- CONFIGURAÇÕES DE PARCELAS (só aparece se parcelas > 1) -->
+                <div class="parcelas-config-area" id="parcelasConfigArea" style="display: none;">
+                    <div class="parcelas-config-painel">
+                        <div class="parcelas-config-row">
+                            <div class="parcelas-config-item">
+                                <label>Intervalo entre parcelas</label>
+                                <div style="display: flex; gap: 6px;">
+                                    <input type="number" id="intervaloDias" class="form-input" value="{{ transacao[11] if transacao[11] else 30 }}" min="1" max="365" inputmode="numeric" style="flex: 1;">
+                                    <span style="display: flex; align-items: center; color: var(--texto-mutado);">dias</span>
+                                </div>
+                            </div>
+                            <div class="parcelas-config-item">
+                                <label>1ª Vencimento</label>
+                                <input type="date" id="primeiroVencimento" class="form-input" value="{{ transacao[9] }}">
+                            </div>
+                            <div class="parcelas-config-item">
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn-distribuir" id="btnDistribuir">
+                                    <i class="bi bi-calculator"></i> Distribuir igualmente
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-            </form>
+                <!-- TABELA DE PARCELAS -->
+                <div class="parcelas-wrapper" id="parcelasWrapper" style="display: none;">
+                    <div class="parcelas-table-wrapper">
+                        <table class="parcelas-table" id="parcelasTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Parcela</th>
+                                    <th style="width: 160px;">Vencimento</th>
+                                    <th style="width: 160px;">Valor (R$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parcelasBody">
+                                <tr><td colspan="3" style="text-align: center; color: var(--texto-mutado);">Selecione mais de 1 parcela</td</tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
+                <!-- 🔥 CAMPO OCULTO PARA PASSAR AS PARCELAS EXISTENTES -->
+                <input type="hidden" id="parcelasFilhasData" value='{{ parcelas_filhas_json }}'>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- FOOTER FIXO -->
+<div class="footer-fixo" id="footerFixo">
+    <div class="botoes-footer">
+        <button type="submit" form="form-edit-transacao" id="btn-submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Salvar
+        </button>
+        <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-secondary">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+    </div>
+
+    <div class="totalizador-footer">
+        <div class="total-item valor-original">
+            <label>Valor Total:</label>
+            <span id="totalOriginal">R$ 0,00</span>
         </div>
-
+        <div class="total-item soma-parcelas">
+            <label>Soma Parcelas:</label>
+            <span id="somaParcelas">R$ 0,00</span>
+        </div>
+        <div class="total-item diferenca" id="diferencaItem">
+            <label>Diferença:</label>
+            <span id="diferencaValor">R$ 0,00</span>
+        </div>
     </div>
 
 </div>
 
-<!-- 🔥 ADICIONA O JS DE FORMATAÇÃO -->
 {% block scripts %}
-    <script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
-    <script src="{{ static_v('js/pasta_financas/pasta_edit/btn_edit.js') }}"></script>
+<script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
+<script src="{{ static_v('js/pasta_financas/pasta_edit/pasta_parcelas/parcelas_menager.js') }}"></script>
+<script src="{{ static_v('js/pasta_financas/pasta_edit/btn_edit.js') }}"></script>
 {% endblock %}
 
 {% endblock %}

@@ -7,44 +7,44 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-task">
-    <div class="card-task">
 
-        <div class="card-task-header">
-            <div class="header-align">
-                <h2 class="title-main">
-                    <i class="bi bi-pencil-square"></i> Editar Tarefa
-                </h2>
-            </div>
-            <p class="subtitle-main">Modifique os campos necessários e salve as alterações</p>
+<div class="finance-wrapper">
+    <div class="form-fin-card">
+
+        <div class="form-fin-header">
+            <h2><i class="bi bi-pencil-square"></i> Editar Tarefa</h2>
+            <p>Modifique os campos necessários e salve as alterações</p>
         </div>
 
-        <div class="card-task-body">
+        <div class="form-body">
             <form method="post" action="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa_seq) }}" id="form-edit-tarefa">
 
-                <div class="form-group">
-                    <label class="label-form"><i class="bi bi-type"></i> Título</label>
-                    <input type="text" name="titulo" class="input-form" value="{{ tarefa[0] }}" required>
+                <div class="form-grid">
+                    <div class="form-group descricao-full">
+                        <label class="label-form"><i class="bi bi-type"></i> Título</label>
+                        <input type="text" name="titulo" class="form-input" value="{{ tarefa[0] }}" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="label-form"><i class="bi bi-file-text"></i> Descrição</label>
-                    <textarea name="descricao" class="input-form textarea-form">{{ tarefa[1] }}</textarea>
+                <div class="form-grid">
+                    <div class="form-group descricao-full">
+                        <label class="label-form"><i class="bi bi-file-text"></i> Descrição</label>
+                        <textarea name="descricao" class="form-input" rows="3">{{ tarefa[1] }}</textarea>
+                    </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-col">
+                <div class="form-grid">
+                    <div class="form-group">
                         <label class="label-form"><i class="bi bi-check-circle"></i> Status</label>
-                        <select name="status" class="select-form">
+                        <select name="status" class="form-select">
                             <option value="pendente" {% if tarefa[2] == 'pendente' %}selected{% endif %}>⏳ Pendente</option>
                             <option value="em andamento" {% if tarefa[2] == 'em andamento' %}selected{% endif %}>⚡ Em andamento</option>
                             <option value="concluido" {% if tarefa[2] == 'concluido' %}selected{% endif %}>✅ Concluído</option>
                         </select>
                     </div>
-
-                    <div class="form-col">
+                    <div class="form-group">
                         <label class="label-form"><i class="bi bi-flag"></i> Prioridade</label>
-                        <select name="prioridade" class="select-form">
+                        <select name="prioridade" class="form-select">
                             <option value="baixa" {% if tarefa[6] == 'baixa' %}selected{% endif %}>🟢 Baixa</option>
                             <option value="media" {% if tarefa[6] == 'media' %}selected{% endif %}>🟡 Média</option>
                             <option value="alta" {% if tarefa[6] == 'alta' %}selected{% endif %}>🔴 Alta</option>
@@ -52,60 +52,66 @@
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-col">
+                <div class="form-grid">
+                    <div class="form-group">
                         <label class="label-form"><i class="bi bi-calendar-plus"></i> Início</label>
-                        <input type="date" name="data_inicio" class="input-form" value="{{ tarefa[3] }}">
+                        <input type="date" name="data_inicio" class="form-input" value="{{ tarefa[3] }}">
                     </div>
-
-                    <div class="form-col">
+                    <div class="form-group">
                         <label class="label-form"><i class="bi bi-calendar-check"></i> Prazo</label>
-                        <input type="date" name="data_final" class="input-form" value="{{ tarefa[4] }}">
+                        <input type="date" name="data_final" class="form-input" value="{{ tarefa[4] }}">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="label-form"><i class="bi bi-tags"></i> Categoria</label>
-                    <select name="categoria_id" class="select-form">
-                        <option value="">⚠️ Sem categoria</option>
-                        {% for cat in todas_categorias %}
-                        <option value="{{ cat[0] }}" 
-                                style="background-color: {{ cat[2] }}; color: white !important;" 
-                                {% if cat[0] == tarefa[5] %}selected{% endif %}>
-                            {{ cat[1] }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- BOTÕES (AGORA PADRÃO IGUAL SISTEMA) -->
-                <div class="form-actions">
-                    <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-action btn-back">
-                        <i class="bi bi-x-circle"></i> Cancelar
-                    </a>
-
-                    <button 
-                        type="submit"
-                        class="btn-action btn-submit">
-                        <i class="bi bi-save"></i> Salvar alterações
-                    </button>
+                    <div class="form-group">
+                        <label class="label-form"><i class="bi bi-tags"></i> Categoria</label>
+                        <select name="categoria_id" class="form-select">
+                            <option value="">⚠️ Sem categoria</option>
+                            {% for cat in todas_categorias %}
+                            <option value="{{ cat[0] }}" 
+                                    style="background-color: {{ cat[2] }}; color: white !important;" 
+                                    {% if cat[0] == tarefa[5] %}selected{% endif %}>
+                                {{ cat[1] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
 
             </form>
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER FIXO PADRÃO -->
+<div class="footer-fixo-padrao">
+    <div class="botoes-footer-padrao">
+        <button type="submit" form="form-edit-tarefa" class="btn-footer btn-footer-primary" id="btn-submit">
+            <i class="bi bi-save"></i> Salvar
+        </button>
+        <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-footer btn-footer-secondary">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+    </div>
+
+    <div class="totalizador-footer-padrao">
+        <div class="contador-footer">
+            <i class="bi bi-info-circle"></i>
+            <span>Edite os campos acima</span>
         </div>
     </div>
 </div>
 
 <script>
-const textarea = document.querySelector('.textarea-form');
-
-function adjustHeight() {
-    textarea.style.height = '60px';
-    textarea.style.height = (textarea.scrollHeight) + 'px';
-}
-
-textarea.addEventListener('input', adjustHeight);
-window.addEventListener('load', adjustHeight);
+    // Auto ajuste do textarea
+    const textarea = document.querySelector('.form-input[rows="3"]');
+    if (textarea) {
+        function adjustHeight() {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+        textarea.addEventListener('input', adjustHeight);
+        window.addEventListener('load', adjustHeight);
+    }
 </script>
 
 {% block scripts %}

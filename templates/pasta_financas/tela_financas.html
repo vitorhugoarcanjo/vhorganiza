@@ -11,13 +11,17 @@
     <!-- CSS MODAL DETALHES COMPLETO -->
     <link rel="stylesheet" href="{{ static_v('pasta_financas/modais/detalhes_completo.css') }}">
 
+    <!-- MENU CLICK DIREITO CSS -->
+    <link rel="stylesheet" href="{{ static_v('js/pasta_financas/menu_click/click_direito.css') }}"> <!-- TOTALIZADORES -->
+
+
+
 {% endblock %}
 
 {% block content %}
 <div class="painel-container">
 
     <div class="painel-topo-fixo">
-
         <form action="{{ url_for('financas.inifinancas') }}" method="POST" class="form-filtros-total">
 
             <div class="filtros-container">
@@ -120,19 +124,6 @@
 
             </div>
         </form>
-
-        <!-- HEADER -->
-        <div class="tarefas-controle-header">
-            <div class="botoes-esquerda">
-                <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-pure btn-success-pure btn-destaque">+ Nova Transação</a>
-
-                <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-pure btn-info-pure">Categorias</a>
-            </div>
-            <div class="status-direita">
-                <span class="badge-pure bg-primary">{{ transacoes|length }} transações</span>
-            </div>
-        </div>
-
     </div>
 
     <!-- TABELA -->
@@ -268,12 +259,47 @@
         </div>
     </div>
 
+
+</div> <!-- FECHA painel-container -->
+
+<!-- FOOTER FIXO PADRÃO -->
+<div class="footer-fixo-padrao">
+    <div class="botoes-footer-padrao">
+        <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-footer btn-footer-primary">
+            <i class="bi bi-plus-lg"></i> Nova
+        </a>
+        <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-footer btn-footer-secondary">
+            <i class="bi bi-tags"></i> Categorias
+        </a>
+    </div>
+
+    <div class="totalizador-footer-padrao">
+        <div class="total-item-footer total-receita">
+            <label>📈 RECEITAS</label>
+            <span id="totalReceitas">R$ 0,00</span>
+        </div>
+        <div class="total-item-footer total-despesa">
+            <label>📉 DESPESAS</label>
+            <span id="totalDespesas">R$ 0,00</span>
+        </div>
+        <div class="total-item-footer total-saldo">
+            <label>💰 SALDO</label>
+            <span id="totalSaldo">R$ 0,00</span>
+        </div>
+        <div class="contador-footer">
+            <i class="bi bi-list-ul"></i>
+            <span>{{ transacoes|length }} transações</span>
+        </div>
+    </div>
+</div>
+
 </div>
 
 
 <!-- MODAIS (igual tarefas) -->
 {% include 'pasta_financas/modais/excluir_financas.html' %}
 {% include 'pasta_financas/modais/detalhes_completo.html' %}
+{% include 'pasta_financas/modais/modal_menu_click.html' %}
 <!-- MODAIS (igual tarefas) -->
 
 {% block scripts %}
@@ -281,7 +307,11 @@
     <script src="{{ static_v('js/pasta_financas/modais/detalhes_completo.js') }}"></script> <!-- DETALHES DA TAREFA -->
     <script src="{{ static_v('js/pasta_financas/pasta_quitar/btn_quitar.js') }}"></script> <!-- BOTÃO QUITAMENTO -->
     <script src="{{ static_v('js/pasta_financas/modais/pasta_excluir/btn_excluir.js') }}"></script> <!-- BOTÃO DE EXCLUIR/INATIVAR -->
-
+    <script src="{{ static_v('js/pasta_financas/totalizadores/totalizadores.js') }}"></script> <!-- TOTALIZADORES -->
+    <script src="{{ static_v('js/pasta_financas/menu_click/click_direito.js') }}"></script> <!-- MENU COM CLICK DIREITO -->
+    <script src="{{ static_v('js/pasta_financas/menu_click/menu_vinculos/vinculos.js') }}"></script> <!-- MENU - VINCULOS -->
+    <script src="{{ static_v('js/pasta_financas/grid_colunas_reslize/auto_ajuste.js') }}"></script>
+    <script src="{{ static_v('js/pasta_financas/ordenacao_colunas/ordenacao.js') }}"></script>
 {% endblock %}
 
 {% endblock %}

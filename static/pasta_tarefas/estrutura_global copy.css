@@ -15,6 +15,7 @@
     flex-direction: column;
 }
 
+/* Otimizado para 98% de largura total */
 .painel-container {
     display: flex;
     flex-direction: column;
@@ -22,12 +23,16 @@
     max-width: 98% !important;
     height: 100%;
     margin: 0 auto !important;
-    padding: 10px 0;
+    padding: 10px 0; /* Ajustado recuo superior/inferior para colar nas bordas laterais */
     gap: 8px;
     background-color: var(--bg-principal);
     font-size: var(--fs-normal);
 }
 
+/* ==========================================
+   SCROLLBAR GLOBAL (PADRÃO PROFISSIONAL)
+   ========================================== */
+/* SCROLL PADRÃO */
 .scroll-fino::-webkit-scrollbar {
     width: 5px;
 }
@@ -45,9 +50,13 @@
     background: rgba(120, 120, 120, 0.6);
 }
 
+/* FIREFOX */
 .scroll-fino {
-    scrollbar-width: thin;
+    scrollbar-width: thin; /* Firefox */
     scrollbar-color: rgba(120,120,120,0.5) transparent;
+}
+
+.scroll-fino {
     overflow-y: auto;
 }
 
@@ -62,6 +71,10 @@
     min-height: 0;
 }
 
+
+/* ==========================================================================
+   2. FILTROS COMPACTOS (UNIFICADO COM SUPORTE A ALINHAMENTO DINÂMICO)
+   ========================================================================== */
 .painel-topo-fixo {
     flex-shrink: 0;
     display: flex;
@@ -77,29 +90,31 @@
 .filtros-container {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: wrap;       /* Evita quebra de layout caso os filtros esmaguem */
     gap: 10px;
     width: 100%;
-    align-items: stretch;
+    align-items: stretch;  /* Garante que todos os blocos herdem a altura do maior bloco da linha */
 }
 
 .bloco-filtro {
     background-color: var(--bg-card);
     border: 1px solid var(--border-sutil);
     border-radius: 6px;
-    padding: 8px;
+    padding: 8px; 
     flex: 1;
-    min-width: 130px;
+    min-width: 130px;      /* Largura mínima segura para os selects */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
 }
 
+/* Dá o mesmo comportamento de largura inteligente para o primeiro bloco (geralmente Data) */
 .bloco-filtro:first-child {
-    flex: 1.8;
-    min-width: 210px;
+    flex: 1.8;             
+    min-width: 210px;      /* Espaço necessário para inputs compostos respirarem */
 }
 
+/* Alinha selects e inputs comuns na base do bloco para casar horizontalmente */
 .bloco-filtro .form-select,
 .bloco-filtro .form-control:not(.flex-row .form-control),
 .bloco-filtro .lista-categorias {
@@ -130,7 +145,7 @@
     background-color: var(--bg-principal);
     border: 1px solid var(--border-sutil);
     color: var(--texto-principal);
-    padding: 2px 4px !important;
+    padding: 2px 4px !important; /* Letras e inputs mais finos */
     border-radius: 4px;
     font-size: var(--fs-pequeno) !important;
     outline: none;
@@ -143,19 +158,10 @@
     flex-direction: column;
     gap: 4px;
 }
+.label-categoria { font-size: var(--fs-pequeno); color: var(--texto-principal); display: flex; align-items: center; cursor: pointer; }
+.span_categorias { font-size: var(--fs-pequeno); }
 
-.label-categoria {
-    font-size: var(--fs-pequeno);
-    color: var(--texto-principal);
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.span_categorias {
-    font-size: var(--fs-pequeno);
-}
-
+/* Sub-header de Controles */
 .tarefas-controle-header {
     display: flex;
     justify-content: space-between;
@@ -163,14 +169,10 @@
     width: 100%;
     margin-top: 2px;
 }
-
-.botoes-esquerda {
-    display: flex;
-    gap: 6px;
-}
+.botoes-esquerda { display: flex; gap: 6px; }
 
 /* ==========================================================================
-   3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
+   4. ALTURA DE REGISTROS ALTAMENTE COMPACTA E PROFISSIONAL
    ========================================================================== */
 .custom-table {
     width: 100%;
@@ -204,7 +206,7 @@
     transition: all 0.2s ease;
 }
 
-/* ZEBRADO - UM SIM, OUTRO NÃO */
+/* 🔥 ZEBRADO - Linhas ímpares e pares alternadas */
 .custom-table tbody tr:nth-child(odd) {
     background-color: var(--bg-principal);
 }
@@ -213,18 +215,17 @@
     background-color: var(--hover-fino);
 }
 
-/* HOVER FORTE */
+/* 🔥 HOVER FORTE - Quando passar o mouse */
 .custom-table tbody tr:hover {
     background-color: rgba(37, 99, 235, 0.15) !important;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-/* LINHA SELECIONADA (CLIQUE DIREITO) */
+/* 🔥 HOVER MAIS FORTE AINDA quando estiver com o botão direito ativo (selecionado) */
 .custom-table tbody tr.selecionado {
     background-color: rgba(37, 99, 235, 0.25) !important;
     border-left: 3px solid var(--cor-ativa);
-    box-shadow: inset 0 0 0 1px var(--cor-ativa);
 }
 
 .custom-table tbody tr.selecionado td:first-child {
@@ -232,39 +233,26 @@
     padding-left: 3px;
 }
 
-/* BORDAS ARREDONDADAS NO HOVER */
+/* 🔥 BORDA ARREDONDADA NO HOVER (opcional, mas fica bonito) */
 .custom-table tbody tr:hover td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
 
 .custom-table tbody tr:hover td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
-.td-id {
-    color: var(--texto-discreto);
-    font-weight: bold;
-}
-
-.td-titulo {
-    font-weight: 500;
-}
-
-.text-vazio {
-    color: var(--texto-discreto);
-}
-
-.td-vazio {
-    text-align: center;
-    padding: 30px;
-    color: var(--texto-mutado);
-}
+.td-id { color: var(--texto-discreto); font-weight: bold; }
+.td-titulo { font-weight: 500; }
+.text-vazio { color: var(--texto-discreto); }
+.td-vazio { text-align: center; padding: 30px; color: var(--texto-mutado); }
 
 /* ==========================================================================
-   4. BOTÕES DE AÇÃO
+   5. BOTÕES DE AÇÃO E COMPONENTES INTERNOS
    ========================================================================== */
+
 .td-acoes {
     text-align: center;
     display: flex;
@@ -277,7 +265,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
+    width: 22px; /* Reduzido para casar com a linha menor */
     height: 22px;
     background-color: var(--bg-principal);
     border: 1px solid var(--border-sutil);
@@ -288,32 +276,11 @@
     font-size: var(--fs-pequeno);
     padding: 0;
 }
-
-.btn-acao:hover {
-    color: var(--texto-principal);
-}
-
-.btn-acao.view:hover {
-    border-color: var(--cor-ativa);
-    color: var(--cor-ativa);
-}
-
-.btn-acao.check:hover {
-    background-color: rgba(34, 197, 94, 0.1);
-    border-color: var(--cor-marca);
-    color: var(--cor-marca);
-}
-
-.btn-acao.edit:hover {
-    border-color: var(--cor-ativa);
-    color: var(--cor-ativa);
-}
-
-.btn-acao.delete:hover {
-    background-color: rgba(239, 68, 68, 0.1);
-    border-color: #ef4444;
-    color: #ef4444;
-}
+.btn-acao:hover { color: var(--texto-principal); }
+.btn-acao.view:hover { border-color: var(--cor-ativa); color: var(--cor-ativa); }
+.btn-acao.check:hover { background-color: rgba(34, 197, 94, 0.1); border-color: var(--cor-marca); color: var(--cor-marca); }
+.btn-acao.edit:hover { border-color: var(--cor-ativa); color: var(--cor-ativa); }
+.btn-acao.delete:hover { background-color: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444; }
 
 .btn-pure {
     display: inline-flex;
@@ -329,73 +296,26 @@
     text-decoration: none;
 }
 
-.btn-pure:hover {
-    background: var(--hover-fino);
-}
+.btn-pure:hover { background: var(--hover-fino); }
+.btn-success-pure { border-color: var(--cor-marca); color: var(--cor-marca); }
+.btn-info-pure { border-color: var(--cor-ativa); color: var(--cor-ativa); }
+.btn-primary-pure { background: var(--cor-ativa); border-color: var(--cor-ativa); color: #fff; }
+.btn-active-toggle { background: var(--cor-ativa); border-color: var(--cor-ativa); color: #fff; }
+.btn-destaque { font-weight: 600; }
 
-.btn-success-pure {
-    border-color: var(--cor-marca);
-    color: var(--cor-marca);
-}
+.badge-pure { padding: 1px 4px !important; border-radius: 4px; font-size: var(--fs-micro) !important; font-weight: 600; display: inline-block; }
+.bg-success { background: rgba(34, 197, 94, 0.12); color: #22c55e; }
+.bg-warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+.bg-danger { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+.bg-secondary { background: var(--bg-principal); color: var(--texto-mutado); border: 1px solid var(--border-sutil); }
+.tag-categoria { background: transparent; border: 1px solid; }
 
-.btn-info-pure {
-    border-color: var(--cor-ativa);
-    color: var(--cor-ativa);
-}
 
-.btn-primary-pure {
-    background: var(--cor-ativa);
-    border-color: var(--cor-ativa);
-    color: #fff;
-}
 
-.btn-active-toggle {
-    background: var(--cor-ativa);
-    border-color: var(--cor-ativa);
-    color: #fff;
-}
 
-.btn-destaque {
-    font-weight: 600;
-}
-
-.badge-pure {
-    padding: 1px 4px !important;
-    border-radius: 4px;
-    font-size: var(--fs-micro) !important;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.bg-success {
-    background: rgba(34, 197, 94, 0.12);
-    color: #22c55e;
-}
-
-.bg-warning {
-    background: rgba(245, 158, 11, 0.12);
-    color: #f59e0b;
-}
-
-.bg-danger {
-    background: rgba(239, 68, 68, 0.12);
-    color: #ef4444;
-}
-
-.bg-secondary {
-    background: var(--bg-principal);
-    color: var(--texto-mutado);
-    border: 1px solid var(--border-sutil);
-}
-
-.tag-categoria {
-    background: transparent;
-    border: 1px solid;
-}
-
-/* ==========================================================================
-   5. FOOTER FIXO PADRÃO (IGUAL AO INSERT)
-   ========================================================================== */
+/* ==========================================================
+   FOOTER FIXO PADRÃO (igual ao insert)
+   ========================================================== */
 .footer-fixo-padrao {
     position: fixed;
     bottom: 0;
@@ -403,16 +323,17 @@
     right: 0;
     background: var(--bg-card);
     border-top: 2px solid var(--cor-ativa);
-    padding: 4px 10px;
+    padding: 8px 10px;
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    gap: 16px;
+    gap: 24px;
     z-index: 100;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-    min-height: 50px;
+    min-height: 60px;
 }
 
+/* BOTÕES DO LADO ESQUERDO - MESMO ESTILO DO INSERT */
 .botoes-footer-padrao {
     display: flex;
     gap: 16px;
@@ -423,13 +344,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 0 4px;
-    min-width: 65px;
+    gap: 8px;
+    padding: 0 6px;
+    min-width: 80px;
     min-height: calc(100% - 6px);
     max-height: 100%;
     border-radius: 12px;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s ease;
@@ -440,7 +361,7 @@
 }
 
 .botoes-footer-padrao .btn-footer i {
-    font-size: 1.2rem;
+    font-size: 1.0rem;
 }
 
 .btn-footer-primary {
@@ -467,6 +388,7 @@
     transform: translateY(-2px);
 }
 
+/* TOTALIZADOR DO LADO DIREITO */
 .totalizador-footer-padrao {
     display: flex;
     gap: 28px;
@@ -495,6 +417,7 @@
     font-weight: 800;
 }
 
+/* Contador de transações no footer */
 .contador-footer {
     display: flex;
     align-items: center;
@@ -529,83 +452,12 @@
     color: var(--cor-ativa);
 }
 
-/* Espaçamento extra para não esconder conteúdo atrás do footer */
+/* Espaçamento extra para não esconder conteúdo atrás do footer (igual insert) */
 .painel-tabela-conteudo {
     margin-bottom: 90px;
 }
 
-
-
-
-/* ==========================================================
-   ORDENAÇÃO DE COLUNAS
-   ========================================================== */
-.sortable {
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-    padding-right: 20px !important;
-}
-
-.sortable:hover {
-    background-color: var(--hover-fino);
-}
-
-.sortable::after {
-    content: "↕️";
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.7rem;
-    opacity: 0.5;
-}
-
-.sortable.asc::after {
-    content: "↑";
-    opacity: 1;
-}
-
-.sortable.desc::after {
-    content: "↓";
-    opacity: 1;
-}
-
-/* ==========================================================
-   REDIMENSIONAMENTO DE COLUNAS
-   ========================================================== */
-.custom-table th {
-    position: sticky;
-    top: 0;
-    background-color: var(--bg-card);
-    color: var(--texto-mutado);
-    font-weight: 600;
-    padding: 4px 6px !important;
-    border-bottom: 2px solid var(--border-sutil);
-    z-index: 10;
-    text-align: left;
-    font-size: var(--fs-micro) !important;
-    position: relative;
-}
-
-/* Largura mínima para texto não quebrar */
-.custom-table td {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Para descrição, permitir quebra de linha se necessário */
-.custom-table td:nth-child(4) {
-    white-space: normal;
-    word-break: break-word;
-    min-width: 150px;
-    max-width: 300px;
-}
-
-/* ==========================================================================
-   6. RESPONSIVIDADE
-   ========================================================================== */
+/* Responsivo */
 @media (max-width: 1024px) {
     .footer-fixo-padrao {
         left: 0;
@@ -649,70 +501,6 @@
     }
 }
 
-@media (max-width: 768px) {
-    .painel-container {
-        width: 96% !important;
-        max-width: 96% !important;
-        padding: 5px 0;
-        gap: 6px;
-    }
-
-    .filtros-container {
-        flex-direction: column !important;
-        gap: 6px !important;
-    }
-
-    .bloco-filtro {
-        width: 100% !important;
-        flex: none !important;
-        padding: 6px !important;
-    }
-
-    .flex-row.gap-2 {
-        gap: 4px !important;
-    }
-
-    .painel-tabela-conteudo {
-        overflow-x: auto !important;
-        position: relative;
-    }
-
-    .custom-table {
-        table-layout: auto !important;
-    }
-
-    .tarefas-controle-header {
-        flex-direction: column;
-        align-items: flex-start !important;
-        gap: 6px;
-    }
-
-    .status-direita {
-        align-self: flex-end;
-    }
-
-    /* COLUNA DE AÇÕES FIXA NO MOBILE */
-    .custom-table th:last-child {
-        position: sticky !important;
-        right: 0;
-        background-color: var(--bg-card) !important;
-        z-index: 12;
-        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .custom-table td:last-child {
-        position: sticky !important;
-        right: 0;
-        background-color: var(--bg-card) !important;
-        z-index: 5;
-        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .custom-table tr:hover td:last-child {
-        background-color: var(--hover-fino) !important;
-    }
-}
-
 @media (max-width: 640px) {
     .botoes-footer-padrao {
         gap: 12px;
@@ -730,17 +518,4 @@
     .total-item-footer span {
         font-size: 0.85rem;
     }
-}
-
-/* LIGHT MODE - ZEBRADO TAMBÉM FUNCIONA */
-body.light-mode .custom-table tbody tr:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.04);
-}
-
-body.light-mode .custom-table tbody tr:hover {
-    background-color: rgba(37, 99, 235, 0.08) !important;
-}
-
-body.light-mode .custom-table tbody tr.selecionado {
-    background-color: rgba(37, 99, 235, 0.15) !important;
 }

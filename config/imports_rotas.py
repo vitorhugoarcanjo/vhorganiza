@@ -10,6 +10,9 @@ from rotas.pasta_financas.crud.pasta_insert.insert_transacao import bp_insert_tr
 from rotas.pasta_financas.crud.pasta_edit.edit_transacao import bp_edit_transacao # EDITAR
 from rotas.pasta_financas.crud.pasta_delete.delete_transacao import bp_delete # DELETAR
 from rotas.pasta_financas.crud.pasta_quitar.quitar_transacao import bp_quitar # QUITAR
+from rotas.pasta_financas.menus.pasta_vinculos.vinculos_routes import bp_vinculos
+from rotas.pasta_financas.menus.pasta_colunas.colunas_usuarios import bp_colunas
+
 
 # PASTA DASHBOARD
 from rotas.pasta_dashboard.dashboard import bp_dashboard
@@ -47,6 +50,8 @@ def logica_imports(app):
     app.register_blueprint(bp_edit_transacao, url_prefix="/edit_transacoes") # EDITAR
     app.register_blueprint(bp_delete, url_prefix='/deletar_transacao') # DELETAR
     app.register_blueprint(bp_quitar, url_prefix="/quitar_transacao") # QUITAR
+    app.register_blueprint(bp_vinculos, url_prefix="/api/financas") # MENU - VINCULOS
+    app.register_blueprint(bp_colunas, url_prefix="/api_colunas")
 
     # DASHBOARD
     app.register_blueprint(bp_dashboard, url_prefix="/dashboard")

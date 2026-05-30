@@ -14,46 +14,71 @@ def tabela_transacoes(cursor):
             categoria_id INTEGER,
             
             -- Datas importantes
-            data_emissao DATE, -- Quando foi criada
-            data_vencimento DATE,  -- Quando vence
-            data_quitamento DATE,  -- Quando foi paga
-            data_alteracao DATE,   -- Quando foi alterada
+            data_emissao DATE,
+            data_vencimento DATE,
+            data_quitamento DATE,
+            data_alteracao DATE,
                     
             -- Valores
-            valor_total REAL,      -- Valor total da compra
-            valor_parcela REAL,    -- Valor desta parcela específica
+            valor_total REAL,
+            valor_parcela REAL,
                     
-            -- Controle de parcelas(novo)
-            numero_parcela INTEGER,  -- Ex: 1ª parcela
-            total_parcelas INTEGER,  -- Ex: 10 parcelas no total
-                    
+            -- Controle de parcelas
+            numero_parcela INTEGER,
+            total_parcelas INTEGER,
+            
+            -- 🔥 NOVAS COLUNAS PARA VÍNCULO DE PARCELAS
+            transacao_pai_id INTEGER,
+            sequencia_parcela INTEGER,
+            intervalo_dias INTEGER DEFAULT 30,
+            
             -- Status e controle
             status TEXT DEFAULT 'aberto',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    
+            excluido_por INTEGER,
+            excluido_em DATETIME,
+            ativo INTEGER DEFAULT 1,
+            
             FOREIGN KEY (user_id) REFERENCES cadastre_se(id) ON DELETE CASCADE,
             FOREIGN KEY (categoria_id) REFERENCES categorias_financas(id) ON DELETE SET NULL
-                       
-                             
         )
     """)
-        print("✅ tabela tabela_transacoes criada com sucesso")
+        print("✅ tabela transacoes criada com sucesso")
+        return
 
+    # ==========================================================
+    # VERIFICA E ADICIONA SOMENTE AS COLUNAS QUE FALTAM
+    # ==========================================================
+    cursor.execute("PRAGMA table_info(transacoes)")
+    colunas_existentes = [col[1] for col in cursor.fetchall()]
+    
+    # Lista de colunas que REALMENTE precisam ser adicionadas
+    colunas_para_adicionar = []
+    
+    # Colunas NOVAS (para parcelas) - essas não existem na sua tabela atual
+    if 'transacao_pai_id' not in colunas_existentes:
+        colunas_para_adicionar.append("transacao_pai_id INTEGER DEFAULT NULL")
+    
+    if 'sequencia_parcela' not in colunas_existentes:
+        colunas_para_adicionar.append("sequencia_parcela INTEGER DEFAULT NULL")
+    
+    if 'intervalo_dias' not in colunas_existentes:
+        colunas_para_adicionar.append("intervalo_dias INTEGER DEFAULT 30")
+    
+    # Verifica se 'ativo' existe (já deve existir, mas seguro)
+    if 'ativo' not in colunas_existentes:
+        colunas_para_adicionar.append("ativo INTEGER DEFAULT 1")
+    
+    # Adiciona cada coluna faltante
+    for coluna_sql in colunas_para_adicionar:
+        try:
+            nome_coluna = coluna_sql.split()[0]
+            cursor.execute(f"ALTER TABLE transacoes ADD COLUMN {coluna_sql}")
+            print(f"✅ Coluna '{nome_coluna}' adicionada em transacoes!")
+        except Exception as e:
+            print(f"⚠️ Erro ao adicionar coluna {coluna_sql}: {e}")
+    
+    if colunas_para_adicionar:
+        print(f"✅ {len(colunas_para_adicionar)} nova(s) coluna(s) adicionada(s)!")
     else:
-        # Verifica e adiciona colunas faltantes
-        cursor.execute("PRAGMA table_info(transacoes)")
-        colunas = [col[1] for col in cursor.fetchall()]
-        
-        if 'ativo' not in colunas:
-            cursor.execute("ALTER TABLE transacoes ADD COLUMN ativo INTEGER DEFAULT 1")
-            print("✅ Coluna ativo adicionada em transacoes!")
-            
-        if 'excluido_em' not in colunas:
-            cursor.execute("ALTER TABLE transacoes ADD COLUMN excluido_em DATETIME")
-            print("✅ Coluna excluido_em adicionada em transacoes!")
-            
-        if 'excluido_por' not in colunas:
-            cursor.execute("ALTER TABLE transacoes ADD COLUMN excluido_por INTEGER")
-            print("✅ Coluna excluido_por adicionada em transacoes!")
-            
-        print("ℹ️ tabela transacoes já existe. Verificação concluída.")
+        print("ℹ️ Todas as colunas já existem. Nada foi alterado.")

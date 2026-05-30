@@ -79,11 +79,13 @@ def inifinancas():
 
     query = """
         SELECT t.sequencia_transacoes, t.id, t.tipo, t.valor_total, t.descricao, 
-               t.data_emissao, c.nome AS categoria_nome, c.cor AS categoria_cor, 
-               t.status, t.data_vencimento, t.ativo
+            t.data_emissao, c.nome AS categoria_nome, c.cor AS categoria_cor, 
+            t.status, t.data_vencimento, t.ativo,
+            t.numero_parcela, t.total_parcelas, t.transacao_pai_id
         FROM transacoes t
         LEFT JOIN categorias_financas c ON c.id = t.categoria_id
         WHERE t.user_id = ?
+        AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
     """
     params = [user_id]
 
@@ -154,6 +156,16 @@ def inifinancas():
     transacoes = []
     for t in transacoes_raw:
         transacao_lista = list(t)
+
+        # Se for parcela (numero_parcela existe), mostra "descrição (X/Y)"
+        numero_parcela = t[11] if len(t) > 11 else None
+        total_parcelas = t[12] if len(t) > 12 else None
+        transacao_pai_id = t[13] if len(t) > 13 else None
+
+        descricao_original = transacao_lista[4]
+
+        if numero_parcela and total_parcelas and total_parcelas > 1:
+            transacao_lista[4] = f"{descricao_original} ({numero_parcela}/{total_parcelas})"
         
         # 🔥 Formata valor (coluna 3) - Já aplica a máscara
         transacao_lista[3] = formatar_moeda_br(transacao_lista[3])

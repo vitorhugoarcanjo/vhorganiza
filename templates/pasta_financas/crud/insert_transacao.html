@@ -2,110 +2,164 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ static_v('pasta_financas/crud/pasta_insert/import_css.css') }}">
-
 {% endblock %}
 
 {% block content %}
 
 <div class="finance-wrapper">
-
     <div class="form-fin-card">
 
-        <!-- HEADER -->
         <div class="form-fin-header">
             <h2><i class="bi bi-cash-coin"></i> Nova Transação</h2>
-            <p>Registre uma entrada ou saída financeira no sistema</p>
+            <p>Registre uma entrada ou saída financeira</p>
         </div>
 
-        <!-- BODY -->
-        <div class="form-body">
+        <form action="{{ url_for('nova_transacao.initransacao') }}" method="post" id="form-transacao">
+            <div class="form-body">
 
-            <form action="{{ url_for('nova_transacao.initransacao') }}" method="post" id="form-transacao">
-
-                <div class="form-group">
-                    <label>Tipo de Transação</label>
-                    <select name="tipo" class="form-select" required>
-                        <option value="">Selecione...</option>
-                        <option value="receita">💰 Receita (Entrada)</option>
-                        <option value="despesa">💸 Despesa (Saída)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Categoria</label>
-
-                    <select name="categoria_id" class="form-select">
-                        <option value="">Selecione a categoria...</option>
-
-                        {% for cat in categorias %}
-                            <option value="{{ cat[0] }}">{{ cat[1] }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
+                <!-- LINHA 1: TIPO + CATEGORIA + DESCRIÇÃO -->
                 <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <div class="tipo-container">
+                            <button type="button" class="tipo-btn" data-tipo="vazio">
+                                <i class="bi bi-question-circle"></i> Sel.
+                            </button>
+                            <button type="button" class="tipo-btn receita" data-tipo="receita">
+                                <i class="bi bi-arrow-up-circle-fill"></i> Receita
+                            </button>
+                            <button type="button" class="tipo-btn despesa" data-tipo="despesa">
+                                <i class="bi bi-arrow-down-circle-fill"></i> Despesa
+                            </button>
+                        </div>
+                        <input type="hidden" name="tipo" id="tipoHidden" required>
+                    </div>
 
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select name="categoria_id" class="form-select">
+                            <option value="">Selecione...</option>
+                            {% for cat in categorias %}
+                                <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group descricao-full">
+                        <label>Descrição</label>
+                        <input type="text" name="descricao" class="form-input" placeholder="Ex: Salário, Compra..." required>
+                    </div>
+
+                </div>
+
+                <!-- LINHA 2: VALOR + PARCELAS + EMISSÃO + VENCIMENTO -->
+                <div class="form-grid">
                     <div class="form-group">
                         <label>Valor Total</label>
-                        <input 
-                        type="text"
-                        name="valor_total"
-                        id="valor_total"
-                        class="form-input money-input" 
-                        value="0,00"
-                        required>
+                        <input type="text" name="valor_total" id="valor_total" class="form-input money-input" value="0,00" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Descrição</label>
-                        <input type="text" name="descricao" class="form-input" placeholder="Ex: Salário" required>
+                        <label>Nº Parcelas</label>
+                        <input type="number" name="total_parcelas" id="totalParcelas" 
+                               class="form-input" value="1" min="1" max="100" 
+                               inputmode="numeric" style="text-align: center;">
                     </div>
-                </div>
-                
-                <div class="form-grid">
+
                     <div class="form-group">
                         <label>Data Emissão</label>
                         <input type="date" name="data_emissao" class="form-input" value="{{ hoje }}" required>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="dataVencimentoGroup">
                         <label>Data Vencimento</label>
-                        <input type="date" name="data_vencimento" class="form-input" value="{{ hoje }}">
+                        <input type="date" name="data_vencimento" id="data_vencimento_base" class="form-input" value="{{ hoje }}">
+                    </div>
+
+                </div>
+
+                <!-- CONFIGURAÇÕES DE PARCELAS (só aparece se parcelas > 1) -->
+                <div class="parcelas-config-area" id="parcelasConfigArea" style="display: none;">
+                    <div class="parcelas-config-painel">
+                        <div class="parcelas-config-row">
+                            <div class="parcelas-config-item">
+                                <label>Intervalo entre parcelas</label>
+                                <div style="display: flex; gap: 6px;">
+                                    <input type="number" id="intervaloDias" class="form-input" value="30" min="1" max="365" inputmode="numeric" style="flex: 1;">
+                                    <span style="display: flex; align-items: center; color: var(--texto-mutado);">dias</span>
+                                </div>
+                            </div>
+                            <div class="parcelas-config-item">
+                                <label>1ª Vencimento</label>
+                                <input type="date" id="primeiroVencimento" class="form-input" value="{{ hoje }}">
+                            </div>
+                            <div class="parcelas-config-item">
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn-distribuir" id="btnDistribuir">
+                                    <i class="bi bi-calculator"></i> Distribuir igualmente
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-actions">
-
-                    <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-secondary">
-                        Cancelar
-                    </a>
-
-                    <button type="reset" class="btn btn-secondary">
-                        Limpar
-                    </button>
-
-                    <button 
-                    type="submit" 
-                    id="btn-submit" 
-                    class="btn btn-primary">
-                        ✅ Salvar Transação
-                    </button>
-
+                <!-- TABELA DE PARCELAS -->
+                <div class="parcelas-wrapper" id="parcelasWrapper" style="display: none;">
+                    <div class="parcelas-table-wrapper">
+                        <table class="parcelas-table" id="parcelasTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Parcela</th>
+                                    <th style="width: 160px;">Vencimento</th>
+                                    <th style="width: 160px;">Valor (R$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parcelasBody">
+                                <tr><td colspan="3" style="text-align: center; color: var(--texto-mutado);">Selecione mais de 1 parcela</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-            </form>
+            </div>
+        </form>
 
+    </div>
+</div>
+
+<!-- FOOTER FIXO -->
+<div class="footer-fixo" id="footerFixo">
+    <div class="botoes-footer">
+        <button type="submit" form="form-transacao" id="btn-submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Salvar
+        </button>
+        <a href="{{ url_for('financas.inifinancas') }}" class="btn btn-secondary">
+            <i class="bi bi-x-circle"></i> Cancelar
+        </a>
+    </div>
+
+
+    <div class="totalizador-footer">
+        <div class="total-item valor-original">
+            <label>Valor Total:</label>
+            <span id="totalOriginal">R$ 0,00</span>
         </div>
-
+        <div class="total-item soma-parcelas">
+            <label>Soma Parcelas:</label>
+            <span id="somaParcelas">R$ 0,00</span>
+        </div>
+        <div class="total-item diferenca" id="diferencaItem">
+            <label>Diferença:</label>
+            <span id="diferencaValor">R$ 0,00</span>
+        </div>
     </div>
 
 </div>
-<script>
-console.log("FLASH:", {{ get_flashed_messages() | tojson }});
-</script>
+
 {% block scripts %}
-    <script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script> <!-- FORMATA O VALOR -->
-    <script src="{{ static_v('js/pasta_financas/pasta_insert/btn_insert.js') }}"></script> <!-- JS PARA SALVAR -->
+<script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
+<script src="{{ static_v('js/pasta_financas/pasta_insert/pasta_parcelas/parcelas_menager.js') }}"></script>
+<script src="{{ static_v('js/pasta_financas/pasta_insert/btn_insert.js') }}"></script>  <!-- 🔥 ADICIONA ESTA LINHA -->
 {% endblock %}
 
 {% endblock %}

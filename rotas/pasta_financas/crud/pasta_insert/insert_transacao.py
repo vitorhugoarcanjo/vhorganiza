@@ -3,7 +3,7 @@ from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 import json
 import os, sqlite3
-from datetime import date
+from datetime import date, datetime, timedelta
 
 caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
@@ -18,11 +18,8 @@ def converter_valor_br(valor_str):
     """Converte formato brasileiro '1.234,56' para float 1234.56"""
     if not valor_str:
         return 0.0
-    # Remove R$ se tiver
     valor_str = valor_str.replace('R$', '').strip()
-    # Remove pontos de milhar
     valor_str = valor_str.replace('.', '')
-    # Troca vírgula por ponto
     valor_str = valor_str.replace(',', '.')
     return float(valor_str)
 
@@ -41,8 +38,8 @@ def initransacao():
         WHERE user_id = ?
     """, (user_id,))
     categorias = cursor.fetchall()
+    conexao.close()
 
-    # 🔥 Se for GET, renderiza o formulário normal
     if request.method == 'GET':
         return render_template(
             'pasta_financas/crud/insert_transacao.html',
@@ -50,85 +47,157 @@ def initransacao():
             categorias=categorias
         )
 
-    # 🔥 Se for POST, processa via AJAX
+    # ==========================================================
+    # POST - Processa o formulário
+    # ==========================================================
     if request.method == 'POST':
         try:
             tipo = request.form.get('tipo')
-            valor_total = converter_valor_br(request.form.get('valor_total'))  # 🔥 CONVERTE
+            valor_total = converter_valor_br(request.form.get('valor_total'))
             descricao = request.form.get('descricao')
             data_emissao = request.form.get('data_emissao', hoje)
-            data_vencimento = request.form.get('data_vencimento', hoje)
-            categoria_id = request.form.get('categoria_id')
-
-            parcelas_str = request.form.get('total_parcelas', '1')
-            total_parcelas = int(parcelas_str) if parcelas_str else 1
-
-            status = 'aberto'
-
+            data_vencimento = request.form.get('data_vencimento')
+            categoria_id = request.form.get('categoria_id') or None
+            
+            total_parcelas = int(request.form.get('total_parcelas', 1))
+            
+            # ==========================================================
+            # PARCELA ÚNICA (total_parcelas <= 1)
+            # ==========================================================
+            if total_parcelas <= 1:
+                with sqlite3.connect(caminho_banco) as conexao:
+                    cursor = conexao.cursor()
+                    sequencia = get_proxima_sequencia(cursor, user_id)
+                    
+                    cursor.execute("""
+                        INSERT INTO transacoes (
+                            user_id, sequencia_transacoes, tipo,
+                            valor_total, descricao, categoria_id,
+                            data_emissao, data_vencimento,
+                            total_parcelas, numero_parcela, status, ativo
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
+                    """, (
+                        user_id, sequencia, tipo,
+                        valor_total, descricao, categoria_id,
+                        data_emissao, data_vencimento,
+                        1, 1
+                    ))
+                    conexao.commit()
+                    
+                    # Auditoria
+                    try:
+                        AuditoriaFinanceiraService.registrar(
+                            transacao_id=sequencia,
+                            acao='criada',
+                            campo_alterado='multiplos',
+                            valor_antigo=None,
+                            valor_novo=json.dumps([{'campo': 'transação', 'depois': descricao}], ensure_ascii=False)
+                        )
+                    except Exception as audit_error:
+                        print(f"Erro na auditoria: {audit_error}")
+                
+                return jsonify({
+                    'success': True,
+                    'message': f'Transação "{descricao}" cadastrada com sucesso!',
+                    'sequencia': sequencia
+                })
+            
+            # ==========================================================
+            # MÚLTIPLAS PARCELAS (total_parcelas > 1)
+            # ==========================================================
+            # Pega os dados das parcelas do formulário
+            intervalo_dias = int(request.form.get('intervaloDias', 30))
+            primeiro_vencimento = request.form.get('primeiroVencimento', data_vencimento or hoje)
+            
+            # Coleta os valores de cada parcela
+            valores_parcelas = []
+            for i in range(1, total_parcelas + 1):
+                valor_parcela = request.form.get(f'parcela_valor_{i}')
+                if valor_parcela:
+                    valores_parcelas.append(converter_valor_br(valor_parcela))
+                else:
+                    # Se não veio valor específico, divide igualmente
+                    valores_parcelas.append(valor_total / total_parcelas)
+            
             with sqlite3.connect(caminho_banco) as conexao:
                 cursor = conexao.cursor()
-                sequencia = get_proxima_sequencia(cursor, user_id)
-
+                
+                # 1. Cria a transação PAI (registro principal)
+                sequencia_pai = get_proxima_sequencia(cursor, user_id)
+                
                 cursor.execute("""
                     INSERT INTO transacoes (
                         user_id, sequencia_transacoes, tipo,
-                        valor_total, descricao,
+                        valor_total, descricao, categoria_id,
                         data_emissao, data_vencimento,
-                        total_parcelas, status, categoria_id
+                        total_parcelas, intervalo_dias, status, ativo
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
                 """, (
-                    user_id, sequencia, tipo,
-                    valor_total, descricao,
-                    data_emissao, data_vencimento,
-                    total_parcelas, status, categoria_id
+                    user_id, sequencia_pai, tipo,
+                    valor_total, descricao, categoria_id,
+                    data_emissao, primeiro_vencimento,
+                    total_parcelas, intervalo_dias
                 ))
-                conexao.commit()
-
-                # ==========================================
-                # 🔥 REGISTRA AUDITORIA (depois do commit)
-                # ==========================================
-                # Busca nome da categoria
-                categoria_nome = ''
-                if categoria_id:
-                        cursor.execute("SELECT nome FROM categorias_financas WHERE id = ?", (categoria_id,))
-                        cat = cursor.fetchone()
-                        if cat:
-                            categoria_nome = cat[0]
-                    
-
-                # Cria lista de alterações
-                alteracoes = [
-                    {'campo': 'tipo', 'antes': None, 'depois': '📈 Receita' if tipo == 'receita' else '📉 Despesa'},
-                    {'campo': 'descrição', 'antes': None, 'depois': descricao},
-                    {'campo': 'valor', 'antes': None, 'depois': f'R$ {valor_total:.2f}'},
-                    {'campo': 'data emissão', 'antes': None, 'depois': data_emissao},
-                    {'campo': 'status', 'antes': None, 'depois': status},
-                ]
-
-            
-                if data_vencimento:
-                    alteracoes.append({'campo': 'data vencimento', 'antes': None, 'depois': data_vencimento})
                 
-                if categoria_nome:
-                    alteracoes.append({'campo': 'categoria', 'antes': None, 'depois': categoria_nome})
+                # 2. Cria cada parcela filha
+                for i in range(1, total_parcelas + 1):
+                    # Calcula a data de vencimento da parcela
+                    if i == 1:
+                        data_venc_parcela = primeiro_vencimento
+                    else:
+                        data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
+                        data_venc_parcela = (data_base + timedelta(days=(i-1) * intervalo_dias)).strftime('%Y-%m-%d')
                     
-                # Registra no banco
-                # No insert_transacao.py, muda de 'todos' para 'multiplos'
-                AuditoriaFinanceiraService.registrar(
-                    transacao_id=sequencia,
-                    acao='criada',
-                    campo_alterado='multiplos',  # 👈 MUDA AQUI de 'todos' para 'multiplos'
-                    valor_antigo=None,
-                    valor_novo=json.dumps(alteracoes, ensure_ascii=False)
-                )
-
-
+                    valor_parcela = valores_parcelas[i-1]
+                    
+                    sequencia_parcela = get_proxima_sequencia(cursor, user_id)
+                    
+                    cursor.execute("""
+                        INSERT INTO transacoes (
+                            user_id, sequencia_transacoes, tipo,
+                            valor_total, valor_parcela, descricao, categoria_id,
+                            data_emissao, data_vencimento,
+                            total_parcelas, numero_parcela, sequencia_parcela,
+                            transacao_pai_id, status, ativo
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
+                    """, (
+                        user_id, sequencia_parcela, tipo,
+                        valor_parcela, valor_parcela, f'{descricao} - Parcela {i}/{total_parcelas}', categoria_id,
+                        data_emissao, data_venc_parcela,
+                        total_parcelas, i, i,
+                        sequencia_pai
+                    ))
+                
+                conexao.commit()
+                
+                # Auditoria da transação principal
+                try:
+                    AuditoriaFinanceiraService.registrar(
+                        transacao_id=sequencia_pai,
+                        acao='criada_parcelada',
+                        campo_alterado='multiplos',
+                        valor_antigo=None,
+                        valor_novo=json.dumps({
+                            'descricao': descricao,
+                            'total_parcelas': total_parcelas,
+                            'valor_total': valor_total,
+                            'intervalo_dias': intervalo_dias
+                        }, ensure_ascii=False)
+                    )
+                except Exception as audit_error:
+                    print(f"Erro na auditoria: {audit_error}")
+            
             return jsonify({
                 'success': True,
-                'message': f'Transação "{descricao}" cadastrada com sucesso!',
-                'sequencia': sequencia
+                'message': f'Transação "{descricao}" cadastrada com {total_parcelas} parcelas!',
+                'sequencia': sequencia_pai,
+                'total_parcelas': total_parcelas
             })
-        
+            
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return jsonify({'success': False, 'error': f'Erro ao cadastrar: {str(e)}'})
