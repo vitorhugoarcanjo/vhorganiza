@@ -19,7 +19,7 @@
         </div>
 
         <div class="card-task-body">
-            <form action="{{ url_for('insert_tarefas.ini_insert') }}" method="post">
+            <form action="{{ url_for('insert_tarefas.ini_insert') }}" method="post" id="form-tarefa">
                 
                 <div class="form-group">
                     <label class="label-form"><i class="bi bi-type"></i> Título</label>
@@ -76,7 +76,11 @@
                     <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-action btn-back">
                         <i class="bi bi-arrow-left"></i> Voltar
                     </a>
-                    <button type="submit" class="btn-action btn-submit"><i class="bi bi-save"></i> Salvar</button>
+                    <button 
+                        type="submit"
+                        class="btn-action btn-submit"
+                        id="btn-submit">
+                        ✅ Salvar Tarefa</button>
                 </div>
             </form>
         </div>
@@ -94,5 +98,9 @@
         this.style.height = (this.scrollHeight) + 'px';
     });
 </script>
+
+{% block scripts %}
+    <script src="{{ static_v('js/pasta_tarefas/pasta_insert/btn_insert.js') }}"></script>
+{% endblock %}
 
 {% endblock %}

@@ -6,6 +6,8 @@
 <!-- Link para o CSS exclusivo da página de login -->
 <link rel="stylesheet" href="{{ static_v('pasta_login_e_cadastre_se/pasta_login/import_todas_css.css') }}">
 
+<link rel="stylesheet" href="{{ static_v('js/componentes/notificacoes_globais/notificacoes_tela.css') }}">
+
 <link rel="stylesheet" href="{{ static_v('js/pasta_login/btn_atualizador_acessar/btn_acessar.css') }}">
 {% endblock %}
 
@@ -59,6 +61,7 @@
 
 
 {% block scripts %}
+    <script src="{{ static_v('js/componentes/notificacoes_globais/notificacoes_tela.js') }}"></script>
     <script src="{{ static_v('js/pasta_login/btn_atualizador_acessar/btn_acessar.js') }}"></script>
 {% endblock %}
 

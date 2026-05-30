@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, flash, redirect, url_for
+from flask import Blueprint, render_template, session, flash, redirect, url_for, jsonify, request
 from rotas.middleware.autenticacao import login_required
 
 bp_pos_login = Blueprint('pos_login', __name__)
@@ -13,8 +13,17 @@ def iniposlogin():
 
 
 # LOGOFF
-@bp_pos_login.route('/logout')
+@bp_pos_login.route('/logout', methods=['GET', 'POST'])  # <-- ADICIONA POST AQUI
 def logout():
+    # Verifica se é AJAX
+    if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+        session.clear()
+        return redirect(url_for('ini_app'))
+
     session.clear()
-    flash('Você saiu do sistema', 'info')
-    return redirect(url_for('ini_app'))
+
+    return jsonify({
+        'status': 'ok',
+        'mensagem': 'Você saiu do sistema',
+        'redirect': url_for('ini_app')
+    })

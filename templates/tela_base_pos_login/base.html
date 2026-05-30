@@ -6,7 +6,7 @@
     <link href="{{ static_v('tela_base_telas_unificadas/estrutura_global.css') }}" rel="stylesheet">
 
     <!-- CSS DE NOTIFICACAO DE QUITAR / EXCLUIR / INSERIR -->
-    <link rel="stylesheet" href="{{ static_v('js/componentes/notificacoes_globais_pos_login/notificacoes_tela.css') }}">
+    <link rel="stylesheet" href="{{ static_v('js/componentes/notificacoes_globais/notificacoes_tela.css') }}">
     
     <!-- Ícones Nativos (Única dependência externa) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -72,7 +72,9 @@
                     </li>
                     
                     <li>
-                        <a href="{{ url_for('pos_login.logout') }}">
+                        <a href="{{ url_for('pos_login.logout') }}"
+                        id="logoutBtn"
+                        data-logout-url="{{ url_for('pos_login.logout') }}">
                             <i class="bi bi-box-arrow-right"></i> Sair
                         </a>
                     </li>
@@ -95,11 +97,11 @@
         </main>
     </div>
 
-    <!-- MENU COM JS - TELAS / CONFIG / INICIO -->
-    <!-- <script src="{{ static_v('js/pasta_base_pos_login/menu-menager.js') }}"></script> -->
-
     <!-- NOTIFICAÇÕES GLOBAIS NOTIFICACAO DE QUITAR / EXCLUIR / INSERIR -->
-    <script src="{{ static_v('js/componentes/notificacoes_globais_pos_login/notificacoes_tela.js') }}"></script>
+    <script src="{{ static_v('js/componentes/notificacoes_globais/notificacoes_tela.js') }}"></script>
+
+    <!-- BOTAO SAIR -->
+    <script src="{{ static_v('js/pos_login/btn_logout.js') }}"></script>
     {% block scripts %}{% endblock %}
     
     <!-- CONTROLES JAVASCRIPT DO MENU E TEMA -->

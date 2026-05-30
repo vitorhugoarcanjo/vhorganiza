@@ -1,5 +1,5 @@
 # rotas/pasta_tarefas/crud_tarefas/pasta_edit/logica_edit.py
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
 import sqlite3, os
 import json
 from datetime import datetime
@@ -31,7 +31,18 @@ def iniedittarefa(tarefa_seq):
     cursor.execute("SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = ?", (user_id,))
     todas_categorias = cursor.fetchall()
 
-    if request.method == 'POST':
+    # ========== GET ==========
+    if request.method == 'GET':
+        conexao.close()
+        return render_template(
+            'pasta_tarefas/crud_tarefas/tela_edit.html',
+            tarefa=tarefa,
+            tarefa_seq=tarefa_seq,
+            todas_categorias=todas_categorias
+        )
+
+    # ========== POST (AJAX) ==========
+    try:
         titulo = request.form.get('titulo', '')
         descricao = request.form.get('descricao', '')
         status = request.form.get('status', '')
@@ -64,7 +75,7 @@ def iniedittarefa(tarefa_seq):
         
         conexao.commit()
 
-        # ===== AUDITORIA: REGISTRA UM ÚNICO REGISTRO COM TODAS AS MUDANÇAS =====
+        # ===== AUDITORIA =====
         alteracoes = []
         
         status_map = {'pendente': '⏰ Pendente', 'em andamento': '⏳ Andamento', 'concluido': '✅ Concluído'}
@@ -104,22 +115,19 @@ def iniedittarefa(tarefa_seq):
                 acao='editada',
                 campo_alterado='múltiplos',
                 valor_antigo=None,
-                valor_novo=json.dumps(alteracoes, ensure_ascii=False)  # ← JSON com todas alterações
+                valor_novo=json.dumps(alteracoes, ensure_ascii=False)
             )
         
         conexao.close()
-        flash('Tarefa atualizada com sucesso!', 'success')
-        return redirect(url_for('tarefas.ini_tarefas'))
-    
-    if not tarefa:
-        conexao.close()
-        return redirect(url_for('tarefas.ini_tarefas'))
 
-    conexao.close()
-    
-    return render_template(
-        'pasta_tarefas/crud_tarefas/tela_edit.html',
-        tarefa=tarefa,
-        tarefa_seq=tarefa_seq,
-        todas_categorias=todas_categorias
-    )
+        return jsonify({
+            'success': True,
+            'message': 'Tarefa atualizada com sucesso!'
+        })
+        
+    except Exception as e:
+        conexao.close()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500

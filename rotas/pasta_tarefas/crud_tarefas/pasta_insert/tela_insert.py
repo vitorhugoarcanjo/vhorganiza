@@ -1,5 +1,5 @@
 # rotas/pasta_tarefas/crud_tarefas/pasta_insert/tela_insert.py
-from flask import Blueprint, request, render_template, session, redirect, url_for
+from flask import Blueprint, request, render_template, session, redirect, url_for, jsonify
 import os, sqlite3
 import json
 from datetime import datetime
@@ -107,11 +107,16 @@ def ini_insert():
                 valor_novo=json.dumps(alteracoes, ensure_ascii=False)
             )
 
-            return redirect(url_for('tarefas.ini_tarefas'))
+            return jsonify({
+                'success': True,
+                'message': f'Tarefa "{titulo}" cadastrada com sucesso!'
+            })
+        
         except Exception as e:
-            print(f'Erro: {e}')
-            import traceback
-            traceback.print_exc()
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
 
     conexao = sqlite3.connect(caminho_banco)
     cursor = conexao.cursor()

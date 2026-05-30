@@ -20,7 +20,7 @@
         </div>
 
         <div class="card-task-body">
-            <form method="post" action="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa_seq) }}">
+            <form method="post" action="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa_seq) }}" id="form-edit-tarefa">
 
                 <div class="form-group">
                     <label class="label-form"><i class="bi bi-type"></i> Título</label>
@@ -84,8 +84,10 @@
                         <i class="bi bi-x-circle"></i> Cancelar
                     </a>
 
-                    <button type="submit" class="btn-action btn-submit">
-                        <i class="bi bi-save"></i> Atualizar Tarefa
+                    <button 
+                        type="submit"
+                        class="btn-action btn-submit">
+                        <i class="bi bi-save"></i> Salvar alterações
                     </button>
                 </div>
 
@@ -105,5 +107,9 @@ function adjustHeight() {
 textarea.addEventListener('input', adjustHeight);
 window.addEventListener('load', adjustHeight);
 </script>
+
+{% block scripts %}
+<script src="{{ static_v('js/pasta_tarefas/pasta_edit/btn_edit.js') }}"></script>
+{% endblock %}
 
 {% endblock %}
