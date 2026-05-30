@@ -63,7 +63,7 @@ def initransacao():
             parcelas_str = request.form.get('total_parcelas', '1')
             total_parcelas = int(parcelas_str) if parcelas_str else 1
 
-            status = 'recebido' if tipo == 'receita' else 'aberto'
+            status = 'aberto'
 
             with sqlite3.connect(caminho_banco) as conexao:
                 cursor = conexao.cursor()

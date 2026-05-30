@@ -246,6 +246,7 @@
                                                 class="btn-acao check" title="Quitar">
                                             <i class="bi bi-check-lg"></i>
                                         </button>
+                                        
                                     {% elif transacao[2] == 'receita' and transacao[8] == 'aberto' %}
                                         <button onclick="quitarTransacao({{ transacao[0] }}, this)" 
                                                 class="btn-acao check" title="Receber">

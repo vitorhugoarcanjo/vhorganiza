@@ -61,7 +61,7 @@ def ini_tarefas():
         cursor = conexao_banco.cursor()
 
         query = """SELECT t.tarefa_sequencia, t.titulo, t.descricao, t.status, t.data_inicio, t.data_final, t.data_finalizacao, t.categoria_id, t.prioridade,
-                       c.nome as categoria_nome, c.cor as categoria_cor
+                       c.nome as categoria_nome, c.cor as categoria_cor, t.ativo
                     FROM tarefas t 
                     LEFT JOIN categorias_tarefas c ON t.categoria_id = c.id   
                     WHERE t.user_id = ?

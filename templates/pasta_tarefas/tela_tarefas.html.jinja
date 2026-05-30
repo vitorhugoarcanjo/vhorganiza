@@ -189,6 +189,7 @@
                                 {% endif %}
                             </td>
 
+                            <!-- ACÕES -->
                             <td class="td-acoes">
                                 <button type="button" class="btn-acao view" title="Ver detalhes" onclick="verDetalhes({{ tarefa[0] }})">
                                     <i class="bi bi-eye"></i>
@@ -205,7 +206,7 @@
                                     <i class="bi bi-clock-history"></i>
                                 </a>
 
-                                {% if tarefa[3] != 'concluido' %}
+                                {% if tarefa[3] != 'concluido' and tarefa[11] == 1 %}
                                     
 
                                     <!-- BOTÃO CONCLUIR TAREFAS -->
