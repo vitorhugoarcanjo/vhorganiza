@@ -2,7 +2,7 @@
 import os
 import hashlib
 from datetime import timedelta # TEMPO DE LOGIN
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, request, url_for
 from dotenv import load_dotenv # CHAVE SECRETA
 from werkzeug.middleware.proxy_fix import ProxyFix # PEGAR IP DE QUEM ACESSOU
 
@@ -24,10 +24,8 @@ logica_imports(app) # IMPORTAÇÃO DOS BLUEPRINTS
 app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 
 
-# Cache global (fora da função)
-# Apague seu código atual do static_v e cole isso:
-
-VERSAO_CSS = "1.0.2"  # ← Número atual
+# VERSÃO DO CSS - MUDE ISSO QUANDO ALTERAR CSS
+VERSAO_CSS = "1.0.2"
 
 @app.context_processor
 def inject_global_contexts():
@@ -38,6 +36,15 @@ def inject_global_contexts():
         'static_v': static_v,
         'versao_sistema': '1.0.0'
     }
+
+# Desabilita cache para CSS/JS (FORÇA SEMPRE BUSCAR NOVO)
+@app.after_request
+def add_header(response):
+    if request.path.endswith(('.css', '.js')):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=240) # SESSÃO DE LOGIN 60    
 
