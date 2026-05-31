@@ -27,7 +27,7 @@ app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 # Cache global (fora da função)
 # Apague seu código atual do static_v e cole isso:
 
-VERSAO_CSS = "1.0.1"  # ← Número atual
+VERSAO_CSS = "1.0.2"  # ← Número atual
 
 @app.context_processor
 def inject_global_contexts():
