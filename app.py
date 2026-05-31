@@ -25,31 +25,14 @@ app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 
 
 # Cache global (fora da função)
-STATIC_VERSION_CACHE = {}
+# Apague seu código atual do static_v e cole isso:
+
+VERSAO_CSS = "1.0.1"  # ← Número atual
 
 @app.context_processor
 def inject_global_contexts():
     def static_v(filename):
-        # 1. Verifica se já tem no cache
-        if filename in STATIC_VERSION_CACHE:
-            return url_for('static', filename=filename, v=STATIC_VERSION_CACHE[filename])
-        
-        file_path = os.path.join(app.static_folder, filename)
-        
-        # 2. Calcula hash do arquivo (garantido 100%)
-        try:
-            with open(file_path, 'rb') as f:
-                # Lê arquivo inteiro e gera MD5
-                file_hash = hashlib.md5(f.read()).hexdigest()[:10]  # 10 caracteres
-                version = file_hash
-        except (OSError, IOError):
-            # Fallback: timestamp se arquivo não existir
-            version = str(int(os.path.getmtime(file_path))) if os.path.exists(file_path) else '1'
-        
-        # 3. Salva no cache
-        STATIC_VERSION_CACHE[filename] = version
-        
-        return url_for('static', filename=filename, v=version)
+        return url_for('static', filename=filename, v=VERSAO_CSS)
     
     return {
         'static_v': static_v,
