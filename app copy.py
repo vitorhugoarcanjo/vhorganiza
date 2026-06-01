@@ -35,19 +35,25 @@ def inject_global_contexts():
 
         try:
             current_mtime = os.path.getmtime(file_path)
-        except:
+        except Exception:
             current_mtime = None
 
         cache = STATIC_VERSION_CACHE.get(filename)
 
-        # Se o arquivo NÃO mudou → usa cache
-        if cache and cache['mtime'] == current_mtime:
+        # Validação segura do cache
+        if (
+            cache 
+            and isinstance(cache, dict) 
+            and 'mtime' in cache 
+            and 'version' in cache 
+            and cache['mtime'] == current_mtime
+        ):
             version = cache['version']
         else:
             try:
                 with open(file_path, 'rb') as f:
                     version = hashlib.md5(f.read()).hexdigest()[:10]
-            except:
+            except Exception:
                 version = '1'
 
             STATIC_VERSION_CACHE[filename] = {
