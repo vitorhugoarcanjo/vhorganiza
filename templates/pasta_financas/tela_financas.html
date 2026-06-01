@@ -11,8 +11,13 @@
     <!-- CSS MODAL DETALHES COMPLETO -->
     <link rel="stylesheet" href="{{ static_v('pasta_financas/modais/detalhes_completo.css') }}">
 
+    <!-- estornar -->
+    <link rel="stylesheet" href="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_estornar.css') }}">
+
+
     <!-- MENU CLICK DIREITO CSS -->
     <link rel="stylesheet" href="{{ static_v('js/pasta_financas/menu_click/click_direito.css') }}"> <!-- TOTALIZADORES -->
+
 
 
 
@@ -214,7 +219,7 @@
                                 </a>
 
                                 <!-- ========================================== -->
-                                <!-- BOTÕES QUE SÓ APARECEM SE NÃO ESTIVER FINALIZADO -->
+                                <!-- BOTÕES PARA TRANSAÇÕES ABERTAS -->
                                 <!-- ========================================== -->
                                 {% if transacao[8] not in ['quitado', 'recebido'] and transacao[10] == 1 %}
                                     <!-- EDITAR -->
@@ -232,19 +237,31 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
 
-                                    <!-- QUITAR/RECEBER (só se não tiver quitado/recebido) -->
+                                    <!-- QUITAR/RECEBER -->
                                     {% if transacao[2] == 'despesa' and transacao[8] == 'aberto' %}
                                         <button onclick="quitarTransacao({{ transacao[0] }}, this)" 
                                                 class="btn-acao check" title="Quitar">
                                             <i class="bi bi-check-lg"></i>
                                         </button>
-
                                     {% elif transacao[2] == 'receita' and transacao[8] == 'aberto' %}
                                         <button onclick="quitarTransacao({{ transacao[0] }}, this)" 
                                                 class="btn-acao check" title="Receber">
                                             <i class="bi bi-cash-stack"></i>
                                         </button>
                                     {% endif %}
+                                
+                                <!-- ========================================== -->
+                                <!-- BOTÃO ESTORNAR (aparece se estiver quitado/recebido) -->
+                                <!-- ========================================== -->
+                                {% elif transacao[8] in ['quitado', 'recebido'] and transacao[10] == 1 %}
+                                    <button type="button"
+                                            class="btn-acao undo btn-estornar"
+                                            data-id="{{ transacao[0] }}"
+                                            data-desc="{{ transacao[4] }}"
+                                            data-tipo="{{ transacao[2] }}"
+                                            title="Estornar">
+                                        <i class="bi bi-arrow-return-left"></i>
+                                    </button>
                                 {% endif %}
                             </td>
                         </tr>
@@ -300,6 +317,9 @@
 {% include 'pasta_financas/modais/excluir_financas.html' %}
 {% include 'pasta_financas/modais/detalhes_completo.html' %}
 {% include 'pasta_financas/modais/modal_menu_click.html' %}
+{% include 'pasta_financas/modais/modal_estornar_finan.html' %}
+
+
 <!-- MODAIS (igual tarefas) -->
 
 {% block scripts %}
@@ -310,8 +330,12 @@
     <script src="{{ static_v('js/pasta_financas/totalizadores/totalizadores.js') }}"></script> <!-- TOTALIZADORES -->
     <script src="{{ static_v('js/pasta_financas/menu_click/click_direito.js') }}"></script> <!-- MENU COM CLICK DIREITO -->
     <script src="{{ static_v('js/pasta_financas/menu_click/menu_vinculos/vinculos.js') }}"></script> <!-- MENU - VINCULOS -->
-    <script src="{{ static_v('js/pasta_financas/grid_colunas_reslize/auto_ajuste.js') }}"></script>
+    <!-- <script src="{{ static_v('js/pasta_financas/grid_colunas_reslize/auto_ajuste.js') }}"></script> -->
     <script src="{{ static_v('js/pasta_financas/ordenacao_colunas/ordenacao.js') }}"></script>
+    <!-- 🔥 NOVOS SCRIPTS PARA ESTORNAR -->
+    <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_estornar.js') }}"></script>
+    <!-- <script src="{{ static_v('js/pasta_financas/pasta_estornar/btn_estornar.js') }}"></script> -->
+
 {% endblock %}
 
 {% endblock %}

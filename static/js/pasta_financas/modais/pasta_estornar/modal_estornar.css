@@ -1,0 +1,91 @@
+/* Modal de Estorno */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-box {
+    background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3f 100%);
+    border-radius: 16px;
+    padding: 28px;
+    min-width: 450px;
+    max-width: 550px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-box h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #ff9f43;
+}
+
+.modal-box p {
+    margin: 0 0 24px 0;
+    color: #e0e0e0;
+    font-size: 1rem;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-cancelar, .btn-confirmar {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-cancelar {
+    background-color: #2d2d3f;
+    color: #e0e0e0;
+    border: 1px solid #3d3d4f;
+}
+
+.btn-cancelar:hover {
+    background-color: #3d3d4f;
+}
+
+.btn-confirmar {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.btn-confirmar:hover {
+    background-color: #e66700;
+}
+
+.btn-confirmar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

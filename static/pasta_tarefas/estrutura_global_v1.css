@@ -393,6 +393,17 @@
     border: 1px solid;
 }
 
+/* Botão Estornar */
+.btn-acao.undo {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.btn-acao.undo:hover {
+    background-color: #e66700;
+    transform: scale(1.05);
+}
+
 /* ==========================================================================
    5. FOOTER FIXO PADRÃO (IGUAL AO INSERT)
    ========================================================================== */
