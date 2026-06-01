@@ -1,44 +1,40 @@
+// Versão minimalista (só o essencial)
 function calcularTotaisFinancas() {
-    const linhas = document.querySelectorAll('.custom-table tbody tr');
+    const linhas = document.querySelector('.custom-table tbody')?.children || [];
     let totalReceitas = 0;
     let totalDespesas = 0;
     
-    linhas.forEach(linha => {
-        // Pula a linha de "nenhuma transação"
-        if (linha.querySelector('td[colspan]')) return;
+    // 🔥 SÓ MUDEI de forEach para for
+    for (let i = 0; i < linhas.length; i++) {
+        const linha = linhas[i];
+        if (linha.querySelector('td[colspan]')) continue;
         
-        const colunas = linha.querySelectorAll('td');
-        if (colunas.length < 3) return;
+        const colunas = linha.cells; // 🔥 MUDEI de querySelectorAll para cells
+        if (colunas.length < 3) continue;
         
-        // Coluna TIPO (índice 1) e VALOR (índice 2)
         const tipo = colunas[1]?.innerText || '';
         const valorTexto = colunas[2]?.innerText || 'R$ 0,00';
         
-        // Remove "R$" e converte
-        let valor = parseFloat(valorTexto.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
-        if (isNaN(valor)) valor = 0;
+        let valor = parseFloat(valorTexto.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()) || 0;
         
-        if (tipo.includes('Receita')) {
-            totalReceitas += valor;
-        } else if (tipo.includes('Despesa')) {
-            totalDespesas += valor;
-        }
-    });
+        if (tipo.includes('Receita')) totalReceitas += valor;
+        else if (tipo.includes('Despesa')) totalDespesas += valor;
+    }
     
     const saldo = totalReceitas - totalDespesas;
+    const formatar = (v) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
     
-    document.getElementById('totalReceitas').innerHTML = `R$ ${totalReceitas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById('totalDespesas').innerHTML = `R$ ${totalDespesas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    document.getElementById('totalSaldo').innerHTML = `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    document.getElementById('totalReceitas').innerHTML = formatar(totalReceitas);
+    document.getElementById('totalDespesas').innerHTML = formatar(totalDespesas);
+    document.getElementById('totalSaldo').innerHTML = formatar(saldo);
 }
 
-// Executa quando a página carregar
-document.addEventListener('DOMContentLoaded', calcularTotaisFinancas);
-
-// Recalcula após consulta (filtros via POST)
+// 🔥 MUDEI: removeu setTimeout, executa direto
 const formFiltros = document.querySelector('.form-filtros-total');
 if (formFiltros) {
-    formFiltros.addEventListener('submit', function() {
-        setTimeout(calcularTotaisFinancas, 300);
+    formFiltros.addEventListener('submit', () => {
+        calcularTotaisFinancas();
     });
 }
+
+document.addEventListener('DOMContentLoaded', calcularTotaisFinancas);

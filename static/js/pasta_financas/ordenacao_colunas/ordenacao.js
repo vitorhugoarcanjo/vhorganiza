@@ -1,57 +1,110 @@
-// Ordenação de colunas na tabela
+// ordenacao.js - VERSÃO OTIMIZADA
 (function() {
     'use strict';
     
     let colunaAtual = null;
     let ordemAtual = 'asc';
     
+    // CACHE para valores processados (evita recalcular)
+    let cacheValores = new Map();
+    
+    function getValorParaComparacao(celula, tipo) {
+        const texto = celula?.innerText?.trim() || '';
+        
+        // Usa cache se já calculou antes
+        const cacheKey = `${tipo}_${texto}`;
+        if (cacheValores.has(cacheKey)) {
+            return cacheValores.get(cacheKey);
+        }
+        
+        let valor;
+        
+        if (tipo === 'numero') {
+            valor = parseFloat(texto.replace('R$', '').replace(/\./g, '').replace(',', '.')) || 0;
+        } 
+        else if (tipo === 'data') {
+            // Parse de data otimizado (sem split/reverse todo hora)
+            if (texto && texto !== '-') {
+                const partes = texto.split('/');
+                if (partes.length === 3) {
+                    // formato DD/MM/AAAA -> direto para Date
+                    valor = new Date(partes[2], partes[1] - 1, partes[0]);
+                } else {
+                    valor = new Date(0);
+                }
+            } else {
+                valor = new Date(0);
+            }
+        } 
+        else { // texto
+            valor = (texto || '').toLowerCase();
+        }
+        
+        // Guarda no cache
+        cacheValores.set(cacheKey, valor);
+        return valor;
+    }
+    
     function ordenarTabela(colunaIndex, tipo) {
-        const tabela = document.querySelector('.custom-table tbody');
-        if (!tabela) return;
+        const tbody = document.querySelector('.custom-table tbody');
+        if (!tbody) return;
         
-        const linhas = Array.from(tabela.querySelectorAll('tr'));
+        const linhas = Array.from(tbody.querySelectorAll('tr'));
         
-        // Filtra linhas válidas (ignora mensagem "nenhuma transação")
-        const linhasValidas = linhas.filter(linha => {
-            return !linha.querySelector('td[colspan]');
-        });
+        // Filtra linhas válidas
+        const linhasValidas = [];
+        const linhasMensagem = [];
         
-        // Ordena as linhas
-        linhasValidas.sort((a, b) => {
-            const celulaA = a.children[colunaIndex]?.innerText.trim() || '';
-            const celulaB = b.children[colunaIndex]?.innerText.trim() || '';
-            
-            let valorA = celulaA;
-            let valorB = celulaB;
-            
-            // Converte para número se for valor monetário
-            if (tipo === 'numero') {
-                valorA = parseFloat(celulaA.replace('R$', '').replace(/\./g, '').replace(',', '.')) || 0;
-                valorB = parseFloat(celulaB.replace('R$', '').replace(/\./g, '').replace(',', '.')) || 0;
+        for (let i = 0; i < linhas.length; i++) {
+            const linha = linhas[i];
+            if (linha.querySelector('td[colspan]')) {
+                linhasMensagem.push(linha);
+            } else {
+                linhasValidas.push(linha);
             }
-            // Converte para data se for data
-            else if (tipo === 'data') {
-                valorA = new Date(celulaA.split('/').reverse().join('-')) || new Date(0);
-                valorB = new Date(celulaB.split('/').reverse().join('-')) || new Date(0);
-            }
+        }
+        
+        // Limpa cache quando mudar de coluna
+        if (colunaAtual !== colunaIndex) {
+            cacheValores.clear();
+        }
+        
+        // Pré-calcula os valores para evitar recalcular durante sort
+        const linhasComValor = linhasValidas.map(linha => ({
+            linha: linha,
+            valor: getValorParaComparacao(linha.children[colunaIndex], tipo)
+        }));
+        
+        // Ordena usando os valores já calculados
+        linhasComValor.sort((a, b) => {
+            const valorA = a.valor;
+            const valorB = b.valor;
             
             if (valorA < valorB) return ordemAtual === 'asc' ? -1 : 1;
             if (valorA > valorB) return ordemAtual === 'asc' ? 1 : -1;
             return 0;
         });
         
-        // Reconstroi a tabela
-        linhasValidas.forEach(linha => tabela.appendChild(linha));
+        // Usa DocumentFragment (1 único reflow)
+        const fragment = document.createDocumentFragment();
         
-        // Mantém as linhas de mensagem no final
-        const linhasMensagem = linhas.filter(linha => linha.querySelector('td[colspan]'));
-        linhasMensagem.forEach(linha => tabela.appendChild(linha));
+        for (let i = 0; i < linhasComValor.length; i++) {
+            fragment.appendChild(linhasComValor[i].linha);
+        }
+        
+        // Adiciona mensagens no final
+        for (let i = 0; i < linhasMensagem.length; i++) {
+            fragment.appendChild(linhasMensagem[i]);
+        }
+        
+        // UMA ÚNICA operação DOM
+        tbody.innerHTML = '';
+        tbody.appendChild(fragment);
     }
     
     function initOrdenacao() {
         const cabecalhos = document.querySelectorAll('.custom-table th');
         
-        // Tipos de cada coluna (índice, tipo)
         const tiposColunas = [
             { index: 0, tipo: 'numero', nome: 'SEQ' },
             { index: 1, tipo: 'texto', nome: 'TIPO' },
@@ -64,32 +117,37 @@
         ];
         
         cabecalhos.forEach((th, idx) => {
-            // Adiciona classe sortable
             th.classList.add('sortable');
             
-            // Encontra o tipo da coluna
             const colunaInfo = tiposColunas.find(c => c.index === idx);
             if (!colunaInfo) return;
             
+            // Throttle para evitar ordenações repetidas
+            let timeout = null;
+            
             th.addEventListener('click', () => {
-                // Reseta as setas das outras colunas
-                cabecalhos.forEach(h => {
-                    h.classList.remove('asc', 'desc');
-                });
+                if (timeout) return;
                 
-                // Alterna a ordem
-                if (colunaAtual === idx) {
-                    ordemAtual = ordemAtual === 'asc' ? 'desc' : 'asc';
-                } else {
-                    colunaAtual = idx;
-                    ordemAtual = 'asc';
-                }
-                
-                // Adiciona classe para mostrar a seta
-                th.classList.add(ordemAtual === 'asc' ? 'asc' : 'desc');
-                
-                // Ordena
-                ordenarTabela(idx, colunaInfo.tipo);
+                timeout = setTimeout(() => {
+                    // Reseta as setas
+                    cabecalhos.forEach(h => {
+                        h.classList.remove('asc', 'desc');
+                    });
+                    
+                    // Alterna ordem
+                    if (colunaAtual === idx) {
+                        ordemAtual = ordemAtual === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        colunaAtual = idx;
+                        ordemAtual = 'asc';
+                    }
+                    
+                    th.classList.add(ordemAtual === 'asc' ? 'asc' : 'desc');
+                    
+                    ordenarTabela(idx, colunaInfo.tipo);
+                    
+                    timeout = null;
+                }, 10);
             });
         });
     }
