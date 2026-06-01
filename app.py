@@ -1,6 +1,7 @@
 """ ARQUIVO PRINCIPAL """
 import os
 import hashlib
+import time
 from datetime import timedelta # TEMPO DE LOGIN
 from flask import Flask, render_template, url_for
 from dotenv import load_dotenv # CHAVE SECRETA
@@ -24,31 +25,27 @@ logica_imports(app) # IMPORTAÇÃO DOS BLUEPRINTS
 app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 
 
-# Cache global (fora da função)
-# Seu código original, só muda isso:
-STATIC_VERSION_CACHE = {}
-VERSAO_EXTRA = "3"  # ← SÓ ADICIONA ESSA LINHA
+# Adiciona isso no lugar (depois do app = Flask(__name__))
+BUILD_TIMESTAMP = str(int(time.time()))  # MUDA A CADA REINICIO DO APP
 
 @app.context_processor
 def inject_global_contexts():
     def static_v(filename):
-        if filename in STATIC_VERSION_CACHE:
-            return url_for('static', filename=filename, v=STATIC_VERSION_CACHE[filename] + VERSAO_EXTRA)
-        
+        # PEGA A DATA DE MODIFICAÇÃO DO ARQUIVO
         file_path = os.path.join(app.static_folder, filename)
-        try:
-            with open(file_path, 'rb') as f:
-                file_hash = hashlib.md5(f.read()).hexdigest()[:10]
-                version = file_hash
-        except (OSError, IOError):
-            version = str(int(os.path.getmtime(file_path))) if os.path.exists(file_path) else '1'
+        if os.path.exists(file_path):
+            mtime = str(int(os.path.getmtime(file_path)))
+            # USA O TIMESTAMP DO BUILD + MODIFICAÇÃO DO ARQUIVO
+            version = f"{BUILD_TIMESTAMP}_{mtime}"
+        else:
+            version = BUILD_TIMESTAMP
         
-        STATIC_VERSION_CACHE[filename] = version
-        return url_for('static', filename=filename, v=version + VERSAO_EXTRA)
+        # GERA URL COM VERSÃO: /static/arquivo.css?v=1234567890_1234567
+        return url_for('static', filename=filename, v=version)
     
     return {
         'static_v': static_v,
-        'versao_sistema': '1.0.0'
+        'versao_sistema': BUILD_TIMESTAMP  # PRA VER NO FRONT
     }
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=240) # SESSÃO DE LOGIN 60    
