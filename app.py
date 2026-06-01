@@ -25,30 +25,25 @@ logica_imports(app) # IMPORTAÇÃO DOS BLUEPRINTS
 app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 
 
-# Adiciona isso no lugar (depois do app = Flask(__name__))
-BUILD_TIMESTAMP = str(int(time.time()))  # MUDA A CADA REINICIO DO APP
+# VERSÃO DO SISTEMA (muda manualmente quando você lança uma versão nova)
+VERSAO_SISTEMA = "2.0.0"  # ← VOCÊ CONTROLA ISSO MANUALMENTE
 
 @app.context_processor
 def inject_global_contexts():
     def static_v(filename):
-        # PEGA A DATA DE MODIFICAÇÃO DO ARQUIVO
         file_path = os.path.join(app.static_folder, filename)
         if os.path.exists(file_path):
-            mtime = str(int(os.path.getmtime(file_path)))
-            # USA O TIMESTAMP DO BUILD + MODIFICAÇÃO DO ARQUIVO
-            version = f"{BUILD_TIMESTAMP}_{mtime}"
-        else:
-            version = BUILD_TIMESTAMP
-        
-        # GERA URL COM VERSÃO: /static/arquivo.css?v=1234567890_1234567
-        return url_for('static', filename=filename, v=version)
+            # Calcula MD5 do arquivo (muda quando o arquivo muda)
+            with open(file_path, 'rb') as f:
+                file_hash = hashlib.md5(f.read()).hexdigest()[:10]
+            # USA O HASH COMO PARTE DO NOME, NÃO QUERY STRING!
+            return url_for('static', filename=f"{filename}?v={file_hash}")
+        return url_for('static', filename=filename)
     
     return {
         'static_v': static_v,
-        'versao_sistema': BUILD_TIMESTAMP  # PRA VER NO FRONT
+        'versao_sistema': VERSAO_SISTEMA  # ← VERSÃO DO SISTEMA AQUI
     }
-
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=240) # SESSÃO DE LOGIN 60    
 
 @app.route('/')
 def ini_app():
