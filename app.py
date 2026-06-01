@@ -23,43 +23,16 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 logica_imports(app) # IMPORTAÇÃO DOS BLUEPRINTS
 app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 
-
-# Cache global (fora da função)
-# Seu código original, só muda isso:
-STATIC_VERSION_CACHE = {}
-
 @app.context_processor
 def inject_global_contexts():
     def static_v(filename):
         file_path = os.path.join(app.static_folder, filename)
 
         try:
-            current_mtime = os.path.getmtime(file_path)
-        except Exception:
-            current_mtime = None
-
-        cache = STATIC_VERSION_CACHE.get(filename)
-
-        # Validação segura do cache
-        if (
-            cache 
-            and isinstance(cache, dict) 
-            and 'mtime' in cache 
-            and 'version' in cache 
-            and cache['mtime'] == current_mtime
-        ):
-            version = cache['version']
-        else:
-            try:
-                with open(file_path, 'rb') as f:
-                    version = hashlib.md5(f.read()).hexdigest()[:10]
-            except Exception:
-                version = '1'
-
-            STATIC_VERSION_CACHE[filename] = {
-                'version': version,
-                'mtime': current_mtime
-            }
+            with open(file_path, 'rb') as f:
+                version = hashlib.md5(f.read()).hexdigest()[:10]
+        except:
+            version = '1'
 
         return url_for('static', filename=filename, v=version)
     
