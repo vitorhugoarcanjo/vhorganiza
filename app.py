@@ -31,18 +31,18 @@ VERSAO_SISTEMA = "2.0.0"  # ← VOCÊ CONTROLA ISSO MANUALMENTE
 @app.context_processor
 def inject_global_contexts():
     def static_v(filename):
+        # SÓ ADICIONA VERSÃO SE O ARQUIVO EXISTIR
         file_path = os.path.join(app.static_folder, filename)
         if os.path.exists(file_path):
-            # Calcula MD5 do arquivo (muda quando o arquivo muda)
-            with open(file_path, 'rb') as f:
-                file_hash = hashlib.md5(f.read()).hexdigest()[:10]
-            # USA O HASH COMO PARTE DO NOME, NÃO QUERY STRING!
-            return url_for('static', filename=f"{filename}?v={file_hash}")
+            # USA O TIMESTAMP DA MODIFICAÇÃO
+            version = str(int(os.path.getmtime(file_path)))
+            return url_for('static', filename=filename) + f"?v={version}"
+        # SE NÃO EXISTIR, RETORNA NORMAL
         return url_for('static', filename=filename)
     
     return {
         'static_v': static_v,
-        'versao_sistema': VERSAO_SISTEMA  # ← VERSÃO DO SISTEMA AQUI
+        'versao_sistema': VERSAO_SISTEMA
     }
 
 @app.route('/')
