@@ -1,7 +1,6 @@
 """ ARQUIVO PRINCIPAL """
 import os
 import hashlib
-import time
 from datetime import timedelta # TEMPO DE LOGIN
 from flask import Flask, render_template, url_for
 from dotenv import load_dotenv # CHAVE SECRETA
@@ -25,25 +24,45 @@ logica_imports(app) # IMPORTAÇÃO DOS BLUEPRINTS
 app.secret_key = os.getenv('SECRET_KEY') # CHAVE SECRETA
 
 
-# VERSÃO DO SISTEMA (muda manualmente quando você lança uma versão nova)
-VERSAO_SISTEMA = "2.0.0"  # ← VOCÊ CONTROLA ISSO MANUALMENTE
+# Cache global (fora da função)
+# Seu código original, só muda isso:
+STATIC_VERSION_CACHE = {}
 
 @app.context_processor
 def inject_global_contexts():
     def static_v(filename):
-        # SÓ ADICIONA VERSÃO SE O ARQUIVO EXISTIR
         file_path = os.path.join(app.static_folder, filename)
-        if os.path.exists(file_path):
-            # USA O TIMESTAMP DA MODIFICAÇÃO
-            version = str(int(os.path.getmtime(file_path)))
-            return url_for('static', filename=filename) + f"?v={version}"
-        # SE NÃO EXISTIR, RETORNA NORMAL
-        return url_for('static', filename=filename)
+
+        try:
+            current_mtime = os.path.getmtime(file_path)
+        except:
+            current_mtime = None
+
+        cache = STATIC_VERSION_CACHE.get(filename)
+
+        # Se o arquivo NÃO mudou → usa cache
+        if cache and cache['mtime'] == current_mtime:
+            version = cache['version']
+        else:
+            try:
+                with open(file_path, 'rb') as f:
+                    version = hashlib.md5(f.read()).hexdigest()[:10]
+            except:
+                version = '1'
+
+            STATIC_VERSION_CACHE[filename] = {
+                'version': version,
+                'mtime': current_mtime
+            }
+
+        return url_for('static', filename=filename, v=version)
     
     return {
         'static_v': static_v,
-        'versao_sistema': VERSAO_SISTEMA
+        'versao_sistema': '1.0.0'
     }
+
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=240) # SESSÃO DE LOGIN 60    
 
 @app.route('/')
 def ini_app():
