@@ -5,14 +5,15 @@
 {% block styles %}
     <link rel="stylesheet" href="{{ static_v('pasta_tarefas/import_css.css') }}">
 
-    <!-- CSS MODAL DE EXCLUIR/INATIVAR FINANÇAS-->
-    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/excluir_global.css') }}">
-
     <!-- CSS MODAL DETALHES COMPLETO -->
     <link rel="stylesheet" href="{{ static_v('pasta_financas/modais/detalhes_completo.css') }}">
 
     <!-- estornar -->
-    <link rel="stylesheet" href="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_estornar.css') }}">
+    <link rel="stylesheet" href="{{ static_v('pasta_financas/modais/modal_estornar.css') }}">
+
+    <!-- EXCLUIR / INATIVAR -->
+    <link rel="stylesheet" href="{{ static_v('pasta_financas/modais/modal_excluir.css') }}">
+
 
 
     <!-- MENU CLICK DIREITO CSS -->
@@ -259,7 +260,8 @@
                                             data-id="{{ transacao[0] }}"
                                             data-desc="{{ transacao[4] }}"
                                             data-tipo="{{ transacao[2] }}"
-                                            title="Estornar">
+                                            title="Estornar"
+                                            formnovalidate>
                                         <i class="bi bi-arrow-return-left"></i>
                                     </button>
                                 {% endif %}
@@ -323,18 +325,15 @@
 <!-- MODAIS (igual tarefas) -->
 
 {% block scripts %}
-    <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js') }}"></script> <!-- MODAL GLOBAL - PARA EXCLUIR -->
     <script src="{{ static_v('js/pasta_financas/modais/detalhes_completo.js') }}"></script> <!-- DETALHES DA TAREFA -->
     <script src="{{ static_v('js/pasta_financas/pasta_quitar/btn_quitar.js') }}"></script> <!-- BOTÃO QUITAMENTO -->
-    <script src="{{ static_v('js/pasta_financas/modais/pasta_excluir/btn_excluir.js') }}"></script> <!-- BOTÃO DE EXCLUIR/INATIVAR -->
-    <!-- <script src="{{ static_v('js/pasta_financas/totalizadores/totalizadores.js') }}"></script> TOTALIZADORES -->
+    <script src="{{ static_v('js/pasta_financas/modais/pasta_excluir/excluir_financas.js') }}"></script> <!-- BOTÃO DE EXCLUIR/INATIVAR -->
+    <script src="{{ static_v('js/pasta_financas/totalizadores/totalizadores.js') }}"></script> <!-- TOTALIZADORES -->
     <script src="{{ static_v('js/pasta_financas/menu_click/click_direito.js') }}"></script> <!-- MENU COM CLICK DIREITO -->
     <script src="{{ static_v('js/pasta_financas/menu_click/menu_vinculos/vinculos.js') }}"></script> <!-- MENU - VINCULOS -->
-    <!-- <script src="{{ static_v('js/pasta_financas/grid_colunas_reslize/auto_ajuste.js') }}"></script> -->
-    <!-- <script src="{{ static_v('js/pasta_financas/ordenacao_colunas/ordenacao.js') }}"></script> -->
-    <!-- 🔥 NOVOS SCRIPTS PARA ESTORNAR -->
+    <script src="{{ static_v('js/pasta_financas/ordenacao_colunas/ordenacao.js') }}"></script>
+        <!-- 🔥 Script de estorno (carrega UMA VEZ só) -->
     <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_estornar.js') }}"></script>
-    <!-- <script src="{{ static_v('js/pasta_financas/pasta_estornar/btn_estornar.js') }}"></script> -->
 
 {% endblock %}
 

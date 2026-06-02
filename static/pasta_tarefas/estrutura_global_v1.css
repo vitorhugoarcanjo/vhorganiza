@@ -404,6 +404,11 @@
     transform: scale(1.05);
 }
 
+
+.custom-table td:last-child {
+    background: linear-gradient(90deg, transparent, var(--bg-card) 10%) !important;
+}
+
 /* ==========================================================================
    5. FOOTER FIXO PADRÃO (IGUAL AO INSERT)
    ========================================================================== */
@@ -612,144 +617,83 @@
     max-width: 300px;
 }
 
+
 /* ==========================================================================
-   6. RESPONSIVIDADE
+   6. RESPONSIVIDADE - CORRIGIDA
    ========================================================================== */
-@media (max-width: 1024px) {
-    .footer-fixo-padrao {
-        left: 0;
-        flex-wrap: wrap;
-        justify-content: center;
-        min-height: auto;
-        padding: 12px 16px;
+
+/* Força scroll horizontal quando tabela não couber */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tablet e mobile - tabela rola horizontal */
+@media (max-width: 1096px) {
+    .custom-table {
+        min-width: 900px;
     }
     
-    .botoes-footer-padrao {
-        order: 1;
-        width: 100%;
-        justify-content: center;
+    .td-acoes {
+        flex-wrap: nowrap !important;
     }
     
-    .botoes-footer-padrao .btn-footer {
-        min-width: 100px;
-        aspect-ratio: auto;
-        flex-direction: row;
-        padding: 8px 16px;
-    }
-    
-    .totalizador-footer-padrao {
-        order: 2;
-        justify-content: center;
-        margin-left: 0;
-        width: 100%;
-    }
-    
-    .total-item-footer {
-        align-items: center;
-    }
-    
-    .contador-footer {
-        order: 3;
-        margin-top: 8px;
-    }
-    
-    .painel-tabela-conteudo {
-        margin-bottom: 160px;
+    .custom-table td:last-child,
+    .custom-table th:last-child {
+        position: sticky;
+        right: 0;
+        background-color: inherit;
     }
 }
 
-@media (max-width: 768px) {
-    .painel-container {
-        width: 96% !important;
-        max-width: 96% !important;
-        padding: 5px 0;
-        gap: 6px;
-    }
+/* Remove a regra específica da descrição */
+/* Deixa a tabela toda rolar se precisar */
 
+.table-responsive {
+    overflow-x: auto;
+}
+
+.custom-table {
+    min-width: 1000px; /* Força largura mínima */
+}
+
+/* DESCRIÇÃO PADRÃO */
+.custom-table td:nth-child(4) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
+/* Mobile - empilha filtros */
+@media (max-width: 768px) {
     .filtros-container {
         flex-direction: column !important;
-        gap: 6px !important;
     }
-
+    
     .bloco-filtro {
         width: 100% !important;
-        flex: none !important;
-        padding: 6px !important;
     }
-
-    .flex-row.gap-2 {
-        gap: 4px !important;
-    }
-
-    .painel-tabela-conteudo {
-        overflow-x: auto !important;
-        position: relative;
-    }
-
+    
     .custom-table {
-        table-layout: auto !important;
-    }
-
-    .tarefas-controle-header {
-        flex-direction: column;
-        align-items: flex-start !important;
-        gap: 6px;
-    }
-
-    .status-direita {
-        align-self: flex-end;
-    }
-
-    /* COLUNA DE AÇÕES FIXA NO MOBILE */
-    .custom-table th:last-child {
-        position: sticky !important;
-        right: 0;
-        background-color: var(--bg-card) !important;
-        z-index: 12;
-        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .custom-table td:last-child {
-        position: sticky !important;
-        right: 0;
-        background-color: var(--bg-card) !important;
-        z-index: 5;
-        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .custom-table tr:hover td:last-child {
-        background-color: var(--hover-fino) !important;
+        min-width: 800px;
     }
 }
 
-@media (max-width: 640px) {
-    .botoes-footer-padrao {
-        gap: 12px;
+/* Footer nunca some - só ajusta posição */
+@media (max-width: 768px) {
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
     }
     
-    .botoes-footer-padrao .btn-footer {
-        min-width: 85px;
-        font-size: 0.7rem;
+    .botoes-footer-padrao,
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
     }
     
     .totalizador-footer-padrao {
-        gap: 16px;
+        margin-left: 0;
     }
-    
-    .total-item-footer span {
-        font-size: 0.85rem;
-    }
-}
-
-/* LIGHT MODE - ZEBRADO TAMBÉM FUNCIONA */
-body.light-mode .custom-table tbody tr:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.04);
-}
-
-body.light-mode .custom-table tbody tr:hover {
-    background-color: rgba(37, 99, 235, 0.08) !important;
-}
-
-body.light-mode .custom-table tbody tr.selecionado {
-    background-color: rgba(37, 99, 235, 0.15) !important;
 }

@@ -4,12 +4,11 @@ function calcularTotaisFinancas() {
     let totalReceitas = 0;
     let totalDespesas = 0;
     
-    // 🔥 SÓ MUDEI de forEach para for
     for (let i = 0; i < linhas.length; i++) {
         const linha = linhas[i];
         if (linha.querySelector('td[colspan]')) continue;
         
-        const colunas = linha.cells; // 🔥 MUDEI de querySelectorAll para cells
+        const colunas = linha.cells;
         if (colunas.length < 3) continue;
         
         const tipo = colunas[1]?.innerText || '';
@@ -29,12 +28,18 @@ function calcularTotaisFinancas() {
     document.getElementById('totalSaldo').innerHTML = formatar(saldo);
 }
 
-// 🔥 MUDEI: removeu setTimeout, executa direto
-const formFiltros = document.querySelector('.form-filtros-total');
-if (formFiltros) {
-    formFiltros.addEventListener('submit', () => {
-        calcularTotaisFinancas();
-    });
+// 🔥 CORRIGIDO: verifica se já não foi declarado
+if (typeof window.formFiltrosFinancas === 'undefined') {
+    window.formFiltrosFinancas = document.querySelector('.form-filtros-total');
+    if (window.formFiltrosFinancas) {
+        window.formFiltrosFinancas.addEventListener('submit', () => {
+            calcularTotaisFinancas();
+        });
+    }
 }
 
-document.addEventListener('DOMContentLoaded', calcularTotaisFinancas);
+// 🔥 CORRIGIDO: verifica se já não adicionou o listener
+if (!window._totalizadoresIniciado) {
+    window._totalizadoresIniciado = true;
+    document.addEventListener('DOMContentLoaded', calcularTotaisFinancas);
+}

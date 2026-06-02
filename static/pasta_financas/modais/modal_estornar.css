@@ -1,19 +1,27 @@
-/* Modal de Estorno */
-.modal-overlay {
+/* 🔥 MODAL DE ESTORNAR - CSS EXCLUSIVO */
+.modal-overlay-estornar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.85);
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 10000;
     backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
 }
 
-.modal-box {
+.modal-overlay-estornar.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-box-estornar {
     background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3f 100%);
     border-radius: 16px;
     padding: 28px;
@@ -35,14 +43,14 @@
     }
 }
 
-.modal-box h3 {
+.modal-box-estornar h3 {
     margin: 0 0 16px 0;
     font-size: 1.4rem;
     font-weight: 600;
     color: #ff9f43;
 }
 
-.modal-box p {
+.modal-box-estornar p {
     margin: 0 0 24px 0;
     color: #e0e0e0;
     font-size: 1rem;
@@ -50,13 +58,13 @@
     white-space: pre-line;
 }
 
-.modal-actions {
+.modal-actions-estornar {
     display: flex;
     gap: 12px;
     justify-content: flex-end;
 }
 
-.btn-cancelar, .btn-confirmar {
+.btn-cancelar-estornar {
     padding: 10px 24px;
     border: none;
     border-radius: 8px;
@@ -64,28 +72,32 @@
     font-weight: 600;
     font-size: 0.9rem;
     transition: all 0.2s ease;
-}
-
-.btn-cancelar {
     background-color: #2d2d3f;
     color: #e0e0e0;
     border: 1px solid #3d3d4f;
 }
 
-.btn-cancelar:hover {
+.btn-cancelar-estornar:hover {
     background-color: #3d3d4f;
 }
 
-.btn-confirmar {
+.btn-confirmar-estornar {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
     background-color: #fd7e14;
     color: white;
 }
 
-.btn-confirmar:hover {
+.btn-confirmar-estornar:hover {
     background-color: #e66700;
 }
 
-.btn-confirmar:disabled {
+.btn-confirmar-estornar:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
