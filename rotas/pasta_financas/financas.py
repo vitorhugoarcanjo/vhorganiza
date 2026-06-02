@@ -193,6 +193,103 @@ def inifinancas():
 
 
 
+@bp_financas.route('/api/transacoes')
+@login_required
+def api_transacoes():
+    data_hoje = date.today()
+    user_id = session['user_id']
+
+    # Pega filtros da sessão
+    data_inicio = session.get('financas_data_inicio_intervalo')
+    data_fim = session.get('financas_data_fim_intervalo')
+    tipo_data = session.get('financas_tipo_data', 'emissao')
+    descricao = session.get('financas_descricao', '')
+    tipo = session.get('financas_tipo', '')
+    status = session.get('financas_status', '')
+    categorias_filtro = session.get('financas_categorias', [])
+    mostrar_inativas = session.get('financas_mostrar_inativas', '0')
+
+    with sqlite3.connect(caminho_banco) as conn:
+        cursor = conn.cursor()
+
+        query = """
+            SELECT t.sequencia_transacoes, t.tipo, t.valor_total, t.descricao,
+                   t.status, c.nome as categoria_nome, t.data_emissao, t.data_vencimento,
+                   t.ativo, t.numero_parcela, t.total_parcelas
+            FROM transacoes t
+            LEFT JOIN categorias_financas c ON c.id = t.categoria_id
+            WHERE t.user_id = ?
+        """
+        params = [user_id]
+
+        # Filtro ativo/inativo
+        if mostrar_inativas == '1':
+            query += " AND t.ativo = 0"
+        elif mostrar_inativas == '0':
+            query += " AND t.ativo = 1"
+
+        # Filtro data
+        if data_inicio and data_fim:
+            if tipo_data == 'emissao':
+                query += " AND DATE(t.data_emissao) BETWEEN ? AND ?"
+            else:
+                query += " AND DATE(t.data_vencimento) BETWEEN ? AND ?"
+            params.extend([data_inicio, data_fim])
+
+        # Filtro categorias
+        if categorias_filtro:
+            cats = []
+            for cat in categorias_filtro:
+                if cat == 'null':
+                    cats.append("(t.categoria_id IS NULL OR t.categoria_id = '')")
+                else:
+                    cats.append("t.categoria_id = ?")
+                    params.append(cat)
+            if cats:
+                query += " AND (" + " OR ".join(cats) + ")"
+
+        # Filtro descrição
+        if descricao:
+            query += " AND t.descricao LIKE ?"
+            params.append(f"%{descricao}%")
+
+        # Filtro tipo
+        if tipo:
+            query += " AND t.tipo = ?"
+            params.append(tipo)
+
+        # Filtro status
+        if status:
+            query += " AND t.status = ?"
+            params.append(status)
+
+        query += " ORDER BY t.data_emissao DESC"
+
+        cursor.execute(query, params)
+        dados = cursor.fetchall()
+
+    resultado = []
+    for t in dados:
+        # Formata parcela se existir
+        descricao_final = t[3]
+        if t[9] and t[10] and t[10] > 1:
+            descricao_final = f"{t[3]} ({t[9]}/{t[10]})"
+
+        resultado.append({
+            "id": t[0],
+            "tipo": t[1],
+            "valor": formatar_moeda_br(t[2]),
+            "descricao": descricao_final,
+            "status": t[4],
+            "status_label": '🔴 Aberto' if t[4] == 'aberto' else '✅ Quitado' if t[4] == 'quitado' else '💰 Recebido',
+            "categoria": t[5] or '-',
+            "emissao": formatar_data_br(t[6]),
+            "vencimento": formatar_data_br(t[7]),
+            "ativo": t[8]
+        })
+
+    return jsonify(resultado)
+
 
 # ===== EXCLUIR/INATIVAR TRANSAÇÃO =====
 @bp_financas.route('/excluir/<int:transacao_id>', methods=['POST'])
