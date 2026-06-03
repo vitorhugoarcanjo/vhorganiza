@@ -1,6 +1,4 @@
-import os
-import sqlite3
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+from utils.database.conexao_global import get_conexao_direct
 
 # CRIAR INDICES
 from .indices_automatico import criar_indices
@@ -26,7 +24,7 @@ from rotas.auditoria_geral.pasta_tarefas.tabela import tabela_auditoria_tarefas
 from rotas.auditoria_geral.pasta_financas.tabela import tabela_auditoria_financas
 
 def criar_todas_tabelas():
-    conexao = sqlite3.connect(caminho_banco)
+    conexao = get_conexao_direct()
     cursor = conexao.cursor()
 
     tabela_cadastre_se(cursor)

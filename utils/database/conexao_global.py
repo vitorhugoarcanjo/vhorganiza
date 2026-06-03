@@ -13,7 +13,11 @@ def ini_conexao():
     
     return g.db  # ← ATENÇÃO: identação correta (fora do if)
 
-
+def get_conexao_direct():
+    """ RETORNA CONEXÃO PARA USO FORA DO CONTEXTO(migracoes, scripts)"""
+    conexao = sqlite3.connect(caminho_banco)
+    conexao.row_factory = sqlite3.Row
+    return conexao
 
 def close_conexao(e=None):
     """ Fecha conexão no final da requisição """

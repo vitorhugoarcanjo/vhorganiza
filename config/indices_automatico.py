@@ -1,7 +1,4 @@
-import sqlite3
-import os
-
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+from utils.database.conexao_global import get_conexao_direct
 
 def criar_indices(cursor):
     """Cria índices para otimizar consultas"""
@@ -67,25 +64,22 @@ def criar_indices(cursor):
 def criar_todos_indices():
     """Função para criar todos os índices"""
     print("🚀 Iniciando criação de índices...")
-    print(f"📁 Banco de dados: {caminho_banco}")
-    
-    if not os.path.exists(caminho_banco):
-        print(f"❌ Banco de dados não encontrado em: {caminho_banco}")
-        return
-    
+
+    conexao = None    
     try:
-        conn = sqlite3.connect(caminho_banco)
-        cursor = conn.cursor()
-        
+        conexao = get_conexao_direct()
+        print(f"📁 Banco de dados: {conexao}")  # ← Agora 'conexao' existe!
+
+        cursor = conexao.cursor()
         criar_indices(cursor)
-        conn.commit()
+        conexao.commit()
         
         print("\n🎉 Todos os índices foram criados/verificados com sucesso!")
         
     except Exception as e:
         print(f"\n❌ Erro ao criar índices: {e}")
     finally:
-        conn.close()
+        conexao.close()
 
 if __name__ == "__main__":
     criar_todos_indices()

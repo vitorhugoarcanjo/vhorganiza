@@ -4,8 +4,8 @@ from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFin
 import json
 import os, sqlite3
 from datetime import date, datetime, timedelta
-
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+from utils.database.conexao_global import ini_conexao
+from utils.fomatacoes.data_reutilizavel import formatar_moeda_br
 
 bp_edit_transacao = Blueprint('edit_transacoes', __name__)
 
@@ -27,7 +27,7 @@ def inieditar(sequencia):
     user_id = session['user_id']
     hoje = date.today().isoformat()
 
-    conexao = sqlite3.connect(caminho_banco)
+    conexao = ini_conexao()
     cursor = conexao.cursor()
 
     # =========================
@@ -59,17 +59,14 @@ def inieditar(sequencia):
         transacao_raw = cursor.fetchone()
         
         if not transacao_raw:
-            conexao.close()
             return jsonify({'success': False, 'error': 'Transação não encontrada'}), 404
 
         transacao_pai_id = transacao_raw[12]
         
         # 🔥 SE FOR UMA PARCELA (tem pai), REDIRECIONA PARA O PAI
         if transacao_pai_id:
-            conexao.close()
             return redirect(url_for('edit_transacoes.inieditar', sequencia=transacao_pai_id))
         
-        from utils.fomatacoes.data_reutilizavel import formatar_moeda_br
         
         transacao_lista = list(transacao_raw)
         transacao_lista[3] = formatar_moeda_br(transacao_lista[3])  # valor_total
@@ -107,8 +104,6 @@ def inieditar(sequencia):
             WHERE user_id = ?
         """, (user_id,))
         categorias = cursor.fetchall()
-
-        conexao.close()
 
         return render_template(
             'pasta_financas/crud/edit_transacao.html',
@@ -277,8 +272,6 @@ def inieditar(sequencia):
                 valor_novo=json.dumps(alteracoes, ensure_ascii=False)
             )
 
-        conexao.close()
-
         return jsonify({
             'success': True,
             'message': 'Transação atualizada com sucesso!'
@@ -287,5 +280,4 @@ def inieditar(sequencia):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        conexao.close()
         return jsonify({'success': False, 'error': str(e)})
