@@ -303,13 +303,7 @@
                         mensagemErro = 'A soma das parcelas não confere com o valor total!';
                     }
                 }
-                
-                // Valida tipo
-                const tipo = tipoHidden.value;
-                if (!tipo || tipo === 'vazio') {
-                    erro = true;
-                    mensagemErro = 'Selecione o tipo da transação (Receita ou Despesa)!';
-                }
+
                 
                 if (erro) {
                     e.preventDefault();

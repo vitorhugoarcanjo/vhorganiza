@@ -1,19 +1,14 @@
 from flask import Blueprint, render_template, session, request, redirect, url_for, flash, jsonify
 import sqlite3
-import os
 from rotas.middleware.autenticacao import login_required
 from datetime import date
 from utils.filtros_reutilizaveis.data import filtro_datas
 from utils.fomatacoes.data_reutilizavel import formatar_data_br, formatar_moeda_br, formatar_data
 from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
+from utils.database.conexao_global import ini_conexao
 
-bp_financas = Blueprint('financas', __name__)
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
-
-
-@bp_financas.route('/', methods=['GET', 'POST'])
 @login_required
-def inifinancas():
+def ini_financas():
     data_hoje = date.today()
     user_id = session['user_id']
 
@@ -63,20 +58,17 @@ def inifinancas():
 
     # ===== BUSCA CATEGORIAS DO USUÁRIO =====
     categorias_usuario = []
-    with sqlite3.connect(caminho_banco) as conn:
-        cur = conn.cursor()
-        cur.execute("""
-            SELECT id, nome, cor 
-            FROM categorias_financas 
-            WHERE user_id = ? 
-            ORDER BY nome
-        """, (user_id,))
-        categorias_usuario = cur.fetchall()
+    conexao = ini_conexao()
+    cursor = conexao.cursor()
+    cursor.execute("""
+        SELECT id, nome, cor 
+        FROM categorias_financas 
+        WHERE user_id = ? 
+        ORDER BY nome
+    """, (user_id,))
+    categorias_usuario = cursor.fetchall()
 
     # ===== MONTA A QUERY =====
-    conexao = sqlite3.connect(caminho_banco)
-    cursor = conexao.cursor()
-
     query = """
         SELECT t.sequencia_transacoes, t.id, t.tipo, t.valor_total, t.descricao, 
             t.data_emissao, c.nome AS categoria_nome, c.cor AS categoria_cor, 
@@ -150,7 +142,6 @@ def inifinancas():
 
     cursor.execute(query, params)
     transacoes_raw = cursor.fetchall()
-    conexao.close()
 
     # ===== FORMATA OS VALORES =====
     transacoes = []
@@ -191,96 +182,49 @@ def inifinancas():
                           mostrar_inativas=mostrar_inativas,
                           user_nome=session.get('user_nome'))
 
-
-
-
-# ===== EXCLUIR/INATIVAR TRANSAÇÃO =====
-@bp_financas.route('/excluir/<int:transacao_id>', methods=['POST'])
-@login_required
-def excluir_transacao(transacao_id):
-    with sqlite3.connect(caminho_banco) as conexao:
-        cursor = conexao.cursor()
-        
-        # Busca dados da transação ANTES de inativar
-        cursor.execute("""
-            SELECT descricao, tipo, valor_total 
-            FROM transacoes 
-            WHERE sequencia_transacoes = ? AND user_id = ? AND ativo = 1
-        """, (transacao_id, session['user_id']))
-        
-        transacao = cursor.fetchone()
-        
-        if not transacao:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'success': False, 'error': 'Transação não encontrada ou já inativada.'})
-
-
-        # 🔥 INATIVA a transação (soft delete)
-        cursor.execute('''
-            UPDATE transacoes 
-            SET ativo = 0, 
-                excluido_em = datetime('now', 'localtime'),
-                excluido_por = ?,
-                data_alteracao = datetime('now', 'localtime')
-            WHERE sequencia_transacoes = ? AND user_id = ?
-        ''', (session['user_id'], transacao_id, session['user_id']))
-        
-        conexao.commit()
-        
-        # Agora transacao_id já é a sequencia, então registra certo ✅
-        AuditoriaFinanceiraService.registrar(
-            transacao_id=transacao_id,
-            acao='inativacao',
-            valor_novo=f"Transação '{transacao[0]}' inativada"
-        )
-
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return jsonify({'success': True, 'message': f'Transação "{transacao[0]}" inativada com sucesso!'})
         
 # ===== DETALHES DA TRANSAÇÃO =====
-@bp_financas.route('/detalhes/<int:transacao_id>')
 @login_required
 def detalhes_transacao(transacao_id):
     """Retorna os detalhes de uma transação via JSON"""
-    with sqlite3.connect(caminho_banco) as conexao:
-        cursor = conexao.cursor()
+    conexao = ini_conexao()
+    cursor = conexao.cursor()
         
-        cursor.execute("""
-            SELECT t.sequencia_transacoes, t.tipo, t.valor_total, t.descricao,
-                   t.data_emissao, t.data_vencimento, t.data_quitamento,
-                   t.status, t.numero_parcela, t.total_parcelas,
-                   c.nome as categoria_nome, c.cor as categoria_cor
-            FROM transacoes t 
-            LEFT JOIN categorias_financas c ON t.categoria_id = c.id
-            WHERE t.sequencia_transacoes = ? AND t.user_id = ?
-        """, (transacao_id, session['user_id']))
+    cursor.execute("""
+        SELECT t.sequencia_transacoes, t.tipo, t.valor_total, t.descricao,
+                t.data_emissao, t.data_vencimento, t.data_quitamento,
+                t.status, t.numero_parcela, t.total_parcelas,
+                c.nome as categoria_nome, c.cor as categoria_cor
+        FROM transacoes t 
+        LEFT JOIN categorias_financas c ON t.categoria_id = c.id
+        WHERE t.sequencia_transacoes = ? AND t.user_id = ?
+    """, (transacao_id, session['user_id']))
         
-        transacao = cursor.fetchone()
-        
-        if not transacao:
-            return {"error": "Transação não encontrada"}, 404
-        
-        return {
-            'sequencia_transacoes': transacao[0],
-            'tipo': transacao[1],
-            'tipo_label': '📈 Receita' if transacao[1] == 'receita' else '📉 Despesa',
-            'valor': formatar_moeda_br(transacao[2]),  # 🔥 NOVA
-            'descricao': transacao[3] or 'Sem descrição',
-            'data_emissao': formatar_data_br(transacao[4]),  # 🔥 NOVA
-            'data_vencimento': formatar_data_br(transacao[5]),  # 🔥 NOVA
-            'data_quitamento': formatar_data_br(transacao[6]) if transacao[6] else 'Não quitado',  # 🔥 NOVA
-            'status': transacao[7],
-            'status_label': '🔴 Aberto' if transacao[7] == 'aberto' else '✅ Quitado' if transacao[7] == 'quitado' else '💰 Recebido',
-            'numero_parcela': transacao[8],
-            'total_parcelas': transacao[9],
-            'parcela_label': f"{transacao[8]}/{transacao[9]}" if transacao[8] and transacao[9] else 'À vista',
-            'categoria': transacao[10] or 'Sem categoria',
-            'categoria_cor': transacao[11] or '#6c757d'
-        }
+    transacao = cursor.fetchone()
+    
+    if not transacao:
+        return {"error": "Transação não encontrada"}, 404
+    
+    return {
+        'sequencia_transacoes': transacao[0],
+        'tipo': transacao[1],
+        'tipo_label': '📈 Receita' if transacao[1] == 'receita' else '📉 Despesa',
+        'valor': formatar_moeda_br(transacao[2]),  # 🔥 NOVA
+        'descricao': transacao[3] or 'Sem descrição',
+        'data_emissao': formatar_data_br(transacao[4]),  # 🔥 NOVA
+        'data_vencimento': formatar_data_br(transacao[5]),  # 🔥 NOVA
+        'data_quitamento': formatar_data_br(transacao[6]) if transacao[6] else 'Não quitado',  # 🔥 NOVA
+        'status': transacao[7],
+        'status_label': '🔴 Aberto' if transacao[7] == 'aberto' else '✅ Quitado' if transacao[7] == 'quitado' else '💰 Recebido',
+        'numero_parcela': transacao[8],
+        'total_parcelas': transacao[9],
+        'parcela_label': f"{transacao[8]}/{transacao[9]}" if transacao[8] and transacao[9] else 'À vista',
+        'categoria': transacao[10] or 'Sem categoria',
+        'categoria_cor': transacao[11] or '#6c757d'
+    }
 
 
 # ===== LIMPAR FILTROS =====
-@bp_financas.route('/limpar_filtros')
 @login_required
 def limpar_filtros():
     """ Limpa todos os filtros da sessão (igual ao tarefas) """
@@ -304,4 +248,4 @@ def limpar_filtros():
     session.pop(f'{prefixo}_dia_referencia', None)
     session.pop(f'{prefixo}_tipo_data', None)
 
-    return redirect(url_for('financas.inifinancas'))
+    return redirect(url_for('financas.ini_financas'))

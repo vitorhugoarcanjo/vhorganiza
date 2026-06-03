@@ -12,10 +12,16 @@ logging.basicConfig(level=logging.DEBUG)
 from config.database import criar_todas_tabelas # CRIAÇÃO DE TABELAS
 from config.imports_rotas import logica_imports # IMPORTS DE BLUEPRINTS
 
+from utils.database.conexao_global import init_conexao
+
 
 load_dotenv()
 
 app = Flask(__name__)
+
+# BANCO DE DADOS GLOBAL
+init_conexao(app)
+
 
 # Configura para confiar em proxies (Nginx)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)

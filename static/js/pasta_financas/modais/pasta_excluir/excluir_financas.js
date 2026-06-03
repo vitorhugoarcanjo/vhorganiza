@@ -15,7 +15,7 @@
 
                 if (!modalEl || !btnCancelar || !btnConfirmar) {
                     console.error('❌ Elementos do modal não encontrados');
-                    window.Notificacao?.erro('Erro ao carregar modal de exclusão');
+                    if (window.Notificacao) window.Notificacao.erro('Erro ao carregar modal de exclusão');
                     return;
                 }
 
@@ -24,7 +24,6 @@
 
                 modalEl.classList.add('active');
 
-                // Limpa eventos antigos
                 btnConfirmar.onclick = null;
                 btnCancelar.onclick = null;
                 modalEl.onclick = null;
@@ -42,7 +41,9 @@
                         if (onConfirm) await onConfirm();
                         modalEl.classList.remove('active');
                     } catch (error) {
-                        window.Notificacao?.erro(error.message || 'Erro ao processar');
+                        if (error.message !== 'parcela_detectada') {
+                            if (window.Notificacao) window.Notificacao.erro(error.message || 'Erro ao processar');
+                        }
                     } finally {
                         btnConfirmar.innerText = originalText;
                         bloqueio = false;
@@ -68,7 +69,7 @@
         });
     }
     
-    function handleExcluirClick(e) {
+    async function handleExcluirClick(e) {
         e.preventDefault();
         const btn = e.currentTarget;
         const id = btn.dataset.id;
@@ -76,7 +77,7 @@
 
         if (typeof window.abrirModalExcluirFinancas === 'undefined') {
             console.error('❌ Modal não carregado');
-            window.Notificacao?.erro('Erro ao carregar modal de exclusão');
+            if (window.Notificacao) window.Notificacao.erro('Erro ao carregar modal de exclusão');
             return;
         }
 
@@ -91,9 +92,10 @@
                     btn.innerHTML = '⏳';
 
                     const response = await fetch(`/financas/excluir/${id}`, {
-                        method: "POST",
+                        method: "DELETE",
                         headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
                         }
                     });
 
@@ -101,32 +103,128 @@
 
                     if (data.success) {
                         const linha = btn.closest('tr');
+                        if (linha) {
+                            linha.style.transition = 'opacity 0.3s, transform 0.3s';
+                            linha.style.opacity = '0';
+                            linha.style.transform = 'translateX(50px)';
 
-                        linha.style.transition = 'opacity 0.3s, transform 0.3s';
-                        linha.style.opacity = '0';
-                        linha.style.transform = 'translateX(50px)';
+                            setTimeout(() => {
+                                linha.remove();
+                                if (typeof calcularTotaisFinancas === 'function') {
+                                    calcularTotaisFinancas();
+                                }
+                            }, 300);
+                        }
 
-                        setTimeout(() => {
-                            linha.remove();
-                            if (typeof calcularTotaisFinancas === 'function') {
-                                calcularTotaisFinancas();
-                            }
-                        }, 300);
-
-                        window.Notificacao?.sucesso(data.message || 'Transação inativada com sucesso!');
+                        if (window.Notificacao) window.Notificacao.sucesso(data.message || 'Transação inativada com sucesso!');
 
                     } else {
+                        // CASO: É uma parcela
+                        if (data.tipo_parcelamento === 'parcela') {
+                            // Restaura o botão original
+                            btn.disabled = false;
+                            btn.style.opacity = '1';
+                            btn.innerHTML = '<i class="bi bi-trash"></i>';
+                            
+                            // Fecha o modal atual
+                            const modalEl = document.getElementById("modalExcluirFinancas");
+                            if (modalEl) modalEl.classList.remove('active');
+                            
+                            // Limpa pendente anterior
+                            window.parcelamentoPendente = null;
+                            
+                            // Delay para garantir que o modal anterior fechou
+                            setTimeout(() => {
+                                // Abre NOVO modal perguntando sobre inativar todas as parcelas
+                                window.abrirModalExcluirFinancas({
+                                    titulo: "⚠️ Atenção! Parcelamento Detectado",
+                                    texto: `${data.mensagem}\n\nDeseja inativar TODAS as parcelas deste parcelamento?`,
+                                    onConfirm: async () => {
+                                        // Desabilita o botão original novamente
+                                        btn.disabled = true;
+                                        btn.style.opacity = '0.5';
+                                        btn.innerHTML = '⏳';
+                                        
+                                        await excluirParcelamentoCompleto(data.transacao_pai_id, btn);
+                                    }
+                                });
+                            }, 200);
+                            
+                            // Interrompe o fluxo do onConfirm
+                            throw new Error('parcela_detectada');
+                        }
+                        
+                        // CASO: É transação principal com parcelas
+                        if (data.tipo_parcelamento === 'transacao_com_parcelas') {
+                            // Restaura o botão original
+                            btn.disabled = false;
+                            btn.style.opacity = '1';
+                            btn.innerHTML = '<i class="bi bi-trash"></i>';
+                            
+                            // Fecha o modal atual
+                            const modalEl = document.getElementById("modalExcluirFinancas");
+                            if (modalEl) modalEl.classList.remove('active');
+                            
+                            setTimeout(() => {
+                                window.abrirModalExcluirFinancas({
+                                    titulo: "⚠️ Atenção! Transação com Parcelas",
+                                    texto: `${data.mensagem}\n\nDeseja inativar TODAS as parcelas?`,
+                                    onConfirm: async () => {
+                                        btn.disabled = true;
+                                        btn.style.opacity = '0.5';
+                                        btn.innerHTML = '⏳';
+                                        await excluirParcelamentoCompleto(data.transacao_id, btn);
+                                    }
+                                });
+                            }, 200);
+                            
+                            throw new Error('parcela_detectada');
+                        }
+                        
                         throw new Error(data.error);
                     }
 
                 } catch (error) {
-                    window.Notificacao?.erro(error.message || 'Erro ao inativar');
-                    btn.disabled = false;
-                    btn.style.opacity = '1';
-                    btn.innerHTML = '<i class="bi bi-trash"></i>';
+                    if (error.message !== 'parcela_detectada') {
+                        if (window.Notificacao) window.Notificacao.erro(error.message || 'Erro ao inativar');
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.innerHTML = '<i class="bi bi-trash"></i>';
+                    }
                 }
             }
         });
+    }
+    
+    // FUNÇÃO PARA EXCLUIR PARCELAMENTO COMPLETO
+    async function excluirParcelamentoCompleto(transacaoPaiId, btnOriginal) {
+        try {
+            const response = await fetch(`/financas/excluir_parcelamento/${transacaoPaiId}`, {
+                method: "DELETE",
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                if (window.Notificacao) window.Notificacao.sucesso(data.message || 'Parcelamento inativado com sucesso!');
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            if (window.Notificacao) window.Notificacao.erro(error.message || 'Erro ao inativar parcelamento');
+            if (btnOriginal) {
+                btnOriginal.disabled = false;
+                btnOriginal.style.opacity = '1';
+                btnOriginal.innerHTML = '<i class="bi bi-trash"></i>';
+            }
+        }
     }
     
     // ===== INICIALIZA =====

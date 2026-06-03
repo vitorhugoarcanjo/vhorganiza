@@ -5,10 +5,9 @@ from rotas.pasta_login.pasta_cadastre_se.tela_cadastre_se import bp_cadastre_se 
 from rotas.pasta_tela_pos_login.tela_pos_login import bp_pos_login # TELA POS LOGIN
 
 # PASTA FINANÇAS
-from rotas.pasta_financas.financas import bp_financas # LÓGICA FINANÇAS - INICIO
+from rotas.pasta_financas import bp_financas # LÓGICA FINANÇAS - INICIO
 from rotas.pasta_financas.crud.pasta_insert.insert_transacao import bp_insert_transacao # INSERIR
 from rotas.pasta_financas.crud.pasta_edit.edit_transacao import bp_edit_transacao # EDITAR
-from rotas.pasta_financas.crud.pasta_delete.delete_transacao import bp_delete # DELETAR
 from rotas.pasta_financas.crud.pasta_quitar.quitar_transacao import bp_quitar # QUITAR
 from rotas.pasta_financas.menus.pasta_vinculos.vinculos_routes import bp_vinculos
 from rotas.pasta_financas.menus.pasta_colunas.colunas_usuarios import bp_colunas
@@ -49,7 +48,6 @@ def logica_imports(app):
     app.register_blueprint(bp_financas, url_prefix="/financas")
     app.register_blueprint(bp_insert_transacao, url_prefix='/nova_transacao') # INSERIR
     app.register_blueprint(bp_edit_transacao, url_prefix="/edit_transacoes") # EDITAR
-    app.register_blueprint(bp_delete, url_prefix='/deletar_transacao') # DELETAR
     app.register_blueprint(bp_quitar, url_prefix="/quitar_transacao") # QUITAR
     app.register_blueprint(bp_vinculos, url_prefix="/api/financas") # MENU - VINCULOS
     app.register_blueprint(bp_colunas, url_prefix="/api_colunas")

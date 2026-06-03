@@ -2,10 +2,10 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 import json
-import os, sqlite3
+from utils.database.conexao_global import ini_conexao
 from datetime import date, datetime, timedelta
+from .validacoes.validacoes import validacao_tipo
 
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 bp_insert_transacao = Blueprint('nova_transacao', __name__)
 
@@ -29,7 +29,7 @@ def initransacao():
     hoje = date.today().isoformat()
     user_id = session['user_id']
 
-    conexao = sqlite3.connect(caminho_banco)
+    conexao = ini_conexao()
     cursor = conexao.cursor()
 
     # carregar categorias
@@ -38,7 +38,6 @@ def initransacao():
         WHERE user_id = ?
     """, (user_id,))
     categorias = cursor.fetchall()
-    conexao.close()
 
     if request.method == 'GET':
         return render_template(
@@ -61,41 +60,43 @@ def initransacao():
             
             total_parcelas = int(request.form.get('total_parcelas', 1))
             
+            tipo, erro = validacao_tipo(tipo)
+            if erro:
+                return jsonify({'success': False, 'error': erro}), 400
             # ==========================================================
             # PARCELA ÚNICA (total_parcelas <= 1)
             # ==========================================================
             if total_parcelas <= 1:
-                with sqlite3.connect(caminho_banco) as conexao:
-                    cursor = conexao.cursor()
-                    sequencia = get_proxima_sequencia(cursor, user_id)
-                    
-                    cursor.execute("""
-                        INSERT INTO transacoes (
-                            user_id, sequencia_transacoes, tipo,
-                            valor_total, descricao, categoria_id,
-                            data_emissao, data_vencimento,
-                            total_parcelas, numero_parcela, status, ativo
-                        )
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
-                    """, (
-                        user_id, sequencia, tipo,
+                # 🔥 CORRIGIDO: usa conexão global sem with
+                sequencia = get_proxima_sequencia(cursor, user_id)
+                
+                cursor.execute("""
+                    INSERT INTO transacoes (
+                        user_id, sequencia_transacoes, tipo,
                         valor_total, descricao, categoria_id,
                         data_emissao, data_vencimento,
-                        1, 1
-                    ))
-                    conexao.commit()
-                    
-                    # Auditoria
-                    try:
-                        AuditoriaFinanceiraService.registrar(
-                            transacao_id=sequencia,
-                            acao='criada',
-                            campo_alterado='multiplos',
-                            valor_antigo=None,
-                            valor_novo=json.dumps([{'campo': 'transação', 'depois': descricao}], ensure_ascii=False)
-                        )
-                    except Exception as audit_error:
-                        print(f"Erro na auditoria: {audit_error}")
+                        total_parcelas, numero_parcela, status, ativo
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
+                """, (
+                    user_id, sequencia, tipo,
+                    valor_total, descricao, categoria_id,
+                    data_emissao, data_vencimento,
+                    1, 1
+                ))
+                conexao.commit()
+                
+                # Auditoria
+                try:
+                    AuditoriaFinanceiraService.registrar(
+                        transacao_id=sequencia,
+                        acao='criada',
+                        campo_alterado='multiplos',
+                        valor_antigo=None,
+                        valor_novo=json.dumps([{'campo': 'transação', 'depois': descricao}], ensure_ascii=False)
+                    )
+                except Exception as audit_error:
+                    print(f"Erro na auditoria: {audit_error}")
                 
                 return jsonify({
                     'success': True,
@@ -106,7 +107,6 @@ def initransacao():
             # ==========================================================
             # MÚLTIPLAS PARCELAS (total_parcelas > 1)
             # ==========================================================
-            # Pega os dados das parcelas do formulário
             intervalo_dias = int(request.form.get('intervaloDias', 30))
             primeiro_vencimento = request.form.get('primeiroVencimento', data_vencimento or hoje)
             
@@ -117,78 +117,74 @@ def initransacao():
                 if valor_parcela:
                     valores_parcelas.append(converter_valor_br(valor_parcela))
                 else:
-                    # Se não veio valor específico, divide igualmente
                     valores_parcelas.append(valor_total / total_parcelas)
             
-            with sqlite3.connect(caminho_banco) as conexao:
-                cursor = conexao.cursor()
+            # 🔥 CORRIGIDO: usa conexão global sem with e sem caminho_banco
+            # 1. Cria a transação PAI (registro principal)
+            sequencia_pai = get_proxima_sequencia(cursor, user_id)
+            
+            cursor.execute("""
+                INSERT INTO transacoes (
+                    user_id, sequencia_transacoes, tipo,
+                    valor_total, descricao, categoria_id,
+                    data_emissao, data_vencimento,
+                    total_parcelas, intervalo_dias, status, ativo
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
+            """, (
+                user_id, sequencia_pai, tipo,
+                valor_total, descricao, categoria_id,
+                data_emissao, primeiro_vencimento,
+                total_parcelas, intervalo_dias
+            ))
+            
+            # 2. Cria cada parcela filha
+            for i in range(1, total_parcelas + 1):
+                # Calcula a data de vencimento da parcela
+                if i == 1:
+                    data_venc_parcela = primeiro_vencimento
+                else:
+                    data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
+                    data_venc_parcela = (data_base + timedelta(days=(i-1) * intervalo_dias)).strftime('%Y-%m-%d')
                 
-                # 1. Cria a transação PAI (registro principal)
-                sequencia_pai = get_proxima_sequencia(cursor, user_id)
+                valor_parcela = valores_parcelas[i-1]
+                sequencia_parcela = get_proxima_sequencia(cursor, user_id)
                 
                 cursor.execute("""
                     INSERT INTO transacoes (
                         user_id, sequencia_transacoes, tipo,
-                        valor_total, descricao, categoria_id,
+                        valor_total, valor_parcela, descricao, categoria_id,
                         data_emissao, data_vencimento,
-                        total_parcelas, intervalo_dias, status, ativo
+                        total_parcelas, numero_parcela, sequencia_parcela,
+                        transacao_pai_id, status, ativo
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
                 """, (
-                    user_id, sequencia_pai, tipo,
-                    valor_total, descricao, categoria_id,
-                    data_emissao, primeiro_vencimento,
-                    total_parcelas, intervalo_dias
+                    user_id, sequencia_parcela, tipo,
+                    valor_parcela, valor_parcela, f'{descricao} - Parcela {i}/{total_parcelas}', categoria_id,
+                    data_emissao, data_venc_parcela,
+                    total_parcelas, i, i,
+                    sequencia_pai
                 ))
-                
-                # 2. Cria cada parcela filha
-                for i in range(1, total_parcelas + 1):
-                    # Calcula a data de vencimento da parcela
-                    if i == 1:
-                        data_venc_parcela = primeiro_vencimento
-                    else:
-                        data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
-                        data_venc_parcela = (data_base + timedelta(days=(i-1) * intervalo_dias)).strftime('%Y-%m-%d')
-                    
-                    valor_parcela = valores_parcelas[i-1]
-                    
-                    sequencia_parcela = get_proxima_sequencia(cursor, user_id)
-                    
-                    cursor.execute("""
-                        INSERT INTO transacoes (
-                            user_id, sequencia_transacoes, tipo,
-                            valor_total, valor_parcela, descricao, categoria_id,
-                            data_emissao, data_vencimento,
-                            total_parcelas, numero_parcela, sequencia_parcela,
-                            transacao_pai_id, status, ativo
-                        )
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
-                    """, (
-                        user_id, sequencia_parcela, tipo,
-                        valor_parcela, valor_parcela, f'{descricao} - Parcela {i}/{total_parcelas}', categoria_id,
-                        data_emissao, data_venc_parcela,
-                        total_parcelas, i, i,
-                        sequencia_pai
-                    ))
-                
-                conexao.commit()
-                
-                # Auditoria da transação principal
-                try:
-                    AuditoriaFinanceiraService.registrar(
-                        transacao_id=sequencia_pai,
-                        acao='criada_parcelada',
-                        campo_alterado='multiplos',
-                        valor_antigo=None,
-                        valor_novo=json.dumps({
-                            'descricao': descricao,
-                            'total_parcelas': total_parcelas,
-                            'valor_total': valor_total,
-                            'intervalo_dias': intervalo_dias
-                        }, ensure_ascii=False)
-                    )
-                except Exception as audit_error:
-                    print(f"Erro na auditoria: {audit_error}")
+            
+            conexao.commit()
+            
+            # Auditoria da transação principal
+            try:
+                AuditoriaFinanceiraService.registrar(
+                    transacao_id=sequencia_pai,
+                    acao='criada_parcelada',
+                    campo_alterado='multiplos',
+                    valor_antigo=None,
+                    valor_novo=json.dumps({
+                        'descricao': descricao,
+                        'total_parcelas': total_parcelas,
+                        'valor_total': valor_total,
+                        'intervalo_dias': intervalo_dias
+                    }, ensure_ascii=False)
+                )
+            except Exception as audit_error:
+                print(f"Erro na auditoria: {audit_error}")
             
             return jsonify({
                 'success': True,

@@ -28,7 +28,7 @@
 <div class="painel-container">
 
     <div class="painel-topo-fixo">
-        <form action="{{ url_for('financas.inifinancas') }}" method="POST" class="form-filtros-total">
+        <form action="{{ url_for('financas.ini_financas') }}" method="POST" class="form-filtros-total">
 
             <div class="filtros-container">
 
@@ -109,9 +109,9 @@
                     <div style="margin-top: 4px;">
                         <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Transação:</label>
                         <div class="flex-row gap-1">
-                            <a href="{{ url_for('financas.inifinancas', mostrar_inativas='0') }}" class="btn-pure flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">Ativas</a>
-                            <a href="{{ url_for('financas.inifinancas', mostrar_inativas='1') }}" class="btn-pure flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">Inativas</a>
-                            <a href="{{ url_for('financas.inifinancas', mostrar_inativas='2') }}" class="btn-pure flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">Todas</a>
+                            <a href="{{ url_for('financas.ini_financas', mostrar_inativas='0') }}" class="btn-pure flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">Ativas</a>
+                            <a href="{{ url_for('financas.ini_financas', mostrar_inativas='1') }}" class="btn-pure flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">Inativas</a>
+                            <a href="{{ url_for('financas.ini_financas', mostrar_inativas='2') }}" class="btn-pure flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">Todas</a>
                         </div>
                     </div>
                 </div>
