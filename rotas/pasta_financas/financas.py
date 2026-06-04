@@ -1,10 +1,8 @@
-from flask import Blueprint, render_template, session, request, redirect, url_for, flash, jsonify
-import sqlite3
+from flask import render_template, session, request, redirect, url_for
 from rotas.middleware.autenticacao import login_required
 from datetime import date
 from utils.filtros_reutilizaveis.data import filtro_datas
-from utils.fomatacoes.data_reutilizavel import formatar_data_br, formatar_moeda_br, formatar_data
-from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
+from utils.fomatacoes.data_reutilizavel import formatar_data_br, formatar_moeda_br
 from utils.database.conexao_global import ini_conexao
 
 @login_required

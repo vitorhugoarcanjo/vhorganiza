@@ -1,10 +1,8 @@
 # rotas/middleware/permissoes.py
 from functools import wraps
 from flask import session, flash, redirect, url_for, request
-import sqlite3
-import os
+from utils.database.conexao_global import ini_conexao
 
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 def requer_master(f):
     """
@@ -19,11 +17,10 @@ def requer_master(f):
             return redirect(url_for('login.validar_login'))
         
         # Verifica se é master
-        conn = sqlite3.connect(caminho_banco)
-        cursor = conn.cursor()
+        conexao = ini_conexao()
+        cursor = conexao.cursor()
         cursor.execute("SELECT is_master FROM cadastre_se WHERE id = ?", (session['user_id'],))
         resultado = cursor.fetchone()
-        conn.close()
         
         if not resultado or not resultado[0]:
             flash('Acesso negado. Você não tem permissão para acessar esta página.', 'danger')
@@ -46,11 +43,10 @@ def requer_permissao(permissao_nome):
                 flash('Você precisa fazer login.', 'warning')
                 return redirect(url_for('login.validar_login'))
             
-            conn = sqlite3.connect(caminho_banco)
-            cursor = conn.cursor()
+            conexao = ini_conexao()
+            cursor = conexao.cursor()
             cursor.execute("SELECT is_master FROM cadastre_se WHERE id = ?", (session['user_id'],))
             resultado = cursor.fetchone()
-            conn.close()
             
             if not resultado or not resultado[0]:
                 flash(f'Você não tem permissão para: {permissao_nome}', 'danger')

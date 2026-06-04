@@ -9,9 +9,6 @@ bp_pos_login = Blueprint('pos_login', __name__)
 def iniposlogin():
     return render_template('pasta_inicial_pos_login/tela_inicial.html', user_nome=session.get('user_nome'))
 
-
-
-
 # LOGOFF
 @bp_pos_login.route('/logout', methods=['GET', 'POST'])  # <-- ADICIONA POST AQUI
 def logout():

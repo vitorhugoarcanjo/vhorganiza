@@ -1,12 +1,11 @@
 # rotas/pasta_tarefas/crud_tarefas/pasta_edit/logica_edit.py
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
-import sqlite3, os
 import json
 from datetime import datetime
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.services_auditoria import AuditoriaService
+from utils.database.conexao_global import ini_conexao
 
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 bp_tela_edit = Blueprint('editar_tarefa', __name__)
 
@@ -16,7 +15,7 @@ bp_tela_edit = Blueprint('editar_tarefa', __name__)
 def iniedittarefa(tarefa_seq):
     user_id = session['user_id']
 
-    conexao = sqlite3.connect(caminho_banco)
+    conexao = ini_conexao()
     cursor = conexao.cursor()
 
     cursor.execute("""
@@ -33,7 +32,6 @@ def iniedittarefa(tarefa_seq):
 
     # ========== GET ==========
     if request.method == 'GET':
-        conexao.close()
         return render_template(
             'pasta_tarefas/crud_tarefas/tela_edit.html',
             tarefa=tarefa,
@@ -73,8 +71,6 @@ def iniedittarefa(tarefa_seq):
             WHERE tarefa_sequencia = ? AND user_id = ?
         ''', (titulo, descricao, status, data_inicio, data_final, categoria_id, prioridade, tarefa_seq, user_id))
         
-        conexao.commit()
-
         # ===== AUDITORIA =====
         alteracoes = []
         
@@ -115,10 +111,12 @@ def iniedittarefa(tarefa_seq):
                 acao='editada',
                 campo_alterado='múltiplos',
                 valor_antigo=None,
-                valor_novo=json.dumps(alteracoes, ensure_ascii=False)
+                valor_novo=json.dumps(alteracoes, ensure_ascii=False),
+                conexao=conexao
             )
-        
-        conexao.close()
+
+        conexao.commit()
+
 
         return jsonify({
             'success': True,
@@ -126,7 +124,6 @@ def iniedittarefa(tarefa_seq):
         })
         
     except Exception as e:
-        conexao.close()
         return jsonify({
             'success': False,
             'error': str(e)

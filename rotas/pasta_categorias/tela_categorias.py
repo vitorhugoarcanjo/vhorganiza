@@ -1,12 +1,10 @@
-import os
-import sqlite3
 from flask import render_template, session
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+from utils.database.conexao_global import ini_conexao
 
 def ini_categorias():
     user_id = session['user_id']
 
-    conexao = sqlite3.connect(caminho_banco)
+    conexao = ini_conexao()
     cursor = conexao.cursor()
 
     # BLOCO 1 - CATEGORIA TAREFAS
@@ -16,8 +14,6 @@ def ini_categorias():
     # BLOCO 2 - CATEGORIA FINANCAS
     cursor.execute('SELECT id, nome, cor FROM categorias_financas WHERE user_id = ?', (user_id,))
     categoria_financas = cursor.fetchall()
-
-    conexao.close()
     
     return render_template('pasta_categorias/tela_categorias.html.jinja',
                            categoria_tarefas=categoria_tarefas,

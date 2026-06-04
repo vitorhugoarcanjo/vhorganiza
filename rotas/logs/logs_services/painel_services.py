@@ -1,28 +1,24 @@
-import os
-import sqlite3
 import time
 import traceback
 from datetime import datetime
 from flask import request, session
+from utils.database.conexao_global import ini_conexao
 import json
 
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 class LogService:
     """Serviço para gerenciar logs do sistema"""
     
     @staticmethod
     def get_db_connection():
-        conn = sqlite3.connect(caminho_banco, timeout=10)
-        conn.row_factory = sqlite3.Row
-        return conn
+        return ini_conexao(timeout=10)
     
     @staticmethod
     def registrar_erro(mensagem, arquivo=None, linha=None, stack_trace=None):
         """Registra um erro no banco"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
 
             user_id = session.get('user_id') if session else None
             rota = request.path if request else None
@@ -41,10 +37,9 @@ class LogService:
                 metodo,
                 stack_trace[:1000] if stack_trace else None
             ))
-            
-            conn.commit()
-            conn.close()
+            conexao.commit()
             return True
+        
         except Exception as e:
             print(f"Erro ao registrar log de erro: {e}")
             return False
@@ -70,8 +65,8 @@ class LogService:
             if any(rota.startswith(r) for r in rotas_ignoradas):
                 return True
 
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 INSERT INTO logs_acesso (user_id, ip, user_agent, rota, metodo, status_code, tempo_resposta)
@@ -85,10 +80,9 @@ class LogService:
                 status_code,
                 tempo_resposta
             ))
-            
-            conn.commit()
-            conn.close()
+            conexao.commit()
             return True
+        
         except Exception as e:
             print(f"Erro ao registrar log de acesso: {e}")
             return False
@@ -97,8 +91,8 @@ class LogService:
     def registrar_acao(user_id, acao, tabela_afetada, registro_id, dados_antes=None, dados_depois=None):
         """Registra uma ação do usuário"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             dados_antes_json = json.dumps(dados_antes) if dados_antes else None
             dados_depois_json = json.dumps(dados_depois) if dados_depois else None
@@ -115,10 +109,9 @@ class LogService:
                 dados_depois_json,
                 request.remote_addr if request else None
             ))
-            
-            conn.commit()
-            conn.close()
+            conexao.commit()
             return True
+        
         except Exception as e:
             print(f"Erro ao registrar log de ação: {e}")
             return False
@@ -127,8 +120,8 @@ class LogService:
     def listar_erros(limite=100, offset=0, filtro=None):
         """Lista erros com paginação e filtro"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             query = """
                 SELECT le.*, u.nome as usuario_nome 
@@ -150,7 +143,6 @@ class LogService:
             cursor.execute("SELECT COUNT(*) as total FROM logs_erros")
             total = cursor.fetchone()['total']
             
-            conn.close()
             return {'dados': erros, 'total': total}
         except Exception as e:
             print(f"Erro ao listar erros: {e}")
@@ -160,19 +152,18 @@ class LogService:
     def obter_erro_por_id(erro_id):
         """Obtém detalhes de um erro específico"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT le.*, u.nome as usuario_nome 
                 FROM logs_erros le
                 LEFT JOIN cadastre_se u ON le.user_id = u.id
                 WHERE le.id = ?
-            """, (erro_id,))
-            
+            """, (erro_id,))    
             erro = cursor.fetchone()
-            conn.close()
             return erro
+        
         except Exception as e:
             print(f"Erro ao obter erro: {e}")
             return None
@@ -181,8 +172,8 @@ class LogService:
     def estatisticas():
         """Retorna estatísticas dos logs"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             # Total de erros
             cursor.execute("SELECT COUNT(*) as total FROM logs_erros")
@@ -217,7 +208,6 @@ class LogService:
             """)
             erros_7dias = cursor.fetchone()['total']
             
-            conn.close()
             
             return {
                 'total_erros': total_erros,
@@ -247,8 +237,8 @@ class LogService:
     def gerar_resumo_mensal(ano, mes):
         """Gera resumo de um mês específico"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             # Data início e fim do mês
             data_inicio = f"{ano}-{mes:02d}-01"
@@ -311,8 +301,7 @@ class LogService:
                     VALUES (?, ?, ?, ?, ?, ?)
                 """, (ano, mes, total_acessos, usuarios_unicos, total_erros, json.dumps(rotas)))
             
-            conn.commit()
-            conn.close()
+            conexao.commit()
             
             return {
                 'ano': ano,
@@ -330,8 +319,8 @@ class LogService:
     def gerar_resumo_diario(ano, mes, dia):
         """Gera resumo de um dia específico"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             data_inicio = f"{ano}-{mes:02d}-{dia:02d}"
             data_fim = f"{ano}-{mes:02d}-{dia+1:02d}" if dia < 31 else f"{ano}-{mes+1:02d}-01"
@@ -348,7 +337,6 @@ class LogService:
             """, (data_inicio, data_fim))
             total_erros = cursor.fetchone()[0]
             
-            conn.close()
             
             return {
                 'data': f"{ano}-{mes:02d}-{dia:02d}",
@@ -363,8 +351,8 @@ class LogService:
     def limpar_logs_antigos(dias=30):
         """Remove logs mais antigos que X dias (preserva resumos)"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             # ANTES DE REMOVER, GERA RESUMO DO MÊS PASSADO SE NECESSÁRIO
             from datetime import datetime, timedelta
@@ -394,11 +382,10 @@ class LogService:
             cursor.execute(f"""
                 DELETE FROM logs_acao 
                 WHERE data_hora < datetime('now', '-{dias} days')
-            """)
-            
-            conn.commit()
-            conn.close()
+            """)    
+            conexao.commit()
             return True
+        
         except Exception as e:
             print(f"Erro ao limpar logs antigos: {e}")
             return False
@@ -407,8 +394,8 @@ class LogService:
     def obter_relatorio_anual(ano):
         """Retorna relatório anual completo a partir dos resumos mensais"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT mes, total_acessos, usuarios_unicos, total_erros, rotas_mais_acessadas
@@ -416,9 +403,7 @@ class LogService:
                 WHERE ano = ?
                 ORDER BY mes
             """, (ano,))
-            
             dados = cursor.fetchall()
-            conn.close()
             
             # Calcular totais anuais
             total_acessos_ano = sum(d['total_acessos'] for d in dados)
@@ -441,8 +426,8 @@ class LogService:
     def listar_acessos(limite=100, offset=0, filtro=None):
         """Lista acessos com paginação e filtro"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             query = """
                 SELECT 
@@ -471,7 +456,6 @@ class LogService:
             cursor.execute("SELECT COUNT(*) as total FROM logs_acesso")
             total = cursor.fetchone()['total']
             
-            conn.close()
             return {'dados': acessos, 'total': total}
         except Exception as e:
             print(f"Erro ao listar acessos: {e}")
@@ -481,8 +465,8 @@ class LogService:
     def obter_acesso_por_id(acesso_id):
         """Obtém detalhes de um acesso específico"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT 
@@ -495,10 +479,9 @@ class LogService:
                 LEFT JOIN cadastre_se u ON la.user_id = u.id
                 WHERE la.id = ?
             """, (acesso_id,))
-            
             acesso = cursor.fetchone()
-            conn.close()
             return acesso
+        
         except Exception as e:
             print(f"Erro ao obter acesso: {e}")
             return None
@@ -507,8 +490,8 @@ class LogService:
     def obter_acessos_por_usuario(user_id, limite=100):
         """Retorna acessos de um usuário específico"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT 
@@ -523,10 +506,9 @@ class LogService:
                 ORDER BY la.data_hora DESC
                 LIMIT ?
             """, (user_id, limite))
-            
             acessos = cursor.fetchall()
-            conn.close()
             return acessos
+        
         except Exception as e:
             print(f"Erro ao obter acessos do usuário: {e}")
             return []
@@ -535,14 +517,13 @@ class LogService:
     def obter_nome_usuario(user_id):
         """Retorna apenas o nome do usuário pelo ID"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("SELECT nome FROM cadastre_se WHERE id = ?", (user_id,))
             resultado = cursor.fetchone()
-            conn.close()
-            
             return resultado['nome'] if resultado else None
+        
         except Exception as e:
             print(f"Erro ao obter nome do usuário: {e}")
             return None
@@ -551,18 +532,17 @@ class LogService:
     def obter_dados_usuario(user_id):
         """Retorna todos os dados do usuário (nome, email, telefone)"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("SELECT nome, email, telefone FROM cadastre_se WHERE id = ?", (user_id,))
             resultado = cursor.fetchone()
-            conn.close()
-            
             return {
                 'nome': resultado['nome'] if resultado else None,
                 'email': resultado['email'] if resultado else None,
                 'telefone': resultado['telefone'] if resultado else None
             } if resultado else {'nome': None, 'email': None, 'telefone': None}
+        
         except Exception as e:
             print(f"Erro ao obter dados do usuário: {e}")
             return {'nome': None, 'email': None, 'telefone': None}
@@ -571,18 +551,17 @@ class LogService:
     def listar_ataques(limite=100):
         """Lista tentativas de ataque"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT * FROM logs_ataques 
                 ORDER BY data_hora DESC 
                 LIMIT ?
-            """, (limite,))
-            
+            """, (limite,))    
             ataques = cursor.fetchall()
-            conn.close()
             return ataques
+        
         except Exception as e:
             print(f"Erro ao listar ataques: {e}")
             return []
@@ -591,17 +570,16 @@ class LogService:
     def obter_ataque_por_id(ataque_id):
         """Obtém detalhes de uma tentativa de ataque"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT * FROM logs_ataques 
                 WHERE id = ?
-            """, (ataque_id,))
-            
+            """, (ataque_id,))    
             ataque = cursor.fetchone()
-            conn.close()
             return ataque
+        
         except Exception as e:
             print(f"Erro ao obter ataque: {e}")
             return None
@@ -610,17 +588,16 @@ class LogService:
     def registrar_ataque(ip, rota, metodo, user_agent, padrao):
         """Registra uma tentativa de ataque"""
         try:
-            conn = LogService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = LogService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 INSERT INTO logs_ataques (ip, rota, metodo, user_agent, padrao_detectado)
                 VALUES (?, ?, ?, ?, ?)
             """, (ip, rota, metodo, user_agent, padrao))
-            
-            conn.commit()
-            conn.close()
+            conexao.commit()
             return True
+        
         except Exception as e:
             print(f"Erro ao registrar ataque: {e}")
             return False

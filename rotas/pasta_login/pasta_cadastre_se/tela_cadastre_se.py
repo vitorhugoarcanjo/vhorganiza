@@ -1,6 +1,5 @@
 from flask import Blueprint, request, redirect, render_template, url_for, flash
-import os, sqlite3
-
+from utils.database.conexao_global import ini_conexao
 from .autenticador_email.email_utils import gerar_codigo, enviar_email_confirmacao, salvar_codigo_verificacao, verificar_codigo
 
 from .validacoes.criptografia_snh import criptografar_senha
@@ -14,7 +13,6 @@ from .validacoes.validar_usuario import (
 )
 
 bp_cadastre_se = Blueprint('cadastre_se', __name__)
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 @bp_cadastre_se.route('/', methods=['GET', 'POST'])
 def tela_cadastre_se():
@@ -36,24 +34,24 @@ def tela_cadastre_se():
         # SENHA CRIPTOGRAFADA
         senha_criptografada = criptografar_senha(senha)
 
+        conexao = ini_conexao()
+        cursor = conexao.cursor()
+
         if not all([
             validar_campos_obrigatorios(nome, telefone, email, senha, confirmar_senha),
             validar_confirmacao_senha(senha, confirmar_senha),
             validar_email_formato(email),
             validar_senha_tamanho(senha),
-            validar_email_unico(caminho_banco, email)
+            validar_email_unico(conexao, email)
         ]):
             return redirect(url_for('cadastre_se.tela_cadastre_se'))
 
 
         # SE PASSOU NAS VALIDAÇÕES: FAZ INSERT
         try:
-            conexao_banco = sqlite3.connect(caminho_banco)
-            cursor = conexao_banco.cursor()
-
             cursor.execute('INSERT INTO cadastre_se (nome, telefone, email, senha) VALUES (?, ?, ?, ?)', 
                           (nome, telefone_limpo, email, senha_criptografada))
-            conexao_banco.commit()
+            conexao.commit()
             
             # PEGA O ID DO USUÁRIO CRIADO
             user_id = cursor.lastrowid
@@ -70,16 +68,13 @@ def tela_cadastre_se():
             else:
                 # SE ERRO NO EMAIL, APAGA O USUÁRIO
                 cursor.execute('DELETE FROM cadastre_se WHERE id = ?', (user_id,))
-                conexao_banco.commit()
+                conexao.commit()
                 flash(f'Erro ao enviar email: {mensagem}', 'danger')
                 return redirect(url_for('cadastre_se.tela_cadastre_se'))
         
         except Exception as e:
             flash('Erro ao cadastrar: ' + str(e), 'danger')
             return redirect(url_for('cadastre_se.tela_cadastre_se'))
-
-        finally:
-            conexao_banco.close()
 
     return render_template('pasta_login/pasta_cadastre_se/tela_cadastre_se.html')
 
@@ -109,16 +104,16 @@ def validar_codigo():
 @bp_cadastre_se.route('/reenviar-codigo/<int:user_id>')
 def reenviar_codigo(user_id):
     """ Reenvia o código de confirmação """
-    with sqlite3.connect(caminho_banco) as conexao:
-        cursor = conexao.cursor()
-        cursor.execute("SELECT email FROM cadastre_se WHERE id = ?", (user_id,))
-        resultado = cursor.fetchone()
-        
-        if not resultado:
-            flash('Usuário não encontrado!', 'danger')
-            return redirect(url_for('cadastre_se.tela_cadastre_se'))
-        
-        email = resultado[0]
+    conexao = ini_conexao()
+    cursor = conexao.cursor()
+    cursor.execute("SELECT email FROM cadastre_se WHERE id = ?", (user_id,))
+    resultado = cursor.fetchone()
+    
+    if not resultado:
+        flash('Usuário não encontrado!', 'danger')
+        return redirect(url_for('cadastre_se.tela_cadastre_se'))
+    
+    email = resultado[0]
     
     codigo = gerar_codigo()
     sucesso, mensagem = enviar_email_confirmacao(email, codigo)

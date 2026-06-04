@@ -1,24 +1,19 @@
-import sqlite3
-import os
 import json
 from flask import request, session
-
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+from utils.database.conexao_global import ini_conexao
 
 class AuditoriaFinanceiraService:
     
     @staticmethod
     def get_db_connection():
-        conn = sqlite3.connect(caminho_banco)
-        conn.row_factory = sqlite3.Row
-        return conn
+        return ini_conexao()
     
     @staticmethod
     def registrar(transacao_id, acao, campo_alterado=None, valor_antigo=None, valor_novo=None):
         """Registra uma ação na auditoria de finanças"""
         try:
-            conn = AuditoriaFinanceiraService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = AuditoriaFinanceiraService.get_db_connection()
+            cursor = conexao.cursor()
             
             if valor_antigo and len(str(valor_antigo)) > 500:
                 valor_antigo = str(valor_antigo)[:500] + "..."
@@ -38,9 +33,8 @@ class AuditoriaFinanceiraService:
                 session.get('user_id'),
                 request.remote_addr
             ))
-            
-            conn.commit()
-            conn.close()
+            conexao.commit()
+
             return True
         except Exception as e:
             print(f"Erro ao registrar auditoria financeira: {e}")
@@ -50,8 +44,8 @@ class AuditoriaFinanceiraService:
     def listar_por_transacao(transacao_id, limite=50):
         """Lista todas as ações de uma transação"""
         try:
-            conn = AuditoriaFinanceiraService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = AuditoriaFinanceiraService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT fa.*, u.nome as usuario_nome
@@ -61,9 +55,8 @@ class AuditoriaFinanceiraService:
                 ORDER BY fa.data_hora DESC
                 LIMIT ?
             """, (transacao_id, limite))
-            
             auditoria = cursor.fetchall()
-            conn.close()
+
             return auditoria
         except Exception as e:
             print(f"Erro ao listar auditoria financeira: {e}")
@@ -73,8 +66,8 @@ class AuditoriaFinanceiraService:
     def listar_por_transacao_formatado(transacao_id, limite=50):
         """Lista auditoria com formatação para exibição"""
         try:
-            conn = AuditoriaFinanceiraService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = AuditoriaFinanceiraService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT 
@@ -101,8 +94,7 @@ class AuditoriaFinanceiraService:
                         item['alteracoes'] = []
                 
                 auditoria.append(item)
-            
-            conn.close()
+
             return auditoria
         except Exception as e:
             print(f"Erro ao listar auditoria financeira formatada: {e}")

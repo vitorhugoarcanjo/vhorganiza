@@ -1,21 +1,17 @@
 from calendar import monthrange
 from flask import session, request
-import os
-import sqlite3
-
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
-
+from utils.database.conexao_global import ini_conexao
 
 # FUNÇÃO - FILTRA CATEGORIAS
 def filtro_categorias(user_id):
     """ FUNÇÃO QUE FILTRA CATEGORIAS """
 
-    with sqlite3.connect(caminho_banco) as conexao:
-        cursor = conexao.cursor()
-        cursor.execute("""
-            SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = ? ORDER BY nome
+    conexao = ini_conexao()
+    cursor = conexao.cursor()
+    cursor.execute("""
+        SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = ? ORDER BY nome
 """, (user_id,))
-        categorias_usuario = cursor.fetchall()
+    categorias_usuario = cursor.fetchall()
 
 
     categorias_selecionadas = request.form.getlist('categorias')    # PEGA AS CATEGORIAS SELECIONADAS (pode ser várias)

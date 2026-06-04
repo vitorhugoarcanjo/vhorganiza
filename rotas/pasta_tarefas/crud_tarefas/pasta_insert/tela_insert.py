@@ -1,16 +1,25 @@
 # rotas/pasta_tarefas/crud_tarefas/pasta_insert/tela_insert.py
 from flask import Blueprint, request, render_template, session, redirect, url_for, jsonify
-import os, sqlite3
 import json
 from datetime import datetime
 from rotas.auditoria_geral.services_auditoria import AuditoriaService
+from rotas.middleware.autenticacao import login_required
+from utils.database.conexao_global import ini_conexao
 
 bp_insert_tarefas = Blueprint('insert_tarefas', __name__)
 
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
-
 @bp_insert_tarefas.route('/', methods=['GET', 'POST'])
+@login_required
 def ini_insert():
+    # ========== GET ==========
+    if request.method == 'GET':
+        conexao = ini_conexao()
+        cursor = conexao.cursor()
+        cursor.execute('SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = ?', (session['user_id'],))
+        categorias = cursor.fetchall()
+        return render_template('pasta_tarefas/crud_tarefas/tela_insert.html.jinja', categorias=categorias)
+
+
     if request.method == 'POST':
         user_id = session['user_id']
         titulo = request.form.get('titulo')
@@ -31,8 +40,8 @@ def ini_insert():
 
 
         try:
-            conexao_banco = sqlite3.connect(caminho_banco)
-            cursor = conexao_banco.cursor()
+            conexao = ini_conexao()
+            cursor = conexao.cursor()
 
             # pegar próxima sequência POR USUÁRIO
             cursor.execute(
@@ -48,9 +57,6 @@ def ini_insert():
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
             ''', (user_id, titulo or '', descricao or '', status or 'pendente', 
                   data_inicio, data_final, categoria_tarefa, prioridade_tarefa, tarefa_sequencia))
-
-            conexao_banco.commit()
-            conexao_banco.close()
 
             # ===== AUDITORIA: REGISTRA COMO JSON (igual ao EDIT) =====
             status_map = {'pendente': '⏰ Pendente', 'em andamento': '⏳ Andamento', 'concluido': '✅ Concluído'}
@@ -71,11 +77,9 @@ def ini_insert():
             categoria_nome = ''
             if categoria_tarefa:
                 try:
-                    conn = sqlite3.connect(caminho_banco)
-                    c_cursor = conn.cursor()
+                    c_cursor = conexao.cursor()
                     c_cursor.execute("SELECT nome FROM categorias_tarefas WHERE id = ?", (categoria_tarefa,))
                     cat = c_cursor.fetchone()
-                    conn.close()
                     if cat:
                         categoria_nome = cat[0]
                 except:
@@ -104,8 +108,10 @@ def ini_insert():
                 acao='criada',
                 campo_alterado='todos',
                 valor_antigo=None,
-                valor_novo=json.dumps(alteracoes, ensure_ascii=False)
+                valor_novo=json.dumps(alteracoes, ensure_ascii=False),
+                conexao=conexao
             )
+            conexao.commit()
 
             return jsonify({
                 'success': True,
@@ -113,16 +119,8 @@ def ini_insert():
             })
         
         except Exception as e:
+            conexao.rollback()
             return jsonify({
                 'success': False,
                 'error': str(e)
             }), 500
-
-    conexao = sqlite3.connect(caminho_banco)
-    cursor = conexao.cursor()
-
-    cursor.execute('SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = ?', (session['user_id'],))
-    categorias = cursor.fetchall()
-    conexao.close()
-
-    return render_template('pasta_tarefas/crud_tarefas/tela_insert.html.jinja', categorias=categorias)

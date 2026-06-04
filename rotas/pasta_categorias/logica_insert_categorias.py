@@ -7,7 +7,8 @@ from .tela_categorias import ini_categorias
 from .crud.categorias_tarefas.cat_tarefas import insert_cat_tarefa
 from .crud.categorias_financas.cat_financas import insert_cat_fin
 
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+from utils.database.conexao_global import ini_conexao
+
 bp_categorias = Blueprint('categorias', __name__)
 
 
@@ -30,7 +31,7 @@ def insert_categorias_global():
             msg = "Descreva todos os campos corretamente!"
             return render_template('pasta_categorias/crud/insert_categorias.html', msg=msg)
         
-        conexao = sqlite3.connect(caminho_banco)
+        conexao = ini_conexao()
         cursor = conexao.cursor()
         user_id = session['user_id']
 
@@ -46,12 +47,10 @@ def insert_categorias_global():
 
         if ok:
             conexao.commit()
-            conexao.close()
             return redirect(url_for('categorias.listar_categorias'))
 
         else:
             conexao.rollback()
-            conexao.close()  # ← LINHA 2: FECHA!
             msg = msg or "Erro ao criar categoria"
             return render_template('pasta_categorias/crud/insert_categorias.html', msg=msg)  # ← LINHA 3: MOSTRA MSG!
     
@@ -63,26 +62,26 @@ def insert_categorias_global():
 def excluir_categoria(modulo, id):
     user_id = session['user_id']
 
-    with sqlite3.connect(caminho_banco) as conexao:
-        cursor = conexao.cursor()
+    conexao = ini_conexao()
+    cursor = conexao.cursor()
 
-        if modulo == 'tarefas':
-            cursor.execute("""
-                DELETE FROM categorias_tarefas
-                WHERE id = ? AND user_id = ?
-            """, (id, user_id))
+    if modulo == 'tarefas':
+        cursor.execute("""
+            DELETE FROM categorias_tarefas
+            WHERE id = ? AND user_id = ?
+        """, (id, user_id))
 
-        elif modulo == 'financas':
-            cursor.execute("""
-                DELETE FROM categorias_financas
-                WHERE id = ? AND user_id = ?
-            """, (id, user_id))
+    elif modulo == 'financas':
+        cursor.execute("""
+            DELETE FROM categorias_financas
+            WHERE id = ? AND user_id = ?
+        """, (id, user_id))
 
-        else:
-            flash("Módulo inválido", "error")
-            return redirect(url_for('categorias.listar_categorias'))
+    else:
+        flash("Módulo inválido", "error")
+        return redirect(url_for('categorias.listar_categorias'))
 
-        conexao.commit()
+    conexao.commit()
     
     flash('Categoria excluída com sucesso!', 'success')
     return redirect(url_for('categorias.listar_categorias'))
@@ -94,7 +93,7 @@ def excluir_categoria(modulo, id):
 def editar_categoria_form(tipo, id):
     user_id = session['user_id']
 
-    conexao = sqlite3.connect(caminho_banco)
+    conexao = ini_conexao()
     cursor = conexao.cursor()
 
     if tipo == 'tarefas':
@@ -114,7 +113,6 @@ def editar_categoria_form(tipo, id):
         return redirect(url_for('categorias.listar_categorias'))
 
     categoria = cursor.fetchone()
-    conexao.close()
 
     if not categoria:
         flash("Categoria não encontrada", "error")
@@ -134,28 +132,28 @@ def editar_categoria_salvar(tipo, id):
     cor = request.form['cor']
     user_id = session['user_id']
 
-    with sqlite3.connect(caminho_banco) as conexao:
-        cursor = conexao.cursor()
+    conexao = ini_conexao()
+    cursor = conexao.cursor()
 
-        if tipo == 'tarefas':
-            cursor.execute("""
-                UPDATE categorias_tarefas
-                SET nome = ?, cor = ?
-                WHERE id = ? AND user_id = ?
-            """, (nome, cor, id, user_id))
+    if tipo == 'tarefas':
+        cursor.execute("""
+            UPDATE categorias_tarefas
+            SET nome = ?, cor = ?
+            WHERE id = ? AND user_id = ?
+        """, (nome, cor, id, user_id))
 
-        elif tipo == 'financas':
-            cursor.execute("""
-                UPDATE categorias_financas
-                SET nome = ?, cor = ?
-                WHERE id = ? AND user_id = ?
-            """, (nome, cor, id, user_id))
+    elif tipo == 'financas':
+        cursor.execute("""
+            UPDATE categorias_financas
+            SET nome = ?, cor = ?
+            WHERE id = ? AND user_id = ?
+        """, (nome, cor, id, user_id))
 
-        else:
-            flash("Tipo de categoria inválido", "error")
-            return redirect(url_for('categorias.listar_categorias'))
+    else:
+        flash("Tipo de categoria inválido", "error")
+        return redirect(url_for('categorias.listar_categorias'))
 
-        conexao.commit()
+    conexao.commit()
 
     flash("Categoria atualizada com sucesso!", "success")
     return redirect(url_for('categorias.listar_categorias'))

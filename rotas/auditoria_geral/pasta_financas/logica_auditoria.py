@@ -1,11 +1,9 @@
 from flask import Blueprint, render_template, request, session, url_for, flash, redirect
-import sqlite3
-import os
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
+from utils.database.conexao_global import ini_conexao
 
 bp_auditoria_financas = Blueprint('auditoria_financas', __name__)
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 @bp_auditoria_financas.route('/transacao/<int:transacao_id>')
 @login_required
@@ -19,19 +17,19 @@ def historico_transacao(transacao_id):
     tipo_data = request.args.get('tipo_data', 'emissao')
     
     # Busca dados da transação para exibir no cabeçalho
-    with sqlite3.connect(caminho_banco) as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-            SELECT id, descricao, tipo, valor_total
-            FROM transacoes
-            WHERE sequencia_transacoes = ? AND user_id = ?
-        """, (transacao_id, session['user_id']))
-        
-        transacao = cursor.fetchone()
-        
-        if not transacao:
-            flash('Transação não encontrada', 'danger')
-            return redirect(url_for('financas.inifinancas'))
+    conexao = ini_conexao()
+    cursor = conexao.cursor()
+    cursor.execute("""
+        SELECT id, descricao, tipo, valor_total
+        FROM transacoes
+        WHERE sequencia_transacoes = ? AND user_id = ?
+    """, (transacao_id, session['user_id']))
+    
+    transacao = cursor.fetchone()
+    
+    if not transacao:
+        flash('Transação não encontrada', 'danger')
+        return redirect(url_for('financas.inifinancas'))
     
     # Usa o método formatado do service
     historico = AuditoriaFinanceiraService.listar_por_transacao_formatado(transacao_id)

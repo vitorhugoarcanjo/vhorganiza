@@ -1,5 +1,5 @@
 # rotas/auditoria_geral/routes.py
-from flask import Blueprint, render_template, request, session, url_for
+from flask import Blueprint, render_template, request
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.services_auditoria import AuditoriaService
 

@@ -1,24 +1,35 @@
-import sqlite3
-import os
 import json
-from flask import request, session
-
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+from flask import request, session, g
+from utils.database.conexao_global import ini_conexao, get_conexao_direct
 
 class AuditoriaService:
     
     @staticmethod
     def get_db_connection():
-        conn = sqlite3.connect(caminho_banco)
-        conn.row_factory = sqlite3.Row
-        return conn
+        """Retorna conexão do contexto atual do Flask"""
+        return ini_conexao()
     
     @staticmethod
-    def registrar(tarefa_id, acao, campo_alterado=None, valor_antigo=None, valor_novo=None):
-        """Registra uma ação na auditoria"""
+    def get_db_connection_direct():
+        """Retorna conexão direta para uso fora do contexto Flask"""
+        return get_conexao_direct()
+    
+    @staticmethod
+    def registrar(tarefa_id, acao, campo_alterado=None, valor_antigo=None, valor_novo=None, conexao=None):
+        """
+        Registra uma ação na auditoria
+        
+        Args:
+        conexao: Opcional. Se fornecida, usa a MESMA conexão (não faz commit separado)
+        """
+       
         try:
-            conn = AuditoriaService.get_db_connection()
-            cursor = conn.cursor()
+            propria_conexao = False
+            if conexao is None:
+                conexao = AuditoriaService.get_db_connection()
+                propria_conexao = True
+
+            cursor = conexao.cursor()
             
             if valor_antigo and len(str(valor_antigo)) > 500:
                 valor_antigo = str(valor_antigo)[:500] + "..."
@@ -38,20 +49,22 @@ class AuditoriaService:
                 session.get('user_id'),
                 request.remote_addr
             ))
-            
-            conn.commit()
-            conn.close()
+            if propria_conexao:
+                conexao.commit()
             return True
+        
         except Exception as e:
             print(f"Erro ao registrar auditoria: {e}")
+            if propria_conexao:
+                conexao.rollback()
             return False
     
     @staticmethod
     def listar_por_tarefa(tarefa_id, limite=50):
         """Lista todas as ações de uma tarefa"""
         try:
-            conn = AuditoriaService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = AuditoriaService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT ta.*, u.nome as usuario_nome
@@ -63,7 +76,6 @@ class AuditoriaService:
             """, (tarefa_id, limite))
             
             auditoria = cursor.fetchall()
-            conn.close()
             return auditoria
         except Exception as e:
             print(f"Erro ao listar auditoria: {e}")
@@ -73,8 +85,8 @@ class AuditoriaService:
     def listar_por_tarefa_formatado(tarefa_id, limite=50):
         """Lista auditoria com formatação para exibição (converte JSON)"""
         try:
-            conn = AuditoriaService.get_db_connection()
-            cursor = conn.cursor()
+            conexao = AuditoriaService.get_db_connection()
+            cursor = conexao.cursor()
             
             cursor.execute("""
                 SELECT 
@@ -94,22 +106,17 @@ class AuditoriaService:
                 
                 item['data_hora'] = item.get('data_hora_br', item.get('data_hora'))
                 
-                print(f"DEBUG - item: {item.get('acao')}, campo: {item.get('campo_alterado')}, valor_novo: {item.get('valor_novo')[:100] if item.get('valor_novo') else 'None'}")
-                
                 # Converte JSON
                 if item.get('campo_alterado') in ['múltiplos', 'todos'] and item.get('valor_novo'):
                     try:
                         item['alteracoes'] = json.loads(item['valor_novo'])
-                        print(f"DEBUG - JSON convertido: {len(item['alteracoes'])} alterações")
                     except:
                         item['alteracoes'] = []
-                        print(f"DEBUG - Erro ao converter JSON")
                 else:
                     item['alteracoes'] = []
                 
                 auditoria.append(item)
             
-            conn.close()
             return auditoria
         except Exception as e:
             print(f"Erro ao listar auditoria formatada: {e}")

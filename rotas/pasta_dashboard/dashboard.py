@@ -2,9 +2,7 @@ from flask import Blueprint, render_template, session, request, redirect, url_fo
 from rotas.middleware.autenticacao import login_required
 from utils.filtros_reutilizaveis.data import filtro_datas
 from datetime import date
-import sqlite3, os
-
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+from utils.database.conexao_global import ini_conexao
 
 bp_dashboard = Blueprint('dashboard', __name__)
 
@@ -31,8 +29,8 @@ def inidashboard():
         return redirect(url_for('dashboard.inidashboard'))
 
     # ===== CONSULTA AO BANCO =====
-    conexao_banco = sqlite3.connect(caminho_banco)
-    cursor = conexao_banco.cursor()
+    conexao = ini_conexao()
+    cursor = conexao.cursor()
 
     # Query base
     query_receitas = 'SELECT SUM(valor_total) FROM transacoes WHERE user_id = ? AND tipo = ?'
@@ -62,7 +60,6 @@ def inidashboard():
 
     saldo = total_receitas - total_despesas
 
-    conexao_banco.close()
 
     return render_template('pasta_dashboard/tela_dashboard.html',
                           total_receitas=total_receitas,

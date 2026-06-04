@@ -1,7 +1,6 @@
 from flask import Blueprint, request, redirect, render_template, url_for, flash, session
-import os
-import sqlite3
 from datetime import datetime
+from utils.database.conexao_global import ini_conexao
 
 from rotas.pasta_login.pasta_cadastre_se.autenticador_email.email_utils import (
     gerar_codigo,
@@ -12,8 +11,6 @@ from rotas.pasta_login.pasta_cadastre_se.autenticador_email.email_utils import (
 from rotas.pasta_login.pasta_cadastre_se.validacoes.criptografia_snh import criptografar_senha
 
 bp_recuperar = Blueprint('recuperar', __name__)
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
-
 
 @bp_recuperar.route('/', methods=['GET', 'POST'])
 def solicitar_recuperacao():
@@ -22,14 +19,14 @@ def solicitar_recuperacao():
         email = request.form.get('email')
         
         # Verifica se o email existe
-        with sqlite3.connect(caminho_banco) as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT id FROM cadastre_se WHERE email = ?", (email,))
-            usuario = cursor.fetchone()
-            
-            if not usuario:
-                flash('Email não cadastrado!', 'danger')
-                return redirect(url_for('recuperar.solicitar_recuperacao'))
+        conexao = ini_conexao()
+        cursor = conexao.cursor()
+        cursor.execute("SELECT id FROM cadastre_se WHERE email = ?", (email,))
+        usuario = cursor.fetchone()
+        
+        if not usuario:
+            flash('Email não cadastrado!', 'danger')
+            return redirect(url_for('recuperar.solicitar_recuperacao'))
         
         # Gera e envia código
         codigo = gerar_codigo()
@@ -94,14 +91,14 @@ def nova_senha():
         # Criptografa e salva a nova senha
         senha_criptografada = criptografar_senha(senha)
         
-        with sqlite3.connect(caminho_banco) as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                UPDATE cadastre_se 
-                SET senha = ? 
-                WHERE id = ?
-            """, (senha_criptografada, session['reset_user_id']))
-            conn.commit()
+        conexao = ini_conexao()
+        cursor = conexao.cursor()
+        cursor.execute("""
+            UPDATE cadastre_se 
+            SET senha = ? 
+            WHERE id = ?
+        """, (senha_criptografada, session['reset_user_id']))
+        conexao.commit()
         
         # Limpa a sessão
         session.pop('reset_user_id', None)

@@ -1,6 +1,6 @@
-import sqlite3
 from flask import flash
 import re
+from utils.database.conexao_global import ini_conexao
 
 
 def validar_campos_obrigatorios(nome, telefone, email, senha, confirmar_senha):
@@ -36,13 +36,11 @@ def validar_email_formato(email):
         return False
     return True
 
-def validar_email_unico(caminho_banco, email):
-    conexao_banco = sqlite3.connect(caminho_banco)
-    cursor = conexao_banco.cursor()
+def validar_email_unico(conexao, email):
+    cursor = conexao.cursor()
 
     cursor.execute('SELECT id FROM cadastre_se WHERE email = ?', (email,))
     resultado = cursor.fetchone()
-    conexao_banco.close()
 
     if resultado:
         flash('E-mail já cadastrado!', 'error')
