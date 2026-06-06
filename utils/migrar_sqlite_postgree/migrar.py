@@ -20,7 +20,7 @@ TABELAS_ORDEM = [
     'logs_resumo_mensal',
     'logs_acao',
     'tarefas_auditoria',
-    'financas_auditoria',
+    'finansauditoria',
 ]
 
 # CAMPOS QUE SÃO DO TIPO DATE no PostgreSQL
@@ -37,6 +37,16 @@ CAMPOS_TIMESTAMP = [
     'codigo_expiracao', 'codigo_recuperacao_expiracao'
 ]
 
+# CAMPOS NUMÉRICOS (INTEGER, REAL, NUMERIC)
+CAMPOS_NUMERICOS = [
+    'id', 'user_id', 'sequencia_transacoes', 'categoria_id', 'total_parcelas',
+    'numero_parcela', 'sequencia_parcela', 'transacao_pai_id', 'intervalo_dias',
+    'valor_total', 'valor_parcela', 'tentativas_verificacao', 'tentativas_recuperacao',
+    'status_code', 'tempo_resposta', 'linha', 'is_master', 'email_verificado',
+    'tentativas_verificacao', 'tentativas_recuperacao', 'ativo', 'tarefa_sequencia',
+    'tarefa_id', 'usuario_id', 'registro_id', 'transacao_id'
+]
+
 def tratar_valor(valor, coluna):
     """Converte valores do SQLite para tipos compatíveis com PostgreSQL"""
     
@@ -44,15 +54,37 @@ def tratar_valor(valor, coluna):
     if valor is None:
         return None
     
-    # Se for string vazia em campo de data/timestamp
+    # Para campos numéricos
+    if coluna in CAMPOS_NUMERICOS:
+        # String vazia ou 'None' literal
+        if isinstance(valor, str) and (valor == '' or valor.lower() == 'none' or valor == 'NULL'):
+            return None
+        # Tenta converter string para número
+        if isinstance(valor, str):
+            try:
+                if '.' in valor:
+                    return float(valor)
+                return int(valor)
+            except (ValueError, TypeError):
+                return None
+        # Já é número
+        if isinstance(valor, (int, float)):
+            return valor
+        return None
+    
+    # Para campos de data/timestamp com string vazia
     if isinstance(valor, str) and valor == '':
         if coluna in CAMPOS_DATA or coluna in CAMPOS_TIMESTAMP:
             return None
         return valor
     
-    # Se for string com 'None' literal
+    # Para string 'None' literal
     if isinstance(valor, str) and valor.lower() == 'none':
         return None
+    
+    # Para boolean (1/0)
+    if coluna == 'ativo' and isinstance(valor, str):
+        return 1 if valor == '1' or valor == 'true' else 0
     
     return valor
 
@@ -140,8 +172,9 @@ for nome_tabela in TABELAS_ORDEM:
             
         except Exception as e:
             erros += 1
-            if erros <= 5:  # Mostra só os primeiros 5 erros
+            if erros <= 10:
                 print(f"   ⚠️ Erro na linha {idx}: {e}")
+                # Mostra os primeiros valores para debug
                 print(f"      Colunas: {colunas[:5]}...")
                 print(f"      Valores: {valores[:5]}...")
     
@@ -194,7 +227,7 @@ tabelas_com_serial = [
     'cadastre_se', 'categorias_financas', 'categorias_tarefas', 
     'transacoes', 'tarefas', 'logs_acesso', 'logs_ataques', 
     'logs_erros', 'logs_resumo_mensal', 'logs_acao', 
-    'tarefas_auditoria', 'financas_auditoria'
+    'tarefas_auditoria', 'finansauditoria'
 ]
 
 for tabela in tabelas_com_serial:
@@ -204,9 +237,10 @@ for tabela in tabelas_com_serial:
         count = pg_cursor.fetchone()[0]
         
         if count > 0:
-            # Ajusta a sequence para o maior ID + 1
+            # Ajusta a sequence para o maior ID
             pg_cursor.execute(f"SELECT setval('{tabela}_id_seq', (SELECT MAX(id) FROM {tabela}))")
-            print(f"   ✅ {tabela}_id_seq ajustada para MAX(id) = {pg_cursor.fetchone()[0]}")
+            max_id = pg_cursor.fetchone()[0]
+            print(f"   ✅ {tabela}_id_seq ajustada para MAX(id) = {max_id}")
         else:
             print(f"   ℹ️ {tabela} está vazia, sequence mantida em 1")
     except Exception as e:
