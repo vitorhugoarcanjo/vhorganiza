@@ -11,7 +11,7 @@ bp_insert_transacao = Blueprint('nova_transacao', __name__)
 
 def get_proxima_sequencia(cursor, user_id):
     """ Retorna a próxima sequência para o usuário """
-    cursor.execute("SELECT COALESCE(MAX(sequencia_transacoes), 0) + 1 FROM transacoes WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT COALESCE(MAX(sequencia_transacoes), 0) + 1 FROM transacoes WHERE user_id = %s", (user_id,))
     return cursor.fetchone()[0]
 
 def converter_valor_br(valor_str):
@@ -29,13 +29,12 @@ def initransacao():
     hoje = date.today().isoformat()
     user_id = session['user_id']
 
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
 
     # carregar categorias
     cursor.execute("""
         SELECT id, nome FROM categorias_financas
-        WHERE user_id = ?
+        WHERE user_id = %s
     """, (user_id,))
     categorias = cursor.fetchall()
 
@@ -77,7 +76,7 @@ def initransacao():
                         data_emissao, data_vencimento,
                         total_parcelas, numero_parcela, status, ativo
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
                 """, (
                     user_id, sequencia, tipo,
                     valor_total, descricao, categoria_id,
@@ -130,7 +129,7 @@ def initransacao():
                     data_emissao, data_vencimento,
                     total_parcelas, intervalo_dias, status, ativo
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
             """, (
                 user_id, sequencia_pai, tipo,
                 valor_total, descricao, categoria_id,
@@ -158,7 +157,7 @@ def initransacao():
                         total_parcelas, numero_parcela, sequencia_parcela,
                         transacao_pai_id, status, ativo
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aberto', 1)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
                 """, (
                     user_id, sequencia_parcela, tipo,
                     valor_parcela, valor_parcela, f'{descricao} - Parcela {i}/{total_parcelas}', categoria_id,

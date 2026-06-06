@@ -1,10 +1,13 @@
 def tabela_categorias_financas(cursor):
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='categorias_financas'")
+    cursor.execute("""
+        SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='categorias_financas')
+""")
+    tabela_existe = cursor.fetchone()[0]
 
-    if not cursor.fetchone():
+    if not tabela_existe:
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS categorias_financas (
-        id INTEGER PRIMARY KEY,
+        CREATE TABLE categorias_financas (
+        id SERIAL PRIMARY KEY,
         user_id INTEGER,  -- ID DO USUARIO
         nome TEXT, -- NOME DA CATEGORIA
         cor TEXT,

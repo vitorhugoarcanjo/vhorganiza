@@ -56,12 +56,12 @@ def ini_financas():
 
     # ===== BUSCA CATEGORIAS DO USUÁRIO =====
     categorias_usuario = []
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+
     cursor.execute("""
         SELECT id, nome, cor 
         FROM categorias_financas 
-        WHERE user_id = ? 
+        WHERE user_id = %s 
         ORDER BY nome
     """, (user_id,))
     categorias_usuario = cursor.fetchall()
@@ -74,7 +74,7 @@ def ini_financas():
             t.numero_parcela, t.total_parcelas, t.transacao_pai_id
         FROM transacoes t
         LEFT JOIN categorias_financas c ON c.id = t.categoria_id
-        WHERE t.user_id = ?
+        WHERE t.user_id = %s
         AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
     """
     params = [user_id]
@@ -82,10 +82,10 @@ def ini_financas():
     # ===== FILTRO DATA =====
     if data_inicio and data_fim:
         if tipo_data == 'emissao':
-            query += " AND DATE(t.data_emissao) BETWEEN ? AND ?"
+            query += " AND DATE(t.data_emissao) BETWEEN %s AND %s"
             params.extend([data_inicio, data_fim])
         elif tipo_data == 'vencimento':
-            query += " AND DATE(t.data_vencimento) BETWEEN ? AND ?"
+            query += " AND DATE(t.data_vencimento) BETWEEN %s AND %s"
             params.extend([data_inicio, data_fim])
 
 
@@ -114,7 +114,7 @@ def ini_financas():
             if cat == 'null':
                 categorias_conditions.append("(t.categoria_id IS NULL OR t.categoria_id = '')")
             else:
-                categorias_conditions.append("t.categoria_id = ?")
+                categorias_conditions.append("t.categoria_id = %s")
                 params.append(cat)
         
         if categorias_conditions:
@@ -122,17 +122,17 @@ def ini_financas():
 
     # ===== FILTRO DESCRIÇÃO =====
     if descricao:
-        query += " AND t.descricao LIKE ?"
+        query += " AND t.descricao LIKE %s"
         params.append(f"%{descricao}%")
 
     # ===== FILTRO TIPO =====
     if tipo:
-        query += " AND t.tipo = ?"
+        query += " AND t.tipo = %s"
         params.append(tipo)
 
     # ===== FILTRO STATUS =====
     if status:
-        query += " AND t.status = ?"
+        query += " AND t.status = %s"
         params.append(status)
 
     # ===== ORDENAÇÃO =====
@@ -185,8 +185,8 @@ def ini_financas():
 @login_required
 def detalhes_transacao(transacao_id):
     """Retorna os detalhes de uma transação via JSON"""
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+
         
     cursor.execute("""
         SELECT t.sequencia_transacoes, t.tipo, t.valor_total, t.descricao,
@@ -195,7 +195,7 @@ def detalhes_transacao(transacao_id):
                 c.nome as categoria_nome, c.cor as categoria_cor
         FROM transacoes t 
         LEFT JOIN categorias_financas c ON t.categoria_id = c.id
-        WHERE t.sequencia_transacoes = ? AND t.user_id = ?
+        WHERE t.sequencia_transacoes = %s AND t.user_id = %s
     """, (transacao_id, session['user_id']))
         
     transacao = cursor.fetchone()

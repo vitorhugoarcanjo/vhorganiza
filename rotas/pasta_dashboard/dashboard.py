@@ -29,25 +29,24 @@ def inidashboard():
         return redirect(url_for('dashboard.inidashboard'))
 
     # ===== CONSULTA AO BANCO =====
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
 
     # Query base
-    query_receitas = 'SELECT SUM(valor_total) FROM transacoes WHERE user_id = ? AND tipo = ?'
-    query_despesas = 'SELECT SUM(valor_total) FROM transacoes WHERE user_id = ? AND tipo = ?'
+    query_receitas = 'SELECT SUM(valor_total) FROM transacoes WHERE user_id = %s AND tipo = %s'
+    query_despesas = 'SELECT SUM(valor_total) FROM transacoes WHERE user_id = %s AND tipo = %s'
     params_receitas = [user_id, 'receita']
     params_despesas = [user_id, 'despesa']
 
     # 🔥 FILTRO DE DATA (mesma lógica do finanças)
     if data_inicio and data_fim:
         if tipo_data == 'emissao':
-            query_receitas += ' AND DATE(data_emissao) BETWEEN ? AND ?'
-            query_despesas += ' AND DATE(data_emissao) BETWEEN ? AND ?'
+            query_receitas += ' AND DATE(data_emissao) BETWEEN %s AND %s'
+            query_despesas += ' AND DATE(data_emissao) BETWEEN %s AND %s'
             params_receitas.extend([data_inicio, data_fim])
             params_despesas.extend([data_inicio, data_fim])
         elif tipo_data == 'vencimento':
-            query_receitas += ' AND DATE(data_vencimento) BETWEEN ? AND ?'
-            query_despesas += ' AND DATE(data_vencimento) BETWEEN ? AND ?'
+            query_receitas += ' AND DATE(data_vencimento) BETWEEN %s AND %s'
+            query_despesas += ' AND DATE(data_vencimento) BETWEEN %s AND %s'
             params_receitas.extend([data_inicio, data_fim])
             params_despesas.extend([data_inicio, data_fim])
 

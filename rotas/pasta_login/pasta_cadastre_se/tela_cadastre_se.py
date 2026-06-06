@@ -34,8 +34,7 @@ def tela_cadastre_se():
         # SENHA CRIPTOGRAFADA
         senha_criptografada = criptografar_senha(senha)
 
-        conexao = ini_conexao()
-        cursor = conexao.cursor()
+        conexao, cursor = ini_conexao()
 
         if not all([
             validar_campos_obrigatorios(nome, telefone, email, senha, confirmar_senha),
@@ -49,12 +48,10 @@ def tela_cadastre_se():
 
         # SE PASSOU NAS VALIDAÇÕES: FAZ INSERT
         try:
-            cursor.execute('INSERT INTO cadastre_se (nome, telefone, email, senha) VALUES (?, ?, ?, ?)', 
-                          (nome, telefone_limpo, email, senha_criptografada))
+            cursor.execute('INSERT INTO cadastre_se (nome, telefone, email, senha) VALUES (%s, %s, %s, %s) RETURNING id', 
+                        (nome, telefone_limpo, email, senha_criptografada))
+            user_id = cursor.fetchone()[0]  # ← CORRIGIDO!
             conexao.commit()
-            
-            # PEGA O ID DO USUÁRIO CRIADO
-            user_id = cursor.lastrowid
             
             # GERA CÓDIGO E ENVIA EMAIL
             codigo = gerar_codigo()
@@ -67,16 +64,14 @@ def tela_cadastre_se():
                 return redirect(url_for('cadastre_se.confirmar_email', user_id=user_id))
             else:
                 # SE ERRO NO EMAIL, APAGA O USUÁRIO
-                cursor.execute('DELETE FROM cadastre_se WHERE id = ?', (user_id,))
+                cursor.execute('DELETE FROM cadastre_se WHERE id = %s', (user_id,))
                 conexao.commit()
                 flash(f'Erro ao enviar email: {mensagem}', 'danger')
                 return redirect(url_for('cadastre_se.tela_cadastre_se'))
-        
+
         except Exception as e:
             flash('Erro ao cadastrar: ' + str(e), 'danger')
             return redirect(url_for('cadastre_se.tela_cadastre_se'))
-
-    return render_template('pasta_login/pasta_cadastre_se/tela_cadastre_se.html')
 
 
 @bp_cadastre_se.route('/confirmar-email/<int:user_id>')
@@ -104,9 +99,8 @@ def validar_codigo():
 @bp_cadastre_se.route('/reenviar-codigo/<int:user_id>')
 def reenviar_codigo(user_id):
     """ Reenvia o código de confirmação """
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
-    cursor.execute("SELECT email FROM cadastre_se WHERE id = ?", (user_id,))
+    conexao, cursor = ini_conexao()
+    cursor.execute("SELECT email FROM cadastre_se WHERE id = %s", (user_id,))
     resultado = cursor.fetchone()
     
     if not resultado:

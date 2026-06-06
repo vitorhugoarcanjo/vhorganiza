@@ -1,10 +1,13 @@
 def tabela_categorias_tarefas(cursor):
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='categorias_tarefas'")
+    cursor.execute("""
+            SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='categorias_tarefas')
+""")
+    tabela_existe = cursor.fetchone()[0]
 
-    if not cursor.fetchone():
+    if not tabela_existe:
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS categorias_tarefas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE categorias_tarefas (
+        id SERIAL PRIMARY KEY,
         user_id INTEGER,              
         nome TEXT NOT NULL,              
         cor TEXT DEFAULT '#CCCCCC',

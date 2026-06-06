@@ -19,9 +19,9 @@ def solicitar_recuperacao():
         email = request.form.get('email')
         
         # Verifica se o email existe
-        conexao = ini_conexao()
-        cursor = conexao.cursor()
-        cursor.execute("SELECT id FROM cadastre_se WHERE email = ?", (email,))
+        conexao, cursor = ini_conexao()
+        
+        cursor.execute("SELECT id FROM cadastre_se WHERE email = %s", (email,))
         usuario = cursor.fetchone()
         
         if not usuario:
@@ -91,12 +91,12 @@ def nova_senha():
         # Criptografa e salva a nova senha
         senha_criptografada = criptografar_senha(senha)
         
-        conexao = ini_conexao()
-        cursor = conexao.cursor()
+        conexao, cursor = ini_conexao()
+        
         cursor.execute("""
             UPDATE cadastre_se 
-            SET senha = ? 
-            WHERE id = ?
+            SET senha = %s 
+            WHERE id = %s
         """, (senha_criptografada, session['reset_user_id']))
         conexao.commit()
         

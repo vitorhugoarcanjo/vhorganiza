@@ -55,14 +55,14 @@ def ini_tarefas():
     session['mostrar_inativas'] = mostrar_inativas
     
 
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+
 
     query = """SELECT t.tarefa_sequencia, t.titulo, t.descricao, t.status, t.data_inicio, t.data_final, t.data_finalizacao, t.categoria_id, t.prioridade,
                     c.nome as categoria_nome, c.cor as categoria_cor, t.ativo
                 FROM tarefas t 
                 LEFT JOIN categorias_tarefas c ON t.categoria_id = c.id   
-                WHERE t.user_id = ?
+                WHERE t.user_id = %s
                 """
     
     params = [session['user_id']]
@@ -70,14 +70,14 @@ def ini_tarefas():
     # QUERY FILTRO DATA
     if data_inicio and data_fim:
         if tipo_data == 'inicio':
-            query += " AND t.data_inicio BETWEEN ? AND ?"
+            query += " AND t.data_inicio BETWEEN %s AND %s"
             params.extend([data_inicio, data_fim])
         elif tipo_data == 'final':
-            query += " AND t.data_final BETWEEN ? AND ?"
+            query += " AND t.data_final BETWEEN %s AND %s"
             params.extend([data_inicio, data_fim])
         else:  # finalizacao
             # Para data_finalizacao (que tem hora), compara apenas a data
-            query += " AND DATE(t.data_finalizacao) BETWEEN ? AND ?"
+            query += " AND DATE(t.data_finalizacao) BETWEEN %s AND %s"
             params.extend([data_inicio, data_fim])
 
 
@@ -91,7 +91,7 @@ def ini_tarefas():
                 # Busca tarefas SEM categoria (campo vazio ou NULL)
                 categorias_conditions.append("(t.categoria_id IS NULL OR t.categoria_id = '')")
             else:
-                categorias_conditions.append("t.categoria_id = ?")
+                categorias_conditions.append("t.categoria_id = %s")
                 params_temp.append(cat)
         
         if categorias_conditions:
@@ -108,7 +108,7 @@ def ini_tarefas():
             query += " AND (t.status = 'pendente' OR t.status = 'em andamento')"
 
         else:
-            query += " AND t.status = ?"
+            query += " AND t.status = %s"
             params.append(status_filtro)
     
 
@@ -117,13 +117,13 @@ def ini_tarefas():
         if prioridade_filtro == 'vazio':
             query += " AND (t.prioridade IS NULL OR t.prioridade = '')"
         else:
-            query += " AND t.prioridade = ?"
+            query += " AND t.prioridade = %s"
             params.append(prioridade_filtro)
 
 
     # QUERY FILTRO DESCRIÇÃO
     if descricao_filtro:
-        query += " AND t.descricao LIKE ?"
+        query += " AND t.descricao LIKE %s"
         params.append(f"%{descricao_filtro}%")
 
             
@@ -160,8 +160,8 @@ def ini_tarefas():
 @login_required
 def detalhes_tarefa(tarefa_seq):
     """Retorna os detalhes de uma tarefa via JSON"""
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+
     
     cursor.execute("""
         SELECT t.tarefa_sequencia, t.titulo, t.descricao, t.status,
@@ -169,7 +169,7 @@ def detalhes_tarefa(tarefa_seq):
                 t.prioridade, t.motivo_conclusao, c.nome as categoria_nome, c.cor as categoria_cor
         FROM tarefas t 
         LEFT JOIN categorias_tarefas c ON t.categoria_id = c.id
-        WHERE t.tarefa_sequencia = ? AND t.user_id = ?
+        WHERE t.tarefa_sequencia = %s AND t.user_id = %s
     """, (tarefa_seq, session['user_id']))
     
     tarefa = cursor.fetchone()
@@ -206,13 +206,13 @@ def concluir_tarefa(tarefa_seq):
     fuso = timezone(timedelta(hours=-4))
     agora = datetime.now(fuso).strftime("%Y-%m-%d %H:%M:%S")
     
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+
     
     cursor.execute("""
         SELECT titulo, descricao, status 
         FROM tarefas 
-        WHERE tarefa_sequencia = ? AND user_id = ?
+        WHERE tarefa_sequencia = %s AND user_id = %s
     """, (tarefa_seq, session['user_id']))
 
     tarefa_antes = cursor.fetchone()
@@ -226,10 +226,10 @@ def concluir_tarefa(tarefa_seq):
     cursor.execute("""
         UPDATE tarefas 
         SET status = 'concluido', 
-            data_finalizacao = ?,
-            updated_at = ?,
-            motivo_conclusao = ?
-        WHERE tarefa_sequencia = ? AND user_id = ?
+            data_finalizacao = %s,
+            updated_at = %s,
+            motivo_conclusao = %s
+        WHERE tarefa_sequencia = %s AND user_id = %s
     """, (
         agora,
         agora,
@@ -263,14 +263,14 @@ def concluir_tarefa(tarefa_seq):
 @bp_tela_tarefas.route('/excluir/<int:tarefa_seq>', methods=['POST'])
 @login_required
 def excluir_tarefa(tarefa_seq):
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+
     
     # Busca dados antes
     cursor.execute("""
         SELECT titulo 
         FROM tarefas 
-        WHERE tarefa_sequencia = ? AND user_id = ? AND ativo = 1
+        WHERE tarefa_sequencia = %s AND user_id = %s AND ativo = 1
     """, (tarefa_seq, session['user_id']))
     
     tarefa = cursor.fetchone()
@@ -285,10 +285,10 @@ def excluir_tarefa(tarefa_seq):
     cursor.execute('''
         UPDATE tarefas 
         SET ativo = 0, 
-            excluido_em = datetime('now', 'localtime'),
-            excluido_por = ?,
-            updated_at = datetime('now', 'localtime')
-        WHERE tarefa_sequencia = ? AND user_id = ?
+            excluido_em = CURRENT_TIMESTAMP,
+            excluido_por = %s,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE tarefa_sequencia = %s AND user_id = %s
     ''', (session['user_id'], tarefa_seq, session['user_id']))
     
     # Auditoria

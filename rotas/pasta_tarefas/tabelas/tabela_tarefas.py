@@ -1,10 +1,13 @@
 def criar_tabela_tarefas(cursor):
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='tarefas'")
+    cursor.execute("""
+            SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='tarefas')
+""")
+    tabela_existe = cursor.fetchone()[0]
 
-    if not cursor.fetchone():
+    if not tabela_existe:
         cursor.execute("""
-        CREATE TABLE IF NOT EXISTS tarefas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE tarefas (
+        id SERIAL PRIMARY KEY,
         user_id INTEGER,
         categoria_id INTEGER,
         tarefa_sequencia INTEGER,
@@ -18,7 +21,7 @@ def criar_tabela_tarefas(cursor):
         data_final DATE,
                        
         ativo INTEGER DEFAULT 1,
-        excluido_em DATETIME,
+        excluido_em TIMESTAMP,
         excluido_por INTEGER,
                     
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -31,16 +34,38 @@ def criar_tabela_tarefas(cursor):
         )
     """)
         print("✅ Tabela tarefas criada com sucesso!")
+        return
 
+    # ==========================================================
+    # VERIFICA E ADICIONA COLUNAS QUE FALTAM
+    # ==========================================================
+    cursor.execute("""
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'tarefas'
+        ORDER BY ordinal_position
+    """)
+    colunas_existentes = [row[0] for row in cursor.fetchall()]
+    
+    colunas_para_adicionar = []
+    
+    if 'motivo_conclusao' not in colunas_existentes:
+        colunas_para_adicionar.append("motivo_conclusao TEXT")
+    
+    if 'data_finalizacao' not in colunas_existentes:
+        colunas_para_adicionar.append("data_finalizacao DATE")
+    
+    # Adiciona mais colunas se necessário
+    
+    for coluna_sql in colunas_para_adicionar:
+        try:
+            nome_coluna = coluna_sql.split()[0]
+            cursor.execute(f"ALTER TABLE tarefas ADD COLUMN {coluna_sql}")
+            print(f"✅ Coluna '{nome_coluna}' adicionada em tarefas!")
+        except Exception as e:
+            print(f"⚠️ Erro ao adicionar coluna {coluna_sql}: {e}")
+    
+    if colunas_para_adicionar:
+        print(f"✅ {len(colunas_para_adicionar)} nova(s) coluna(s) adicionada(s)!")
     else:
-        # MODELO - ESTRUTURA
-        cursor.execute("PRAGMA table_info(tarefas)")
-        if not any(col[1] == 'motivo_conclusao' for col in cursor.fetchall()):
-            cursor.execute("ALTER TABLE tarefas ADD COLUMN motivo_conclusao TEXT")
-            print("✅ Coluna motivo_conclusao adicionada em tarefas!")
-
-
-           
-
-
-        print("ℹ️ Tabela tarefas já existe.")
+        print("ℹ️ Todas as colunas já existem. Nada foi alterado.")

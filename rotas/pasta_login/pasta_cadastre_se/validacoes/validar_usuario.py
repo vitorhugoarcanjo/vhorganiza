@@ -1,7 +1,5 @@
 from flask import flash
 import re
-from utils.database.conexao_global import ini_conexao
-
 
 def validar_campos_obrigatorios(nome, telefone, email, senha, confirmar_senha):
 # ---------------- VALIDAÇÕES GERAL ---------------- #
@@ -39,7 +37,7 @@ def validar_email_formato(email):
 def validar_email_unico(conexao, email):
     cursor = conexao.cursor()
 
-    cursor.execute('SELECT id FROM cadastre_se WHERE email = ?', (email,))
+    cursor.execute('SELECT id FROM cadastre_se WHERE email = %s', (email,))
     resultado = cursor.fetchone()
 
     if resultado:

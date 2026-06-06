@@ -6,10 +6,10 @@ from utils.database.conexao_global import ini_conexao
 def filtro_categorias(user_id):
     """ FUNÇÃO QUE FILTRA CATEGORIAS """
 
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+
     cursor.execute("""
-        SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = ? ORDER BY nome
+        SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = %s ORDER BY nome
 """, (user_id,))
     categorias_usuario = cursor.fetchall()
 

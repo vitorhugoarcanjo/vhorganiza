@@ -1,12 +1,8 @@
 from flask import Blueprint, redirect, url_for, session, flash, request, jsonify
-import sqlite3
-import os
 from datetime import date
 from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 from utils.database.conexao_global import ini_conexao
 from rotas.middleware.autenticacao import login_required
-
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
 
 bp_quitar = Blueprint('quitar_transacao', __name__)
 
@@ -16,14 +12,13 @@ def iniquitacao(sequencia):
     user_id = session['user_id']
     hoje = date.today().isoformat()
     
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
         
     # Busca dados ANTES
     cursor.execute("""
         SELECT descricao, status, tipo 
         FROM transacoes 
-        WHERE sequencia_transacoes = ? AND user_id = ?
+        WHERE sequencia_transacoes = %s AND user_id = %s
     """, (sequencia, user_id))
     
     transacao = cursor.fetchone()
@@ -42,9 +37,9 @@ def iniquitacao(sequencia):
     # Update
     cursor.execute("""
         UPDATE transacoes 
-        SET status = ?, 
-            data_quitamento = ? 
-        WHERE sequencia_transacoes = ? AND user_id = ?
+        SET status = %s, 
+            data_quitamento = %s 
+        WHERE sequencia_transacoes = %s AND user_id = %s
     """, (novo_status, hoje, sequencia, user_id))
     conexao.commit()
     

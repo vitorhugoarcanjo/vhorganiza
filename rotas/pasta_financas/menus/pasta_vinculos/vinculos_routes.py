@@ -10,15 +10,14 @@ bp_vinculos = Blueprint('api_vinculos', __name__)
 def buscar_vinculos(sequencia):
     user_id = session.get('user_id')
     
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
         
     # Busca a transação
     cursor.execute("""
         SELECT sequencia_transacoes, transacao_pai_id, total_parcelas, 
                 numero_parcela, tipo, descricao
         FROM transacoes 
-        WHERE sequencia_transacoes = ? AND user_id = ? AND ativo = 1
+        WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
     """, (sequencia, user_id))
     
     transacao = cursor.fetchone()
@@ -36,7 +35,7 @@ def buscar_vinculos(sequencia):
             SELECT sequencia_transacoes, numero_parcela, total_parcelas, 
                     valor_parcela, data_vencimento, status
             FROM transacoes
-            WHERE transacao_pai_id = ? AND user_id = ? AND ativo = 1
+            WHERE transacao_pai_id = %s AND user_id = %s AND ativo = 1
             ORDER BY numero_parcela
         """, (transacao_pai_id, user_id))
         
@@ -56,7 +55,7 @@ def buscar_vinculos(sequencia):
             SELECT sequencia_transacoes, numero_parcela, total_parcelas, 
                     valor_parcela, data_vencimento, status
             FROM transacoes
-            WHERE transacao_pai_id = ? AND user_id = ? AND ativo = 1
+            WHERE transacao_pai_id = %s AND user_id = %s AND ativo = 1
             ORDER BY numero_parcela
         """, (sequencia, user_id))
         

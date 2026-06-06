@@ -17,9 +17,9 @@ def requer_master(f):
             return redirect(url_for('login.validar_login'))
         
         # Verifica se é master
-        conexao = ini_conexao()
-        cursor = conexao.cursor()
-        cursor.execute("SELECT is_master FROM cadastre_se WHERE id = ?", (session['user_id'],))
+        conexao, cursor = ini_conexao()
+        
+        cursor.execute("SELECT is_master FROM cadastre_se WHERE id = %s", (session['user_id'],))
         resultado = cursor.fetchone()
         
         if not resultado or not resultado[0]:
@@ -43,9 +43,9 @@ def requer_permissao(permissao_nome):
                 flash('Você precisa fazer login.', 'warning')
                 return redirect(url_for('login.validar_login'))
             
-            conexao = ini_conexao()
-            cursor = conexao.cursor()
-            cursor.execute("SELECT is_master FROM cadastre_se WHERE id = ?", (session['user_id'],))
+            conexao, cursor = ini_conexao()
+            
+            cursor.execute("SELECT is_master FROM cadastre_se WHERE id = %s", (session['user_id'],))
             resultado = cursor.fetchone()
             
             if not resultado or not resultado[0]:

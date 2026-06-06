@@ -1,11 +1,10 @@
-def tabela_transacoes(cursor, tipo_banco='postgresql'):
-    cursor.execute("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'transacoes')")
-    tabela_existe = cursor.fetchone()[0]
+def tabela_transacoes(cursor):
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='transacoes'")
 
-    if not tabela_existe:
+    if not cursor.fetchone():
         cursor.execute("""
-        CREATE TABLE transacoes (
-            id SERIAL PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS transacoes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             sequencia_transacoes INTEGER,
             
@@ -37,7 +36,7 @@ def tabela_transacoes(cursor, tipo_banco='postgresql'):
             status TEXT DEFAULT 'aberto',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             excluido_por INTEGER,
-            excluido_em TIMESTAMP,
+            excluido_em DATETIME,
             ativo INTEGER DEFAULT 1,
             
             FOREIGN KEY (user_id) REFERENCES cadastre_se(id) ON DELETE CASCADE,
@@ -50,13 +49,8 @@ def tabela_transacoes(cursor, tipo_banco='postgresql'):
     # ==========================================================
     # VERIFICA E ADICIONA SOMENTE AS COLUNAS QUE FALTAM
     # ==========================================================
-    cursor.execute("""
-        SELECT column_name
-        FROM information_schema.columns
-        WHERE table_name = 'transacoes'
-        ORDER BY ordinal_position
-""")
-    colunas_existentes = [row[0] for row in cursor.fetchall()]
+    cursor.execute("PRAGMA table_info(transacoes)")
+    colunas_existentes = [col[1] for col in cursor.fetchall()]
     
     # Lista de colunas que REALMENTE precisam ser adicionadas
     colunas_para_adicionar = []
@@ -65,6 +59,15 @@ def tabela_transacoes(cursor, tipo_banco='postgresql'):
     if 'transacao_pai_id' not in colunas_existentes:
         colunas_para_adicionar.append("transacao_pai_id INTEGER DEFAULT NULL")
     
+    if 'sequencia_parcela' not in colunas_existentes:
+        colunas_para_adicionar.append("sequencia_parcela INTEGER DEFAULT NULL")
+    
+    if 'intervalo_dias' not in colunas_existentes:
+        colunas_para_adicionar.append("intervalo_dias INTEGER DEFAULT 30")
+    
+    # Verifica se 'ativo' existe (já deve existir, mas seguro)
+    if 'ativo' not in colunas_existentes:
+        colunas_para_adicionar.append("ativo INTEGER DEFAULT 1")
     
     # Adiciona cada coluna faltante
     for coluna_sql in colunas_para_adicionar:

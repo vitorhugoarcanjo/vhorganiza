@@ -31,8 +31,8 @@ def insert_categorias_global():
             msg = "Descreva todos os campos corretamente!"
             return render_template('pasta_categorias/crud/insert_categorias.html', msg=msg)
         
-        conexao = ini_conexao()
-        cursor = conexao.cursor()
+        conexao, cursor = ini_conexao()
+        
         user_id = session['user_id']
 
         if modulo == 'tarefas':
@@ -62,19 +62,19 @@ def insert_categorias_global():
 def excluir_categoria(modulo, id):
     user_id = session['user_id']
 
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+    
 
     if modulo == 'tarefas':
         cursor.execute("""
             DELETE FROM categorias_tarefas
-            WHERE id = ? AND user_id = ?
+            WHERE id = %s AND user_id = %s
         """, (id, user_id))
 
     elif modulo == 'financas':
         cursor.execute("""
             DELETE FROM categorias_financas
-            WHERE id = ? AND user_id = ?
+            WHERE id = %s AND user_id = %s
         """, (id, user_id))
 
     else:
@@ -93,19 +93,19 @@ def excluir_categoria(modulo, id):
 def editar_categoria_form(tipo, id):
     user_id = session['user_id']
 
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+    
 
     if tipo == 'tarefas':
         cursor.execute("""
             SELECT id, nome, cor FROM categorias_tarefas
-            WHERE id = ? AND user_id = ?
+            WHERE id = %s AND user_id = %s
         """, (id, user_id))
 
     elif tipo == 'financas':
         cursor.execute("""
             SELECT id, nome, cor FROM categorias_financas
-            WHERE id = ? AND user_id = ?
+            WHERE id = %s AND user_id = %s
         """, (id, user_id))
 
     else:
@@ -132,21 +132,21 @@ def editar_categoria_salvar(tipo, id):
     cor = request.form['cor']
     user_id = session['user_id']
 
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+    
 
     if tipo == 'tarefas':
         cursor.execute("""
             UPDATE categorias_tarefas
-            SET nome = ?, cor = ?
-            WHERE id = ? AND user_id = ?
+            SET nome = %s, cor = %s
+            WHERE id = %s AND user_id = %s
         """, (nome, cor, id, user_id))
 
     elif tipo == 'financas':
         cursor.execute("""
             UPDATE categorias_financas
-            SET nome = ?, cor = ?
-            WHERE id = ? AND user_id = ?
+            SET nome = %s, cor = %s
+            WHERE id = %s AND user_id = %s
         """, (nome, cor, id, user_id))
 
     else:

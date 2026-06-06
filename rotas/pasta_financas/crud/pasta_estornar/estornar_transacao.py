@@ -16,14 +16,13 @@ def iniestornar(sequencia):
     if not user_id:
         return jsonify({'success': False, 'error': 'Usuário não autenticado'})
     
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
         
     # Busca dados ANTES do estorno
     cursor.execute("""
         SELECT descricao, status, tipo, data_quitamento 
         FROM transacoes 
-        WHERE sequencia_transacoes = ? AND user_id = ?
+        WHERE sequencia_transacoes = %s AND user_id = %s
     """, (sequencia, user_id))
     
     transacao = cursor.fetchone()
@@ -44,8 +43,8 @@ def iniestornar(sequencia):
         UPDATE transacoes 
         SET status = 'aberto', 
             data_quitamento = NULL,
-            data_alteracao = datetime('now', 'localtime')
-        WHERE sequencia_transacoes = ? AND user_id = ?
+            data_alteracao = CURRENT_TIMESTAMP
+        WHERE sequencia_transacoes = %s AND user_id = %s
     """, (sequencia, user_id))
     
     conexao.commit()

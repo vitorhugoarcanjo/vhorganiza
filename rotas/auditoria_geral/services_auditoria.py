@@ -26,10 +26,10 @@ class AuditoriaService:
         try:
             propria_conexao = False
             if conexao is None:
-                conexao = AuditoriaService.get_db_connection()
+                conexao, cursor = AuditoriaService.get_db_connection()
                 propria_conexao = True
-
-            cursor = conexao.cursor()
+            else:
+                cursor = conexao.cursor()
             
             if valor_antigo and len(str(valor_antigo)) > 500:
                 valor_antigo = str(valor_antigo)[:500] + "..."
@@ -39,7 +39,7 @@ class AuditoriaService:
             cursor.execute("""
                 INSERT INTO tarefas_auditoria 
                 (tarefa_id, acao, campo_alterado, valor_antigo, valor_novo, usuario_id, ip)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (
                 tarefa_id,
                 acao,
@@ -63,16 +63,16 @@ class AuditoriaService:
     def listar_por_tarefa(tarefa_id, limite=50):
         """Lista todas as ações de uma tarefa"""
         try:
-            conexao = AuditoriaService.get_db_connection()
-            cursor = conexao.cursor()
+            conexao, cursor = AuditoriaService.get_db_connection()
+
             
             cursor.execute("""
                 SELECT ta.*, u.nome as usuario_nome
                 FROM tarefas_auditoria ta
                 LEFT JOIN cadastre_se u ON ta.usuario_id = u.id
-                WHERE ta.tarefa_id = ?
+                WHERE ta.tarefa_id = %s
                 ORDER BY ta.data_hora DESC
-                LIMIT ?
+                LIMIT %s
             """, (tarefa_id, limite))
             
             auditoria = cursor.fetchall()
@@ -85,19 +85,18 @@ class AuditoriaService:
     def listar_por_tarefa_formatado(tarefa_id, limite=50):
         """Lista auditoria com formatação para exibição (converte JSON)"""
         try:
-            conexao = AuditoriaService.get_db_connection()
-            cursor = conexao.cursor()
+            conexao, cursor = AuditoriaService.get_db_connection()
             
             cursor.execute("""
                 SELECT 
                     ta.*, 
                     u.nome as usuario_nome,
-                    strftime('%d/%m/%Y %H:%M:%S', ta.data_hora, 'localtime') as data_hora_br
+                    TO_CHAR(ta.data_hora AT TIME ZONE 'America/Cuiaba', 'DD/MM/YYYY HH24:MI:SS') as data_hora_br
                 FROM tarefas_auditoria ta
                 LEFT JOIN cadastre_se u ON ta.usuario_id = u.id
-                WHERE ta.tarefa_id = ?
+                WHERE ta.tarefa_id = %s
                 ORDER BY ta.data_hora DESC
-                LIMIT ?
+                LIMIT %s
             """, (tarefa_id, limite))
             
             auditoria = []

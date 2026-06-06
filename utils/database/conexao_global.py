@@ -1,46 +1,54 @@
-"""
-GERENCIADOR DE CONEXÕES SQLITE
-===============================
-Funções:
-- ini_conexao()        -> Usar em blueprints/rotas Flask
-- get_conexao_direct() -> Usar em scripts/migrações/workers
-- close_conexao()      -> Chamado automaticamente pelo Flask
-- init_conexao(app)    -> Registrar no app factory
-
-ONDE CADA FUNÇÃO É USADA:
-- ini_conexao: todos os blueprints, LogService
-- get_conexao_direct: scripts/migrate.py, workers/cleanup.py
-"""
-
-import sqlite3
+# utils/database/conexao_global.py
 import os
+import psycopg2
 from flask import g
+from urllib.parse import urlparse
+from dotenv import load_dotenv
 
-caminho_banco = os.path.join(os.getcwd(), 'instance', 'banco_de_dados.db')
+load_dotenv()
 
-def ini_conexao(timeout=5):
-    """ RETORNA CONEXÃO COM O BANCO """
+DATABASE_URL = os.getenv('DATABASE_URL', '')
+
+
+def ini_conexao():
+    """RETORNA CONEXÃO COM O POSTGRESQL para blueprints"""
     
     if 'db' not in g:
-        g.db = sqlite3.connect(caminho_banco, timeout=timeout)
-        g.db.row_factory = sqlite3.Row
+        url = urlparse(DATABASE_URL)
+        g.db = psycopg2.connect(
+            host=url.hostname,
+            database=url.path[1:],
+            user=url.username,
+            password=url.password,
+            port=url.port or 5432
+        )
+        g.db.autocommit = False
+        g.cursor = g.db.cursor()
     
-    return g.db
+    return g.db, g.cursor
 
-def get_conexao_direct(timeout=5):
-    """ RETORNA CONEXÃO PARA USO FORA DO CONTEXTO(migracoes, scripts)"""
-    conexao = sqlite3.connect(caminho_banco, timeout=timeout)
-    conexao.row_factory = sqlite3.Row
-    return conexao
+
+def get_conexao_direct():
+    """RETORNA CONEXÃO PARA USO FORA DO CONTEXTO"""
+    url = urlparse(DATABASE_URL)
+    conexao = psycopg2.connect(
+        host=url.hostname,
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        port=url.port or 5432
+    )
+    return conexao  # ← SEM row_factory
+
 
 def close_conexao(e=None):
-    """ Fecha conexão no final da requisição """
-
+    """Fecha conexão no final da requisição"""
     db = g.pop('db', None)
     if db is not None:
         print("🔒 FECHANDO CONEXÃO DO BANCO!")
         db.close()
 
+
 def init_conexao(app):
-    """ Registra a função de fechar conexão no Flask """
+    """Registra a função de fechar conexão no Flask"""
     app.teardown_appcontext(close_conexao)

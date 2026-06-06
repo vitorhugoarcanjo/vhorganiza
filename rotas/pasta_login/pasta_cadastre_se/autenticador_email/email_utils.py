@@ -54,25 +54,25 @@ def salvar_codigo_verificacao(user_id, codigo):
     """ Salva o código de verificação no banco """
     expiracao = datetime.now() + timedelta(minutes=EmailConfig.CODIGO_EXPIRACAO_MINUTOS)
     
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+    
     cursor.execute("""
         UPDATE cadastre_se   -- <-- MUDOU: cadastre_se, não usuarios
-        SET codigo_verificacao = ?, 
-            codigo_expiracao = ?,
+        SET codigo_verificacao = %s, 
+            codigo_expiracao = %s,
             tentativas_verificacao = 0
-        WHERE id = ?
+        WHERE id = %s
     """, (codigo, expiracao, user_id))
     conexao.commit()
 
 def verificar_codigo(user_id, codigo_digitado):
     """ Verifica se o código está correto e não expirou """
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+    
     cursor.execute("""
         SELECT codigo_verificacao, codigo_expiracao, tentativas_verificacao
         FROM cadastre_se   -- <-- MUDOU: cadastre_se, não usuarios
-        WHERE id = ?
+        WHERE id = %s
     """, (user_id,))
     resultado = cursor.fetchone()
     
@@ -93,7 +93,7 @@ def verificar_codigo(user_id, codigo_digitado):
     # Verifica código
     if codigo_salvo != codigo_digitado:
         # Incrementa tentativas
-        cursor.execute("UPDATE cadastre_se SET tentativas_verificacao = tentativas_verificacao + 1 WHERE id = ?", (user_id,))
+        cursor.execute("UPDATE cadastre_se SET tentativas_verificacao = tentativas_verificacao + 1 WHERE id = %s", (user_id,))
         conexao.commit()
         return False, f"Código inválido. Você tem mais {EmailConfig.MAX_TENTATIVAS - tentativas - 1} tentativas."
     
@@ -104,7 +104,7 @@ def verificar_codigo(user_id, codigo_digitado):
             codigo_verificacao = NULL, 
             codigo_expiracao = NULL,
             tentativas_verificacao = 0
-        WHERE id = ?
+        WHERE id = %s
     """, (user_id,))
     conexao.commit()
     
@@ -154,24 +154,24 @@ def salvar_codigo_recuperacao(email, codigo):
     """ Salva o código de recuperação no banco """
     expiracao = datetime.now() + timedelta(minutes=EmailConfig.CODIGO_EXPIRACAO_MINUTOS)
     
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+    
     cursor.execute("""
         UPDATE cadastre_se
-        SET codigo_recuperacao = ?, 
-            codigo_recuperacao_expiracao = ?,
+        SET codigo_recuperacao = %s, 
+            codigo_recuperacao_expiracao = %s,
             tentativas_recuperacao = 0
-        WHERE email = ?
+        WHERE email = %s
     """, (codigo, expiracao, email))
     conexao.commit()
 
 def verificar_codigo_recuperacao(email, codigo_digitado):
     """ Verifica se o código de recuperação está correto """
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
+    
     cursor.execute("""
         SELECT id, codigo_recuperacao, codigo_recuperacao_expiracao, tentativas_recuperacao
-        FROM cadastre_se WHERE email = ?
+        FROM cadastre_se WHERE email = %s
     """, (email,))
     resultado = cursor.fetchone()
     
@@ -188,7 +188,7 @@ def verificar_codigo_recuperacao(email, codigo_digitado):
         return False, "Código expirado. Solicite um novo.", None
     
     if codigo_salvo != codigo_digitado:
-        cursor.execute("UPDATE cadastre_se SET tentativas_recuperacao = tentativas_recuperacao + 1 WHERE email = ?", (email,))
+        cursor.execute("UPDATE cadastre_se SET tentativas_recuperacao = tentativas_recuperacao + 1 WHERE email = %s", (email,))
         conexao.commit()
         return False, f"Código inválido. Você tem mais {EmailConfig.MAX_TENTATIVAS - tentativas - 1} tentativas.", None
     
@@ -198,7 +198,7 @@ def verificar_codigo_recuperacao(email, codigo_digitado):
         SET codigo_recuperacao = NULL, 
             codigo_recuperacao_expiracao = NULL,
             tentativas_recuperacao = 0
-        WHERE email = ?
+        WHERE email = %s
     """, (email,))
     conexao.commit()
     

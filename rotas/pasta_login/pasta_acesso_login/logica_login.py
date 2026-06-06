@@ -23,10 +23,10 @@ def validar_login():
             }), 400
 
         # PRIMEIRO: VERIFICA SE O USUÁRIO EXISTE E SE O EMAIL FOI CONFIRMADO
-        conexao = ini_conexao()
-        cursor = conexao.cursor()
+        conexao, cursor = ini_conexao()
+        
             # ← ADICIONA is_master NA CONSULTA
-        cursor.execute('SELECT id, nome, email_verificado, is_master FROM cadastre_se WHERE (nome = ? OR email = ?)',
+        cursor.execute('SELECT id, nome, email_verificado, is_master FROM cadastre_se WHERE (nome = %s OR email = %s)',
                            (nome_ou_email, nome_ou_email))
         usuario = cursor.fetchone()
             

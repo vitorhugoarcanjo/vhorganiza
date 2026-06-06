@@ -17,12 +17,11 @@ def historico_transacao(transacao_id):
     tipo_data = request.args.get('tipo_data', 'emissao')
     
     # Busca dados da transação para exibir no cabeçalho
-    conexao = ini_conexao()
-    cursor = conexao.cursor()
+    conexao, cursor = ini_conexao()
     cursor.execute("""
-        SELECT id, descricao, tipo, valor_total
+        SELECT sequencia_transacoes, descricao, tipo, valor_total
         FROM transacoes
-        WHERE sequencia_transacoes = ? AND user_id = ?
+        WHERE sequencia_transacoes = %s AND user_id = %s
     """, (transacao_id, session['user_id']))
     
     transacao = cursor.fetchone()

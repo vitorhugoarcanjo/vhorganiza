@@ -13,9 +13,9 @@ bp_insert_tarefas = Blueprint('insert_tarefas', __name__)
 def ini_insert():
     # ========== GET ==========
     if request.method == 'GET':
-        conexao = ini_conexao()
-        cursor = conexao.cursor()
-        cursor.execute('SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = ?', (session['user_id'],))
+        conexao, cursor = ini_conexao()
+        
+        cursor.execute('SELECT id, nome, cor FROM categorias_tarefas WHERE user_id = %s', (session['user_id'],))
         categorias = cursor.fetchall()
         return render_template('pasta_tarefas/crud_tarefas/tela_insert.html.jinja', categorias=categorias)
 
@@ -25,8 +25,8 @@ def ini_insert():
         titulo = request.form.get('titulo')
         descricao = request.form.get('descricao')
         status = request.form.get('status')
-        data_inicio = request.form.get('data_inicio')
-        data_final = request.form.get('data_final')
+        data_inicio = request.form.get('data_inicio') or None  # 🔥 CORRIGIDO
+        data_final = request.form.get('data_final') or None    # 🔥 CORRIGIDO
         categoria_tarefa = request.form.get('categoria_id')
         prioridade_tarefa = request.form.get('prioridade')
 
@@ -35,17 +35,20 @@ def ini_insert():
         else:
             categoria_tarefa = int(categoria_tarefa) if categoria_tarefa else None
 
-        if data_inicio == '':
-            return render_template('pasta_tarefas/crud_tarefas/tela_insert.html.jinja', titulo=titulo, descricao=descricao, status=status, data_final=data_final, categoria_tarefa=categoria_tarefa, prioridade=prioridade_tarefa)
-
+        # 🔥 Validação melhorada
+        if not data_inicio:
+            return render_template('pasta_tarefas/crud_tarefas/tela_insert.html.jinja', 
+                                titulo=titulo, descricao=descricao, status=status, 
+                                data_final=data_final, categoria_tarefa=categoria_tarefa, 
+                                prioridade=prioridade_tarefa)
 
         try:
-            conexao = ini_conexao()
-            cursor = conexao.cursor()
+            conexao, cursor = ini_conexao()
+            
 
-            # pegar próxima sequência POR USUÁRIO
+            # pegar próxima sequência POR USUÁRIO - 🔥 CORRIGIDO: IFNULL → COALESCE
             cursor.execute(
-                "SELECT IFNULL(MAX(tarefa_sequencia), 0) + 1 FROM tarefas WHERE user_id = ?",
+                "SELECT COALESCE(MAX(tarefa_sequencia), 0) + 1 FROM tarefas WHERE user_id = %s",
                 (user_id,)
             )
             tarefa_sequencia = cursor.fetchone()[0]
@@ -54,7 +57,7 @@ def ini_insert():
             cursor.execute('''
                 INSERT INTO tarefas (user_id, titulo, descricao, status, data_inicio, data_final, 
                                      categoria_id, prioridade, tarefa_sequencia, ativo) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 1)
             ''', (user_id, titulo or '', descricao or '', status or 'pendente', 
                   data_inicio, data_final, categoria_tarefa, prioridade_tarefa, tarefa_sequencia))
 
@@ -78,7 +81,7 @@ def ini_insert():
             if categoria_tarefa:
                 try:
                     c_cursor = conexao.cursor()
-                    c_cursor.execute("SELECT nome FROM categorias_tarefas WHERE id = ?", (categoria_tarefa,))
+                    c_cursor.execute("SELECT nome FROM categorias_tarefas WHERE id = %s", (categoria_tarefa,))
                     cat = c_cursor.fetchone()
                     if cat:
                         categoria_nome = cat[0]
@@ -108,7 +111,7 @@ def ini_insert():
                 acao='criada',
                 campo_alterado='todos',
                 valor_antigo=None,
-                valor_novo=json.dumps(alteracoes, ensure_ascii=False),
+                valor_novo=json.dumps(alteracoes, ensure_ascii=False, default=str),
                 conexao=conexao
             )
             conexao.commit()
