@@ -474,6 +474,9 @@ class LogService:
         try:
             conexao, cursor = LogService.get_db_connection()
             
+            # Adiciona o RealDictCursor aqui também
+            from psycopg2.extras import RealDictCursor
+            cursor = conexao.cursor(cursor_factory=RealDictCursor)
             
             cursor.execute("""
                 SELECT 
