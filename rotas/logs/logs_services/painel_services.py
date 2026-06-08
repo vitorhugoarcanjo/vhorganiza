@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import request, session
 from utils.database.conexao_global import ini_conexao
 import json
+from psycopg2.extras import RealDictCursor
 
 
 class LogService:
@@ -121,6 +122,8 @@ class LogService:
         try:
             conexao, cursor = LogService.get_db_connection()
             
+            # Usa cursor que retorna dicionários
+            cursor = conexao.cursor(cursor_factory=RealDictCursor)
             
             query = """
                 SELECT le.*, u.nome as usuario_nome 
@@ -139,8 +142,9 @@ class LogService:
             cursor.execute(query, params)
             erros = cursor.fetchall()
             
+            # Para o total, ainda precisa do cursor normal ou usar o mesmo
             cursor.execute("SELECT COUNT(*) as total FROM logs_erros")
-            total = cursor.fetchone()[0]
+            total = cursor.fetchone()['total']
             
             return {'dados': erros, 'total': total}
         except Exception as e:
@@ -153,19 +157,22 @@ class LogService:
         try:
             conexao, cursor = LogService.get_db_connection()
             
+            cursor = conexao.cursor(cursor_factory=RealDictCursor)
             
             cursor.execute("""
                 SELECT le.*, u.nome as usuario_nome 
                 FROM logs_erros le
                 LEFT JOIN cadastre_se u ON le.user_id = u.id
                 WHERE le.id = %s
-            """, (erro_id,))    
+            """, (erro_id,))
             erro = cursor.fetchone()
             return erro
         
         except Exception as e:
             print(f"Erro ao obter erro: {e}")
-            return None
+            return None 
+
+
         
     @staticmethod
     def estatisticas():
@@ -427,6 +434,9 @@ class LogService:
         try:
             conexao, cursor = LogService.get_db_connection()
             
+            # Habilita dicionários no cursor
+            from psycopg2.extras import RealDictCursor
+            cursor = conexao.cursor(cursor_factory=RealDictCursor)
             
             query = """
                 SELECT 
@@ -442,9 +452,7 @@ class LogService:
             
             if filtro:
                 query += " WHERE la.rota LIKE %s OR u.nome LIKE %s OR u.email LIKE %s"
-                params.append(f"%{filtro}%")
-                params.append(f"%{filtro}%")
-                params.append(f"%{filtro}%")
+                params.extend([f"%{filtro}%", f"%{filtro}%", f"%{filtro}%"])
             
             query += " ORDER BY la.data_hora DESC LIMIT %s OFFSET %s"
             params.extend([limite, offset])
@@ -453,7 +461,7 @@ class LogService:
             acessos = cursor.fetchall()
             
             cursor.execute("SELECT COUNT(*) as total FROM logs_acesso")
-            total = cursor.fetchone()[0]
+            total = cursor.fetchone()['total']  # Agora é dicionário
             
             return {'dados': acessos, 'total': total}
         except Exception as e:
@@ -491,6 +499,8 @@ class LogService:
         try:
             conexao, cursor = LogService.get_db_connection()
             
+            from psycopg2.extras import RealDictCursor
+            cursor = conexao.cursor(cursor_factory=RealDictCursor)
             
             cursor.execute("""
                 SELECT 
@@ -552,12 +562,14 @@ class LogService:
         try:
             conexao, cursor = LogService.get_db_connection()
             
+            # Usa cursor que retorna dicionários
+            cursor = conexao.cursor(cursor_factory=RealDictCursor)
             
             cursor.execute("""
                 SELECT * FROM logs_ataques 
                 ORDER BY data_hora DESC 
                 LIMIT %s
-            """, (limite,))    
+            """, (limite,))
             ataques = cursor.fetchall()
             return ataques
         
@@ -571,18 +583,19 @@ class LogService:
         try:
             conexao, cursor = LogService.get_db_connection()
             
+            cursor = conexao.cursor(cursor_factory=RealDictCursor)
             
             cursor.execute("""
                 SELECT * FROM logs_ataques 
                 WHERE id = %s
-            """, (ataque_id,))    
+            """, (ataque_id,))
             ataque = cursor.fetchone()
             return ataque
         
         except Exception as e:
             print(f"Erro ao obter ataque: {e}")
             return None
-
+        
     @staticmethod
     def registrar_ataque(ip, rota, metodo, user_agent, padrao):
         """Registra uma tentativa de ataque"""
