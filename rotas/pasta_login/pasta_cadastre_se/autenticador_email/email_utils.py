@@ -79,8 +79,7 @@ def verificar_codigo(user_id, codigo_digitado):
     if not resultado:
         return False, "Usuário não encontrado"
     
-    codigo_salvo, expiracao_str, tentativas = resultado
-    expiracao = datetime.strptime(expiracao_str, '%Y-%m-%d %H:%M:%S.%f') if expiracao_str else None
+    codigo_salvo, expiracao, tentativas = resultado
     
     # Verifica tentativas
     if tentativas >= EmailConfig.MAX_TENTATIVAS:
@@ -178,8 +177,7 @@ def verificar_codigo_recuperacao(email, codigo_digitado):
     if not resultado:
         return False, "Email não encontrado", None
     
-    user_id, codigo_salvo, expiracao_str, tentativas = resultado
-    expiracao = datetime.strptime(expiracao_str, '%Y-%m-%d %H:%M:%S.%f') if expiracao_str else None
+    user_id, codigo_salvo, expiracao, tentativas = resultado
     
     if tentativas >= EmailConfig.MAX_TENTATIVAS:
         return False, "Muitas tentativas. Solicite um novo código.", None
