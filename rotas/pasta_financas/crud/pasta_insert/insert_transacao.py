@@ -4,7 +4,7 @@ from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFin
 import json
 from utils.database.conexao_global import ini_conexao
 from datetime import date, datetime, timedelta
-from .validacoes.validacoes import validacao_tipo
+from .validacoes.validacoes import validacao_campos_obrigatorios
 
 
 bp_insert_transacao = Blueprint('nova_transacao', __name__)
@@ -58,10 +58,14 @@ def initransacao():
             categoria_id = request.form.get('categoria_id') or None
             
             total_parcelas = int(request.form.get('total_parcelas', 1))
-            
-            tipo, erro = validacao_tipo(tipo)
-            if erro:
-                return jsonify({'success': False, 'error': erro}), 400
+
+            erros = validacao_campos_obrigatorios(tipo)
+            if erros:
+                return jsonify({
+                    'success': False,
+                    'errors': erros
+                }), 400
+
             # ==========================================================
             # PARCELA ÚNICA (total_parcelas <= 1)
             # ==========================================================
