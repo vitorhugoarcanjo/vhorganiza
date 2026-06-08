@@ -72,6 +72,8 @@ def tela_cadastre_se():
         except Exception as e:
             flash('Erro ao cadastrar: ' + str(e), 'danger')
             return redirect(url_for('cadastre_se.tela_cadastre_se'))
+        
+    return render_template('pasta_login/pasta_cadastre_se/tela_cadastre_se.html')
 
 
 @bp_cadastre_se.route('/confirmar-email/<int:user_id>')
