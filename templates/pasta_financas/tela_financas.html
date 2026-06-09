@@ -265,6 +265,16 @@
                                         <i class="bi bi-arrow-return-left"></i>
                                     </button>
                                 {% endif %}
+
+                                {% if transacao[10] == 0 %}
+                                    <button type="button"
+                                            class="btn-acao reativar btn-reativar"
+                                            data-id="{{ transacao[0] }}"
+                                            data-desc="{{ transacao[4] }}"
+                                            title="Reativar">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </button>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
@@ -320,10 +330,10 @@
 {% include 'pasta_financas/modais/detalhes_completo.html' %}
 {% include 'pasta_financas/modais/modal_menu_click.html' %}
 {% include 'pasta_financas/modais/modal_estornar_finan.html' %}
+{% include 'pasta_financas/modais/modal_reativar_inativo.html' %}
 
 
 <!-- MODAIS (igual tarefas) -->
-
 {% block scripts %}
     <script src="{{ static_v('js/pasta_financas/modais/detalhes_completo.js') }}"></script> <!-- DETALHES DA TAREFA -->
     <script src="{{ static_v('js/pasta_financas/pasta_quitar/btn_quitar.js') }}"></script> <!-- BOTÃO QUITAMENTO -->
@@ -333,7 +343,8 @@
     <script src="{{ static_v('js/pasta_financas/menu_click/menu_vinculos/vinculos.js') }}"></script> <!-- MENU - VINCULOS -->
     <script src="{{ static_v('js/pasta_financas/ordenacao_colunas/ordenacao.js') }}"></script>
         <!-- 🔥 Script de estorno (carrega UMA VEZ só) -->
-    <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_estornar.js') }}"></script>
+    <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_estornar_quitado.js') }}"></script>
+    <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_reativar_inativo.js') }}"></script>
 
 {% endblock %}
 

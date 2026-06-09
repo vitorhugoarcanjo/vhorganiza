@@ -1,0 +1,108 @@
+<!-- Modal de Reativação -->
+<div id="modalReativar" class="modal-overlay-reativar">
+    <div class="modal-box-reativar">
+        <h3 id="modalReativarTitulo">⚠️ Reativar Transação</h3>
+        <p id="modalReativarTexto"></p>
+        <div class="modal-actions-reativar">
+            <button id="btnCancelarReativar" class="btn-cancelar-reativar">Cancelar</button>
+            <button id="btnConfirmarReativar" class="btn-confirmar-reativar">Confirmar Reativação</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* 🔥 MODAL DE REATIVAÇÃO - CSS PADRÃO (igual ao excluir) */
+    .modal-overlay-reativar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+
+    .modal-overlay-reativar.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-box-reativar {
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 10px;
+        width: 350px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-box-reativar h3 {
+        margin: 0 0 10px 0;
+        color: white;
+    }
+
+    .modal-box-reativar p {
+        margin: 15px 0;
+        color: #ddd;
+        white-space: pre-line;
+    }
+
+    .modal-actions-reativar {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-cancelar-reativar {
+        background: #444;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 5px;
+        flex: 1;
+    }
+
+    .btn-cancelar-reativar:hover {
+        background: #555;
+    }
+
+    .btn-confirmar-reativar {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 5px;
+        flex: 1;
+    }
+
+    .btn-confirmar-reativar:hover {
+        background: #218838;
+    }
+</style>
+
+<script>
+    function fecharModalReativar() {
+        const modal = document.getElementById('modalReativar');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+    
+    // Fecha ao clicar fora
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('modalReativar');
+        if (e.target === modal) {
+            fecharModalReativar();
+        }
+    });
+</script>
