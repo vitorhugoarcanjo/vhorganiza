@@ -66,5 +66,4 @@ with app.app_context():
     criar_todas_tabelas()
 
 if __name__ == '__main__':
-    criar_todas_tabelas()
     app.run(debug=True)

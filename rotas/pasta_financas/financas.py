@@ -46,6 +46,8 @@ def ini_financas():
         mostrar_inativas_post = request.form.get('mostrar_inativas')
         if mostrar_inativas_post is not None:
             session['financas_mostrar_inativas'] = mostrar_inativas_post
+            session.pop('financas_mostrar_inativas_url', None)
+            
     
     # ===== RECUPERA OS FILTROS DA SESSION =====
     descricao = session.get('financas_descricao', '')
@@ -94,7 +96,6 @@ def ini_financas():
     # ===== FILTRO ATIVO/INATIVO =====
     if request.method == 'POST':
         # pega do formulario se veio
-        mostrar_inativas = request.form.get('mostrar_inativas', mostrar_inativas)
         session['financas_mostrar_inativas'] = mostrar_inativas
 
     # APLICAR FILTRO
@@ -179,6 +180,7 @@ def ini_financas():
         inputs_html = f"""
                 <input type="date" name="data_inicio" id="data_inicio_input" class="form-control" value="{data_inicio or ''}" hx-swap-oob="outerHTML:#data_inicio_input">
                 <input type="date" name="data_fim" id="data_fim_input" class="form-control" value="{data_fim or ''}" hx-swap-oob="outerHTML:#data_fim_input">
+                <input type="hidden" name="mostrar_inativas" value="{mostrar_inativas}" id="mostrar_inativas_input" hx-swap-oob="outerHTML:#mostrar_inativas_input">
 """
         return tabela_html + inputs_html
 

@@ -166,6 +166,125 @@
     color: #fff;
 }
 
+
+/* ==========================================================
+   EFEITO RIPPLE (ONDE CLICOU)
+   ========================================================== */
+
+.btn-pure {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s ease;
+}
+
+/* Elemento da onda */
+.btn-pure .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 0.5s ease-out;
+    pointer-events: none;
+}
+
+/* Cor da onda no modo escuro (padrão) */
+.btn-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Cor da onda no modo claro */
+.light-mode .btn-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Ondas para botões específicos no modo escuro */
+.btn-success-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-info-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-primary-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Ondas para botões específicos no modo claro */
+.light-mode .btn-success-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .btn-info-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .btn-primary-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Animação da onda */
+@keyframes ripple-animation {
+    0% {
+        transform: scale(0);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Efeito de clique (aperta o botão) */
+.btn-pure:active {
+    transform: scale(0.97);
+    transition: transform 0.05s ease;
+}
+
+/* Remove outline feio no clique (mantém acessibilidade) */
+.btn-pure:focus-visible {
+    outline: 2px solid var(--cor-ativa);
+    outline-offset: 2px;
+}
+
+/* ==========================================================
+   FIM DO EFEITO RIPPLE
+   ========================================================== */
+
+.btn-success-pure {
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
+}
+
+.btn-info-pure {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-primary-pure {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #fff;
+}
+
+.btn-active-toggle {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #fff;
+}
+
+.btn-destaque {
+    font-weight: 600;
+}
+
+.badge-pure {
+    padding: 1px 4px !important;
+    border-radius: 4px;
+    font-size: var(--fs-micro) !important;
+    font-weight: 600;
+    display: inline-block;
+}
+
+
 /* ==========================================================================
    4. CARDS DO DASHBOARD (VERSÃO UNIFICADA)
    ========================================================================== */
