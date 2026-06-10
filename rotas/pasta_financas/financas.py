@@ -10,9 +10,11 @@ def ini_financas():
     data_hoje = date.today()
     user_id = session['user_id']
 
+    is_htmx = request.headers.get('HX-Request') == 'true'
+
     # 🔥 NOVO: Pegar mostrar_inativas da URL (GET) primeiro
     mostrar_inativas_url = request.args.get('mostrar_inativas')
-    
+
     # Se veio da URL, salva na sessão e já usa
     if mostrar_inativas_url is not None:
         session['financas_mostrar_inativas'] = mostrar_inativas_url
@@ -166,6 +168,19 @@ def ini_financas():
         transacao_lista[9] = formatar_data_br(transacao_lista[9])
         
         transacoes.append(transacao_lista)
+
+    if is_htmx:
+        from flask import render_template_string
+
+        # RENDERIZA SÓ A TABELA
+        tabela_html = render_template('pasta_financas/_tabela_financas.html', transacoes=transacoes, data_inicio=data_inicio, data_fim=data_fim)
+
+        # RENDERIZA OS CAMPOSDE DATA ATUALIZADOS
+        inputs_html = f"""
+                <input type="date" name="data_inicio" id="data_inicio_input" class="form-control" value="{data_inicio or ''}" hx-swap-oob="outerHTML:#data_inicio_input">
+                <input type="date" name="data_fim" id="data_fim_input" class="form-control" value="{data_fim or ''}" hx-swap-oob="outerHTML:#data_fim_input">
+"""
+        return tabela_html + inputs_html
 
     return render_template('pasta_financas/tela_financas.html',
                           data_inicio=data_inicio,

@@ -1,4 +1,4 @@
-// ordenacao.js - VERSÃO OTIMIZADA
+// ordenacao.js - VERSÃO OTIMIZADA COM HTMX
 (function() {
     'use strict';
     
@@ -23,11 +23,9 @@
             valor = parseFloat(texto.replace('R$', '').replace(/\./g, '').replace(',', '.')) || 0;
         } 
         else if (tipo === 'data') {
-            // Parse de data otimizado (sem split/reverse todo hora)
             if (texto && texto !== '-') {
                 const partes = texto.split('/');
                 if (partes.length === 3) {
-                    // formato DD/MM/AAAA -> direto para Date
                     valor = new Date(partes[2], partes[1] - 1, partes[0]);
                 } else {
                     valor = new Date(0);
@@ -40,7 +38,6 @@
             valor = (texto || '').toLowerCase();
         }
         
-        // Guarda no cache
         cacheValores.set(cacheKey, valor);
         return valor;
     }
@@ -51,7 +48,6 @@
         
         const linhas = Array.from(tbody.querySelectorAll('tr'));
         
-        // Filtra linhas válidas
         const linhasValidas = [];
         const linhasMensagem = [];
         
@@ -64,18 +60,15 @@
             }
         }
         
-        // Limpa cache quando mudar de coluna
         if (colunaAtual !== colunaIndex) {
             cacheValores.clear();
         }
         
-        // Pré-calcula os valores para evitar recalcular durante sort
         const linhasComValor = linhasValidas.map(linha => ({
             linha: linha,
             valor: getValorParaComparacao(linha.children[colunaIndex], tipo)
         }));
         
-        // Ordena usando os valores já calculados
         linhasComValor.sort((a, b) => {
             const valorA = a.valor;
             const valorB = b.valor;
@@ -85,19 +78,16 @@
             return 0;
         });
         
-        // Usa DocumentFragment (1 único reflow)
         const fragment = document.createDocumentFragment();
         
         for (let i = 0; i < linhasComValor.length; i++) {
             fragment.appendChild(linhasComValor[i].linha);
         }
         
-        // Adiciona mensagens no final
         for (let i = 0; i < linhasMensagem.length; i++) {
             fragment.appendChild(linhasMensagem[i]);
         }
         
-        // UMA ÚNICA operação DOM
         tbody.innerHTML = '';
         tbody.appendChild(fragment);
     }
@@ -122,19 +112,16 @@
             const colunaInfo = tiposColunas.find(c => c.index === idx);
             if (!colunaInfo) return;
             
-            // Throttle para evitar ordenações repetidas
             let timeout = null;
             
             th.addEventListener('click', () => {
                 if (timeout) return;
                 
                 timeout = setTimeout(() => {
-                    // Reseta as setas
                     cabecalhos.forEach(h => {
                         h.classList.remove('asc', 'desc');
                     });
                     
-                    // Alterna ordem
                     if (colunaAtual === idx) {
                         ordemAtual = ordemAtual === 'asc' ? 'desc' : 'asc';
                     } else {
@@ -143,7 +130,6 @@
                     }
                     
                     th.classList.add(ordemAtual === 'asc' ? 'asc' : 'desc');
-                    
                     ordenarTabela(idx, colunaInfo.tipo);
                     
                     timeout = null;
@@ -152,9 +138,26 @@
         });
     }
     
+    // 🔥 NOVO: Função para re-inicializar após HTMX
+    function reinitOrdenacao() {
+        cacheValores.clear();
+        colunaAtual = null;
+        ordemAtual = 'asc';
+        initOrdenacao();
+    }
+    
+    // Inicializa na primeira carga
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initOrdenacao);
     } else {
         initOrdenacao();
     }
+    
+    // 🔥 NOVO: Detecta substituição da tabela pelo HTMX
+    document.body.addEventListener('htmx:afterSwap', function(evento) {
+        if (evento.detail.target.id === 'tabela-container') {
+            reinitOrdenacao();
+        }
+    });
+    
 })();
