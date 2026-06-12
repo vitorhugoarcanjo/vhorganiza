@@ -37,7 +37,11 @@ def ini_financas():
         session['financas_categorias'] = categorias
         
         if mostrar_inativas_post is not None:
-            session['financas_mostrar_inativas'] = mostrar_inativas_post
+            # 🔒 Garante que só aceita valores válidos
+            if mostrar_inativas_post in ('0', '1', '2'):
+                session['financas_mostrar_inativas'] = mostrar_inativas_post
+            else:
+                session['financas_mostrar_inativas'] = '0'  # fallback seguro
             
     
     # ===== RECUPERA OS FILTROS DA SESSION =====
