@@ -28,18 +28,26 @@
 <div class="painel-container">
 
     <div class="painel-topo-fixo">
-        <form action="{{ url_for('financas.ini_financas') }}" method="POST" class="form-filtros-total">
+        <form
+            id="form-filtros" 
+            hx-post="{{ url_for('financas.ini_financas') }}" 
+            hx-target="#tabela-container"
+            hx-swap="outerHTML" 
+            hx-trigger="submit, change from:.filter-auto-checkbox delay:200ms, change from:.filter-auto-select">
 
             <div class="filtros-container">
 
                 <!-- FILTROS DA DATA -->
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">📅 DATA</div>
+
+                    <!-- -1 DIA / HOJE / +1 DIA -->
                     <div class="flex-row gap-1">
                         <button 
                             type="button"
                             hx-post="{{ url_for('financas.ini_financas') }}"
                             hx-vals='{"tipo_filtro": "ontem"}'
+                            hx-include="#form-filtros"
                             hx-target="#tabela-container"
                             hx-swap="outerHTML"
                             class="btn-pure flex-fill">
@@ -50,6 +58,7 @@
                             type="button"
                             hx-post="{{ url_for('financas.ini_financas') }}"
                             hx-vals='{"tipo_filtro": "hoje"}'
+                            hx-include="#form-filtros"
                             hx-target="#tabela-container"
                             hx-swap="outerHTML"
                             class="btn-pure btn-success-pure flex-fill">
@@ -61,6 +70,7 @@
                             type="button"
                             hx-post="{{ url_for('financas.ini_financas') }}"
                             hx-vals='{"tipo_filtro":"amanha"}'
+                            hx-include="#form-filtros"
                             hx-target="#tabela-container"
                             hx-swap="outerHTML"
                             class="btn-pure flex-fill">
@@ -68,11 +78,13 @@
                         </button>
                     </div>
 
+                    <!-- -1 MÊS / IF MÊS / +1 MÊS -->
                     <div class="flex-row gap-1" style="margin-top: 2px;">
                         <button 
                             type="button"
                             hx-post="{{ url_for('financas.ini_financas') }}"
                             hx-vals='{"tipo_filtro":"mes_passado"}'
+                            hx-include="#form-filtros"
                             hx-target="#tabela-container"
                             hx-swap="outerHTML"
                             class="btn-pure flex-fill">
@@ -83,6 +95,7 @@
                             type="button"
                             hx-post="{{ url_for('financas.ini_financas') }}"
                             hx-vals='{"tipo_filtro":"mes"}'
+                            hx-include="#form-filtros"
                             hx-target="#tabela-container"
                             hx-swap="outerHTML"
                             class="btn-pure btn-info-pure flex-fill">
@@ -93,6 +106,7 @@
                             type="button"
                             hx-post="{{ url_for('financas.ini_financas') }}"
                             hx-vals='{"tipo_filtro": "mes_proximo"}'
+                            hx-include="#form-filtros"
                             hx-target="#tabela-container"
                             hx-swap="outerHTML"
                             class="btn-pure flex-fill">
@@ -108,8 +122,7 @@
                                 name="data_inicio"
                                 id="data_inicio_input"
                                 class="form-control" 
-                                value="{{ data_inicio or '' }}" 
-                                onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                                value="{{ data_inicio or '' }}">
                         </div>
 
                         <div class="flex-fill">
@@ -118,13 +131,12 @@
                                 name="data_fim" 
                                 id="data_fim_input" 
                                 class="form-control" 
-                                value="{{ data_fim or '' }}" 
-                                onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                                value="{{ data_fim or '' }}">
                         </div>
 
                     </div>
                     <div style="margin-top: 3px;">
-                        <select name="tipo_data" class="form-select">
+                        <select name="tipo_data" class="form-select filter-auto-select">
                             <option value="emissao" {% if tipo_data == 'emissao' %}selected{% endif %}>📅 DATA EMISSÃO</option>
                             <option value="vencimento" {% if tipo_data == 'vencimento' %}selected{% endif %}>⏰ DATA VENCIMENTO</option>
                         </select>
@@ -142,7 +154,8 @@
                                 type="checkbox" 
                                 name="categorias" 
                                 value="null" 
-                                class="me-1" {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
+                                class="me-1 filter-auto-checkbox" 
+                                {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
                             <span class="span_categorias">📭 SEM CATEGORIA</span>
                         </label>
 
@@ -152,7 +165,8 @@
                                 type="checkbox" 
                                 name="categorias" 
                                 value="{{ cat[0] }}" 
-                                class="me-1" {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
+                                class="me-1 filter-auto-checkbox"
+                                {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
                             <span class="span_categorias" style="color: {{ cat[2] }}; font-weight: 500;">{{ cat[1] }}</span>
                         </label>
                         {% endfor %}
@@ -166,7 +180,7 @@
                     <div class="flex-row gap-2">
                         <div class="flex-fill">
                             <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Status</label>
-                            <select name="status" class="form-select">
+                            <select name="status" class="form-select  filter-auto-select">
                                 <option value="" {% if status == '' %}selected{% endif %}>Todos</option>
                                 <option value="aberto" {% if status == 'aberto' %}selected{% endif %}>🔴 Aberto</option>
                                 <option value="quitado" {% if status == 'quitado' %}selected{% endif %}>✅ Quitado</option>
@@ -176,7 +190,7 @@
                         
                         <div class="flex-fill">
                             <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Tipo</label>
-                            <select name="tipo" class="form-select">
+                            <select name="tipo" class="form-select filter-auto-select">
                                 <option value="" {% if tipo == '' %}selected{% endif %}>Todos</option>
                                 <option value="receita" {% if tipo == 'receita' %}selected{% endif %}>📈 Receita</option>
                                 <option value="despesa" {% if tipo == 'despesa' %}selected{% endif %}>📉 Despesa</option>
@@ -187,14 +201,14 @@
                     <!-- 🔥 FILTRO ATIVAS/INATIVAS/TODAS (igual tarefas) -->
                     <div style="margin-top: 4px;">
                         <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Transação:</label>
-                        <div class="flex-row gap-1">
+                        <div id="botoes-transacao" class="flex-row gap-1">
                             <button 
                                 type="button"
                                 hx-post="{{ url_for('financas.ini_financas') }}"
                                 hx-vals='{"mostrar_inativas": "0"}'
+                                hx-include="#form-filtros"
                                 hx-target="#tabela-container"
                                 hx-swap="outerHTML"
-                                hx-push-url="false"
                                 class="btn-pure flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">
                                 Ativas
                             </button>
@@ -203,9 +217,9 @@
                                 type="button"
                                 hx-post="{{ url_for('financas.ini_financas') }}"
                                 hx-vals='{"mostrar_inativas": "1"}'
+                                hx-include="#form-filtros"
                                 hx-target="#tabela-container"
                                 hx-swap="outerHTML"
-                                hx-push-url="false"
                                 class="btn-pure flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">
                                 Inativas
                             </button>
@@ -214,9 +228,9 @@
                                 type="button"
                                 hx-post="{{ url_for('financas.ini_financas') }}"
                                 hx-vals='{"mostrar_inativas": "2"}'
+                                hx-include="#form-filtros"
                                 hx-target="#tabela-container"
                                 hx-swap="outerHTML"
-                                hx-push-url="false"
                                 class="btn-pure flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">
                                 Todas
                             </button>
@@ -228,20 +242,28 @@
                 <div class="bloco-filtro bloco-pesquisa-fim">
                     <div>
                         <div class="bloco-titulo">🔍 DESCRIÇÃO</div>
-                        <input type="text" name="descricao" class="form-control" placeholder="buscar..." value="{{ descricao or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                        <input 
+                            type="text" 
+                            name="descricao" 
+                            class="form-control" 
+                            placeholder="buscar..." 
+                            value="{{ descricao or '' }}"
+                            hx-trigger="keyup changed delay:500ms"
+                            hx-post="{{ url_for('financas.ini_financas') }}"
+                            hx-include="#form-filtros"
+                            hx-target="#tabela-container"
+                            hx-swap="outerHTML">
                     </div>
+
                     <div class="flex-row gap-1" style="margin-top: 6px;">
-                        <a href="{{ url_for('financas.limpar_filtros') }}" class="btn-pure flex-fill" style="text-align: center;">Limpar Todos</a>
+                        <a 
+                            href="{{ url_for('financas.limpar_filtros') }}" 
+                            class="btn-pure flex-fill" style="text-align: center;">
+                            Limpar Todos
+                        </a>
 
                         <button 
-                            type="button"
-                            hx-post="{{ url_for('financas.ini_financas') }}"
-                            hx-vals='{"tipo_filtro": "consultar", 
-                                        "data_inicio": document.querySelector("[name=data_inicio]").value,
-                                        "data_fim": document.querySelector("[name=data_fim]").value,
-                                        }'
-                            hx-target="#tabela-container"
-                            hx-swap="outerHTML"                            
+                            type="submit"
                             class="btn-pure btn-primary-pure flex-fill">
                             Consultar
                         </button>
@@ -314,6 +336,7 @@
         <!-- 🔥 Script de estorno (carrega UMA VEZ só) -->
     <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_estornar_quitado.js') }}"></script>
     <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_reativar_inativo.js') }}"></script>
+    <script src="{{ static_v('js/pasta_financas/pasta_filtros/botoes_outros_filtros.js') }}"></script>
 
 {% endblock %}
 

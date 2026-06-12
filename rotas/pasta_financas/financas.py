@@ -12,13 +12,6 @@ def ini_financas():
 
     is_htmx = request.headers.get('HX-Request') == 'true'
 
-    # 🔥 NOVO: Pegar mostrar_inativas da URL (GET) primeiro
-    mostrar_inativas_url = request.args.get('mostrar_inativas')
-
-    # Se veio da URL, salva na sessão e já usa
-    if mostrar_inativas_url is not None:
-        session['financas_mostrar_inativas'] = mostrar_inativas_url
-
     # ===== FILTRO DE DATA (COM PREFIXO) =====
     data_inicio, data_fim, tipo_data = filtro_datas(data_hoje, prefixo='financas')
     
@@ -35,6 +28,7 @@ def ini_financas():
         tipo = request.form.get('tipo', '')
         status = request.form.get('status', '')
         categorias = request.form.getlist('categorias')
+        mostrar_inativas_post = request.form.get('mostrar_inativas')
         
         # Salva na session para persistir entre requisições
         session['financas_descricao'] = descricao
@@ -42,11 +36,8 @@ def ini_financas():
         session['financas_status'] = status
         session['financas_categorias'] = categorias
         
-        # 🔥 Também pega mostrar_inativas do POST
-        mostrar_inativas_post = request.form.get('mostrar_inativas')
         if mostrar_inativas_post is not None:
             session['financas_mostrar_inativas'] = mostrar_inativas_post
-            session.pop('financas_mostrar_inativas_url', None)
             
     
     # ===== RECUPERA OS FILTROS DA SESSION =====
@@ -60,15 +51,19 @@ def ini_financas():
 
     # ===== BUSCA CATEGORIAS DO USUÁRIO =====
     categorias_usuario = []
-    conexao, cursor = ini_conexao()
+    if not is_htmx:
+        conexao, cursor = ini_conexao()
+        cursor.execute("""
+            SELECT id, nome, cor 
+            FROM categorias_financas 
+            WHERE user_id = %s 
+            ORDER BY nome
+        """, (user_id,))
+        categorias_usuario = cursor.fetchall()
 
-    cursor.execute("""
-        SELECT id, nome, cor 
-        FROM categorias_financas 
-        WHERE user_id = %s 
-        ORDER BY nome
-    """, (user_id,))
-    categorias_usuario = cursor.fetchall()
+    else:
+        conexao, cursor = ini_conexao()
+
 
     # ===== MONTA A QUERY =====
     query = """
@@ -93,19 +88,11 @@ def ini_financas():
             params.extend([data_inicio, data_fim])
 
 
-    # ===== FILTRO ATIVO/INATIVO =====
-    if request.method == 'POST':
-        # pega do formulario se veio
-        session['financas_mostrar_inativas'] = mostrar_inativas
-
     # APLICAR FILTRO
     if mostrar_inativas == '1':
         query += " AND t.ativo = 0"
 
-    elif mostrar_inativas == '2':
-        pass
-
-    else:
+    elif mostrar_inativas == '0':
         query += " AND t.ativo = 1"
     # ===== FILTRO ATIVO/INATIVO =====
 
@@ -125,7 +112,7 @@ def ini_financas():
 
     # ===== FILTRO DESCRIÇÃO =====
     if descricao:
-        query += " AND t.descricao LIKE %s"
+        query += " AND t.descricao ILIKE %s"
         params.append(f"%{descricao}%")
 
     # ===== FILTRO TIPO =====
@@ -152,29 +139,25 @@ def ini_financas():
         # Se for parcela (numero_parcela existe), mostra "descrição (X/Y)"
         numero_parcela = t[11] if len(t) > 11 else None
         total_parcelas = t[12] if len(t) > 12 else None
-        transacao_pai_id = t[13] if len(t) > 13 else None
-
         descricao_original = transacao_lista[4]
 
         if numero_parcela and total_parcelas and total_parcelas > 1:
-            transacao_lista[4] = f"{descricao_original} ({numero_parcela}/{total_parcelas})"
+            transacao_lista[4] = f"{descricao_original}"
         
-        # 🔥 Formata valor (coluna 3) - Já aplica a máscara
+        # 🔥 Formata
         transacao_lista[3] = formatar_moeda_br(transacao_lista[3])
-        
-        # 🔥 Formata data emissão (coluna 5)
         transacao_lista[5] = formatar_data_br(transacao_lista[5])
-        
-        # 🔥 Formata data vencimento (coluna 9)
         transacao_lista[9] = formatar_data_br(transacao_lista[9])
         
         transacoes.append(transacao_lista)
 
     if is_htmx:
-        from flask import render_template_string
 
         # RENDERIZA SÓ A TABELA
-        tabela_html = render_template('pasta_financas/_tabela_financas.html', transacoes=transacoes, data_inicio=data_inicio, data_fim=data_fim)
+        tabela_html = render_template('pasta_financas/_tabela_financas.html', 
+                                      transacoes=transacoes, 
+                                      data_inicio=data_inicio, 
+                                      data_fim=data_fim)
 
         # RENDERIZA OS CAMPOSDE DATA ATUALIZADOS
         inputs_html = f"""
