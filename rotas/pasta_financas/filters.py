@@ -22,7 +22,7 @@ class FinancasFilters:
         session[f'{cls.PREFIXO}_descricao'] = request.form.get('descricao', '')
         session[f'{cls.PREFIXO}_tipo'] = request.form.get('tipo', '')
         session[f'{cls.PREFIXO}_status'] = request.form.get('status', '')
-        session[f'{cls.PREFIXO}_categorias'] = request.form.get('categorias')
+        session[f'{cls.PREFIXO}_categorias'] = request.form.getlist('categorias')
 
         mostrar_inativas = request.form.get('mostrar_inativas')
         if mostrar_inativas in ('0', '1', '2'):

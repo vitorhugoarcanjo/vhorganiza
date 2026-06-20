@@ -4,7 +4,7 @@ from flask import Blueprint
 bp_financas = Blueprint('financas', __name__)
 
 # IMPORTS DOS CRUDS BLUEPRINTS E FUNCOES E ROTAS
-from rotas.pasta_financas.financas import ini_financas, detalhes_transacao, limpar_filtros
+from .financas import ini_financas, detalhes_transacao, limpar_filtros
 
 # CRUDS
 from .crud.pasta_delete.delete_transacao import ini_inativar_financas # INATIVAR FINANÇAS
