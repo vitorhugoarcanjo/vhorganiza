@@ -1,5 +1,5 @@
-from .queries import FinancasQueries
-from .filters import FinancasFilters
+from rotas.pasta_financas.queries import FinancasQueries
+from rotas.pasta_financas.filters import FinancasFilters
 
 class FinancasServices:
     """ Serviços de negócios do módulo finanças """

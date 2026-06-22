@@ -3,7 +3,7 @@ from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
 
 from .filters import FinancasFilters
-from .services import FinancasServices
+from .services.services_financas import FinancasServices
 from .formatters import FinancasFormatters
 
 @login_required
