@@ -3,25 +3,8 @@
 {% block title %}Finanças - Gestão Financeira{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/import_css.css') }}">
-
-    <!-- CSS MODAL DETALHES COMPLETO -->
-    <link rel="stylesheet" href="{{ static_v('pasta_financas/modais/detalhes_completo.css') }}">
-
-    <!-- estornar -->
-    <link rel="stylesheet" href="{{ static_v('pasta_financas/modais/modal_estornar.css') }}">
-
-    <!-- EXCLUIR / INATIVAR -->
-    <link rel="stylesheet" href="{{ static_v('pasta_financas/modais/modal_excluir.css') }}">
-
-
-
-    <!-- MENU CLICK DIREITO CSS -->
-    <link rel="stylesheet" href="{{ static_v('js/pasta_financas/menu_click/click_direito.css') }}"> <!-- TOTALIZADORES -->
-
-
-
-
+    <!-- ✅ APENAS 1 CSS (em vez de 5) -->
+    <link rel="stylesheet" href="{{ static_v('css/financas.min.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -326,17 +309,11 @@
 
 <!-- MODAIS (igual tarefas) -->
 {% block scripts %}
-    <script src="{{ static_v('js/pasta_financas/modais/detalhes_completo.js') }}"></script> <!-- DETALHES DA TAREFA -->
-    <script src="{{ static_v('js/pasta_financas/pasta_quitar/btn_quitar.js') }}"></script> <!-- BOTÃO QUITAMENTO -->
-    <script src="{{ static_v('js/pasta_financas/modais/pasta_excluir/excluir_financas.js') }}"></script> <!-- BOTÃO DE EXCLUIR/INATIVAR -->
-    <script src="{{ static_v('js/pasta_financas/totalizadores/totalizadores.js') }}"></script> <!-- TOTALIZADORES -->
-    <script src="{{ static_v('js/pasta_financas/menu_click/click_direito.js') }}"></script> <!-- MENU COM CLICK DIREITO -->
-    <script src="{{ static_v('js/pasta_financas/menu_click/menu_vinculos/vinculos.js') }}"></script> <!-- MENU - VINCULOS -->
-    <!-- <script src="{{ static_v('js/pasta_financas/ordenacao_colunas/ordenacao.js') }}"></script> -->
-        <!-- 🔥 Script de estorno (carrega UMA VEZ só) -->
-    <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_estornar_quitado.js') }}"></script>
-    <script src="{{ static_v('js/pasta_financas/modais/pasta_estornar/modal_reativar_inativo.js') }}"></script>
-    <script src="{{ static_v('js/pasta_financas/pasta_filtros/botoes_outros_filtros.js') }}"></script>
+    <!-- ✅ APENAS 1 JS (em vez de 11) -->
+    <script src="{{ static_v('js/financas.min.js') }}"></script>
+    
+    <!-- 🔥 HTMX do CDN (rápido) -->
+    <script src="https://unpkg.com/htmx.org@2.0.0"></script>
 
 {% endblock %}
 
