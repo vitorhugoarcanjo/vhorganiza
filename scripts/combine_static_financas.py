@@ -23,31 +23,16 @@ JS_FILES = [
     'static/js/pasta_financas/pasta_filtros/botoes_outros_filtros.js',
     
     # Menu
-    'static/js/pasta_financas/menu_click/click_direito.js',
-    'static/js/pasta_financas/menu_click/menu_vinculos/vinculos.js',
-
-    # ========================
-    # TAREFAS - FUTURO PÓS AJUSTAR FINANCAS
-    # ========================
-
-
-    # ========================
-    # COMPONENTES GLOBAIS
-    # ========================
-    'static/js/componentes/notificacoes_globais/notificacoes_tela.js',
-    'static/js/componentes/data_global/click_data.js',
-    'static/js/pos_login/btn_logout.js',
+    'static/js/modules/pasta_financas/menu_click/click_direito.js',
+    'static/js/modules/pasta_financas/menu_click/vinculos.js',
 ]
 
 
 CSS_FILES = [
     'static/tela_base_telas_unificadas/estrutura_global.css',
     'static/pasta_tarefas/import_css.css',  # ← Esse tem @import
-    'static/pasta_financas/modais/detalhes_completo.css',
-    'static/pasta_financas/modais/modal_estornar.css',
-    'static/pasta_financas/modais/modal_excluir.css',
-    'static/js/pasta_financas/menu_click/click_direito.css',
-    'static/js/componentes/notificacoes_globais/notificacoes_tela.css',
+    'static/css/modules/pasta_financas/import_css.css', # MENU - MODAIS
+    'static/js/componentes/notificacoes_globais/notificacoes_tela.css', # NOTIFICACOES
 ]
 
 
@@ -100,7 +85,7 @@ def combinar():
 
     # JS
     print('\n📦 Combinando JS...')
-    with open('static/js/financas.min.js', 'w', encoding='utf-8') as out:
+    with open('static/js/modules/pasta_financas/financas.min.js', 'w', encoding='utf-8') as out:
         out.write(f'// COMBINADO - {datetime.now().strftime("%d/%m/%Y %H:%M")}\n\n')
         for file in JS_FILES:
             if os.path.exists(file):
@@ -115,7 +100,7 @@ def combinar():
 
     # CSS (com resolução de @import)
     print('\n📦 Combinando CSS...')
-    with open('static/css/financas.min.css', 'w', encoding='utf-8') as out:
+    with open('static/css/modules/pasta_financas/financas.min.css', 'w', encoding='utf-8') as out:
         out.write(f'/* COMBINADO - {datetime.now().strftime("%d/%m/%Y %H:%M")} */\n\n')
         
         for file in CSS_FILES:

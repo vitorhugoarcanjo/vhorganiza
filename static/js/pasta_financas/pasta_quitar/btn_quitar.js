@@ -1,6 +1,6 @@
 function quitarTransacao(sequencia, botao) {
+    
     const htmlOriginal = botao.innerHTML;
-
     botao.disabled = true;
     botao.style.opacity = '0.5';
     botao.innerHTML = '⏳';
@@ -11,9 +11,14 @@ function quitarTransacao(sequencia, botao) {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        return response.json();
+    })
     .then(data => {
+        
         if (data.success) {
+            
+            
             const linha = botao.closest('tr');
             
             // Atualiza o status na tabela (coluna 5)
@@ -120,6 +125,8 @@ function quitarTransacao(sequencia, botao) {
             if (typeof calcularTotaisFinancas === 'function') {
                 calcularTotaisFinancas();
             }
+            
+            Notificacao.sucesso('Transação quitada com sucesso!');
             
         } else {
             botao.disabled = false;

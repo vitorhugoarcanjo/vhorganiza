@@ -1,4 +1,4 @@
-/* COMBINADO - 23/06/2026 20:41 */
+/* COMBINADO - 24/06/2026 21:37 */
 
 /* ===== estrutura_global.css ===== */
 
@@ -1040,9 +1040,12 @@ body.menu-active { overflow: hidden; }
 }
 
 
-/* ===== detalhes_completo.css ===== */
+/* ===== import_css.css ===== */
+/* ======================= */
+/* ======= MODAIS =========*/
+/* ======================= */
 /* MODAL DETALHES GLOBAL - Reutilizado por Tarefas e Finanças */
-.modal-overlay {
+.modal-detalhes-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -1065,12 +1068,12 @@ body.menu-active { overflow: hidden; }
     transition: opacity 0.15s ease;
 }
 
-.modal-overlay.active {
+.modal-detalhes-overlay.active {
     opacity: 1;
     pointer-events: auto;
 }
 
-.modal-container {
+.modal-detalhes-container {
     background-color: var(--bg-card);
     border: 1px solid var(--border-sutil);
     border-radius: 6px;
@@ -1089,11 +1092,11 @@ body.menu-active { overflow: hidden; }
     transition: transform 0.15s ease;
 }
 
-.modal-overlay.active .modal-container {
+.modal-detalhes-overlay.active .modal-detalhes-container {
     transform: translateY(0);
 }
 
-.modal-header {
+.modal-detalhes-header {
     background-color: var(--bg-principal);
     padding: 10px 14px;
 
@@ -1106,13 +1109,13 @@ body.menu-active { overflow: hidden; }
     flex-shrink: 0;
 }
 
-.modal-title {
+.modal-detalhes-title {
     font-size: var(--fs-normal);
     font-weight: 600;
     color: var(--texto-principal);
 }
 
-.modal-close {
+.modal-detalhes-close {
     background: transparent;
     border: none;
     color: var(--texto-mutado);
@@ -1120,7 +1123,7 @@ body.menu-active { overflow: hidden; }
     cursor: pointer;
 }
 
-.modal-body {
+.modal-detalhes-body {
     padding: 14px;
 
     display: flex;
@@ -1132,13 +1135,13 @@ body.menu-active { overflow: hidden; }
     flex: 1;
 }
 
-.modal-grid {
+.modal-detalhes-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
 }
 
-.modal-field {
+.modal-detalhes-field {
     background-color: var(--bg-principal);
     border: 1px solid var(--border-sutil);
 
@@ -1148,11 +1151,11 @@ body.menu-active { overflow: hidden; }
     min-width: 0;
 }
 
-.modal-field.full-width {
+.modal-detalhes-field.full-width {
     grid-column: span 2;
 }
 
-.field-label {
+.field-detalhes-label {
     font-size: 0.58rem;
     color: var(--cor-ativa);
 
@@ -1162,14 +1165,14 @@ body.menu-active { overflow: hidden; }
     margin-bottom: 2px;
 }
 
-.field-value {
+.field-detalhes-value {
     font-size: var(--fs-pequeno);
     color: var(--texto-principal);
 
     word-break: break-word;
 }
 
-.field-value-scroll {
+.field-detalhes-value-scroll {
     max-height: 220px;
 
     overflow-y: auto;
@@ -1180,7 +1183,7 @@ body.menu-active { overflow: hidden; }
     padding-right: 4px;
 }
 
-.spinner-pure {
+.spinner-detalhes-pure {
     width: 30px;
     height: 30px;
     border: 3px solid var(--border-sutil);
@@ -1193,9 +1196,10 @@ body.menu-active { overflow: hidden; }
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
-
-/* ===== modal_estornar.css ===== */
+/* ========================================== */
 /* 🔥 MODAL DE ESTORNAR - CSS EXCLUSIVO */
+/* ========================================== */
+
 .modal-overlay-estornar {
     position: fixed;
     top: 0;
@@ -1226,10 +1230,12 @@ body.menu-active { overflow: hidden; }
     max-width: 550px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: modalFadeIn 0.2s ease-out;
+    /* ✅ CORRIGIDO: Nome da keyframe único */
+    animation: modalEstornarFadeIn 0.2s ease-out;
 }
 
-@keyframes modalFadeIn {
+/* ✅ CORRIGIDO: Nome único */
+@keyframes modalEstornarFadeIn {
     from {
         opacity: 0;
         transform: scale(0.95);
@@ -1298,8 +1304,6 @@ body.menu-active { overflow: hidden; }
     opacity: 0.6;
     cursor: not-allowed;
 }
-
-/* ===== modal_excluir.css ===== */
 /* 🔥 MODAL DE EXCLUIR - CSS EXCLUSIVO */
 .modal-overlay-excluir {
     position: fixed;
@@ -1377,7 +1381,9 @@ body.menu-active { overflow: hidden; }
     background: #c0392b;
 }
 
-/* ===== click_direito.css ===== */
+/* ======================= */
+/* ======= MENU =========*/
+/* ======================= */
 /* ==========================================================
    MENU DE CONTEXTO GLOBAL
    ========================================================== */
@@ -1572,6 +1578,8 @@ body.menu-active { overflow: hidden; }
     font-size: 0.65rem;
     font-weight: 600;
 }
+
+
 
 /* ===== notificacoes_tela.css ===== */
 /* ============================================ */
