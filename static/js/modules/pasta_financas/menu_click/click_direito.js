@@ -40,12 +40,8 @@
             }
         }
         
-        const parcelaMatch = descricao.match(/(\d+)\/(\d+)/);
-        const numeroParcela = parcelaMatch ? parcelaMatch[1] : null;
-        const totalParcelas = parcelaMatch ? parcelaMatch[2] : null;
         const tipo = tipoTexto.includes('Receita') || tipoTexto.includes('📈') ? 'receita' : 'despesa';
-        
-        return { sequencia, descricao, numeroParcela, totalParcelas, tipo, linha };
+        return { sequencia, descricao, tipo, linha };
     }
     
     function mostrarMenu(x, y, data) {
@@ -69,11 +65,19 @@
     }
     
     function initCliqueDireito() {
+        console.log('🔥 INICIANDO MENU CLICK DIREITO...');
+        
         const tabela = document.querySelector('.custom-table');
-        if (!tabela) return;
+        if (!tabela) {
+            console.warn('⚠️ Tabela não encontrada!');
+            return;
+        }
+        console.log('✅ Tabela encontrada!');
         
-        window.addEventListener('scroll', () => fecharMenu());
+        // Fecha menu ao scroll
+        window.addEventListener('scroll', fecharMenu);
         
+        // Fecha menu ao clicar fora
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#contextMenu')) fecharMenu();
             if (!e.target.closest('.custom-table tr')) {
@@ -81,6 +85,7 @@
             }
         });
         
+        // Eventos do menu
         const menu = document.getElementById('contextMenu');
         if (menu) {
             menu.querySelectorAll('.context-menu-item').forEach(item => {
@@ -98,31 +103,64 @@
                             const event = new CustomEvent('abrirModalVinculos', { detail: dados });
                             document.dispatchEvent(event);
                         }
-
                     }
                     fecharMenu();
                 });
             });
         }
         
-        tabela.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            const linha = e.target.closest('tr');
-            if (!linha || linha.querySelector('td[colspan]')) return;
-            
-            document.querySelectorAll('.custom-table tr').forEach(tr => tr.classList.remove('selecionado'));
-            linha.classList.add('selecionado');
-            
-            const data = extrairDadosLinha(linha);
-            if (data) mostrarMenu(e.clientX, e.clientY, data);
-        });
+        // ✅ REMOVE LISTENER ANTIGO PARA EVITAR DUPLICAÇÃO
+        document.removeEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('contextmenu', handleContextMenu);
+        
+        console.log('✅ Menu click direito inicializado!');
     }
     
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initCliqueDireito);
-    } else {
-        initCliqueDireito();
+    // ✅ FUNÇÃO SEPARADA PARA O EVENTO
+    function handleContextMenu(e) {
+        const linha = e.target.closest('tr');
+        if (!linha || linha.querySelector('td[colspan]')) return;
+        
+        const tabela = e.target.closest('.custom-table');
+        if (!tabela) return;
+        
+        e.preventDefault();
+        
+        document.querySelectorAll('.custom-table tr').forEach(tr => tr.classList.remove('selecionado'));
+        linha.classList.add('selecionado');
+        
+        const data = extrairDadosLinha(linha);
+        if (data) mostrarMenu(e.clientX, e.clientY, data);
     }
+    
+    // ==========================================================
+    // 🔥 INICIALIZAÇÃO
+    // ==========================================================
+    
+    // Tenta iniciar imediatamente (se a tabela já existir)
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(initCliqueDireito, 100);
+    }
+    
+    // Quando o DOM carregar
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initCliqueDireito, 100);
+    });
+    
+    // 🔥 REINICIA DEPOIS QUE O HTMX ATUALIZAR A TABELA
+    document.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target && evt.detail.target.id === 'tabela-container') {
+            console.log('🔄 Tabela atualizada pelo HTMX, reiniciando menu...');
+            setTimeout(initCliqueDireito, 200);
+        }
+    });
+    
+    // 🔥 TAMBÉM REINICIA DEPOIS DE QUALQUER REQUISIÇÃO HTMX
+    document.addEventListener('htmx:afterRequest', function(evt) {
+        if (evt.detail.target && evt.detail.target.id === 'tabela-container') {
+            console.log('🔄 Requisição HTMX na tabela, reiniciando menu...');
+            setTimeout(initCliqueDireito, 200);
+        }
+    });
+    
 })();
-
-

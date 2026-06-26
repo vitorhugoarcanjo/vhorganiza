@@ -1,9 +1,9 @@
 /* ======================= */
 /* ======= MODAIS =========*/
 /* ======================= */
-@import url('/static/css/modules/pasta_financas/modais/detalhes_completo.css');
-@import url('/static/css/modules/pasta_financas/modais/modal_estornar.css');
-@import url('/static/css/modules/pasta_financas/modais/modal_excluir.css');
+@import url('/static/css/modules/pasta_financas/acoes_e_modais/detalhes_completo.css');
+@import url('/static/css/modules/pasta_financas/acoes_e_modais/modal_estornar.css');
+@import url('/static/css/modules/pasta_financas/acoes_e_modais/modal_excluir.css');
 
 /* ======================= */
 /* ======= MENU =========*/

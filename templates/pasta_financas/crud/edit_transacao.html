@@ -3,7 +3,7 @@
 {% block title %}Editar Transação #{{ sequencia }}{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ static_v('css/modules/pasta_financas/crud/pasta_edit/edit.css') }}">
+<link rel="stylesheet" href="{{ static_v('css/modules/pasta_financas/cruds/edit.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -162,9 +162,9 @@
 </div>
 
 {% block scripts %}
-<script src="{{ static_v('js/pasta_financas/pasta_insert/format_valor.js') }}"></script>
-<script src="{{ static_v('js/pasta_financas/pasta_edit/pasta_parcelas/parcelas_menager.js') }}"></script>
-<script src="{{ static_v('js/pasta_financas/pasta_edit/btn_edit.js') }}"></script>
+<script src="{{ static_v('js/modules/pasta_financas/cruds/pasta_insert/format_valor.js') }}"></script>
+<script src="{{ static_v('js/modules/pasta_financas/cruds/pasta_edit/pasta_parcelas/parcelas_menager.js') }}"></script>
+<script src="{{ static_v('js/modules/pasta_financas/cruds/pasta_edit/btn_edit.js') }}"></script>
 {% endblock %}
 
 {% endblock %}

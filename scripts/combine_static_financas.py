@@ -11,16 +11,19 @@ JS_FILES = [
     # ========================
     # FINANCAS
     # ========================
-    # Modais
-    'static/js/pasta_financas/modais/detalhes_completo.js',
-    'static/js/pasta_financas/modais/pasta_excluir/excluir_financas.js',
-    'static/js/pasta_financas/modais/pasta_estornar/modal_estornar_quitado.js',
-    'static/js/pasta_financas/modais/pasta_estornar/modal_reativar_inativo.js',
+    # BLOCO ACOES
+    'static/js/modules/pasta_financas/acoes_e_modais/detalhes_completo/detalhes_completo.js',
+    'static/js/modules/pasta_financas/acoes_e_modais/pasta_excluir/excluir_financas.js',
+    'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_estornar_quitado.js',
+    'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_reativar_inativo.js',
+    'static/js/modules/pasta_financas/acoes_e_modais/pasta_quitar/btn_quitar.js',
     
-    # Ações
-    'static/js/pasta_financas/pasta_quitar/btn_quitar.js',
-    'static/js/pasta_financas/totalizadores/totalizadores.js',
-    'static/js/pasta_financas/pasta_filtros/botoes_outros_filtros.js',
+    # BLOCO ALTERNATIVOS
+    'static/js/modules/pasta_financas/totalizadores/totalizadores.js',
+    'static/js/modules/pasta_financas/ordenacao_colunas/ordenacao.js',
+
+    # BLOCO DE FILTROS
+    'static/js/modules/pasta_financas/filtros/botoes_outros_filtros.js',
     
     # Menu
     'static/js/modules/pasta_financas/menu_click/click_direito.js',

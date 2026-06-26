@@ -1,4 +1,5 @@
-document.body.addEventListener('htmx:afterRequest', function() {
+// botoes_outros_filtros.js
+document.addEventListener('htmx:afterRequest', function() {
     const mostrarInativas = document.getElementById('mostrar_inativas_input')?.value;
     
     if (!mostrarInativas) return;
@@ -11,4 +12,4 @@ document.body.addEventListener('htmx:afterRequest', function() {
         `#botoes-transacao button[hx-vals*='mostrar_inativas": "${mostrarInativas}"']`
     );
     botaoAtivo?.classList.add('btn-active-toggle');
-})
+});
