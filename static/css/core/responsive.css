@@ -1,0 +1,44 @@
+/* ==========================================================
+   RESPONSIVIDADE
+   ========================================================== */
+
+/* Tablet e mobile - tabela rola horizontal */
+@media (max-width: 1096px) {
+    .custom-table {
+        min-width: 900px;
+    }
+    .td-acoes {
+        flex-wrap: nowrap !important;
+    }
+    .custom-table td:last-child,
+    .custom-table th:last-child {
+        position: sticky;
+        right: 0;
+        background-color: inherit;
+    }
+}
+
+/* Mobile - empilha filtros */
+@media (max-width: 768px) {
+    .filtros-container {
+        flex-direction: column !important;
+    }
+    .bloco-filtro {
+        width: 100% !important;
+    }
+    .custom-table {
+        min-width: 800px;
+    }
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
+    }
+    .botoes-footer-padrao,
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
+    }
+    .totalizador-footer-padrao {
+        margin-left: 0;
+    }
+}

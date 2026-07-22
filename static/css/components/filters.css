@@ -1,0 +1,114 @@
+/* ==========================================================
+   FILTROS
+   ========================================================== */
+.painel-topo-fixo {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.filtros-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.bloco-filtro {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px;
+    flex: 1;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.bloco-filtro:first-child {
+    flex: 1.8;
+    min-width: 210px;
+}
+
+.bloco-filtro .form-select,
+.bloco-filtro .form-control:not(.flex-row .form-control),
+.bloco-filtro .lista-categorias {
+    margin-top: auto;
+}
+
+.bloco-pesquisa-fim {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bloco-titulo {
+    font-size: var(--fs-micro) !important;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    margin-bottom: 4px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flex-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+.flex-row:last-child {
+    margin-bottom: 0;
+}
+.flex-fill {
+    flex: 1;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    border-radius: 4px;
+    font-size: var(--fs-pequeno) !important;
+    outline: none;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label-categoria {
+    font-size: var(--fs-pequeno);
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.span_categorias {
+    font-size: var(--fs-pequeno);
+}
+
+.tarefas-controle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px;
+}
+
+.botoes-esquerda {
+    display: flex;
+    gap: 6px;
+}

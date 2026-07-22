@@ -1,0 +1,57 @@
+/* ==========================================================
+   RESET E BASE
+   ========================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-principal);
+    color: var(--texto-principal);
+}
+
+.content {
+    padding: 0 !important;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.painel-container {
+    display: flex;
+    flex-direction: column;
+    width: 98% !important;
+    max-width: 98% !important;
+    height: 100%;
+    margin: 0 auto !important;
+    padding: 10px 0;
+    gap: 8px;
+    background-color: var(--bg-principal);
+    font-size: var(--fs-normal);
+}
+
+/* ==========================================================
+   SCROLLBAR
+   ========================================================== */
+.scroll-fino::-webkit-scrollbar {
+    width: 5px;
+}
+.scroll-fino::-webkit-scrollbar-track {
+    background: transparent;
+}
+.scroll-fino::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.35);
+    border-radius: 10px;
+}
+.scroll-fino::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 120, 120, 0.6);
+}
+.scroll-fino {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120,120,120,0.5) transparent;
+    overflow-y: auto;
+}
