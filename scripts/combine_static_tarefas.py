@@ -7,19 +7,41 @@ from datetime import datetime
 # ==========================
 
 JS_FILES = [
-
-    # ========================
-    # TAREFAS
-    # ========================
-    # BLOCO ACOES
-    # exemplo: 'static/js/modules/pasta_tarefas/acoes_e_modais/detalhes_completo/detalhes_completo.js',
+    # 1. MODAIS
+    'static/js/modules/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js',
+    'static/js/modules/pasta_tarefas/modais/pasta_excluir/btn_excluir.js',
+    'static/js/modules/pasta_tarefas/modais/concluir_tarefas.js',
+    'static/js/modules/pasta_tarefas/modais/detalhes_completo.js',
+    
+    # 2. TOTALIZADORES
+    'static/js/modules/pasta_tarefas/totalizadores/totalizadores.js',
+    
+    # 3. ORDENAÇÃO
+    'static/js/modules/pasta_tarefas/ordenacao_colunas/ordenacao.js',
 
 ]
 
 
 CSS_FILES = [
     # exemplo: 'static/tela_base_telas_unificadas/estrutura_global.css',
+    # ========================================= #
+    # COMPONENTS
+    # ========================================= #
+    'static/css/components/buttons.css',
+    'static/css/components/filters.css',
+    'static/css/components/footer.css',
+    'static/css/components/tables.css',
 
+    # ========================================= #
+    # CORE
+    # ========================================= #
+    'static/css/core/reset.css',
+    'static/css/core/responsive.css',
+
+
+    # ========================================= #
+    # AJUSTAR OS CSS DOS MODAIS...
+    # ========================================= #
 ]
 
 

@@ -3,7 +3,7 @@
 {% block title %}Gestão de Tarefas{% endblock %}
 
 {% block styles %}
-    <link rel="stylesheet" href="{{ static_v('pasta_tarefas/import_css.css') }}">
+    <link rel="stylesheet" href="{{ static_v('css/modules/pasta_tarefas/tarefas.min.css') }}">
 
     <!-- CSS MODAL - CONCLUIR TAREFA -->
     <link rel="stylesheet" href="{{ static_v('pasta_tarefas/modais/concluir_tarefa.css') }}">
@@ -273,15 +273,8 @@
     {% include 'pasta_tarefas/modais/excluir_tarefa.html' %}
     <!-- CSS NO TOPO -->
 
-    <!-- JS MODAL - CONCLUIR TAREFA / DETALHES COMPLETO -->
-    <!-- JS MODAL - CONCLUIR TAREFA / DETALHES COMPLETO -->
     {% block scripts %}
-        <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js') }}"></script>
-        <script src="{{ static_v('js/pasta_tarefas/modais/concluir_tarefas.js') }}"></script>
-        <script src="{{ static_v('js/pasta_tarefas/modais/detalhes_completo.js') }}"></script>
-        <script src="{{ static_v('js/pasta_tarefas/modais/pasta_excluir/btn_excluir.js') }}"></script>
-        <script src="{{ static_v('js/pasta_tarefas/totalizadores/totalizadores.js') }}"></script>
-        <script src="{{ static_v('js/pasta_tarefas/ordenacao_colunas/ordenacao.js') }}"></script>
+    <script src="{{ static_v('js/modules/pasta_tarefas/tarefas.min.js') }}"></script>
     {% endblock %}
 
 
