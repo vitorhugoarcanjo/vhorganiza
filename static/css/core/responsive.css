@@ -1,15 +1,23 @@
-/* ==========================================================
-   RESPONSIVIDADE
-   ========================================================== */
+/* ==========================================================================
+   6. RESPONSIVIDADE - CORRIGIDA
+   ========================================================================== */
+
+/* Força scroll horizontal quando tabela não couber */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
 
 /* Tablet e mobile - tabela rola horizontal */
 @media (max-width: 1096px) {
     .custom-table {
         min-width: 900px;
     }
+    
     .td-acoes {
         flex-wrap: nowrap !important;
     }
+    
     .custom-table td:last-child,
     .custom-table th:last-child {
         position: sticky;
@@ -18,26 +26,53 @@
     }
 }
 
+/* Remove a regra específica da descrição */
+/* Deixa a tabela toda rolar se precisar */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.custom-table {
+    min-width: 1000px; /* Força largura mínima */
+}
+
+/* DESCRIÇÃO PADRÃO */
+.custom-table td:nth-child(4) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
 /* Mobile - empilha filtros */
 @media (max-width: 768px) {
     .filtros-container {
         flex-direction: column !important;
     }
+    
     .bloco-filtro {
         width: 100% !important;
     }
+    
     .custom-table {
         min-width: 800px;
     }
+}
+
+/* Footer nunca some - só ajusta posição */
+@media (max-width: 768px) {
     .footer-fixo-padrao {
         left: 0 !important;
         flex-wrap: wrap;
     }
+    
     .botoes-footer-padrao,
     .totalizador-footer-padrao {
         width: 100%;
         justify-content: center;
     }
+    
     .totalizador-footer-padrao {
         margin-left: 0;
     }

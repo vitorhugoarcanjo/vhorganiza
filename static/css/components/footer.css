@@ -1,6 +1,6 @@
-/* ==========================================================
-   FOOTER FIXO
-   ========================================================== */
+/* ==========================================================================
+   5. FOOTER FIXO PADRÃO (IGUAL AO INSERT)
+   ========================================================================== */
 .footer-fixo-padrao {
     position: fixed;
     bottom: 0;
@@ -43,6 +43,7 @@
     flex-direction: column;
     white-space: nowrap;
 }
+
 .botoes-footer-padrao .btn-footer i {
     font-size: 1.2rem;
 }
@@ -52,6 +53,7 @@
     color: #fff;
     border: none;
 }
+
 .btn-footer-primary:hover {
     filter: brightness(1.08);
     transform: translateY(-2px);
@@ -62,6 +64,7 @@
     color: var(--texto-mutado);
     border: 1.5px solid var(--border-sutil);
 }
+
 .btn-footer-secondary:hover {
     background: var(--hover-fino);
     border-color: var(--texto-mutado);
@@ -83,6 +86,7 @@
     align-items: flex-end;
     gap: 4px;
 }
+
 .total-item-footer label {
     font-size: 0.6rem;
     color: var(--texto-mutado);
@@ -90,6 +94,7 @@
     font-weight: 600;
     letter-spacing: 0.5px;
 }
+
 .total-item-footer span {
     font-size: 1rem;
     font-weight: 800;
@@ -104,11 +109,13 @@
     padding: 6px 14px;
     border: 1px solid var(--border-sutil);
 }
+
 .contador-footer i {
     font-size: 1rem;
     margin-right: 6px;
     color: var(--cor-ativa);
 }
+
 .contador-footer span {
     font-size: 0.85rem;
     font-weight: 600;
@@ -118,9 +125,16 @@
 .total-receita span {
     color: #22c55e;
 }
+
 .total-despesa span {
     color: #ef4444;
 }
+
 .total-saldo span {
     color: var(--cor-ativa);
+}
+
+/* Espaçamento extra para não esconder conteúdo atrás do footer */
+.painel-tabela-conteudo {
+    margin-bottom: 90px;
 }

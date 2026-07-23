@@ -1,11 +1,15 @@
-/* ==========================================================
-   FILTROS
-   ========================================================== */
+/* ==========================================================================
+   2. FILTROS
+   ========================================================================== */
 .painel-topo-fixo {
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100%;
+}
+
+.form-filtros-total {
     width: 100%;
 }
 
@@ -56,20 +60,11 @@
     letter-spacing: 0.5px;
 }
 
-.flex-row {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 4px;
-}
-.flex-row:last-child {
-    margin-bottom: 0;
-}
-.flex-fill {
-    flex: 1;
-}
+.flex-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.flex-row:last-child { margin-bottom: 0; }
+.flex-fill { flex: 1; }
 
-.form-control,
-.form-select {
+.form-control, .form-select {
     width: 100%;
     background-color: var(--bg-principal);
     border: 1px solid var(--border-sutil);

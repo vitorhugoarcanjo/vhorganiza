@@ -1,19 +1,11 @@
-/* ==========================================================
-   TABELA
-   ========================================================== */
-.painel-tabela-conteudo {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-    margin-bottom: 90px;
-}
-
+/* ==========================================================================
+   3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
+   ========================================================================== */
 .custom-table {
     width: 100%;
     border-collapse: collapse;
     font-size: var(--fs-normal);
     table-layout: fixed;
-    min-width: 1000px;
 }
 
 .custom-table th {
@@ -41,41 +33,62 @@
     transition: all 0.2s ease;
 }
 
-/* ZEBRADO */
+/* ZEBRADO - UM SIM, OUTRO NÃO */
 .custom-table tbody tr:nth-child(odd) {
     background-color: var(--bg-principal);
 }
+
 .custom-table tbody tr:nth-child(even) {
     background-color: var(--hover-fino);
 }
 
-/* HOVER */
+/* HOVER FORTE */
 .custom-table tbody tr:hover {
     background-color: rgba(37, 99, 235, 0.15) !important;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-/* LINHA SELECIONADA */
+/* LINHA SELECIONADA (CLIQUE DIREITO) */
 .custom-table tbody tr.selecionado {
     background-color: rgba(37, 99, 235, 0.25) !important;
     border-left: 3px solid var(--cor-ativa);
     box-shadow: inset 0 0 0 1px var(--cor-ativa);
 }
+
 .custom-table tbody tr.selecionado td:first-child {
     border-left: 3px solid var(--cor-ativa);
     padding-left: 3px;
+}
+
+/* BORDAS ARREDONDADAS NO HOVER */
+.custom-table tbody tr:hover td:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.custom-table tbody tr:hover td:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .td-id {
     color: var(--texto-discreto);
     font-weight: bold;
 }
+
 .td-titulo {
     font-weight: 500;
 }
+
 .text-vazio {
     color: var(--texto-discreto);
+}
+
+.td-vazio {
+    text-align: center;
+    padding: 30px;
+    color: var(--texto-mutado);
 }
 
 /* ==========================================================
@@ -90,7 +103,7 @@
 }
 
 /* ==========================================================
-   ORDENAÇÃO
+   ORDENAÇÃO DE COLUNAS
    ========================================================== */
 .sortable {
     cursor: pointer;
@@ -98,9 +111,11 @@
     position: relative;
     padding-right: 20px !important;
 }
+
 .sortable:hover {
     background-color: var(--hover-fino);
 }
+
 .sortable::after {
     content: "↕️";
     position: absolute;
@@ -110,26 +125,45 @@
     font-size: 0.7rem;
     opacity: 0.5;
 }
+
 .sortable.asc::after {
     content: "↑";
     opacity: 1;
 }
+
 .sortable.desc::after {
     content: "↓";
     opacity: 1;
 }
 
 /* ==========================================================
-   TABLE RESPONSIVE
+   REDIMENSIONAMENTO DE COLUNAS
    ========================================================== */
-.table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
+    color: var(--texto-mutado);
+    font-weight: 600;
+    padding: 4px 6px !important;
+    border-bottom: 2px solid var(--border-sutil);
+    z-index: 10;
+    text-align: left;
+    font-size: var(--fs-micro) !important;
+    position: relative;
 }
 
-.custom-table td:nth-child(4) {
+/* Largura mínima para texto não quebrar */
+.custom-table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 250px;
+}
+
+/* Para descrição, permitir quebra de linha se necessário */
+.custom-table td:nth-child(4) {
+    white-space: normal;
+    word-break: break-word;
+    min-width: 150px;
+    max-width: 300px;
 }

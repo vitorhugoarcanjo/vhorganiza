@@ -1,20 +1,14 @@
-/* ==========================================================
-   RESET E BASE
-   ========================================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-principal);
-    color: var(--texto-principal);
+/* ==========================================================================
+   1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
+   ========================================================================== */
+:root {
+    --fs-micro: 0.62rem;
+    --fs-pequeno: 0.72rem;
+    --fs-normal: 0.8rem;
 }
 
 .content {
-    padding: 0 !important;
+    padding: 0 !important; 
     height: 100vh;
     overflow: hidden;
     display: flex;
@@ -34,24 +28,36 @@ body {
     font-size: var(--fs-normal);
 }
 
-/* ==========================================================
-   SCROLLBAR
-   ========================================================== */
 .scroll-fino::-webkit-scrollbar {
     width: 5px;
 }
+
 .scroll-fino::-webkit-scrollbar-track {
     background: transparent;
 }
+
 .scroll-fino::-webkit-scrollbar-thumb {
     background: rgba(120, 120, 120, 0.35);
     border-radius: 10px;
 }
+
 .scroll-fino::-webkit-scrollbar-thumb:hover {
     background: rgba(120, 120, 120, 0.6);
 }
+
 .scroll-fino {
     scrollbar-width: thin;
     scrollbar-color: rgba(120,120,120,0.5) transparent;
     overflow-y: auto;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+}
+
+.painel-tabela-conteudo {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }

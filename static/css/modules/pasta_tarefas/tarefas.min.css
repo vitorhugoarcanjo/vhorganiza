@@ -1,9 +1,9 @@
-/* COMBINADO - 22/07/2026 13:37 */
+/* COMBINADO - 22/07/2026 19:31 */
 
 /* ===== buttons.css ===== */
-/* ==========================================================
-   BOTÕES DE AÇÃO
-   ========================================================== */
+/* ==========================================================================
+   4. BOTÕES DE AÇÃO
+   ========================================================================== */
 .td-acoes {
     text-align: center;
     display: flex;
@@ -27,31 +27,33 @@
     font-size: var(--fs-pequeno);
     padding: 0;
 }
+
 .btn-acao:hover {
     color: var(--texto-principal);
 }
+
 .btn-acao.view:hover {
     border-color: var(--cor-ativa);
     color: var(--cor-ativa);
 }
+
 .btn-acao.check:hover {
     background-color: rgba(34, 197, 94, 0.1);
     border-color: var(--cor-marca);
     color: var(--cor-marca);
 }
+
 .btn-acao.edit:hover {
     border-color: var(--cor-ativa);
     color: var(--cor-ativa);
 }
+
 .btn-acao.delete:hover {
     background-color: rgba(239, 68, 68, 0.1);
     border-color: #ef4444;
     color: #ef4444;
 }
 
-/* ==========================================================
-   BOTÕES PURES
-   ========================================================== */
 .btn-pure {
     display: inline-flex;
     align-items: center;
@@ -64,19 +66,23 @@
     border-radius: 4px;
     cursor: pointer;
     text-decoration: none;
+}
+
+.btn-pure:hover {
+    background: var(--hover-fino);
+}
+
+/* ==========================================================
+   EFEITO RIPPLE (ONDE CLICOU)
+   ========================================================== */
+
+.btn-pure {
     position: relative;
     overflow: hidden;
     transition: transform 0.1s ease;
 }
-.btn-pure:hover {
-    background: var(--hover-fino);
-}
-.btn-pure:active {
-    transform: scale(0.97);
-    transition: transform 0.05s ease;
-}
 
-/* RIPPLE EFFECT */
+/* Elemento da onda */
 .btn-pure .ripple {
     position: absolute;
     border-radius: 50%;
@@ -84,31 +90,44 @@
     animation: ripple-animation 0.5s ease-out;
     pointer-events: none;
 }
+
+/* Cor da onda no modo escuro (padrão) */
 .btn-pure .ripple {
     background-color: rgba(255, 255, 255, 0.5);
 }
+
+/* Cor da onda no modo claro */
 .light-mode .btn-pure .ripple {
     background-color: rgba(0, 0, 0, 0.15);
 }
+
+/* Ondas para botões específicos no modo escuro */
 .btn-success-pure .ripple {
     background-color: rgba(255, 255, 255, 0.6);
 }
+
 .btn-info-pure .ripple {
     background-color: rgba(255, 255, 255, 0.6);
 }
+
 .btn-primary-pure .ripple {
     background-color: rgba(255, 255, 255, 0.4);
 }
+
+/* Ondas para botões específicos no modo claro */
 .light-mode .btn-success-pure .ripple {
     background-color: rgba(0, 0, 0, 0.2);
 }
+
 .light-mode .btn-info-pure .ripple {
     background-color: rgba(0, 0, 0, 0.2);
 }
+
 .light-mode .btn-primary-pure .ripple {
     background-color: rgba(0, 0, 0, 0.15);
 }
 
+/* Animação da onda */
 @keyframes ripple-animation {
     0% {
         transform: scale(0);
@@ -120,37 +139,61 @@
     }
 }
 
+/* Efeito de clique (aperta o botão) */
+.btn-pure:active {
+    transform: scale(0.97);
+    transition: transform 0.05s ease;
+}
+
+/* Remove outline feio no clique (mantém acessibilidade) */
+.btn-pure:focus-visible {
+    outline: 2px solid var(--cor-ativa);
+    outline-offset: 2px;
+}
+
+/* ==========================================================
+   FIM DO EFEITO RIPPLE
+   ========================================================== */
+
 .btn-success-pure {
     border-color: var(--cor-marca);
     color: var(--cor-marca);
 }
+
 .btn-info-pure {
     border-color: var(--cor-ativa);
     color: var(--cor-ativa);
 }
+
 .btn-primary-pure {
     background: var(--cor-ativa);
     border-color: var(--cor-ativa);
     color: #fff;
 }
+
 .btn-active-toggle {
     background: var(--cor-ativa);
     border-color: var(--cor-ativa);
     color: #fff;
 }
+
 .btn-destaque {
     font-weight: 600;
 }
 
 /* ===== filters.css ===== */
-/* ==========================================================
-   FILTROS
-   ========================================================== */
+/* ==========================================================================
+   2. FILTROS
+   ========================================================================== */
 .painel-topo-fixo {
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100%;
+}
+
+.form-filtros-total {
     width: 100%;
 }
 
@@ -201,20 +244,11 @@
     letter-spacing: 0.5px;
 }
 
-.flex-row {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 4px;
-}
-.flex-row:last-child {
-    margin-bottom: 0;
-}
-.flex-fill {
-    flex: 1;
-}
+.flex-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.flex-row:last-child { margin-bottom: 0; }
+.flex-fill { flex: 1; }
 
-.form-control,
-.form-select {
+.form-control, .form-select {
     width: 100%;
     background-color: var(--bg-principal);
     border: 1px solid var(--border-sutil);
@@ -259,9 +293,9 @@
 }
 
 /* ===== footer.css ===== */
-/* ==========================================================
-   FOOTER FIXO
-   ========================================================== */
+/* ==========================================================================
+   5. FOOTER FIXO PADRÃO (IGUAL AO INSERT)
+   ========================================================================== */
 .footer-fixo-padrao {
     position: fixed;
     bottom: 0;
@@ -304,6 +338,7 @@
     flex-direction: column;
     white-space: nowrap;
 }
+
 .botoes-footer-padrao .btn-footer i {
     font-size: 1.2rem;
 }
@@ -313,6 +348,7 @@
     color: #fff;
     border: none;
 }
+
 .btn-footer-primary:hover {
     filter: brightness(1.08);
     transform: translateY(-2px);
@@ -323,6 +359,7 @@
     color: var(--texto-mutado);
     border: 1.5px solid var(--border-sutil);
 }
+
 .btn-footer-secondary:hover {
     background: var(--hover-fino);
     border-color: var(--texto-mutado);
@@ -344,6 +381,7 @@
     align-items: flex-end;
     gap: 4px;
 }
+
 .total-item-footer label {
     font-size: 0.6rem;
     color: var(--texto-mutado);
@@ -351,6 +389,7 @@
     font-weight: 600;
     letter-spacing: 0.5px;
 }
+
 .total-item-footer span {
     font-size: 1rem;
     font-weight: 800;
@@ -365,11 +404,13 @@
     padding: 6px 14px;
     border: 1px solid var(--border-sutil);
 }
+
 .contador-footer i {
     font-size: 1rem;
     margin-right: 6px;
     color: var(--cor-ativa);
 }
+
 .contador-footer span {
     font-size: 0.85rem;
     font-weight: 600;
@@ -379,30 +420,29 @@
 .total-receita span {
     color: #22c55e;
 }
+
 .total-despesa span {
     color: #ef4444;
 }
+
 .total-saldo span {
     color: var(--cor-ativa);
 }
 
-/* ===== tables.css ===== */
-/* ==========================================================
-   TABELA
-   ========================================================== */
+/* Espaçamento extra para não esconder conteúdo atrás do footer */
 .painel-tabela-conteudo {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
     margin-bottom: 90px;
 }
 
+/* ===== tables.css ===== */
+/* ==========================================================================
+   3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
+   ========================================================================== */
 .custom-table {
     width: 100%;
     border-collapse: collapse;
     font-size: var(--fs-normal);
     table-layout: fixed;
-    min-width: 1000px;
 }
 
 .custom-table th {
@@ -430,41 +470,62 @@
     transition: all 0.2s ease;
 }
 
-/* ZEBRADO */
+/* ZEBRADO - UM SIM, OUTRO NÃO */
 .custom-table tbody tr:nth-child(odd) {
     background-color: var(--bg-principal);
 }
+
 .custom-table tbody tr:nth-child(even) {
     background-color: var(--hover-fino);
 }
 
-/* HOVER */
+/* HOVER FORTE */
 .custom-table tbody tr:hover {
     background-color: rgba(37, 99, 235, 0.15) !important;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-/* LINHA SELECIONADA */
+/* LINHA SELECIONADA (CLIQUE DIREITO) */
 .custom-table tbody tr.selecionado {
     background-color: rgba(37, 99, 235, 0.25) !important;
     border-left: 3px solid var(--cor-ativa);
     box-shadow: inset 0 0 0 1px var(--cor-ativa);
 }
+
 .custom-table tbody tr.selecionado td:first-child {
     border-left: 3px solid var(--cor-ativa);
     padding-left: 3px;
+}
+
+/* BORDAS ARREDONDADAS NO HOVER */
+.custom-table tbody tr:hover td:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.custom-table tbody tr:hover td:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .td-id {
     color: var(--texto-discreto);
     font-weight: bold;
 }
+
 .td-titulo {
     font-weight: 500;
 }
+
 .text-vazio {
     color: var(--texto-discreto);
+}
+
+.td-vazio {
+    text-align: center;
+    padding: 30px;
+    color: var(--texto-mutado);
 }
 
 /* ==========================================================
@@ -479,7 +540,7 @@
 }
 
 /* ==========================================================
-   ORDENAÇÃO
+   ORDENAÇÃO DE COLUNAS
    ========================================================== */
 .sortable {
     cursor: pointer;
@@ -487,9 +548,11 @@
     position: relative;
     padding-right: 20px !important;
 }
+
 .sortable:hover {
     background-color: var(--hover-fino);
 }
+
 .sortable::after {
     content: "↕️";
     position: absolute;
@@ -499,48 +562,61 @@
     font-size: 0.7rem;
     opacity: 0.5;
 }
+
 .sortable.asc::after {
     content: "↑";
     opacity: 1;
 }
+
 .sortable.desc::after {
     content: "↓";
     opacity: 1;
 }
 
 /* ==========================================================
-   TABLE RESPONSIVE
+   REDIMENSIONAMENTO DE COLUNAS
    ========================================================== */
-.table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
+    color: var(--texto-mutado);
+    font-weight: 600;
+    padding: 4px 6px !important;
+    border-bottom: 2px solid var(--border-sutil);
+    z-index: 10;
+    text-align: left;
+    font-size: var(--fs-micro) !important;
+    position: relative;
 }
 
-.custom-table td:nth-child(4) {
+/* Largura mínima para texto não quebrar */
+.custom-table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 250px;
+}
+
+/* Para descrição, permitir quebra de linha se necessário */
+.custom-table td:nth-child(4) {
+    white-space: normal;
+    word-break: break-word;
+    min-width: 150px;
+    max-width: 300px;
 }
 
 /* ===== reset.css ===== */
-/* ==========================================================
-   RESET E BASE
-   ========================================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-principal);
-    color: var(--texto-principal);
+/* ==========================================================================
+   1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
+   ========================================================================== */
+:root {
+    --fs-micro: 0.62rem;
+    --fs-pequeno: 0.72rem;
+    --fs-normal: 0.8rem;
 }
 
 .content {
-    padding: 0 !important;
+    padding: 0 !important; 
     height: 100vh;
     overflow: hidden;
     display: flex;
@@ -560,41 +636,61 @@ body {
     font-size: var(--fs-normal);
 }
 
-/* ==========================================================
-   SCROLLBAR
-   ========================================================== */
 .scroll-fino::-webkit-scrollbar {
     width: 5px;
 }
+
 .scroll-fino::-webkit-scrollbar-track {
     background: transparent;
 }
+
 .scroll-fino::-webkit-scrollbar-thumb {
     background: rgba(120, 120, 120, 0.35);
     border-radius: 10px;
 }
+
 .scroll-fino::-webkit-scrollbar-thumb:hover {
     background: rgba(120, 120, 120, 0.6);
 }
+
 .scroll-fino {
     scrollbar-width: thin;
     scrollbar-color: rgba(120,120,120,0.5) transparent;
     overflow-y: auto;
 }
 
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+}
+
+.painel-tabela-conteudo {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
 /* ===== responsive.css ===== */
-/* ==========================================================
-   RESPONSIVIDADE
-   ========================================================== */
+/* ==========================================================================
+   6. RESPONSIVIDADE - CORRIGIDA
+   ========================================================================== */
+
+/* Força scroll horizontal quando tabela não couber */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
 
 /* Tablet e mobile - tabela rola horizontal */
 @media (max-width: 1096px) {
     .custom-table {
         min-width: 900px;
     }
+    
     .td-acoes {
         flex-wrap: nowrap !important;
     }
+    
     .custom-table td:last-child,
     .custom-table th:last-child {
         position: sticky;
@@ -603,26 +699,53 @@ body {
     }
 }
 
+/* Remove a regra específica da descrição */
+/* Deixa a tabela toda rolar se precisar */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.custom-table {
+    min-width: 1000px; /* Força largura mínima */
+}
+
+/* DESCRIÇÃO PADRÃO */
+.custom-table td:nth-child(4) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
 /* Mobile - empilha filtros */
 @media (max-width: 768px) {
     .filtros-container {
         flex-direction: column !important;
     }
+    
     .bloco-filtro {
         width: 100% !important;
     }
+    
     .custom-table {
         min-width: 800px;
     }
+}
+
+/* Footer nunca some - só ajusta posição */
+@media (max-width: 768px) {
     .footer-fixo-padrao {
         left: 0 !important;
         flex-wrap: wrap;
     }
+    
     .botoes-footer-padrao,
     .totalizador-footer-padrao {
         width: 100%;
         justify-content: center;
     }
+    
     .totalizador-footer-padrao {
         margin-left: 0;
     }

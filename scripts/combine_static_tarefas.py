@@ -73,11 +73,11 @@ def resolve_imports(content, file_path):
         full_path = os.path.join('static', import_path)
         
         if os.path.exists(full_path):
-            print(f'    📄 Resolvendo @import: {import_path}')
+            print(f'Resolvendo @import: {import_path}')
             with open(full_path, 'r', encoding='utf-8') as f:
                 return f.read()
         else:
-            print(f'    ⚠️ @import não encontrado: {import_path}')
+            print(f'@import não encontrado: {import_path}')
             return ''  # Remove o @import se não encontrar
     
     # Substitui todos os @import
@@ -89,11 +89,11 @@ def resolve_imports(content, file_path):
 # ==========================
 def combinar():
     print('='*60)
-    print('🚀 COMBINANDO ARQUIVOS (COM RESOLUÇÃO DE @import)')
+    print('COMBINANDO ARQUIVOS (COM RESOLUÇÃO DE @import)')
     print('='*60)
 
     # JS
-    print('\n📦 Combinando JS...')
+    print('\nCombinando JS...')
     with open('static/js/modules/pasta_tarefas/tarefas.min.js', 'w', encoding='utf-8') as out:
         out.write(f'// COMBINADO - {datetime.now().strftime("%d/%m/%Y %H:%M")}\n\n')
         for file in JS_FILES:
@@ -103,12 +103,12 @@ def combinar():
                 with open(file, 'r', encoding='utf-8') as f:
                     out.write(f.read())
                     out.write('\n\n')
-                print(f'  ✅ {name}')
+                print(f' ok {name}')
             else:
-                print(f'  ⚠️ {file} não encontrado')
+                print(f' falha {file} não encontrado')
 
     # CSS (com resolução de @import)
-    print('\n📦 Combinando CSS...')
+    print('\nCombinando CSS...')
     with open('static/css/modules/pasta_tarefas/tarefas.min.css', 'w', encoding='utf-8') as out:
         out.write(f'/* COMBINADO - {datetime.now().strftime("%d/%m/%Y %H:%M")} */\n\n')
         
@@ -126,14 +126,14 @@ def combinar():
                     out.write(content)
                     out.write('\n\n')
                 
-                print(f'  ✅ {name}')
+                print(f'  ok {name}')
             else:
-                print(f'  ⚠️ {file} não encontrado')
+                print(f'  falha {file} não encontrado')
     
     print('\n' + '='*60)
-    print('✅ PRONTO! Arquivos combinados:')
-    print('  📄 static/js/tarefas.min.js')
-    print('  📄 static/css/tarefas.min.css')
+    print('ok PRONTO! Arquivos combinados:')
+    print('static/js/tarefas.min.js')
+    print('static/css/tarefas.min.css')
     print('='*60)
 
 
