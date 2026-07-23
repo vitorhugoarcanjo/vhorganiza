@@ -30,14 +30,24 @@ JS_FILES = [
     'static/js/modules/pasta_financas/menu_click/vinculos.js',
 ]
 
-
 CSS_FILES = [
-    'static/tela_base_telas_unificadas/estrutura_global.css',
-    'static/pasta_tarefas/import_css.css',  # ← Esse tem @import
+    # ========================================= #
+    # CORE
+    # ========================================= #
+    'static/css/core/reset.css',
+    'static/css/core/responsive.css',
+
+    # ========================================= #
+    # COMPONENTS
+    # ========================================= #
+    'static/css/components/buttons.css',
+    'static/css/components/filters.css',
+    'static/css/components/footer.css',
+    'static/css/components/tables.css',
+
     'static/css/modules/pasta_financas/import_css.css', # MENU - MODAIS
     'static/js/componentes/notificacoes_globais/notificacoes_tela.css', # NOTIFICACOES
 ]
-
 
 # ==========================
 # FUNÇÃO PARA RESOLVER @import
@@ -76,7 +86,6 @@ def resolve_imports(content, file_path):
     
     # Substitui todos os @import
     return re.sub(pattern, replace_import, content, flags=re.IGNORECASE)
-
 
 # ==========================
 # COMBINAR

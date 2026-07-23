@@ -1,4 +1,4 @@
-/* COMBINADO - 22/07/2026 19:31 */
+/* COMBINADO - 23/07/2026 13:34 */
 
 /* ===== buttons.css ===== */
 /* ==========================================================================
@@ -205,6 +205,7 @@
     width: 100%;
     align-items: stretch;
 }
+
 
 .bloco-filtro {
     background-color: var(--bg-card);
@@ -670,6 +671,7 @@
     min-height: 0;
 }
 
+
 /* ===== responsive.css ===== */
 /* ==========================================================================
    6. RESPONSIVIDADE - CORRIGIDA
@@ -750,4 +752,353 @@
         margin-left: 0;
     }
 }
+
+/* ===== concluir_tarefa.css ===== */
+/* ==========================================================
+   MODAL CONCLUIR TAREFA
+   ========================================================== */
+
+.modal-concluir-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+
+.modal-concluir-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-concluir-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    width: 90%;
+    max-width: 440px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(-15px);
+    transition: transform 0.15s ease;
+}
+
+.modal-concluir-overlay.active .modal-concluir-container {
+    transform: translateY(0);
+}
+
+.modal-concluir-header {
+    background-color: var(--bg-principal);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.modal-concluir-title {
+    font-size: var(--fs-normal);
+    font-weight: 600;
+    color: var(--texto-principal);
+}
+
+.modal-concluir-close {
+    background: transparent;
+    border: none;
+    color: var(--texto-mutado);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.modal-concluir-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-concluir-field {
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    padding: 6px;
+    border-radius: 4px;
+    min-width: 0;
+}
+
+.modal-concluir-field.full-width {
+    grid-column: span 2;
+}
+
+.modal-concluir-field .field-label {
+    font-size: 0.58rem;
+    color: var(--cor-ativa);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.modal-concluir-field .field-value {
+    font-size: var(--fs-pequeno);
+    color: var(--texto-principal);
+    word-break: break-word;
+}
+
+.modal-concluir-field .field-value-scroll {
+    max-height: 220px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-right: 4px;
+}
+
+/* Botões do modal */
+.modal-concluir-field textarea {
+    width: 100%;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: var(--fs-pequeno);
+    resize: vertical;
+}
+
+.modal-concluir-field textarea:focus {
+    outline: none;
+    border-color: var(--cor-ativa);
+}
+
+/* ===== detalhes_completo.css ===== */
+.modal-detalhes-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px;
+
+    z-index: 9999;
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.15s ease;
+}
+
+.modal-detalhes-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-detalhes-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+
+    width: 90%;
+    max-width: 440px;
+
+    max-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    transform: translateY(-15px);
+    transition: transform 0.15s ease;
+}
+
+.modal-detalhes-overlay.active .modal-detalhes-container {
+    transform: translateY(0);
+}
+
+.modal-detalhes-header {
+    background-color: var(--bg-principal);
+    padding: 10px 14px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid var(--border-sutil);
+
+    flex-shrink: 0;
+}
+
+.modal-detalhes-title {
+    font-size: var(--fs-normal);
+    font-weight: 600;
+    color: var(--texto-principal);
+}
+
+.modal-detalhes-close {
+    background: transparent;
+    border: none;
+    color: var(--texto-mutado);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.modal-detalhes-body {
+    padding: 14px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    overflow-y: auto;
+
+    flex: 1;
+}
+
+.modal-detalhes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.modal-detalhes-field {
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+
+    padding: 6px;
+    border-radius: 4px;
+
+    min-width: 0;
+}
+
+.modal-detalhes-field.full-width {
+    grid-column: span 2;
+}
+
+.field-detalhes-label {
+    font-size: 0.58rem;
+    color: var(--cor-ativa);
+
+    text-transform: uppercase;
+    font-weight: bold;
+
+    margin-bottom: 2px;
+}
+
+.field-detalhes-value {
+    font-size: var(--fs-pequeno);
+    color: var(--texto-principal);
+
+    word-break: break-word;
+}
+
+.field-detalhes-value-scroll {
+    max-height: 220px;
+
+    overflow-y: auto;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    padding-right: 4px;
+}
+
+/* ===== excluir_global.css ===== */
+/* Modal Overlay - Base (invisível por padrão) */
+.modal-excluir-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+/* Quando ativo, mostra o modal */
+.modal-excluir-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Box */
+.modal-excluir-box {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-excluir-box h3 {
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.modal-excluir-box p {
+    margin: 15px 0;
+    color: #ddd;
+}
+
+.modal-excluir-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-excluir-cancelar {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.btn-excluir-cancelar:hover {
+    background: #555;
+}
+
+.btn-excluir-confirmar {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.btn-excluir-confirmar:hover {
+    background: #c0392b;
+}
+
 

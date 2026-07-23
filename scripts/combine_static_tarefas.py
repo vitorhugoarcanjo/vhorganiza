@@ -42,6 +42,9 @@ CSS_FILES = [
     # ========================================= #
     # AJUSTAR OS CSS DOS MODAIS...
     # ========================================= #
+    'static/css/modules/pasta_tarefas/modais/concluir_tarefa.css',
+    'static/css/modules/pasta_tarefas/modais/detalhes_completo.css',
+    'static/css/modules/pasta_tarefas/modais/excluir_global.css',
 ]
 
 
