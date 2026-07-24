@@ -46,7 +46,6 @@ CSS_FILES = [
     'static/css/components/tables.css',
 
     'static/css/modules/pasta_financas/import_css.css', # MENU - MODAIS
-    'static/js/componentes/notificacoes_globais/notificacoes_tela.css', # NOTIFICACOES
 ]
 
 # ==========================

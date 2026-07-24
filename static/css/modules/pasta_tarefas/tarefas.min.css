@@ -1,4 +1,4 @@
-/* COMBINADO - 24/07/2026 13:42 */
+/* COMBINADO - 24/07/2026 19:28 */
 
 /* ===== buttons.css ===== */
 /* ==========================================================================
@@ -332,12 +332,12 @@
     align-items: center;
     justify-content: center;
     gap: 2px;
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     padding: 4px;
     border-radius: 8px;
     font-size: 0.6rem;
-    font-weight: 600;
+    font-weight: 500;
     text-decoration: none;
     transition: all 0.2s ease;
     cursor: pointer;
