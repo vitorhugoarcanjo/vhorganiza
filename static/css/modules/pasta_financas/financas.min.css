@@ -1,303 +1,6 @@
-/* COMBINADO - 25/06/2026 20:57 */
+/* COMBINADO - 24/07/2026 13:43 */
 
-/* ===== estrutura_global.css ===== */
-
-/* Importação da fonte Inter */
-
-
-/* ==========================================================================
-    1. VARIÁVEIS DE COR E TEMA (MÁGICA DO CSS PURO)
-    ========================================================================== */
-:root {
-    /* Tema Escuro (Seu padrão rico em Slate/Navy) */
-    --bg-principal: #0f172a;
-    --bg-card: #1e293b;
-    --border-sutil: rgba(255, 255, 255, 0.06);
-    
-    --texto-principal: #f8fafc;
-    --texto-mutado: #94a3b8;
-    --texto-discreto: #64748b;
-    
-    --cor-marca: #22c55e; /* Verde Destaque */
-    --cor-ativa: #2563eb; /* Azul de Destaque Fino */
-    --hover-fino: rgba(255, 255, 255, 0.03);
-    --scrollbar-thumb: rgba(255, 255, 255, 0.1);
-}
-
-body.light-mode {
-    /* Tema Claro Customizado - Confortável para os olhos */
-    --bg-principal: #e2e8f0;   /* Um cinza azulado bem mais fosco e calmo */
-    --bg-card: #f1f5f9;        /* Um tom levemente mais claro para destacar os blocos */
-    --border-sutil: rgba(15, 23, 42, 0.12);
-    
-    --texto-principal: #1e293b; /* Texto escuro, mas não 100% preto */
-    --texto-mutado: #475569;
-    --texto-discreto: #64748b;
-    
-    --cor-marca: #16a34a;
-    --cor-ativa: #1d4ed8;
-    --hover-fino: rgba(0, 0, 0, 0.04);
-    --scrollbar-thumb: rgba(0, 0, 0, 0.15);
-}
-
-/* ==========================================================================
-    2. RESET E ESTRUTURA BASE (MOBILE FIRST)
-    ========================================================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
-
-body {
-    background-color: var(--bg-principal);
-    color: var(--texto-principal);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    transition: background-color 0.25s ease, color 0.25s ease;
-}
-
-.layout {
-    display: flex;
-    flex-direction: column; 
-    min-height: 100vh;
-}
-
-/* ==========================================================================
-    4. SIDEBAR (LINHA FINA EXCLUSIVA)
-    ========================================================================== */
-.menu-toggle {
-    display: block;
-    position: fixed;
-    top: 0.75rem; 
-    right: 1rem;  
-    z-index: 997;
-    background: var(--bg-card);
-    color: var(--texto-principal);
-    border: 1px solid var(--border-sutil);
-    padding: 0.4rem 0.7rem;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    cursor: pointer;
-}
-
-.menu-close {
-    display: block;
-    background: transparent;
-    color: var(--texto-mutado);
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
-.menu-close:hover { color: var(--texto-principal); }
-
-.sidebar-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 998;
-}
-
-.sidebar {
-    width: 150px;
-    min-width: 150px;
-    background-color: var(--bg-principal);
-    border-right: 1px solid var(--border-sutil);
-    padding: 1.5rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    position: fixed;
-    left: -250px; 
-    top: 0;
-    z-index: 999;
-    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease;
-}
-
-.sidebar .logo {
-    font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-    margin-bottom: 2rem;
-    color: var(--texto-principal);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar li {
-    margin-bottom: 0.25rem;
-}
-
-/* 👑 ESTILIZAÇÃO DO MENU EM LINHA FINA */
-.sidebar a, .btn-theme-toggle {
-    color: var(--texto-mutado);
-    background: transparent;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 9px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 400; /* Linha mais fina e elegante */
-    border: 1px solid transparent; /* Evita jitter no hover */
-    transition: all 0.15s ease-in-out;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-}
-
-.sidebar a:hover, .btn-theme-toggle:hover {
-    color: var(--texto-principal);
-    background-color: var(--hover-fino);
-    border-color: var(--border-sutil); /* Detalhe fino de borda ao passar o mouse */
-}
-
-/* Linha Fina Ativa (Sem preenchimentos pesados) */
-.sidebar a.active {
-    color: var(--texto-principal);
-    font-weight: 600;
-    background-color: var(--hover-fino);
-    border-color: var(--cor-ativa); /* Apenas uma linha sutil demarcando o item ativo */
-}
-
-.nav-socials-mobile {
-    margin-top: auto;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-sutil);
-}
-
-.nav-socials-mobile p {
-    font-size: 0.7rem;
-    color: var(--texto-discreto);
-    margin-bottom: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.socials-mobile-grid {
-    display: flex;
-    gap: 1.25rem;
-}
-
-.socials-mobile-grid a {
-    color: var(--texto-discreto);
-    font-size: 1.15rem;
-    padding: 0 !important;
-    border: none !important;
-    background: transparent !important;
-}
-
-.socials-mobile-grid a:hover { color: var(--texto-principal); }
-
-/* Classes de Controle do Javascript */
-body.menu-active .sidebar { left: 0; }
-body.menu-active .sidebar-overlay { display: block; }
-body.menu-active { overflow: hidden; }
-
-/* ========================================================== */
-/* 5. ÁREA DE CONTEÚDO E COMPONENTES LIMPOS                   */
-/* ========================================================== */
-.content {
-    flex: 1;
-    margin-left: 0;
-    padding: 76px 1.25rem 1.5rem 1.25rem; 
-    background-color: var(--bg-principal); 
-    overflow-y: auto;
-    transition: background-color 0.25s ease;
-}
-
-/* Alertas Customizados Limpos (Sem Bootstrap) */
-.custom-alert {
-    padding: 12px 16px;
-    margin-bottom: 1.25rem;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    font-weight: 500;
-    border: 1px solid transparent;
-}
-.custom-alert-success { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-.custom-alert-danger { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
-.custom-alert-warning { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-.btn-alert-close { background: none; border: none; color: inherit; font-size: 1.15rem; cursor: pointer; line-height: 1; }
-
-.footer {
-    background-color: var(--bg-principal);
-    text-align: center;
-    padding: 1.25rem;
-    color: var(--texto-discreto);
-    font-size: 0.75rem;
-    border-top: 1px solid var(--border-sutil);
-    transition: background-color 0.25s ease, border-color 0.25s ease;
-}
-
-/* Customização fina de Scrollbars */
-.content::-webkit-scrollbar { width: 5px; }
-.content::-webkit-scrollbar-track { background: transparent; }
-.content::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 20px; }
-
-/* ========================================================== */
-/* 6. REGRAS PARA COMPUTADOR / DESKTOP (PC)                   */
-/* ========================================================== */
-@media (min-width: 768px) {
-    .layout {
-        flex-direction: row;
-        min-height: calc(100vh - 56px);
-    }
-
-    .nav-social-icon {
-        color: var(--texto-discreto);
-        font-size: 1.05rem;
-        transition: color 0.15s ease;
-        text-decoration: none;
-    }
-
-    .nav-social-icon:hover {
-        color: var(--texto-principal);
-    }
-
-    .menu-toggle, .menu-close, .sidebar-overlay, .nav-socials-mobile {
-        display: none !important;
-    }
-
-    .sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 180px; 
-        height: 100vh;
-    }
-
-    .sidebar .logo {
-        margin-bottom: 2.5rem;
-        justify-content: flex-start;
-    }
-
-    .content {
-        margin-left: 180px;
-        width: calc(100% - 180px);
-        padding: 5rem 2.5rem 2.5rem 2.5rem; 
-    }
-}
-
-/* ===== import_css.css ===== */
-/* IMPORTS DO CABEÇALHO */
+/* ===== reset.css ===== */
 /* ==========================================================================
    1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
    ========================================================================== */
@@ -362,206 +65,89 @@ body.menu-active { overflow: hidden; }
     min-height: 0;
 }
 
-.painel-topo-fixo {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-}
 
-.form-filtros-total {
-    width: 100%;
-}
-
-.filtros-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-    width: 100%;
-    align-items: stretch;
-}
-
-.bloco-filtro {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-sutil);
-    border-radius: 6px;
-    padding: 8px;
-    flex: 1;
-    min-width: 130px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.bloco-filtro:first-child {
-    flex: 1.8;
-    min-width: 210px;
-}
-
-.bloco-filtro .form-select,
-.bloco-filtro .form-control:not(.flex-row .form-control),
-.bloco-filtro .lista-categorias {
-    margin-top: auto;
-}
-
-.bloco-pesquisa-fim {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.bloco-titulo {
-    font-size: var(--fs-micro) !important;
-    font-weight: 700;
-    color: var(--texto-mutado);
-    margin-bottom: 4px !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.flex-row { display: flex; gap: 4px; margin-bottom: 4px; }
-.flex-row:last-child { margin-bottom: 0; }
-.flex-fill { flex: 1; }
-
-.form-control, .form-select {
-    width: 100%;
-    background-color: var(--bg-principal);
-    border: 1px solid var(--border-sutil);
-    color: var(--texto-principal);
-    padding: 2px 4px !important;
-    border-radius: 4px;
-    font-size: var(--fs-pequeno) !important;
-    outline: none;
-}
-
-.lista-categorias {
-    max-height: 75px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.label-categoria {
-    font-size: var(--fs-pequeno);
-    color: var(--texto-principal);
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.span_categorias {
-    font-size: var(--fs-pequeno);
-}
-
-.tarefas-controle-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-top: 2px;
-}
-
-.botoes-esquerda {
-    display: flex;
-    gap: 6px;
-}
-
+/* ===== responsive.css ===== */
 /* ==========================================================================
-   3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
+   6. RESPONSIVIDADE - CORRIGIDA
    ========================================================================== */
+
+/* Força scroll horizontal quando tabela não couber */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tablet e mobile - tabela rola horizontal */
+@media (max-width: 1096px) {
+    .custom-table {
+        min-width: 900px;
+    }
+    
+    .td-acoes {
+        flex-wrap: nowrap !important;
+    }
+    
+    .custom-table td:last-child,
+    .custom-table th:last-child {
+        position: sticky;
+        right: 0;
+        background-color: inherit;
+    }
+}
+
+/* Remove a regra específica da descrição */
+/* Deixa a tabela toda rolar se precisar */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
 .custom-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--fs-normal);
-    table-layout: fixed;
+    min-width: 1000px; /* Força largura mínima */
 }
 
-.custom-table th {
-    position: sticky;
-    top: 0;
-    background-color: var(--bg-card);
-    color: var(--texto-mutado);
-    font-weight: 600;
-    padding: 4px 6px !important;
-    border-bottom: 2px solid var(--border-sutil);
-    z-index: 10;
-    text-align: left;
-    font-size: var(--fs-micro) !important;
-}
-
-.custom-table td {
-    padding: 4px 6px !important;
-    border-bottom: 1px solid var(--border-sutil);
-    color: var(--texto-principal);
-    vertical-align: middle;
+/* DESCRIÇÃO PADRÃO */
+.custom-table td:nth-child(4) {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: var(--fs-pequeno) !important;
-    transition: all 0.2s ease;
+    max-width: 250px;
 }
 
-/* ZEBRADO - UM SIM, OUTRO NÃO */
-.custom-table tbody tr:nth-child(odd) {
-    background-color: var(--bg-principal);
+/* Mobile - empilha filtros */
+@media (max-width: 768px) {
+    .filtros-container {
+        flex-direction: column !important;
+    }
+    
+    .bloco-filtro {
+        width: 100% !important;
+    }
+    
+    .custom-table {
+        min-width: 800px;
+    }
 }
 
-.custom-table tbody tr:nth-child(even) {
-    background-color: var(--hover-fino);
+/* Footer nunca some - só ajusta posição */
+@media (max-width: 768px) {
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
+    }
+    
+    .botoes-footer-padrao,
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .totalizador-footer-padrao {
+        margin-left: 0;
+    }
 }
 
-/* HOVER FORTE */
-.custom-table tbody tr:hover {
-    background-color: rgba(37, 99, 235, 0.15) !important;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-/* LINHA SELECIONADA (CLIQUE DIREITO) */
-.custom-table tbody tr.selecionado {
-    background-color: rgba(37, 99, 235, 0.25) !important;
-    border-left: 3px solid var(--cor-ativa);
-    box-shadow: inset 0 0 0 1px var(--cor-ativa);
-}
-
-.custom-table tbody tr.selecionado td:first-child {
-    border-left: 3px solid var(--cor-ativa);
-    padding-left: 3px;
-}
-
-/* BORDAS ARREDONDADAS NO HOVER */
-.custom-table tbody tr:hover td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-}
-
-.custom-table tbody tr:hover td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-
-.td-id {
-    color: var(--texto-discreto);
-    font-weight: bold;
-}
-
-.td-titulo {
-    font-weight: 500;
-}
-
-.text-vazio {
-    color: var(--texto-discreto);
-}
-
-.td-vazio {
-    text-align: center;
-    padding: 30px;
-    color: var(--texto-mutado);
-}
-
+/* ===== buttons.css ===== */
 /* ==========================================================================
    4. BOTÕES DE AÇÃO
    ========================================================================== */
@@ -742,6 +328,468 @@ body.menu-active { overflow: hidden; }
     font-weight: 600;
 }
 
+/* ===== filters.css ===== */
+/* ==========================================================================
+   2. FILTROS
+   ========================================================================== */
+.painel-topo-fixo {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.form-filtros-total {
+    width: 100%;
+}
+
+.filtros-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.bloco-filtro {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px;
+    flex: 1;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.bloco-filtro:first-child {
+    flex: 1.8;
+    min-width: 210px;
+}
+
+.bloco-filtro .form-select,
+.bloco-filtro .form-control:not(.flex-row .form-control),
+.bloco-filtro .lista-categorias {
+    margin-top: auto;
+}
+
+.bloco-pesquisa-fim {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bloco-titulo {
+    font-size: var(--fs-micro) !important;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    margin-bottom: 4px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flex-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.flex-row:last-child { margin-bottom: 0; }
+.flex-fill { flex: 1; }
+
+.form-control, .form-select {
+    width: 100%;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    border-radius: 4px;
+    font-size: var(--fs-pequeno) !important;
+    outline: none;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label-categoria {
+    font-size: var(--fs-pequeno);
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.span_categorias {
+    font-size: var(--fs-pequeno);
+}
+
+.tarefas-controle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px;
+}
+
+.botoes-esquerda {
+    display: flex;
+    gap: 6px;
+}
+
+/* ===== footer.css ===== */
+/* static/css/components/footer.css - CORES FIXAS */
+
+.footer-fixo-padrao {
+    position: fixed;
+    bottom: 0;
+    left: 60px;
+    right: 0;
+    background: #1e293b;  /* ← FUNDO ESCURO FIXO */
+    border-top: 2px solid #2563eb;  /* ← BORDA AZUL FIXA */
+    padding: 6px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    min-height: 70px;
+    transition: left 0.3s ease;
+}
+
+.sidebar:hover ~ .footer-fixo-padrao {
+    left: 220px;
+}
+
+/* ==========================================================
+   BOTÕES - QUADRADOS PERFEITOS (ÍCONE + TEXTO)
+   ========================================================== */
+.botoes-footer-padrao {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.botoes-footer-padrao .btn-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 56px;
+    height: 56px;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    position: relative;
+}
+
+.botoes-footer-padrao .btn-footer i {
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.botoes-footer-padrao .btn-footer span {
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+/* 🔥 HOVER: EXPANDE + COR + SOMBRA */
+.botoes-footer-padrao .btn-footer:hover {
+    transform: scale(1.08);
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+/* ==========================================================
+   🎨 CORES DOS BOTÕES (FIXAS)
+   ========================================================== */
+
+/* ✅ BOTÃO PRINCIPAL (Nova) - AZUL */
+.btn-footer-primary {
+    background: #2563eb;  /* ← AZUL */
+    color: #ffffff;
+}
+
+.btn-footer-primary i,
+.btn-footer-primary span {
+    color: #ffffff;
+}
+
+.btn-footer-primary:hover {
+    background: #1d4ed8;  /* ← AZUL MAIS ESCURO */
+    color: #ffffff;
+}
+
+.btn-footer-primary:hover i,
+.btn-footer-primary:hover span {
+    color: #ffffff;
+}
+
+/* ✅ BOTÃO SECUNDÁRIO (Categorias) - FUNDO ESCURO COM BORDA */
+.btn-footer-secondary {
+    background: #0f172a;  /* ← FUNDO ESCURO (igual ao bg principal) */
+    color: #94a3b8;       /* ← TEXTO CINZA */
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-footer-secondary i {
+    color: #94a3b8;
+}
+
+.btn-footer-secondary span {
+    color: #94a3b8;
+}
+
+.btn-footer-secondary:hover {
+    background: #1e293b;  /* ← FUNDO MAIS CLARO */
+    color: #f8fafc;       /* ← TEXTO BRANCO */
+    border-color: #2563eb; /* ← BORDA AZUL */
+}
+
+.btn-footer-secondary:hover i {
+    color: #f8fafc;
+}
+
+.btn-footer-secondary:hover span {
+    color: #f8fafc;
+}
+
+/* ==========================================================
+   TOTALIZADORES
+   ========================================================== */
+.totalizador-footer-padrao {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.total-item-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+}
+
+.total-item-footer label {
+    font-size: 0.5rem;
+    color: #94a3b8;  /* ← CINZA */
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.total-item-footer span {
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* ==========================================================
+   🎨 CORES DOS TOTALIZADORES (FIXAS)
+   ========================================================== */
+.total-receita span { color: #22c55e; }      /* ← VERDE */
+.total-despesa span { color: #ef4444; }      /* ← VERMELHO */
+.total-saldo span { color: #2563eb; }        /* ← AZUL */
+.total-pendente span { color: #ef4444; }     /* ← VERMELHO */
+.total-andamento span { color: #f59e0b; }    /* ← LARANJA */
+.total-concluidas span { color: #22c55e; }   /* ← VERDE */
+
+/* ==========================================================
+   CONTADOR
+   ========================================================== */
+.contador-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #0f172a;  /* ← FUNDO ESCURO */
+    border-radius: 4px;
+    padding: 4px 12px;
+    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.contador-footer i {
+    font-size: 0.85rem;
+    color: #2563eb;  /* ← AZUL */
+}
+
+.contador-footer span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #f8fafc;  /* ← BRANCO */
+}
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+@media (max-width: 768px) {
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
+        padding: 6px 12px;
+        min-height: auto;
+        gap: 6px;
+    }
+
+    .botoes-footer-padrao {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+        gap: 12px;
+    }
+
+    .botoes-footer-padrao .btn-footer {
+        width: 48px;
+        height: 48px;
+        padding: 4px;
+        border-radius: 6px;
+    }
+
+    .botoes-footer-padrao .btn-footer i {
+        font-size: 1.2rem;
+    }
+
+    .botoes-footer-padrao .btn-footer span {
+        font-size: 0.5rem;
+    }
+
+    .botoes-footer-padrao .btn-footer:hover {
+        transform: none;
+    }
+
+    .total-item-footer span {
+        font-size: 0.75rem;
+    }
+
+    .contador-footer {
+        height: 28px;
+        padding: 2px 10px;
+    }
+
+    .contador-footer span {
+        font-size: 0.65rem;
+    }
+}
+
+/* ===== tables.css ===== */
+/* ==========================================================================
+   3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
+   ========================================================================== */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-normal);
+    table-layout: fixed;
+}
+
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
+    color: var(--texto-mutado);
+    font-weight: 600;
+    padding: 4px 6px !important;
+    border-bottom: 2px solid var(--border-sutil);
+    z-index: 10;
+    text-align: left;
+    font-size: var(--fs-micro) !important;
+}
+
+.custom-table td {
+    padding: 4px 6px !important;
+    border-bottom: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--fs-pequeno) !important;
+    transition: all 0.2s ease;
+}
+
+/* ZEBRADO - UM SIM, OUTRO NÃO */
+.custom-table tbody tr:nth-child(odd) {
+    background-color: var(--bg-principal);
+}
+
+.custom-table tbody tr:nth-child(even) {
+    background-color: var(--hover-fino);
+}
+
+/* HOVER FORTE */
+.custom-table tbody tr:hover {
+    background-color: rgba(37, 99, 235, 0.15) !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* LINHA SELECIONADA (CLIQUE DIREITO) */
+.custom-table tbody tr.selecionado {
+    background-color: rgba(37, 99, 235, 0.25) !important;
+    border-left: 3px solid var(--cor-ativa);
+    box-shadow: inset 0 0 0 1px var(--cor-ativa);
+}
+
+.custom-table tbody tr.selecionado td:first-child {
+    border-left: 3px solid var(--cor-ativa);
+    padding-left: 3px;
+}
+
+/* BORDAS ARREDONDADAS NO HOVER */
+.custom-table tbody tr:hover td:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.custom-table tbody tr:hover td:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.td-id {
+    color: var(--texto-discreto);
+    font-weight: bold;
+}
+
+.td-titulo {
+    font-weight: 500;
+}
+
+.text-vazio {
+    color: var(--texto-discreto);
+}
+
+.td-vazio {
+    text-align: center;
+    padding: 30px;
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   BADGES
+   ========================================================== */
 .badge-pure {
     padding: 1px 4px !important;
     border-radius: 4px;
@@ -749,148 +797,6 @@ body.menu-active { overflow: hidden; }
     font-weight: 600;
     display: inline-block;
 }
-
-/* ==========================================================================
-   5. FOOTER FIXO PADRÃO (IGUAL AO INSERT)
-   ========================================================================== */
-.footer-fixo-padrao {
-    position: fixed;
-    bottom: 0;
-    left: 180px;
-    right: 0;
-    background: var(--bg-card);
-    border-top: 2px solid var(--cor-ativa);
-    padding: 4px 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    gap: 16px;
-    z-index: 100;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-    min-height: 50px;
-}
-
-.botoes-footer-padrao {
-    display: flex;
-    gap: 16px;
-    align-items: stretch;
-}
-
-.botoes-footer-padrao .btn-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 0 4px;
-    min-width: 65px;
-    min-height: calc(100% - 6px);
-    max-height: 100%;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    aspect-ratio: 1 / 0.85;
-    flex-direction: column;
-    white-space: nowrap;
-}
-
-.botoes-footer-padrao .btn-footer i {
-    font-size: 1.2rem;
-}
-
-.btn-footer-primary {
-    background: var(--cor-ativa);
-    color: #fff;
-    border: none;
-}
-
-.btn-footer-primary:hover {
-    filter: brightness(1.08);
-    transform: translateY(-2px);
-}
-
-.btn-footer-secondary {
-    background: transparent;
-    color: var(--texto-mutado);
-    border: 1.5px solid var(--border-sutil);
-}
-
-.btn-footer-secondary:hover {
-    background: var(--hover-fino);
-    border-color: var(--texto-mutado);
-    color: var(--texto-principal);
-    transform: translateY(-2px);
-}
-
-.totalizador-footer-padrao {
-    display: flex;
-    gap: 28px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-left: auto;
-}
-
-.total-item-footer {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
-}
-
-.total-item-footer label {
-    font-size: 0.6rem;
-    color: var(--texto-mutado);
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.total-item-footer span {
-    font-size: 1rem;
-    font-weight: 800;
-}
-
-.contador-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-principal);
-    border-radius: 30px;
-    padding: 6px 14px;
-    border: 1px solid var(--border-sutil);
-}
-
-.contador-footer i {
-    font-size: 1rem;
-    margin-right: 6px;
-    color: var(--cor-ativa);
-}
-
-.contador-footer span {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--texto-principal);
-}
-
-.total-receita span {
-    color: #22c55e;
-}
-
-.total-despesa span {
-    color: #ef4444;
-}
-
-.total-saldo span {
-    color: var(--cor-ativa);
-}
-
-/* Espaçamento extra para não esconder conteúdo atrás do footer */
-.painel-tabela-conteudo {
-    margin-bottom: 90px;
-}
-
 
 /* ==========================================================
    ORDENAÇÃO DE COLUNAS
@@ -957,88 +863,6 @@ body.menu-active { overflow: hidden; }
     min-width: 150px;
     max-width: 300px;
 }
-
-
-/* ==========================================================================
-   6. RESPONSIVIDADE - CORRIGIDA
-   ========================================================================== */
-
-/* Força scroll horizontal quando tabela não couber */
-.table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Tablet e mobile - tabela rola horizontal */
-@media (max-width: 1096px) {
-    .custom-table {
-        min-width: 900px;
-    }
-    
-    .td-acoes {
-        flex-wrap: nowrap !important;
-    }
-    
-    .custom-table td:last-child,
-    .custom-table th:last-child {
-        position: sticky;
-        right: 0;
-        background-color: inherit;
-    }
-}
-
-/* Remove a regra específica da descrição */
-/* Deixa a tabela toda rolar se precisar */
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-.custom-table {
-    min-width: 1000px; /* Força largura mínima */
-}
-
-/* DESCRIÇÃO PADRÃO */
-.custom-table td:nth-child(4) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 250px;
-}
-
-/* Mobile - empilha filtros */
-@media (max-width: 768px) {
-    .filtros-container {
-        flex-direction: column !important;
-    }
-    
-    .bloco-filtro {
-        width: 100% !important;
-    }
-    
-    .custom-table {
-        min-width: 800px;
-    }
-}
-
-/* Footer nunca some - só ajusta posição */
-@media (max-width: 768px) {
-    .footer-fixo-padrao {
-        left: 0 !important;
-        flex-wrap: wrap;
-    }
-    
-    .botoes-footer-padrao,
-    .totalizador-footer-padrao {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .totalizador-footer-padrao {
-        margin-left: 0;
-    }
-}
-
 
 /* ===== import_css.css ===== */
 /* ======================= */

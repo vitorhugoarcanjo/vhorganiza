@@ -1,140 +1,252 @@
-/* ==========================================================================
-   5. FOOTER FIXO PADRÃO (IGUAL AO INSERT)
-   ========================================================================== */
+/* static/css/components/footer.css - CORES FIXAS */
+
 .footer-fixo-padrao {
     position: fixed;
     bottom: 0;
-    left: 180px;
+    left: 60px;
     right: 0;
-    background: var(--bg-card);
-    border-top: 2px solid var(--cor-ativa);
-    padding: 4px 10px;
+    background: #1e293b;  /* ← FUNDO ESCURO FIXO */
+    border-top: 2px solid #2563eb;  /* ← BORDA AZUL FIXA */
+    padding: 6px 16px;
     display: flex;
     justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
     gap: 16px;
     z-index: 100;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-    min-height: 50px;
+    min-height: 70px;
+    transition: left 0.3s ease;
 }
 
+.sidebar:hover ~ .footer-fixo-padrao {
+    left: 220px;
+}
+
+/* ==========================================================
+   BOTÕES - QUADRADOS PERFEITOS (ÍCONE + TEXTO)
+   ========================================================== */
 .botoes-footer-padrao {
     display: flex;
-    gap: 16px;
-    align-items: stretch;
+    gap: 8px;
+    align-items: center;
 }
 
 .botoes-footer-padrao .btn-footer {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 0 4px;
-    min-width: 65px;
-    min-height: calc(100% - 6px);
-    max-height: 100%;
-    border-radius: 12px;
-    font-size: 0.75rem;
+    gap: 2px;
+    width: 56px;
+    height: 56px;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 0.6rem;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s ease;
     cursor: pointer;
-    aspect-ratio: 1 / 0.85;
-    flex-direction: column;
-    white-space: nowrap;
+    border: none;
+    position: relative;
 }
 
 .botoes-footer-padrao .btn-footer i {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: all 0.2s ease;
 }
 
+.botoes-footer-padrao .btn-footer span {
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+/* 🔥 HOVER: EXPANDE + COR + SOMBRA */
+.botoes-footer-padrao .btn-footer:hover {
+    transform: scale(1.08);
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+/* ==========================================================
+   🎨 CORES DOS BOTÕES (FIXAS)
+   ========================================================== */
+
+/* ✅ BOTÃO PRINCIPAL (Nova) - AZUL */
 .btn-footer-primary {
-    background: var(--cor-ativa);
-    color: #fff;
-    border: none;
+    background: #2563eb;  /* ← AZUL */
+    color: #ffffff;
+}
+
+.btn-footer-primary i,
+.btn-footer-primary span {
+    color: #ffffff;
 }
 
 .btn-footer-primary:hover {
-    filter: brightness(1.08);
-    transform: translateY(-2px);
+    background: #1d4ed8;  /* ← AZUL MAIS ESCURO */
+    color: #ffffff;
 }
 
+.btn-footer-primary:hover i,
+.btn-footer-primary:hover span {
+    color: #ffffff;
+}
+
+/* ✅ BOTÃO SECUNDÁRIO (Categorias) - FUNDO ESCURO COM BORDA */
 .btn-footer-secondary {
-    background: transparent;
-    color: var(--texto-mutado);
-    border: 1.5px solid var(--border-sutil);
+    background: #0f172a;  /* ← FUNDO ESCURO (igual ao bg principal) */
+    color: #94a3b8;       /* ← TEXTO CINZA */
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-footer-secondary i {
+    color: #94a3b8;
+}
+
+.btn-footer-secondary span {
+    color: #94a3b8;
 }
 
 .btn-footer-secondary:hover {
-    background: var(--hover-fino);
-    border-color: var(--texto-mutado);
-    color: var(--texto-principal);
-    transform: translateY(-2px);
+    background: #1e293b;  /* ← FUNDO MAIS CLARO */
+    color: #f8fafc;       /* ← TEXTO BRANCO */
+    border-color: #2563eb; /* ← BORDA AZUL */
 }
 
+.btn-footer-secondary:hover i {
+    color: #f8fafc;
+}
+
+.btn-footer-secondary:hover span {
+    color: #f8fafc;
+}
+
+/* ==========================================================
+   TOTALIZADORES
+   ========================================================== */
 .totalizador-footer-padrao {
     display: flex;
-    gap: 28px;
+    gap: 20px;
     align-items: center;
     flex-wrap: wrap;
-    margin-left: auto;
 }
 
 .total-item-footer {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 4px;
+    gap: 1px;
 }
 
 .total-item-footer label {
-    font-size: 0.6rem;
-    color: var(--texto-mutado);
+    font-size: 0.5rem;
+    color: #94a3b8;  /* ← CINZA */
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
 
 .total-item-footer span {
-    font-size: 1rem;
-    font-weight: 800;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
+/* ==========================================================
+   🎨 CORES DOS TOTALIZADORES (FIXAS)
+   ========================================================== */
+.total-receita span { color: #22c55e; }      /* ← VERDE */
+.total-despesa span { color: #ef4444; }      /* ← VERMELHO */
+.total-saldo span { color: #2563eb; }        /* ← AZUL */
+.total-pendente span { color: #ef4444; }     /* ← VERMELHO */
+.total-andamento span { color: #f59e0b; }    /* ← LARANJA */
+.total-concluidas span { color: #22c55e; }   /* ← VERDE */
+
+/* ==========================================================
+   CONTADOR
+   ========================================================== */
 .contador-footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-principal);
-    border-radius: 30px;
-    padding: 6px 14px;
-    border: 1px solid var(--border-sutil);
+    gap: 6px;
+    background: #0f172a;  /* ← FUNDO ESCURO */
+    border-radius: 4px;
+    padding: 4px 12px;
+    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .contador-footer i {
-    font-size: 1rem;
-    margin-right: 6px;
-    color: var(--cor-ativa);
+    font-size: 0.85rem;
+    color: #2563eb;  /* ← AZUL */
 }
 
 .contador-footer span {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: var(--texto-principal);
+    color: #f8fafc;  /* ← BRANCO */
 }
 
-.total-receita span {
-    color: #22c55e;
-}
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+@media (max-width: 768px) {
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
+        padding: 6px 12px;
+        min-height: auto;
+        gap: 6px;
+    }
 
-.total-despesa span {
-    color: #ef4444;
-}
+    .botoes-footer-padrao {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+    }
 
-.total-saldo span {
-    color: var(--cor-ativa);
-}
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+        gap: 12px;
+    }
 
-/* Espaçamento extra para não esconder conteúdo atrás do footer */
-.painel-tabela-conteudo {
-    margin-bottom: 90px;
+    .botoes-footer-padrao .btn-footer {
+        width: 48px;
+        height: 48px;
+        padding: 4px;
+        border-radius: 6px;
+    }
+
+    .botoes-footer-padrao .btn-footer i {
+        font-size: 1.2rem;
+    }
+
+    .botoes-footer-padrao .btn-footer span {
+        font-size: 0.5rem;
+    }
+
+    .botoes-footer-padrao .btn-footer:hover {
+        transform: none;
+    }
+
+    .total-item-footer span {
+        font-size: 0.75rem;
+    }
+
+    .contador-footer {
+        height: 28px;
+        padding: 2px 10px;
+    }
+
+    .contador-footer span {
+        font-size: 0.65rem;
+    }
 }

@@ -228,13 +228,17 @@
 
 
 <!-- FOOTER FIXO PADRÃO (IGUAL FINANÇAS) -->
+<!-- tela_tarefas.html -->
+
 <div class="footer-fixo-padrao">
     <div class="botoes-footer-padrao">
-        <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn-footer btn-footer-primary">
-            <i class="bi bi-plus-lg"></i> Nova Tarefa
+        <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn-footer btn-footer-primary" title="Nova Tarefa">
+            <i class="bi bi-plus-lg"></i>
+            <span>Nova</span>
         </a>
-        <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-footer btn-footer-secondary">
-            <i class="bi bi-tags"></i> Categorias
+        <a href="{{ url_for('categorias.listar_categorias') }}" class="btn-footer btn-footer-secondary" title="Categorias">
+            <i class="bi bi-tags"></i>
+            <span>Categorias</span>
         </a>
     </div>
 

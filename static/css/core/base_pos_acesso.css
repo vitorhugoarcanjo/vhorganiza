@@ -1,75 +1,304 @@
+/* ==========================================================
+   BASE PÓS-LOGIN - VERSÃO INSPIRADA NA BASE PERFEITA
+   ========================================================== */
 
-/* Importação da fonte Inter */
+/* ==========================================================
+   1. FONTE E IMPORTS
+   ========================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* ==========================================================================
-    1. VARIÁVEIS DE COR E TEMA (MÁGICA DO CSS PURO)
-    ========================================================================== */
+/* ==========================================================
+   2. RESET E BASE
+   ========================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background-color: var(--bg-principal);
+    color: var(--texto-principal);
+    min-height: 100vh;
+    display: flex;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ==========================================================
+   3. VARIÁVEIS DE COR E TEMA
+   ========================================================== */
 :root {
-    /* Tema Escuro (Seu padrão rico em Slate/Navy) */
     --bg-principal: #0f172a;
     --bg-card: #1e293b;
     --border-sutil: rgba(255, 255, 255, 0.06);
-    
     --texto-principal: #f8fafc;
     --texto-mutado: #94a3b8;
     --texto-discreto: #64748b;
-    
-    --cor-marca: #22c55e; /* Verde Destaque */
-    --cor-ativa: #2563eb; /* Azul de Destaque Fino */
-    --hover-fino: rgba(255, 255, 255, 0.03);
+    --cor-marca: #22c55e;
+    --cor-ativa: #2563eb;
+    --hover-fino: rgba(255, 255, 255, 0.05);
     --scrollbar-thumb: rgba(255, 255, 255, 0.1);
 }
 
 body.light-mode {
-    /* Tema Claro Customizado - Confortável para os olhos */
-    --bg-principal: #e2e8f0;   /* Um cinza azulado bem mais fosco e calmo */
-    --bg-card: #f1f5f9;        /* Um tom levemente mais claro para destacar os blocos */
+    --bg-principal: #e2e8f0;
+    --bg-card: #f1f5f9;
     --border-sutil: rgba(15, 23, 42, 0.12);
-    
-    --texto-principal: #1e293b; /* Texto escuro, mas não 100% preto */
+    --texto-principal: #1e293b;
     --texto-mutado: #475569;
     --texto-discreto: #64748b;
-    
     --cor-marca: #16a34a;
     --cor-ativa: #1d4ed8;
     --hover-fino: rgba(0, 0, 0, 0.04);
     --scrollbar-thumb: rgba(0, 0, 0, 0.15);
 }
 
-/* ==========================================================================
-    2. RESET E ESTRUTURA BASE (MOBILE FIRST)
-    ========================================================================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+/* ==========================================================
+   4. OVERLAY (MOBILE)
+   ========================================================== */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
 }
 
-body {
-    background-color: var(--bg-principal);
+body.menu-active .sidebar-overlay {
+    display: block;
+}
+
+body.menu-active {
+    overflow: hidden;
+}
+
+/* ==========================================================
+   5. SIDEBAR (MENU LATERAL) - ESTILO BASE PERFEITA
+   ========================================================== */
+.sidebar {
+    width: 60px;
+    min-width: 60px;
+    background-color: var(--bg-card);
     color: var(--texto-principal);
-    min-height: 100vh;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    padding: 20px 0;
+    transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out;
+    z-index: 999;
+    overflow: hidden;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    border-right: 1px solid var(--border-sutil);
 }
 
-.layout {
+/* EXPANDE AO PASSAR O MOUSE (DESKTOP) */
+@media (min-width: 769px) {
+    .sidebar:hover {
+        width: 220px;
+        min-width: 220px;
+    }
+}
+
+/* ==========================================================
+   6. HEADER DO MENU
+   ========================================================== */
+.sidebar .logo {
     display: flex;
-    flex-direction: column; 
-    min-height: 100vh;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px 20px 12px;
+    border-bottom: 1px solid var(--border-sutil);
+    transition: padding 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0;
+    justify-content: center;
 }
 
-/* ==========================================================================
-    4. SIDEBAR (LINHA FINA EXCLUSIVA)
-    ========================================================================== */
+.sidebar:hover .logo {
+    padding: 0 20px 20px 20px;
+    font-size: 1.25rem;
+    justify-content: flex-start;
+}
+
+.sidebar .logo a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--texto-principal);
+}
+
+.sidebar .logo .logo-icone {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.sidebar .logo span {
+    font-size: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease, font-size 0.2s ease;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.sidebar:hover .logo span {
+    font-size: 1.25rem;
+    opacity: 1;
+}
+
+/* ==========================================================
+   7. MENU LINKS
+   ========================================================== */
+.sidebar ul {
+    list-style: none;
+    padding: 20px 0;
+    flex: 1;
+    margin: 0;
+}
+
+.sidebar li {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar a,
+.btn-theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 16px;
+    color: var(--texto-mutado);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    border-radius: 0 8px 8px 0;
+    background: transparent;
+    border: none;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.sidebar:hover a,
+.sidebar:hover .btn-theme-toggle {
+    padding: 12px 20px;
+}
+
+.sidebar a:hover,
+.btn-theme-toggle:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+    border-left-color: var(--cor-ativa);
+}
+
+.sidebar a.active {
+    background: rgba(37, 99, 235, 0.15);
+    color: var(--cor-ativa);
+    border-left-color: var(--cor-ativa);
+}
+
+.sidebar a i,
+.sidebar .btn-theme-toggle i {
+    font-size: 20px;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sidebar a span,
+.sidebar .btn-theme-toggle span {
+    font-size: 15px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar:hover a span,
+.sidebar:hover .btn-theme-toggle span {
+    opacity: 1;
+}
+
+/* ==========================================================
+   8. SEPARADOR DO MENU
+   ========================================================== */
+.menu-divider {
+    height: 1px;
+    background: var(--border-sutil);
+    margin: 10px 16px;
+    list-style: none;
+}
+
+.sidebar:hover .menu-divider {
+    margin: 10px 20px;
+}
+
+/* ==========================================================
+   9. RODAPÉ DO MENU
+   ========================================================== */
+.nav-socials-mobile {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-sutil);
+    text-align: center;
+    font-size: 12px;
+    color: var(--texto-discreto);
+    transition: padding 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sidebar:hover .nav-socials-mobile {
+    padding: 12px 20px;
+}
+
+.nav-socials-mobile p {
+    font-size: 0.7rem;
+    color: var(--texto-discreto);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar:hover .nav-socials-mobile p {
+    opacity: 1;
+}
+
+.socials-mobile-grid {
+    display: flex;
+    gap: 1.25rem;
+    justify-content: center;
+}
+
+.socials-mobile-grid i {
+    color: var(--texto-discreto);
+    font-size: 1.15rem;
+}
+
+.socials-mobile-grid i:hover {
+    color: var(--texto-principal);
+}
+
+/* ==========================================================
+   10. BOTÕES MOBILE (HAMBÚRGUER E FECHAR)
+   ========================================================== */
 .menu-toggle {
-    display: block;
+    display: none;
     position: fixed;
-    top: 0.75rem; 
-    right: 1rem;  
+    top: 0.75rem;
+    right: 1rem;
     z-index: 997;
     background: var(--bg-card);
     color: var(--texto-principal);
@@ -81,143 +310,53 @@ body {
 }
 
 .menu-close {
-    display: block;
+    display: none;
     background: transparent;
     color: var(--texto-mutado);
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
+    padding: 0 12px;
 }
 
-.menu-close:hover { color: var(--texto-principal); }
-
-.sidebar-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 998;
-}
-
-.sidebar {
-    width: 150px;
-    min-width: 150px;
-    background-color: var(--bg-principal);
-    border-right: 1px solid var(--border-sutil);
-    padding: 1.5rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    position: fixed;
-    left: -250px; 
-    top: 0;
-    z-index: 999;
-    transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease;
-}
-
-.sidebar .logo {
-    font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-    margin-bottom: 2rem;
+.menu-close:hover {
     color: var(--texto-principal);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar li {
-    margin-bottom: 0.25rem;
-}
-
-/* 👑 ESTILIZAÇÃO DO MENU EM LINHA FINA */
-.sidebar a, .btn-theme-toggle {
-    color: var(--texto-mutado);
-    background: transparent;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 9px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 400; /* Linha mais fina e elegante */
-    border: 1px solid transparent; /* Evita jitter no hover */
-    transition: all 0.15s ease-in-out;
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-}
-
-.sidebar a:hover, .btn-theme-toggle:hover {
-    color: var(--texto-principal);
-    background-color: var(--hover-fino);
-    border-color: var(--border-sutil); /* Detalhe fino de borda ao passar o mouse */
-}
-
-/* Linha Fina Ativa (Sem preenchimentos pesados) */
-.sidebar a.active {
-    color: var(--texto-principal);
-    font-weight: 600;
-    background-color: var(--hover-fino);
-    border-color: var(--cor-ativa); /* Apenas uma linha sutil demarcando o item ativo */
-}
-
-.nav-socials-mobile {
-    margin-top: auto;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-sutil);
-}
-
-.nav-socials-mobile p {
-    font-size: 0.7rem;
-    color: var(--texto-discreto);
-    margin-bottom: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.socials-mobile-grid {
-    display: flex;
-    gap: 1.25rem;
-}
-
-.socials-mobile-grid a {
-    color: var(--texto-discreto);
-    font-size: 1.15rem;
-    padding: 0 !important;
-    border: none !important;
-    background: transparent !important;
-}
-
-.socials-mobile-grid a:hover { color: var(--texto-principal); }
-
-/* Classes de Controle do Javascript */
-body.menu-active .sidebar { left: 0; }
-body.menu-active .sidebar-overlay { display: block; }
-body.menu-active { overflow: hidden; }
-
-/* ========================================================== */
-/* 5. ÁREA DE CONTEÚDO E COMPONENTES LIMPOS                   */
-/* ========================================================== */
+/* ==========================================================
+   11. CONTEÚDO PRINCIPAL
+   ========================================================== */
 .content {
     flex: 1;
-    margin-left: 0;
-    padding: 76px 1.25rem 1.5rem 1.25rem; 
-    background-color: var(--bg-principal); 
+    margin-left: 60px;
+    padding: 76px 2rem 2rem 2rem;
+    background-color: var(--bg-principal);
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
     overflow-y: auto;
-    transition: background-color 0.25s ease;
 }
 
-/* Alertas Customizados Limpos (Sem Bootstrap) */
+.sidebar:hover ~ .content {
+    margin-left: 220px;
+}
+
+/* SCROLLBAR */
+.content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 20px;
+}
+
+/* ==========================================================
+   12. ALERTAS GLOBAIS
+   ========================================================== */
 .custom-alert {
     padding: 12px 16px;
     margin-bottom: 1.25rem;
@@ -229,11 +368,113 @@ body.menu-active { overflow: hidden; }
     font-weight: 500;
     border: 1px solid transparent;
 }
-.custom-alert-success { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-.custom-alert-danger { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
-.custom-alert-warning { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-.btn-alert-close { background: none; border: none; color: inherit; font-size: 1.15rem; cursor: pointer; line-height: 1; }
 
+.custom-alert-success {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.custom-alert-danger {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.custom-alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.btn-alert-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.15rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* ==========================================================
+   13. MOBILE (RESPONSIVO)
+   ========================================================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 280px;
+        min-width: 280px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: none;
+        padding: 20px 0;
+    }
+
+    .sidebar:hover {
+        width: 280px;
+        min-width: 280px;
+        transform: translateX(0);
+    }
+
+    .sidebar.aberto {
+        transform: translateX(0);
+    }
+
+    .sidebar .logo span,
+    .sidebar a span,
+    .sidebar .btn-theme-toggle span,
+    .nav-socials-mobile p {
+        opacity: 1 !important;
+        font-size: 1rem !important;
+    }
+
+    .sidebar .logo {
+        padding: 0 20px 20px 20px;
+        font-size: 1.25rem;
+        justify-content: flex-start;
+    }
+
+    .sidebar a,
+    .sidebar .btn-theme-toggle {
+        padding: 12px 20px;
+    }
+
+    .nav-socials-mobile {
+        padding: 12px 20px;
+    }
+
+    .menu-close {
+        display: block !important;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 76px 1rem 1rem 1rem;
+    }
+
+    .sidebar ~ .content {
+        margin-left: 0;
+    }
+
+    .sidebar.aberto ~ .content {
+        margin-left: 0;
+    }
+
+    body.menu-active .sidebar {
+        transform: translateX(0);
+    }
+
+    body.menu-active .sidebar-overlay {
+        display: block;
+    }
+}
+
+/* ==========================================================
+   14. FOOTER GLOBAL
+   ========================================================== */
 .footer {
     background-color: var(--bg-principal);
     text-align: center;
@@ -242,57 +483,4 @@ body.menu-active { overflow: hidden; }
     font-size: 0.75rem;
     border-top: 1px solid var(--border-sutil);
     transition: background-color 0.25s ease, border-color 0.25s ease;
-}
-
-/* Customização fina de Scrollbars */
-.content::-webkit-scrollbar { width: 5px; }
-.content::-webkit-scrollbar-track { background: transparent; }
-.content::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 20px; }
-
-
-
-
-
-/* ========================================================== */
-/* 6. REGRAS PARA COMPUTADOR / DESKTOP (PC)                   */
-/* ========================================================== */
-@media (min-width: 768px) {
-    .layout {
-        flex-direction: row;
-        min-height: calc(100vh - 56px);
-    }
-
-    .nav-social-icon {
-        color: var(--texto-discreto);
-        font-size: 1.05rem;
-        transition: color 0.15s ease;
-        text-decoration: none;
-    }
-
-    .nav-social-icon:hover {
-        color: var(--texto-principal);
-    }
-
-    .menu-toggle, .menu-close, .sidebar-overlay, .nav-socials-mobile {
-        display: none !important;
-    }
-
-    .sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 180px; 
-        height: 100vh;
-    }
-
-    .sidebar .logo {
-        margin-bottom: 2.5rem;
-        justify-content: flex-start;
-    }
-
-    .content {
-        margin-left: 180px;
-        width: calc(100% - 180px);
-        padding: 5rem 2.5rem 2.5rem 2.5rem; 
-    }
 }
