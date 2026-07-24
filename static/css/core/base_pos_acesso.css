@@ -249,6 +249,10 @@ body.menu-active { overflow: hidden; }
 .content::-webkit-scrollbar-track { background: transparent; }
 .content::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 20px; }
 
+
+
+
+
 /* ========================================================== */
 /* 6. REGRAS PARA COMPUTADOR / DESKTOP (PC)                   */
 /* ========================================================== */

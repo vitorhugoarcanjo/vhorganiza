@@ -17,6 +17,7 @@ __pycache__/
 *.pyd
 .Python
 venv/
+scripts/watch_static.py
 
 # OS
 .DS_Store
