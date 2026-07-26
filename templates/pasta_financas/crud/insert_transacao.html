@@ -2,6 +2,7 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ static_v('css/modules/pasta_financas/cruds/insert.css') }}">
+
 {% endblock %}
 
 {% block content %}
@@ -128,27 +129,28 @@
 </div>
 
 <!-- FOOTER FIXO -->
-<div class="footer-fixo" id="footerFixo">
-    <div class="botoes-footer">
-        <button type="submit" form="form-transacao" id="btn-submit" class="btn btn-primary">
-            <i class="bi bi-save"></i> Salvar
+<div class="footer-fixo-padrao" id="footerFixo">
+    <div class="botoes-footer-padrao">
+        <button type="submit" form="form-transacao" id="btn-submit" class="btn-footer btn-footer-primary">
+            <i class="bi bi-save"></i> SALVAR
         </button>
-        <a href="{{ url_for('financas.ini_financas') }}" class="btn btn-secondary">
-            <i class="bi bi-x-circle"></i> Cancelar
+        <a href="{{ url_for('financas.ini_financas') }}" class="btn-footer-cancelar">
+            <i class="bi bi-x-circle"></i> CANCELAR
         </a>
     </div>
 
+    <h2>NOVO - FINANÇAS</h2>
 
-    <div class="totalizador-footer">
-        <div class="total-item valor-original">
+    <div class="totalizador-footer-padrao">
+        <div class="total-item-footer valor-original">
             <label>Valor Total:</label>
             <span id="totalOriginal">R$ 0,00</span>
         </div>
-        <div class="total-item soma-parcelas">
+        <div class="total-item-footer soma-parcelas">
             <label>Soma Parcelas:</label>
             <span id="somaParcelas">R$ 0,00</span>
         </div>
-        <div class="total-item diferenca" id="diferencaItem">
+        <div class="total-item-footer diferenca" id="diferencaItem">
             <label>Diferença:</label>
             <span id="diferencaValor">R$ 0,00</span>
         </div>

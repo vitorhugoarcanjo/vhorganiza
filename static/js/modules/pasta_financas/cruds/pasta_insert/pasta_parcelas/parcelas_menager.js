@@ -69,8 +69,8 @@
             totalOriginalSpan.innerHTML = `R$ ${formatarMoeda(totalOriginal)}`;
             somaParcelasSpan.innerHTML = `R$ ${formatarMoeda(somaParcelas)}`;
             
-            // 🔥 PEGA O ELEMENTO PAI DO SOMA PARCELAS (o .total-item.soma-parcelas)
-            const somaParcelasItem = document.querySelector('.total-item.soma-parcelas');
+            // 🔥 PEGA O ELEMENTO PAI DO SOMA PARCELAS (o .total-item-footer.soma-parcelas)
+            const somaParcelasItem = document.querySelector('.total-item-footer.soma-parcelas');
             
             if (totalParcelas > 1) {
                 // Mostra Soma Parcelas
