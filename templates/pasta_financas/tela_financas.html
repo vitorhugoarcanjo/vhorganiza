@@ -192,7 +192,7 @@
                                 hx-include="#form-filtros"
                                 hx-target="#tabela-container"
                                 hx-swap="outerHTML"
-                                class="btn-pure flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">
+                                class="btn-filter flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">
                                 Ativas
                             </button>
 
@@ -203,7 +203,7 @@
                                 hx-include="#form-filtros"
                                 hx-target="#tabela-container"
                                 hx-swap="outerHTML"
-                                class="btn-pure flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">
+                                class="btn-filter flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">
                                 Inativas
                             </button>
 
@@ -214,7 +214,7 @@
                                 hx-include="#form-filtros"
                                 hx-target="#tabela-container"
                                 hx-swap="outerHTML"
-                                class="btn-pure flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">
+                                class="btn-filter flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">
                                 Todas
                             </button>
                         </div>
@@ -240,14 +240,14 @@
 
                     <div class="flex-row gap-1" style="margin-top: 6px;">
                         <a href="{{ url_for('financas.limpar_filtros') }}" 
-                        class="btn-pure flex-fill" 
+                        class="btn-filter flex-fill" 
                         style="text-align: center;">
                             Limpar Todos
                         </a>
 
                         <button 
                             type="submit"
-                            class="btn-pure btn-primary-pure flex-fill">
+                            class="btn-filter btn-primary-pure flex-fill">
                             Consultar
                         </button>
                     </div>

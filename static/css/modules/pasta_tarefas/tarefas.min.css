@@ -1,6 +1,42 @@
-/* COMBINADO - 25/07/2026 19:28 */
+/* COMBINADO - 26/07/2026 17:30 */
 
 /* ===== buttons.css ===== */
+/* ==========================================================
+   BOTÕES DE FILTRO (Ativas/Inativas/Todas)
+   ========================================================== */
+
+.btn-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-filter:hover {
+    background-color: #1d42d8;
+    border-color: var(--texto-mutado);
+    color: #ffffff;
+
+}
+
+.btn-filter.active {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #ffffff;
+}
+
+.btn-filter.active:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #ffffff;
+}
+
 /* ==========================================================================
    4. BOTÕES DE AÇÃO
    ========================================================================== */

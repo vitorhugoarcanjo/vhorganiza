@@ -253,13 +253,22 @@ body.menu-active {
     text-align: center;
     font-size: 12px;
     color: var(--texto-discreto);
-    transition: padding 0.3s ease;
+    transition: padding 0.3s ease, opacity 0.2s ease;
     white-space: nowrap;
     overflow: hidden;
+    opacity: 0;  /* ← ESCONDE QUANDO FECHADO */
+    height: 0;   /* ← ESCONDE COMPLETAMENTE */
+    padding: 0 16px;  /* ← SEM PADDING QUANDO FECHADO */
+    border-top: none;  /* ← SEM BORDA QUANDO FECHADO */
 }
 
-.sidebar:hover .nav-socials-mobile {
+/* Quando o menu EXPANDE, mostra o rodapé */
+.sidebar:hover .nav-socials-mobile,
+.sidebar.aberto .nav-socials-mobile {
+    opacity: 1;
+    height: auto;
     padding: 12px 20px;
+    border-top: 1px solid var(--border-sutil);
 }
 
 .nav-socials-mobile p {
@@ -272,7 +281,9 @@ body.menu-active {
     transition: opacity 0.2s ease;
 }
 
-.sidebar:hover .nav-socials-mobile p {
+/* Mostra o texto quando expandido */
+.sidebar:hover .nav-socials-mobile p,
+.sidebar.aberto .nav-socials-mobile p {
     opacity: 1;
 }
 
@@ -280,6 +291,14 @@ body.menu-active {
     display: flex;
     gap: 1.25rem;
     justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Mostra os ícones quando expandido */
+.sidebar:hover .socials-mobile-grid,
+.sidebar.aberto .socials-mobile-grid {
+    opacity: 1;
 }
 
 .socials-mobile-grid i {
@@ -290,7 +309,6 @@ body.menu-active {
 .socials-mobile-grid i:hover {
     color: var(--texto-principal);
 }
-
 /* ==========================================================
    10. BOTÕES MOBILE (HAMBÚRGUER E FECHAR)
    ========================================================== */

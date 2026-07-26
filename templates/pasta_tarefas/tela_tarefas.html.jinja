@@ -90,9 +90,9 @@
                     <div style="margin-top: 4px;">
                         <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Tarefa:</label>
                         <div class="flex-row gap-1">
-                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='0') }}" class="btn-pure flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">Ativas</a>
-                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='1') }}" class="btn-pure flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">Inativas</a>
-                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='2') }}" class="btn-pure flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">Todas</a>
+                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='0') }}" class="btn-filter flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">Ativas</a>
+                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='1') }}" class="btn-filter flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">Inativas</a>
+                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='2') }}" class="btn-filter flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">Todas</a>
                         </div>
                     </div>
                 </div>
