@@ -29,16 +29,32 @@ body {
    3. VARIÁVEIS DE COR E TEMA
    ========================================================== */
 :root {
+    /* Cores existentes */
     --bg-principal: #0f172a;
     --bg-card: #1e293b;
-    --border-sutil: rgba(255, 255, 255, 0.06);
+    --cor-ativa: #2563eb;
+    --cor-marca: #22c55e;
     --texto-principal: #f8fafc;
     --texto-mutado: #94a3b8;
-    --texto-discreto: #64748b;
-    --cor-marca: #22c55e;
-    --cor-ativa: #2563eb;
+    --border-sutil: rgba(255, 255, 255, 0.06);
     --hover-fino: rgba(255, 255, 255, 0.05);
     --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+
+    /* 🆕 NOVAS VARIÁVEIS PARA BOTÕES */
+    --btn-primary-bg: #2563eb;
+    --btn-primary-hover: #1d4ed8;
+    --btn-primary-text: #ffffff;
+    
+    --btn-secondary-bg: #0f172a;
+    --btn-secondary-hover: #1e293b;
+    --btn-secondary-text: #94a3b8;
+    --btn-secondary-text-hover: #f8fafc;
+    
+    --btn-danger-bg: transparent;
+    --btn-danger-hover: rgba(239, 68, 68, 0.1);
+    --btn-danger-text: #94a3b8;
+    --btn-danger-text-hover: #ef4444;
+    --btn-danger-border: #ef4444;
 }
 
 body.light-mode {
