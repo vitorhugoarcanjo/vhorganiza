@@ -4,6 +4,8 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ static_v('css/modules/pasta_tarefas/crud/pasta_insert/insert.css') }}">
+<link rel="stylesheet" href="{{ static_v('css/components/buttons.css') }}">
+<link rel="stylesheet" href="{{ static_v('css/components/footer.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -86,10 +88,10 @@
 <div class="footer-fixo-padrao">
     <div class="botoes-footer-padrao">
         <button type="submit" form="form-edit-tarefa" class="btn-footer btn-footer-primary" id="btn-submit">
-            <i class="bi bi-save"></i> Salvar
+            <i class="bi bi-save"></i> SALVAR
         </button>
-        <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-footer btn-footer-secondary">
-            <i class="bi bi-x-circle"></i> Cancelar
+        <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-footer-cancelar">
+            <i class="bi bi-x-circle"></i> CANCELAR
         </a>
     </div>
 
