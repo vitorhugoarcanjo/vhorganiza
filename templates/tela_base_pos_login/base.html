@@ -63,16 +63,23 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url_for('config.iniconfig') }}" class="{% if request.endpoint == 'config.iniconfig' %}active{% endif %}">
-                            <i class="bi bi-gear"></i> Configurações
+                        <a href="{{ url_for('categorias.listar_categorias') }}" class="{% if request.endpoint == 'categorias.listar_categorias' %}active{% endif %}">
+                            <i class="bi bi-calendar2-plus-fill"></i> Categorias
                         </a>
                     </li>
+
                     
                     <li style="margin-top: 1.5rem;">
                         <!-- O Botão de Tema vira um item de linha fina perfeitamente integrado -->
                         <button class="btn-theme-toggle" id="toggleTheme">
                             <i id="themeIcon" class="bi bi-moon-stars"></i> Alt. Tema
                         </button>
+                    </li>
+
+                    <li>
+                        <a href="{{ url_for('config.iniconfig') }}" class="{% if request.endpoint == 'config.iniconfig' %}active{% endif %}">
+                            <i class="bi bi-gear"></i> Configurações
+                        </a>
                     </li>
                     
                     <li>
