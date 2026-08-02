@@ -1,5 +1,5 @@
 # utils/formatacoes.py
-from datetime import datetime
+from datetime import datetime, date
 
 # ==========================================
 # FUNÇÕES LEGADAS (mantém para compatibilidade)
@@ -37,15 +37,21 @@ def formatar_moeda_br(valor):
     except (ValueError, TypeError):
         return 'R$ 0,00'
 
+
 def formatar_data_br(data_str):
     """Formata data de YYYY-MM-DD para DD/MM/YYYY"""
-    if not data_str or data_str == '-':
+    if data_str is None or data_str == '-' or data_str == '-':
         return '-'
+
+    if isinstance(data_str, date):
+        return data_str.strftime('%d/%m/%Y')
+    
     try:
         data_obj = datetime.strptime(data_str, '%Y-%m-%d')
         return data_obj.strftime('%d/%m/%Y')
-    except:
+    except (ValueError, TypeError):
         return data_str
+
 
 def formatar_data_hora_br(data_str):
     """Formata data/hora para DD/MM/YYYY HH:MM:SS"""

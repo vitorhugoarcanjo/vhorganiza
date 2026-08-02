@@ -24,6 +24,9 @@ class FinancasFormatters:
             transacao_lista[5] = formatar_data_br(transacao_lista[5]) # data emissao
             transacao_lista[9] = formatar_data_br(transacao_lista[9]) # data vencimento
 
+            print(f"DEBUG - Data emissao formatada: {transacao_lista[5]}")
+            print(f"DEBUG - Data vencimento formatada: {transacao_lista[9]}")
+
             transacoes.append(transacao_lista)
 
         return transacoes
