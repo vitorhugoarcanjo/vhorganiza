@@ -268,15 +268,17 @@
 <!-- FOOTER FIXO PADRÃO -->
 <div class="footer-fixo-padrao">
     <div class="botoes-footer-padrao">
-        <!-- <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-footer btn-footer-primary">
+        <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-footer btn-footer-primary">
             <i class="bi bi-plus-lg"></i>NOVO
-        </a> -->
-        <button 
+        </a>
+
+        <!-- BOTÃO PARA CRIAR O MODAL FUTURAMENTE -->
+        <!-- <button 
             type="button"
             class="btn-footer btn-footer-primary"
             onclick="abrirModalNovaTransacao()">
             <i class="bi bi-plus-lg"></i>NOVO
-        </button>
+        </button> -->
 
         <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn-footer btn-footer-secondary">
             <i class="bi bi-tags"></i>CATEGORIAS
