@@ -268,9 +268,16 @@
 <!-- FOOTER FIXO PADRÃO -->
 <div class="footer-fixo-padrao">
     <div class="botoes-footer-padrao">
-        <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-footer btn-footer-primary">
+        <!-- <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-footer btn-footer-primary">
             <i class="bi bi-plus-lg"></i>NOVO
-        </a>
+        </a> -->
+        <button 
+            type="button"
+            class="btn-footer btn-footer-primary"
+            onclick="abrirModalNovaTransacao()">
+            <i class="bi bi-plus-lg"></i>NOVO
+        </button>
+
         <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn-footer btn-footer-secondary">
             <i class="bi bi-tags"></i>CATEGORIAS
         </a>
@@ -304,6 +311,7 @@
 
 
 <!-- MODAIS (igual tarefas) -->
+{% include 'pasta_financas/modais/modal_nova_transacao.html' %}
 {% include 'pasta_financas/modais/excluir_financas.html' %}
 {% include 'pasta_financas/modais/detalhes_completo.html' %}
 {% include 'pasta_financas/modais/modal_menu_click.html' %}
