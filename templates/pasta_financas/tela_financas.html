@@ -5,6 +5,7 @@
 {% block styles %}
     <!-- ✅ APENAS 1 CSS (em vez de 5) -->
     <link rel="stylesheet" href="{{ static_v('css/modules/pasta_financas/financas.min.css') }}">
+    <link rel="stylesheet" href="{{ static_v('css/modules/pasta_financas/cruds/modal_nova_transacao.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -268,17 +269,17 @@
 <!-- FOOTER FIXO PADRÃO -->
 <div class="footer-fixo-padrao">
     <div class="botoes-footer-padrao">
-        <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-footer btn-footer-primary">
+        <!-- <a href="{{ url_for('nova_transacao.initransacao') }}" class="btn-footer btn-footer-primary">
             <i class="bi bi-plus-lg"></i>NOVO
-        </a>
+        </a> -->
 
         <!-- BOTÃO PARA CRIAR O MODAL FUTURAMENTE -->
-        <!-- <button 
+        <button 
             type="button"
             class="btn-footer btn-footer-primary"
             onclick="abrirModalNovaTransacao()">
             <i class="bi bi-plus-lg"></i>NOVO
-        </button> -->
+        </button>
 
         <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn-footer btn-footer-secondary">
             <i class="bi bi-tags"></i>CATEGORIAS
@@ -323,8 +324,11 @@
 
 <!-- MODAIS (igual tarefas) -->
 {% block scripts %}
-    <!-- ✅ APENAS 1 JS (em vez de 11) -->
+    <!-- JS MINIFICADO -->
     <script src="{{ static_v('js/modules/pasta_financas/financas.min.js') }}"></script>
+
+    <!-- TESTES -->
+    <script src="{{ static_v('js/modules/pasta_financas/cruds/pasta_insert/modal_nova_transacao.js') }}"></script>
     
     <!-- 🔥 HTMX do CDN (rápido) -->
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
