@@ -17,6 +17,9 @@ JS_FILES = [
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_estornar_quitado.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_reativar_inativo.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_quitar/btn_quitar.js',
+
+    # BLOCO CRUDS - FINANCAS
+    'static/js/modules/pasta_financas/cruds/pasta_insert/modal_nova_transacao.js',
     
     # BLOCO ALTERNATIVOS
     'static/js/modules/pasta_financas/totalizadores/totalizadores.js',
@@ -45,7 +48,11 @@ CSS_FILES = [
     'static/css/components/footer.css',
     'static/css/components/tables.css',
 
-    'static/css/modules/pasta_financas/import_css.css', # MENU - MODAIS
+    # ========================================= #
+    #  MENU - MODAIS - CRUDS
+    # ========================================= #
+    'static/css/modules/pasta_financas/import_css.css',
+
 ]
 
 # ==========================

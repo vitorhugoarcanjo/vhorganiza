@@ -36,11 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// 🔥 Fechar com tecla ESC
+// 🔥 Versão com verificação extra
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         const modal = document.getElementById('modalNovaTransacao');
-        if (modal.classList.contains('active')) {
+        // Verifica se está visível E ativo
+        if (modal.style.display === 'flex' && modal.classList.contains('active')) {
             fecharModalNovaTransacao();
         }
     }

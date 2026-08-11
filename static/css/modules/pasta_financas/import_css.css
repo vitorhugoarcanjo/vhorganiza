@@ -10,3 +10,7 @@
 /* ======================= */
 @import url('/static/css/modules/pasta_financas/menu_click/click_direito.css');
 
+/* ======================= */
+/* ======= CRUD's =========*/
+/* ======================= */
+@import url('/static/css/modules/pasta_financas/cruds/modal_nova_transacao.css');
