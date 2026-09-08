@@ -1,0 +1,250 @@
+# ==========================================================
+# EDITAR TRANSAÇÃO - SERVICES
+# ==========================================================
+
+from datetime import datetime, timedelta
+import json
+from utils.fomatacoes.data_reutilizavel import formatar_moeda_br
+
+class EditarTransacaoService:
+    
+    @staticmethod
+    def buscar_transacao(cursor, sequencia, user_id):
+        """Busca os dados da transação para edição"""
+        cursor.execute("""
+            SELECT 
+                t.sequencia_transacoes,
+                t.id,
+                t.tipo,
+                t.valor_total,
+                t.descricao,
+                t.data_emissao,
+                t.categoria_id,
+                c.nome AS categoria_nome,
+                c.cor AS categoria_cor,
+                t.data_vencimento,
+                t.total_parcelas,
+                t.intervalo_dias,
+                t.transacao_pai_id,
+                t.numero_parcela
+            FROM transacoes t
+            LEFT JOIN categorias_financas c ON c.id = t.categoria_id
+            WHERE t.sequencia_transacoes = %s AND t.user_id = %s AND t.ativo = 1
+        """, (sequencia, user_id))
+        return cursor.fetchone()
+    
+    @staticmethod
+    def buscar_parcelas(cursor, sequencia):
+        """Busca as parcelas filhas"""
+        cursor.execute("""
+            SELECT sequencia_transacoes, numero_parcela, data_vencimento, valor_total, status
+            FROM transacoes
+            WHERE transacao_pai_id = %s AND ativo = 1
+            ORDER BY numero_parcela
+        """, (sequencia,))
+        return cursor.fetchall()
+    
+    @staticmethod
+    def buscar_categorias(cursor, user_id):
+        """Busca categorias do usuário"""
+        cursor.execute("""
+            SELECT id, nome, cor
+            FROM categorias_financas
+            WHERE user_id = %s
+        """, (user_id,))
+        return cursor.fetchall()
+    
+    @staticmethod
+    def formatar_transacao_para_modal(transacao_raw, parcelas_raw):
+        """Formata os dados para o modal"""
+        if not transacao_raw:
+            return None
+        
+        transacao_lista = list(transacao_raw)
+        transacao_lista[3] = formatar_moeda_br(transacao_lista[3])
+        transacao = tuple(transacao_lista)
+        
+        parcelas = []
+        for p in parcelas_raw:
+            parcelas.append({
+                'sequencia': p[0],
+                'numero': p[1],
+                'data_vencimento': p[2],
+                'valor': p[3],
+                'valor_formatado': formatar_moeda_br(p[3]),
+                'status': p[4]
+            })
+        
+        return {
+            'transacao': transacao,
+            'parcelas': parcelas,
+            'total_parcelas': transacao[10] or 1,
+            'parcelas_json': json.dumps(parcelas, default=str) if parcelas else '[]'
+        }
+    
+    @staticmethod
+    def atualizar_transacao(cursor, conexao, sequencia, user_id, dados):
+        """Atualiza a transação e suas parcelas"""
+        
+        cursor.execute("""
+            SELECT tipo FROM transacoes
+            WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
+        """, (sequencia, user_id))
+        
+        tipo_result = cursor.fetchone()
+        if not tipo_result:
+            return {'success': False, 'error': 'Transação não encontrada'}
+        
+        tipo = tipo_result[0]
+        
+        descricao = dados.get('descricao', '').strip()
+        valor = dados.get('valor_total', 0.0)
+        
+        data_emissao = dados.get('data_emissao')
+        if not data_emissao or data_emissao == '':
+            data_emissao = None
+        
+        data_vencimento = dados.get('data_vencimento')
+        if not data_vencimento or data_vencimento == '':
+            data_vencimento = None
+        
+        categoria_id = dados.get('categoria_id') or None
+        total_parcelas = int(dados.get('total_parcelas', 1))
+        
+        cursor.execute("""
+            SELECT t.descricao, t.valor_total, t.data_emissao, t.data_vencimento, 
+                   t.categoria_id, ct.nome AS categoria_nome, t.total_parcelas
+            FROM transacoes t
+            LEFT JOIN categorias_financas ct ON t.categoria_id = ct.id
+            WHERE t.sequencia_transacoes = %s AND t.user_id = %s
+        """, (sequencia, user_id))
+        
+        dados_antes = cursor.fetchone()
+        if not dados_antes:
+            return {'success': False, 'error': 'Dados não encontrados'}
+        
+        total_parcelas_antes = dados_antes[6] if dados_antes else 1
+        
+        cursor.execute("""
+            UPDATE transacoes 
+            SET descricao = %s, 
+                valor_total = %s, 
+                data_emissao = %s,
+                data_vencimento = %s,
+                categoria_id = %s,
+                total_parcelas = %s,
+                data_alteracao = CURRENT_TIMESTAMP
+            WHERE sequencia_transacoes = %s AND user_id = %s
+        """, (descricao, valor, data_emissao, data_vencimento, categoria_id, total_parcelas, sequencia, user_id))
+        
+        EditarTransacaoService._gerenciar_parcelas(
+            cursor, conexao, sequencia, user_id, tipo, 
+            descricao, valor, total_parcelas, total_parcelas_antes,
+            dados.get('intervaloDias', 30), 
+            dados.get('primeiroVencimento', data_vencimento or data_emissao),
+            dados.get('parcelas', []),
+            data_emissao  # ← PASSA A DATA DE EMISSÃO PAI
+        )
+        
+        return {
+            'success': True,
+            'dados_antes': dados_antes,
+            'descricao': descricao,
+            'valor': valor,
+            'data_emissao': data_emissao,
+            'data_vencimento': data_vencimento,
+            'categoria_id': categoria_id
+        }
+    
+    @staticmethod
+    def _gerenciar_parcelas(cursor, conexao, sequencia, user_id, tipo, descricao, valor, 
+                           total_parcelas, total_parcelas_antes, intervalo_dias, 
+                           primeiro_vencimento, parcelas_input, data_emissao_pai):
+        """Gerencia criação/atualização/remoção de parcelas"""
+        
+        cursor.execute("""
+            SELECT sequencia_transacoes, numero_parcela, valor_total, data_vencimento
+            FROM transacoes
+            WHERE transacao_pai_id = %s AND ativo = 1
+            ORDER BY numero_parcela
+        """, (sequencia,))
+        parcelas_existentes = cursor.fetchall()
+        
+        if total_parcelas > 1:
+            if parcelas_input and len(parcelas_input) > 0:
+                valores_parcelas = []
+                for p in parcelas_input:
+                    try:
+                        val = float(p['valor']) if isinstance(p['valor'], (int, float)) else float(p['valor'])
+                    except (ValueError, TypeError):
+                        val = valor / total_parcelas
+                    valores_parcelas.append(val)
+            else:
+                valores_parcelas = [valor / total_parcelas] * total_parcelas
+            
+            if len(parcelas_existentes) > total_parcelas:
+                cursor.execute("""
+                    UPDATE transacoes 
+                    SET ativo = 0, excluido_em = CURRENT_TIMESTAMP 
+                    WHERE transacao_pai_id = %s AND ativo = 1 AND numero_parcela > %s
+                """, (sequencia, total_parcelas))
+            
+            if not primeiro_vencimento or primeiro_vencimento == '':
+                primeiro_vencimento = datetime.now().strftime('%Y-%m-%d')
+            
+            # 🔥 GARANTE QUE data_emissao_PAI TENHA UM VALOR
+            data_emissao_parcela = data_emissao_pai or datetime.now().strftime('%Y-%m-%d')
+            
+            for i in range(1, total_parcelas + 1):
+                if i == 1:
+                    data_venc_parcela = primeiro_vencimento
+                else:
+                    data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
+                    data_venc_parcela = (data_base + timedelta(days=(i-1) * intervalo_dias)).strftime('%Y-%m-%d')
+                
+                valor_parcela = valores_parcelas[i-1] if i <= len(valores_parcelas) else (valor / total_parcelas)
+                
+                parcela_existente = next((p for p in parcelas_existentes if p[1] == i), None)
+                
+                if parcela_existente:
+                    cursor.execute("""
+                        UPDATE transacoes 
+                        SET valor_total = %s, 
+                            valor_parcela = %s,
+                            data_vencimento = %s,
+                            descricao = %s
+                        WHERE sequencia_transacoes = %s
+                    """, (valor_parcela, valor_parcela, data_venc_parcela, 
+                          f'{descricao} - Parcela {i}/{total_parcelas}', parcela_existente[0]))
+                else:
+                    sequencia_parcela = EditarTransacaoService._get_proxima_sequencia(cursor, user_id)
+                    cursor.execute("""
+                        INSERT INTO transacoes (
+                            user_id, sequencia_transacoes, tipo,
+                            valor_total, valor_parcela, descricao, categoria_id,
+                            data_emissao, data_vencimento,
+                            total_parcelas, numero_parcela, sequencia_parcela,
+                            transacao_pai_id, status, ativo
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
+                    """, (user_id, sequencia_parcela, tipo, valor_parcela, valor_parcela, 
+                          f'{descricao} - Parcela {i}/{total_parcelas}', None,
+                          data_emissao_parcela, data_venc_parcela, total_parcelas, i, i, sequencia))
+            
+            cursor.execute("""
+                UPDATE transacoes 
+                SET intervalo_dias = %s 
+                WHERE sequencia_transacoes = %s AND user_id = %s
+            """, (intervalo_dias, sequencia, user_id))
+            
+        elif total_parcelas_antes > 1 and total_parcelas == 1:
+            cursor.execute("""
+                UPDATE transacoes 
+                SET ativo = 0, excluido_em = CURRENT_TIMESTAMP 
+                WHERE transacao_pai_id = %s AND ativo = 1
+            """, (sequencia,))
+    
+    @staticmethod
+    def _get_proxima_sequencia(cursor, user_id):
+        cursor.execute("SELECT COALESCE(MAX(sequencia_transacoes), 0) + 1 FROM transacoes WHERE user_id = %s", (user_id,))
+        return cursor.fetchone()[0]

@@ -1,0 +1,148 @@
+<!-- ========================================================== -->
+<!-- MODAL NOVO ORÇAMENTO - VERSÃO MONSTRA                     -->
+<!-- ========================================================== -->
+<div class="orc-modal-overlay-novo" id="modalNovoOrcamento">
+    <div class="orc-modal-box-novo">
+
+        <!-- CABEÇALHO -->
+        <div class="orc-modal-novo-header">
+            <div class="orc-modal-novo-header-left">
+                <h3><i class="bi bi-plus-circle"></i> Novo Orçamento</h3>
+                <span class="orc-secoes-count" id="novoSecoesCount">0 seções</span>
+                <span class="orc-status-badge" id="novoStatusBadge">📝 Rascunho</span>
+            </div>
+            <div class="orc-modal-novo-header-right">
+                <!-- TEMPLATE SELECTOR COMPACTO -->
+                <div class="orc-template-selector">
+                    <div class="orc-template-selector-header">
+                        <label><i class="bi bi-layout-text-window"></i> Modelo</label>
+                        <select id="templateSelector" class="orc-template-select">
+                            <option value="">-- Selecione --</option>
+                            <option value="simples">📄 Simples</option>
+                            <option value="detalhado">📋 Detalhado</option>
+                            <option value="tecnico">📊 Técnico</option>
+                            <option value="comercial">💼 Comercial</option>
+                            <option value="projeto">🚀 Projeto</option>
+                        </select>
+                    </div>
+                    <button type="button" class="orc-btn-template" onclick="aplicarTemplate()">
+                        <i class="bi bi-check2"></i> Aplicar
+                    </button>
+                </div>
+                
+                <button class="orc-btn-close-modal" onclick="fecharModalNovoOrcamento()" title="Fechar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- FORMULÁRIO -->
+        <form id="formNovoOrcamento" class="orc-modal-novo-form">
+            <input type="hidden" name="id" id="novoId">
+
+            <!-- INFORMAÇÕES DO ORÇAMENTO -->
+            <div class="orc-modal-novo-info">
+                <div class="orc-info-grid">
+                    <div class="orc-info-group">
+                        <label><i class="bi bi-tag"></i> Título *</label>
+                        <input type="text" name="titulo" id="novoTitulo" 
+                               placeholder="Ex: Desenvolvimento de Sistema" 
+                               required onchange="atualizarPreview()">
+                    </div>
+                    <div class="orc-info-group">
+                        <label><i class="bi bi-person"></i> Cliente</label>
+                        <input type="text" name="cliente" id="novoCliente" 
+                               placeholder="Nome do cliente" onchange="atualizarPreview()">
+                    </div>
+                    <div class="orc-info-group">
+                        <label><i class="bi bi-calendar"></i> Data</label>
+                        <input type="date" name="data" id="novoData" onchange="atualizarPreview()">
+                    </div>
+                    <div class="orc-info-group">
+                        <label><i class="bi bi-check-circle"></i> Status</label>
+                        <select name="status" id="novoStatus" onchange="atualizarStatusPreview()">
+                            <option value="rascunho">📝 Rascunho</option>
+                            <option value="enviado">📤 Enviado</option>
+                            <option value="aprovado">✅ Aprovado</option>
+                            <option value="rejeitado">❌ Rejeitado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="orc-modal-divider">
+
+            <!-- SEÇÕES - ÁREA PRINCIPAL -->
+            <div class="orc-modal-novo-secoes">
+                <div class="orc-secoes-header">
+                    <div class="orc-secoes-header-left">
+                        <h4><i class="bi bi-layers"></i> Seções do Orçamento</h4>
+                        <span class="orc-secoes-hint">Arraste para reordenar</span>
+                    </div>
+                    <div class="orc-secoes-actions">
+                        <button type="button" class="orc-btn-add-secao" onclick="abrirModalNovaSecao()">
+                            <i class="bi bi-plus-lg"></i> Adicionar Seção
+                        </button>
+                    </div>
+                </div>
+                <div id="novo-secoes-container" class="orc-secoes-container">
+                    <!-- Renderizado via JavaScript -->
+                </div>
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="orc-modal-novo-footer">
+                <div class="orc-footer-left">                    
+                    <button type="button" class="orc-btn-icon" onclick="previewNovoOrcamento()" title="Visualizar orçamento">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button type="button" class="orc-btn-icon" onclick="gerarPDFPreview()" title="Gerar PDF">
+                        <i class="bi bi-file-pdf"></i>
+                    </button>
+
+                </div>
+                <div class="orc-footer-right">
+                    <button type="button" class="orc-btn-footer-cancelar" onclick="fecharModalNovoOrcamento()">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="orc-btn-footer-salvar" id="btnCriarOrcamento">
+                        <i class="bi bi-check-circle"></i> Criar Orçamento
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- ========================================================== -->
+<!-- INCLUDE DO MODAL SEÇÃO (COMPARTILHADO)                    -->
+<!-- ========================================================== -->
+{% include 'pasta_orcamentos/partials/secao_form.html.jinja' %}
+
+
+<!-- ========================================================== -->
+<!-- MODAL PREVIEW - VISUALIZAR ORÇAMENTO                      -->
+<!-- ========================================================== -->
+<div class="orc-modal-overlay-preview" id="modalPreview">
+    <div class="orc-modal-box-preview">
+        <div class="orc-preview-header">
+            <h4><i class="bi bi-eye"></i> Visualização do Orçamento</h4>
+            <button class="orc-btn-close-modal" onclick="fecharPreview()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="orc-preview-body" id="previewContent">
+            <!-- Renderizado via JavaScript -->
+        </div>
+        <div class="orc-preview-footer">
+            <button type="button" class="orc-btn-footer-pdf" onclick="gerarPDFPreview()">
+                <i class="bi bi-file-pdf"></i> Gerar PDF
+            </button>
+
+            <button type="button" class="orc-btn-footer-cancelar" onclick="fecharPreview()">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>

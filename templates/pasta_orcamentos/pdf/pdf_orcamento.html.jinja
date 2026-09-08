@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Orçamento {{ orcamento[2] }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; padding: 40px; color: #333; }
+        .header { text-align: center; border-bottom: 3px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: #2563eb; font-size: 28px; margin: 0; }
+        .header p { color: #666; margin: 5px 0; font-size: 14px; }
+        .info { display: flex; justify-content: space-between; margin-bottom: 30px; padding: 15px 20px; background: #f8f9fa; border-radius: 8px; flex-wrap: wrap; gap: 10px; }
+        .info-item { display: flex; flex-direction: column; }
+        .info-item label { font-size: 11px; color: #999; text-transform: uppercase; font-weight: 600; }
+        .info-item span { font-size: 16px; font-weight: 500; margin-top: 2px; }
+        .secao { margin-bottom: 20px; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px 20px; page-break-inside: avoid; }
+        .secao h3 { margin: 0 0 10px 0; color: #2563eb; border-bottom: 1px solid #e9ecef; padding-bottom: 8px; font-size: 16px; }
+        .secao p { margin: 5px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.6; }
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e9ecef; color: #999; font-size: 12px; }
+        .vazio { text-align: center; color: #999; padding: 30px; }
+        
+        /* TIPO: CABEÇALHO */
+        .secao-cabecalho { text-align: center; padding: 20px; border-bottom: 3px solid #8b5cf6; margin-bottom: 24px; }
+        .secao-cabecalho h2 { font-size: 22px; font-weight: 700; color: #8b5cf6; margin: 0; }
+        .secao-cabecalho p { font-size: 14px; color: #666; margin-top: 4px; }
+        
+        /* TIPO: TABELA */
+        .tabela { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+        .tabela th { background: #f1f5f9; font-weight: 600; padding: 8px 12px; border: 1px solid #e2e8f0; text-align: left; }
+        .tabela td { padding: 8px 12px; border: 1px solid #e2e8f0; }
+        
+        /* TIPO: LISTA */
+        .lista { padding-left: 24px; margin: 8px 0; }
+        .lista li { margin-bottom: 4px; font-size: 14px; }
+        
+        /* TIPO: DESTAQUE */
+        .destaque { border: 2px solid #ef4444; border-radius: 8px; padding: 16px 20px; background: rgba(239,68,68,0.05); text-align: center; margin: 12px 0; }
+        .destaque .titulo { font-weight: 700; font-size: 14px; color: #ef4444; }
+        .destaque .conteudo { font-size: 18px; font-weight: 700; color: #ef4444; margin-top: 4px; }
+        
+        /* TIPO: VALOR */
+        .valor { border: 2px solid #10b981; border-radius: 8px; padding: 20px 24px; background: rgba(16,185,129,0.05); text-align: center; margin: 12px 0; }
+        .valor .titulo { font-weight: 700; font-size: 14px; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px; }
+        .valor .itens { text-align: left; font-size: 13px; color: #475569; margin: 8px 0; padding: 8px 16px; background: #f8fafc; border-radius: 6px; }
+        .valor .itens li { padding: 2px 0; list-style: none; }
+        .valor .itens li strong { color: #10b981; }
+        .valor .total { font-size: 28px; font-weight: 800; color: #10b981; padding: 8px 0; border-top: 2px solid rgba(16,185,129,0.15); margin-top: 8px; }
+        .valor .descricao { font-size: 13px; color: #64748b; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(16,185,129,0.15); }
+        
+        /* TIPO: OBSERVAÇÃO */
+        .observacao { background: #f8fafc; border-left: 3px solid #6b7280; padding: 12px 16px; border-radius: 4px; font-size: 13px; color: #475569; margin: 12px 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ORÇAMENTO</h1>
+        <p>{{ orcamento[2] }}</p>
+        <p>Nº {{ orcamento[0] }} - {{ orcamento[5].strftime('%d/%m/%Y') if orcamento[5] else '' }}</p>
+    </div>
+
+    <div class="info">
+        <div class="info-item">
+            <label>Cliente</label>
+            <span>{{ orcamento[3] or 'Não informado' }}</span>
+        </div>
+        <div class="info-item">
+            <label>Status</label>
+            <span>{{ orcamento[4]|upper if orcamento[4] else 'Rascunho' }}</span>
+        </div>
+        <div class="info-item">
+            <label>Data de Criação</label>
+            <span>{{ orcamento[5].strftime('%d/%m/%Y %H:%M') if orcamento[5] else '' }}</span>
+        </div>
+    </div>
+
+    {% if orcamento[6] %}
+        {% for secao in orcamento[6] %}
+            {% set tipo = secao.tipo or 'secao' %}
+
+            {% if tipo == 'cabecalho' %}
+            <div class="secao-cabecalho">
+                <h2>{{ secao.titulo or 'ORÇAMENTO' }}</h2>
+                <p>{{ secao.conteudo or '' }}</p>
+            </div>
+
+            {% elif tipo == 'secao' %}
+            <div class="secao">
+                <h3>{{ secao.titulo or 'Seção' }}</h3>
+                <p>{{ secao.conteudo or '' }}</p>
+            </div>
+
+            {% elif tipo == 'tabela' %}
+            <div class="secao">
+                <h3>{{ secao.titulo or 'Tabela' }}</h3>
+                <table class="tabela">
+                    <thead>
+                        <tr>
+                            {% for coluna in secao.colunas or [] %}
+                            <th>{{ coluna }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for linha in secao.linhas or [] %}
+                        <tr>
+                            {% for celula in linha %}
+                            <td>{{ celula }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% elif tipo == 'lista' or tipo == 'numerada' %}
+            <div class="secao">
+                <h3>{{ secao.titulo or 'Lista' }}</h3>
+                <ul class="lista">
+                    {% for item in secao.itens or [] %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {% elif tipo == 'destaque' %}
+            <div class="destaque">
+                <div class="titulo">{{ secao.titulo or 'Destaque' }}</div>
+                <div class="conteudo">{{ secao.conteudo or '' }}</div>
+            </div>
+
+            {% elif tipo == 'valor' %}
+            <div class="valor">
+                <div class="titulo">{{ secao.titulo or 'Valor' }}</div>
+                {% if secao.conteudo %}
+                <div class="itens">
+                    {% for linha in secao.conteudo.split('\n') %}
+                        {% if linha.strip() %}
+                        <li>{{ linha|replace('R$', '<strong>R$</strong>')|safe }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="total">{{ secao.valor or 'R$ 0,00' }}</div>
+                {% if secao.descricao_valor %}
+                <div class="descricao">{{ secao.descricao_valor }}</div>
+                {% endif %}
+            </div>
+
+            {% elif tipo == 'observacao' %}
+            <div class="observacao">
+                {{ secao.conteudo or '' }}
+            </div>
+
+            {% else %}
+            <div class="secao">
+                <h3>{{ secao.titulo or 'Seção' }}</h3>
+                <p>{{ secao.conteudo or '' }}</p>
+            </div>
+            {% endif %}
+
+        {% endfor %}
+    {% else %}
+        <div class="vazio">Nenhuma seção adicionada.</div>
+    {% endif %}
+
+    <div class="footer">
+        <p>Documento gerado automaticamente em {{ now.strftime('%d/%m/%Y %H:%M') }}</p>
+    </div>
+</body>
+</html>

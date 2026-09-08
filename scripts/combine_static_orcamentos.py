@@ -7,59 +7,41 @@ from datetime import datetime
 # ==========================
 
 JS_FILES = [
-    # ========================
-    # FINANCAS
-    # ========================
-    'static/js/modules/pasta_financas/financas.js',
+    # ========================================= #
+    # CORE - VARIÁVEIS, TEMAS, TEMPLATES
+    # ========================================= #
+    'static/js/modules/pasta_orcamentos/core/variaveis.js',
+    'static/js/modules/pasta_orcamentos/core/temas.js',
+    'static/js/modules/pasta_orcamentos/core/templates.js',
+    'static/js/modules/pasta_orcamentos/core/pdf.js',
+    'static/js/modules/pasta_orcamentos/core/pdf-preview.js',
 
     # ========================================= #
-    # CORE
+    # COMPONENTS - SEÇÕES
     # ========================================= #
-    'static/js/modules/pasta_financas/core/form-transacao.js',
-
-    # ========================================= #
-    # COMPONENTS
-    # ========================================= #
-    'static/js/modules/pasta_financas/modals/transacao-nova.js',
-    'static/js/modules/pasta_financas/modals/transacao-editar.js',
-
-    # ========================================= #
-    # MODALS
-    # ========================================= #
-
-
-    # ========================
-    # FINANCAS
-    # ========================
-    # BLOCO ACOES
-    'static/js/modules/pasta_financas/acoes_e_modais/detalhes_completo/detalhes_completo.js',
-    'static/js/modules/pasta_financas/acoes_e_modais/pasta_excluir/excluir_financas.js',
-    'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_estornar_quitado.js',
-    'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_reativar_inativo.js',
-    'static/js/modules/pasta_financas/acoes_e_modais/pasta_quitar/btn_quitar.js',
-
+    'static/js/modules/pasta_orcamentos/components/secoes-types.js',
+    'static/js/modules/pasta_orcamentos/components/secoes-render.js',
+    'static/js/modules/pasta_orcamentos/components/secoes-preview.js',
+    'static/js/modules/pasta_orcamentos/components/secoes-manager.js',
+    'static/js/modules/pasta_orcamentos/components/secoes-form.js',
     
-    # BLOCO ALTERNATIVOS
-    'static/js/modules/pasta_financas/totalizadores/totalizadores.js',
-    'static/js/modules/pasta_financas/ordenacao_colunas/ordenacao.js',
-
-    # BLOCO DE FILTROS
-    'static/js/modules/pasta_financas/filtros/botoes_outros_filtros.js',
+    # ========================================= #
+    # MODAIS
+    # ========================================= #
+    'static/js/modules/pasta_orcamentos/modals/modal_novo_orcamento.js',
+    'static/js/modules/pasta_orcamentos/modals/modal_editar_orcamento.js',
+    'static/js/modules/pasta_orcamentos/modals/modal_excluir_orcamento.js',
     
-    # Menu
-    'static/js/modules/pasta_financas/menu_click/click_direito.js',
-    'static/js/modules/pasta_financas/menu_click/vinculos.js',
+    # ========================================= #
+    # MAIN
+    # ========================================= #
+    'static/js/modules/pasta_orcamentos/orcamento.js',
 ]
+
 
 CSS_FILES = [
     # ========================================= #
-    # CORE (COMPARTILHADO - JÁ EXISTE)
-    # ========================================= #
-    'static/css/core/reset.css',
-    'static/css/core/responsive.css',
-
-    # ========================================= #
-    # COMPONENTS (COMPARTILHADO - JÁ EXISTE)
+    # COMPONENTS - GLOBAL
     # ========================================= #
     'static/css/components/buttons.css',
     'static/css/components/filters.css',
@@ -67,19 +49,30 @@ CSS_FILES = [
     'static/css/components/tables.css',
 
     # ========================================= #
-    # FINANÇAS (ESPECÍFICO - SÓ ISSO!)
+    # CORE - GLOBAL
     # ========================================= #
-    'static/css/modules/pasta_financas/modals/modal_transacao.css',
-    'static/css/modules/pasta_financas/acoes_e_modais/modal_excluir.css',
-    'static/css/modules/pasta_financas/acoes_e_modais/modal_estornar.css',
-    'static/css/modules/pasta_financas/acoes_e_modais/detalhes_completo.css',
-    'static/css/modules/pasta_financas/menu_click/click_direito.css',
+    'static/css/core/reset.css',
+    'static/css/core/responsive.css',
 
     # ========================================= #
-    # COMPONENTS (ESPECIFICO)
+    # MODALS - BASE (COMPARTILHADO)
     # ========================================= #
-    'static/css/modules/pasta_financas/components/form_transacao.css',
+    'static/css/modules/pasta_orcamentos/modals/modal_base.css',
 
+    # ========================================= #
+    # MODALS - ESPECÍFICOS
+    # ========================================= #
+    'static/css/modules/pasta_orcamentos/modals/modal_novo_orcamento.css',
+    'static/css/modules/pasta_orcamentos/modals/modal_editar_orcamento.css',
+    'static/css/modules/pasta_orcamentos/modals/modal_excluir_orcamento.css',
+    'static/css/modules/pasta_orcamentos/modals/modal_secao.css',
+    'static/css/modules/pasta_orcamentos/modals/modal_preview.css',
+
+    # ========================================= #
+    # COMPONENTS - ORCAMENTOS
+    # ========================================= #
+    'static/css/modules/pasta_orcamentos/components/secoes.css',
+    'static/css/modules/pasta_orcamentos/components/secoes_valor.css',
 ]
 
 # ==========================
@@ -110,27 +103,28 @@ def resolve_imports(content, file_path):
         full_path = os.path.join('static', import_path)
         
         if os.path.exists(full_path):
-            print(f'    📄 Resolvendo @import: {import_path}')
+            print(f'Resolvendo @import: {import_path}')
             with open(full_path, 'r', encoding='utf-8') as f:
                 return f.read()
         else:
-            print(f'    ⚠️ @import não encontrado: {import_path}')
+            print(f'@import não encontrado: {import_path}')
             return ''  # Remove o @import se não encontrar
     
     # Substitui todos os @import
     return re.sub(pattern, replace_import, content, flags=re.IGNORECASE)
+
 
 # ==========================
 # COMBINAR
 # ==========================
 def combinar():
     print('='*60)
-    print('🚀 COMBINANDO ARQUIVOS (COM RESOLUÇÃO DE @import)')
+    print('COMBINANDO ARQUIVOS (COM RESOLUÇÃO DE @import)')
     print('='*60)
 
     # JS
-    print('\n📦 Combinando JS...')
-    with open('static/js/modules/pasta_financas/financas.min.js', 'w', encoding='utf-8') as out:
+    print('\nCombinando JS...')
+    with open('static/js/modules/pasta_orcamentos/orcamento.min.js', 'w', encoding='utf-8') as out:
         out.write(f'// COMBINADO - {datetime.now().strftime("%d/%m/%Y %H:%M")}\n\n')
         for file in JS_FILES:
             if os.path.exists(file):
@@ -139,13 +133,13 @@ def combinar():
                 with open(file, 'r', encoding='utf-8') as f:
                     out.write(f.read())
                     out.write('\n\n')
-                print(f'  ✅ {name}')
+                print(f' ok {name}')
             else:
-                print(f'  ⚠️ {file} não encontrado')
+                print(f' falha {file} não encontrado')
 
     # CSS (com resolução de @import)
-    print('\n📦 Combinando CSS...')
-    with open('static/css/modules/pasta_financas/financas.min.css', 'w', encoding='utf-8') as out:
+    print('\nCombinando CSS...')
+    with open('static/css/modules/pasta_orcamentos/orcamento.min.css', 'w', encoding='utf-8') as out:
         out.write(f'/* COMBINADO - {datetime.now().strftime("%d/%m/%Y %H:%M")} */\n\n')
         
         for file in CSS_FILES:
@@ -162,14 +156,14 @@ def combinar():
                     out.write(content)
                     out.write('\n\n')
                 
-                print(f'  ✅ {name}')
+                print(f'  ok {name}')
             else:
-                print(f'  ⚠️ {file} não encontrado')
+                print(f'  falha {file} não encontrado')
     
     print('\n' + '='*60)
-    print('✅ PRONTO! Arquivos combinados:')
-    print('  📄 static/js/financas.min.js')
-    print('  📄 static/css/financas.min.css')
+    print('ok PRONTO! Arquivos combinados:')
+    print('static/js/modules/orcamento.min.js')
+    print('static/css/modules/orcamento.min.css')
     print('='*60)
 
 

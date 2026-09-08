@@ -1,0 +1,2630 @@
+/* COMBINADO - 07/09/2026 12:43 */
+
+/* ===== buttons.css ===== */
+/* ==========================================================
+   BOTÃO - NOVO/SALVAR (AZUL)
+   ========================================================== */
+.btn-footer-primary {
+    background: var(--btn-primary-bg);
+    color: #ffffff;
+}
+
+.btn-footer-primary i,
+.btn-footer-primary span {
+    color: #ffffff;
+}
+
+.btn-footer-primary:hover {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.btn-footer-primary:hover i,
+.btn-footer-primary:hover span {
+    color: #ffffff;
+}
+
+/* ==========================================================
+   BOTÃO - CATEGORIAS (FUNDO ESCURO COM BORDA) - CATEGORIAS
+   ========================================================== */
+.btn-footer-secondary {
+    background: #0f172a;
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-footer-secondary i {
+    color: #94a3b8;
+}
+
+.btn-footer-secondary span {
+    color: #94a3b8;
+}
+
+.btn-footer-secondary:hover {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #2563eb;
+}
+
+.btn-footer-secondary:hover i {
+    color: #f8fafc;
+}
+
+.btn-footer-secondary:hover span {
+    color: #f8fafc;
+}
+
+/* ==========================================================
+    BOTÃO CANCELAR (VERMELHO NO HOVER)
+   ========================================================== */
+.btn-footer-cancelar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 60px;
+    height: 60px;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    position: relative;
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-footer-cancelar i {
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+    color: #e82525;
+}
+
+.btn-footer-cancelar span {
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+    color: #94a3b8;
+}
+
+.btn-footer-cancelar:hover {
+    transform: scale(1.08);
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+}
+
+.btn-footer-cancelar:hover i {
+    color: #ef4444;
+}
+
+.btn-footer-cancelar:hover span {
+    color: #ef4444;
+}
+
+
+/* ==========================================================
+   BOTÕES DE FILTRO (Ativas/Inativas/Todas)
+   ========================================================== */
+
+.btn-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-filter:hover {
+    background-color: #1d42d8;
+    border-color: var(--texto-mutado);
+    color: #ffffff;
+
+}
+
+.btn-filter.active {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #ffffff;
+}
+
+.btn-filter.active:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   4. BOTÕES DE AÇÃO
+   ========================================================================== */
+.td-acoes {
+    text-align: center;
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: var(--fs-pequeno);
+    padding: 0;
+}
+
+.btn-acao:hover {
+    color: var(--texto-principal);
+}
+
+.btn-acao.view:hover {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-acao.check:hover {
+    background-color: rgba(34, 197, 94, 0.1);
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
+}
+
+.btn-acao.edit:hover {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-acao.delete:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.btn-pure {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    font-size: var(--fs-pequeno) !important;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-pure:hover {
+    background: var(--hover-fino);
+}
+
+/* ==========================================================
+   EFEITO RIPPLE (ONDE CLICOU)
+   ========================================================== */
+
+.btn-pure {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s ease;
+}
+
+/* Elemento da onda */
+.btn-pure .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 0.5s ease-out;
+    pointer-events: none;
+}
+
+/* Cor da onda no modo escuro (padrão) */
+.btn-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Cor da onda no modo claro */
+.light-mode .btn-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Ondas para botões específicos no modo escuro */
+.btn-success-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-info-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-primary-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Ondas para botões específicos no modo claro */
+.light-mode .btn-success-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .btn-info-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .btn-primary-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Animação da onda */
+@keyframes ripple-animation {
+    0% {
+        transform: scale(0);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Efeito de clique (aperta o botão) */
+.btn-pure:active {
+    transform: scale(0.97);
+    transition: transform 0.05s ease;
+}
+
+/* Remove outline feio no clique (mantém acessibilidade) */
+.btn-pure:focus-visible {
+    outline: 2px solid var(--cor-ativa);
+    outline-offset: 2px;
+}
+
+/* ==========================================================
+   FIM DO EFEITO RIPPLE
+   ========================================================== */
+
+.btn-success-pure {
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
+}
+
+.btn-info-pure {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-primary-pure {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #fff;
+}
+
+.btn-active-toggle {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #fff;
+}
+
+.btn-destaque {
+    font-weight: 600;
+}
+
+/* ===== filters.css ===== */
+/* ==========================================================================
+   2. FILTROS
+   ========================================================================== */
+.painel-topo-fixo {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.form-filtros-total {
+    width: 100%;
+}
+
+.filtros-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.bloco-filtro {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px;
+    flex: 1;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.bloco-filtro:first-child {
+    flex: 1.8;
+    min-width: 210px;
+}
+
+.bloco-filtro .form-select,
+.bloco-filtro .form-control:not(.flex-row .form-control),
+.bloco-filtro .lista-categorias {
+    margin-top: auto;
+}
+
+.bloco-pesquisa-fim {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bloco-titulo {
+    font-size: var(--fs-micro) !important;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    margin-bottom: 4px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flex-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.flex-row:last-child { margin-bottom: 0; }
+.flex-fill { flex: 1; }
+
+.form-control, .form-select {
+    width: 100%;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    border-radius: 4px;
+    font-size: var(--fs-pequeno) !important;
+    outline: none;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label-categoria {
+    font-size: var(--fs-pequeno);
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.span_categorias {
+    font-size: var(--fs-pequeno);
+}
+
+.tarefas-controle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px;
+}
+
+.botoes-esquerda {
+    display: flex;
+    gap: 6px;
+}
+
+/* ===== footer.css ===== */
+/* ==========================================================
+   FOOTER - CSS REORGANIZADO
+   ========================================================== */
+
+/* ==========================================================
+   1. BASE DO FOOTER
+   ========================================================== */
+.footer-fixo-padrao {
+    position: fixed;
+    bottom: 0;
+    left: 60px;
+    right: 0;
+    background: #1e293b;  /* ← FUNDO ESCURO FIXO */
+    border-top: 2px solid #2563eb;  /* ← BORDA AZUL FIXA */
+    padding: 6px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    min-height: 70px;
+    transition: left 0.3s ease;
+}
+
+.sidebar:hover ~ .footer-fixo-padrao {
+    left: 220px;
+}
+
+h2 {
+    color: white;
+}
+
+/* ==========================================================
+   2. CONTAINER DE BOTÕES
+   ========================================================== */
+.botoes-footer-padrao {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ==========================================================
+   3. BOTÃO PADRÃO (BASE PARA TODOS)
+   ========================================================== */
+.botoes-footer-padrao .btn-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 60px;
+    height: 60px;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    position: relative;
+}
+
+.botoes-footer-padrao .btn-footer i {
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.botoes-footer-padrao .btn-footer span {
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+/* HOVER PADRÃO */
+.botoes-footer-padrao .btn-footer:hover {
+    transform: scale(1.08);
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+
+/* ==========================================================
+   7. TOTALIZADORES
+   ========================================================== */
+.totalizador-footer-padrao {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.total-item-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+}
+
+.total-item-footer label {
+    font-size: 0.5rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.total-item-footer span {
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* ==========================================================
+   8. CORES DOS TOTALIZADORES
+   ========================================================== */
+.total-receita span { color: #22c55e; }
+.total-despesa span { color: #ef4444; }
+.total-saldo span { color: #2563eb; }
+.total-pendente span { color: #ef4444; }
+.total-andamento span { color: #f59e0b; }
+.total-concluidas span { color: #22c55e; }
+
+/* ==========================================================
+   9. CONTADOR
+   ========================================================== */
+.contador-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #0f172a;
+    border-radius: 4px;
+    padding: 4px 12px;
+    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.contador-footer i {
+    font-size: 0.85rem;
+    color: #2563eb;
+}
+
+.contador-footer span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+/* ==========================================================
+   10. MOBILE (TUDO JUNTO)
+   ========================================================== */
+@media (max-width: 768px) {
+    /* BASE */
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
+        padding: 6px 12px;
+        min-height: auto;
+        gap: 6px;
+    }
+
+    /* BOTÕES */
+    .botoes-footer-padrao {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .botoes-footer-padrao .btn-footer {
+        width: 48px;
+        height: 48px;
+        padding: 4px;
+        border-radius: 6px;
+    }
+
+    .botoes-footer-padrao .btn-footer i {
+        font-size: 1.2rem;
+    }
+
+    .botoes-footer-padrao .btn-footer span {
+        font-size: 0.5rem;
+    }
+
+    .botoes-footer-padrao .btn-footer:hover {
+        transform: none;
+    }
+
+    /* BOTÃO CANCELAR MOBILE */
+    .btn-footer-cancelar {
+        width: 48px;
+        height: 48px;
+        padding: 4px;
+        border-radius: 6px;
+    }
+
+    .btn-footer-cancelar i {
+        font-size: 1.2rem;
+    }
+
+    .btn-footer-cancelar span {
+        font-size: 0.5rem;
+    }
+
+    .btn-footer-cancelar:hover {
+        transform: none;
+    }
+
+    /* TOTALIZADORES */
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+        gap: 12px;
+    }
+
+    .total-item-footer span {
+        font-size: 0.75rem;
+    }
+
+    /* CONTADOR */
+    .contador-footer {
+        height: 28px;
+        padding: 2px 10px;
+    }
+
+    .contador-footer span {
+        font-size: 0.65rem;
+    }
+}
+
+/* ===== tables.css ===== */
+/* ==========================================================================
+   3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
+   ========================================================================== */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-normal);
+    table-layout: fixed;
+}
+
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
+    color: var(--texto-mutado);
+    font-weight: 600;
+    padding: 4px 6px !important;
+    border-bottom: 2px solid var(--border-sutil);
+    z-index: 10;
+    text-align: left;
+    font-size: var(--fs-micro) !important;
+}
+
+.custom-table td {
+    padding: 4px 6px !important;
+    border-bottom: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--fs-pequeno) !important;
+    transition: all 0.2s ease;
+}
+
+/* ZEBRADO - UM SIM, OUTRO NÃO */
+.custom-table tbody tr:nth-child(odd) {
+    background-color: var(--bg-principal);
+}
+
+.custom-table tbody tr:nth-child(even) {
+    background-color: var(--hover-fino);
+}
+
+/* HOVER FORTE */
+.custom-table tbody tr:hover {
+    background-color: rgba(37, 99, 235, 0.15) !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* LINHA SELECIONADA (CLIQUE DIREITO) */
+.custom-table tbody tr.selecionado {
+    background-color: rgba(37, 99, 235, 0.25) !important;
+    border-left: 3px solid var(--cor-ativa);
+    box-shadow: inset 0 0 0 1px var(--cor-ativa);
+}
+
+.custom-table tbody tr.selecionado td:first-child {
+    border-left: 3px solid var(--cor-ativa);
+    padding-left: 3px;
+}
+
+/* BORDAS ARREDONDADAS NO HOVER */
+.custom-table tbody tr:hover td:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.custom-table tbody tr:hover td:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.td-id {
+    color: var(--texto-discreto);
+    font-weight: bold;
+}
+
+.td-titulo {
+    font-weight: 500;
+}
+
+.text-vazio {
+    color: var(--texto-discreto);
+}
+
+.td-vazio {
+    text-align: center;
+    padding: 30px;
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   BADGES
+   ========================================================== */
+.badge-pure {
+    padding: 1px 4px !important;
+    border-radius: 4px;
+    font-size: var(--fs-micro) !important;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* ==========================================================
+   ORDENAÇÃO DE COLUNAS
+   ========================================================== */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 20px !important;
+}
+
+.sortable:hover {
+    background-color: var(--hover-fino);
+}
+
+.sortable::after {
+    content: "↕️";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    opacity: 0.5;
+}
+
+.sortable.asc::after {
+    content: "↑";
+    opacity: 1;
+}
+
+.sortable.desc::after {
+    content: "↓";
+    opacity: 1;
+}
+
+/* ==========================================================
+   REDIMENSIONAMENTO DE COLUNAS
+   ========================================================== */
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
+    color: var(--texto-mutado);
+    font-weight: 600;
+    padding: 4px 6px !important;
+    border-bottom: 2px solid var(--border-sutil);
+    z-index: 10;
+    text-align: left;
+    font-size: var(--fs-micro) !important;
+    position: relative;
+}
+
+/* Largura mínima para texto não quebrar */
+.custom-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Para descrição, permitir quebra de linha se necessário */
+.custom-table td:nth-child(4) {
+    white-space: normal;
+    word-break: break-word;
+    min-width: 150px;
+    max-width: 300px;
+}
+
+/* ===== reset.css ===== */
+/* ==========================================================================
+   1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
+   ========================================================================== */
+:root {
+    --fs-micro: 0.62rem;
+    --fs-pequeno: 0.72rem;
+    --fs-normal: 0.8rem;
+}
+
+.content {
+    padding: 0 !important; 
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.painel-container {
+    display: flex;
+    flex-direction: column;
+    width: 98% !important;
+    max-width: 98% !important;
+    height: 100%;
+    margin: 0 auto !important;
+    padding: 10px 0;
+    gap: 8px;
+    background-color: var(--bg-principal);
+    font-size: var(--fs-normal);
+}
+
+.scroll-fino::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scroll-fino::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-fino::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.35);
+    border-radius: 10px;
+}
+
+.scroll-fino::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 120, 120, 0.6);
+}
+
+.scroll-fino {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120,120,120,0.5) transparent;
+    overflow-y: auto;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+}
+
+.painel-tabela-conteudo {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+
+/* ===== responsive.css ===== */
+/* ==========================================================================
+   6. RESPONSIVIDADE - CORRIGIDA
+   ========================================================================== */
+
+/* Força scroll horizontal quando tabela não couber */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tablet e mobile - tabela rola horizontal */
+@media (max-width: 1096px) {
+    .custom-table {
+        min-width: 900px;
+    }
+    
+    .td-acoes {
+        flex-wrap: nowrap !important;
+    }
+    
+    .custom-table td:last-child,
+    .custom-table th:last-child {
+        position: sticky;
+        right: 0;
+        background-color: inherit;
+    }
+}
+
+/* Remove a regra específica da descrição */
+/* Deixa a tabela toda rolar se precisar */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.custom-table {
+    min-width: 1000px; /* Força largura mínima */
+}
+
+/* DESCRIÇÃO PADRÃO */
+.custom-table td:nth-child(4) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
+/* Mobile - empilha filtros */
+@media (max-width: 768px) {
+    .filtros-container {
+        flex-direction: column !important;
+    }
+    
+    .bloco-filtro {
+        width: 100% !important;
+    }
+    
+    .custom-table {
+        min-width: 800px;
+    }
+}
+
+/* Footer nunca some - só ajusta posição */
+@media (max-width: 768px) {
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
+    }
+    
+    .botoes-footer-padrao,
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .totalizador-footer-padrao {
+        margin-left: 0;
+    }
+}
+
+/* ===== modal_base.css ===== */
+/* ========================================================== */
+/* MODAL BASE - COMPARTILHADO (NOVO E EDITAR)                */
+/* ========================================================== */
+
+/* ========================================================== */
+/* 1. OVERLAY                                                 */
+/* ========================================================== */
+.orc-modal-overlay-novo,
+.orc-modal-overlay-editar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.orc-modal-overlay-novo.active,
+.orc-modal-overlay-editar.active {
+    display: flex !important;
+}
+
+/* ========================================================== */
+/* 2. BOX                                                     */
+/* ========================================================== */
+.orc-modal-box-novo,
+.orc-modal-box-editar {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 20px;
+    padding: 24px 28px;
+    width: 98% !important;
+    max-width: 1600px !important;
+    height: 94vh !important;
+    max-height: 94vh !important;
+    display: flex;
+    flex-direction: column;
+    animation: orc-modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes orc-modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ========================================================== */
+/* 3. HEADER                                                  */
+/* ========================================================== */
+.orc-modal-novo-header,
+.orc-modal-editar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-sutil);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.orc-modal-novo-header-left,
+.orc-modal-editar-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.orc-modal-novo-header-left h3,
+.orc-modal-editar-header-left h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+}
+
+.orc-modal-novo-header-left h3 i,
+.orc-modal-editar-header-left h3 i {
+    color: var(--cor-ativa);
+    margin-right: 8px;
+}
+
+/* ========================================================== */
+/* 4. STATUS BADGE                                            */
+/* ========================================================== */
+.orc-status-badge,
+.orc-badge-status {
+    font-size: 0.65rem;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.orc-status-badge.rascunho,
+.orc-badge-status.rascunho {
+    background: #fefcbf;
+    color: #975a16;
+}
+.orc-status-badge.enviado,
+.orc-badge-status.enviado {
+    background: #bee3f8;
+    color: #2a69ac;
+}
+.orc-status-badge.aprovado,
+.orc-badge-status.aprovado {
+    background: #c6f6d5;
+    color: #276749;
+}
+.orc-status-badge.rejeitado,
+.orc-badge-status.rejeitado {
+    background: #fed7d7;
+    color: #9b2c2c;
+}
+
+/* ========================================================== */
+/* TEMPLATE SELECTOR - ULTRA COMPACTO                       */
+/* ========================================================== */
+.orc-template-selector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+}
+
+.orc-template-selector-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.orc-template-selector-header label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.orc-template-selector-header label i {
+    margin-right: 2px;
+    font-size: 0.7rem;
+    color: var(--cor-ativa);
+}
+
+.orc-template-select {
+    padding: 2px 6px;
+    border: 1px solid var(--border-sutil);
+    border-radius: 3px;
+    background: var(--bg-card);
+    color: var(--texto-principal);
+    font-size: 0.75rem;
+    height: 24px;
+    min-width: 100px;
+    transition: all 0.2s ease;
+}
+
+.orc-template-select:focus {
+    outline: none;
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 2px var(--cor-ativa-focus);
+}
+
+.orc-template-select option {
+    background: var(--bg-card);
+    color: var(--texto-principal);
+}
+
+.orc-btn-template {
+    padding: 2px 10px;
+    border: none;
+    border-radius: 3px;
+    background: var(--cor-ativa);
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 600;
+    height: 22px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.orc-btn-template:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.orc-btn-template:active {
+    transform: translateY(0px);
+}
+
+/* ========================================================== */
+/* 5. BOTÕES DO HEADER                                        */
+/* ========================================================== */
+.orc-modal-novo-header-right,
+.orc-modal-editar-header-right {
+    display: flex;
+    gap: 6px;
+}
+
+.orc-btn-close-modal {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orc-btn-close-modal:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+/* ========================================================== */
+/* 6. INFORMAÇÕES DO ORÇAMENTO                                */
+/* ========================================================== */
+.orc-modal-novo-info,
+.orc-modal-editor-info {
+    padding: 10px 0 8px 0;
+    flex-shrink: 0;
+}
+
+.orc-info-grid,
+.orc-info-row {
+    display: grid;
+    gap: 12px;
+}
+
+.orc-info-grid {
+    grid-template-columns: 1.5fr 1.5fr 1fr 1fr;
+}
+
+.orc-info-row {
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 8px;
+}
+
+.orc-info-row:last-child {
+    margin-bottom: 0;
+}
+
+.orc-info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.orc-info-group label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.orc-info-group label i {
+    margin-right: 4px;
+    color: var(--cor-ativa);
+}
+
+.orc-info-group input,
+.orc-info-group select {
+    padding: 6px 10px;
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    background: var(--bg-principal);
+    color: var(--texto-principal);
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    width: 100%;
+}
+
+.orc-info-group input:focus,
+.orc-info-group select:focus {
+    outline: none;
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.orc-modal-divider {
+    border: none;
+    border-top: 1px solid var(--border-sutil);
+    margin: 0;
+}
+
+/* ========================================================== */
+/* 7. ÁREA DE SEÇÕES                                          */
+/* ========================================================== */
+.orc-modal-novo-secoes,
+.orc-modal-editor-secoes {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+    min-height: 200px;
+}
+
+.orc-modal-novo-secoes::-webkit-scrollbar,
+.orc-modal-editor-secoes::-webkit-scrollbar {
+    width: 5px;
+}
+
+.orc-modal-novo-secoes::-webkit-scrollbar-track,
+.orc-modal-editor-secoes::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.orc-modal-novo-secoes::-webkit-scrollbar-thumb,
+.orc-modal-editor-secoes::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.orc-modal-novo-secoes::-webkit-scrollbar-thumb:hover,
+.orc-modal-editor-secoes::-webkit-scrollbar-thumb:hover {
+    background: var(--texto-mutado);
+}
+
+/* ========================================================== */
+/* 8. HEADER DAS SEÇÕES                                       */
+/* ========================================================== */
+.orc-secoes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.orc-secoes-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.orc-secoes-header-left h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+}
+
+.orc-secoes-header-left h4 i {
+    color: var(--cor-ativa);
+    margin-right: 6px;
+}
+
+.orc-secoes-hint {
+    font-size: 0.6rem;
+    color: var(--texto-mutado);
+    opacity: 0.5;
+    font-weight: 500;
+}
+
+.orc-btn-add-secao {
+    padding: 4px 14px;
+    border: 1.5px dashed var(--cor-ativa);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cor-ativa);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.orc-btn-add-secao:hover {
+    background: rgba(37, 99, 235, 0.08);
+    border-style: solid;
+}
+
+.orc-secoes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 60px;
+}
+
+/* ========================================================== */
+/* 9. FOOTER                                                  */
+/* ========================================================== */
+.orc-btn-icon {
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.orc-btn-icon:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+    border-color: var(--cor-ativa);
+}
+
+.orc-modal-novo-footer,
+.orc-modal-editor-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.orc-footer-left,
+.orc-footer-right {
+    display: flex;
+    gap: 8px;
+}
+
+.orc-modal-novo-footer button,
+.orc-modal-editor-footer button {
+    padding: 6px 18px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ========================================================== */
+/* 10. BOTÕES DO FOOTER                                       */
+/* ========================================================== */
+.orc-btn-footer-cancelar {
+    background: transparent;
+    border: 1.5px solid var(--border-sutil);
+    color: var(--texto-mutado);
+}
+
+.orc-btn-footer-cancelar:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+}
+
+.orc-btn-footer-salvar {
+    background: var(--cor-ativa);
+    border: none;
+    color: #fff;
+}
+
+.orc-btn-footer-salvar:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+}
+
+/* ========================================================== */
+/* 11. RESPONSIVO - BASE                                      */
+/* ========================================================== */
+@media (max-width: 1200px) {
+    .orc-info-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    .orc-modal-box-novo,
+    .orc-modal-box-editar {
+        padding: 18px 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .orc-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .orc-modal-box-novo,
+    .orc-modal-box-editar {
+        padding: 16px 18px;
+        height: 96vh !important;
+        max-height: 96vh !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .orc-modal-box-novo,
+    .orc-modal-box-editar {
+        padding: 12px 14px;
+        height: 98vh !important;
+        max-height: 98vh !important;
+        border-radius: 12px;
+        width: 100% !important;
+    }
+    .orc-info-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    .orc-info-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    .orc-modal-novo-header-left h3,
+    .orc-modal-editar-header-left h3 {
+        font-size: 1rem;
+    }
+    .orc-modal-novo-footer,
+    .orc-modal-editor-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    .orc-footer-left,
+    .orc-footer-right {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .orc-modal-novo-footer button,
+    .orc-modal-editor-footer button {
+        flex: 1;
+        min-width: 70px;
+        justify-content: center;
+    }
+}
+
+/* ===== modal_novo_orcamento.css ===== */
+/* ========================================================== */
+/* MODAL NOVO ORÇAMENTO - ESPECÍFICO                         */
+/* ========================================================== */
+
+/* ========================================================== */
+/* 1. BOX - NOVO                                              */
+/* ========================================================== */
+.orc-modal-box-novo {
+    width: 98% !important;
+    max-width: 1600px !important;
+    height: 94vh !important;
+    max-height: 94vh !important;
+}
+
+/* ========================================================== */
+/* 2. FORM - NOVO                                             */
+/* ========================================================== */
+.orc-modal-novo-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ========================================================== */
+/* 3. ESPECÍFICOS DO NOVO                                     */
+/* ========================================================== */
+/* Se tiver algo específico do NOVO, coloque aqui */
+
+/* ========================================================== */
+/* 4. RESPONSIVO DO NOVO                                      */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .orc-modal-box-novo {
+        height: 98vh !important;
+        max-height: 98vh !important;
+        border-radius: 12px;
+        width: 100% !important;
+    }
+    .orc-modal-novo-header-left h3 {
+        font-size: 1rem;
+    }
+    .orc-modal-novo-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    .orc-footer-left,
+    .orc-footer-right {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .orc-modal-novo-footer button {
+        flex: 1;
+        min-width: 70px;
+        justify-content: center;
+    }
+}
+
+/* ===== modal_editar_orcamento.css ===== */
+/* ========================================================== */
+/* MODAL EDITAR ORÇAMENTO - ESPECÍFICO                       */
+/* ========================================================== */
+
+/* ========================================================== */
+/* 1. BOX - EDITAR                                            */
+/* ========================================================== */
+.orc-modal-box-editar {
+    width: 95%;
+    max-width: 1100px;
+    max-height: 92vh;
+}
+
+/* ========================================================== */
+/* 2. FORM - EDITAR                                           */
+/* ========================================================== */
+.orc-modal-editor-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ========================================================== */
+/* 3. ESPECÍFICOS DO EDITAR                                   */
+/* ========================================================== */
+/* Se tiver algo específico do EDITAR, coloque aqui */
+
+/* ========================================================== */
+/* 4. RESPONSIVO DO EDITAR                                    */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .orc-modal-box-editar {
+        padding: 16px;
+        max-height: 95vh;
+        margin: 8px;
+        border-radius: 12px;
+        width: 100% !important;
+    }
+    .orc-info-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .orc-modal-editor-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    .orc-modal-editor-footer button {
+        flex: 1;
+        min-width: 70px;
+        justify-content: center;
+    }
+}
+
+/* ===== modal_excluir_orcamento.css ===== */
+/* ========================================================== */
+/* MODAL EXCLUIR ORÇAMENTO (PREFIXO orc-)                    */
+/* ========================================================== */
+
+.orc-modal-overlay-excluir {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+.orc-modal-overlay-excluir.active { display: flex !important; }
+
+.orc-modal-box-excluir {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: orc-modalExcluirFadeIn 0.2s ease-out;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+@keyframes orc-modalExcluirFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.orc-modal-excluir-icon {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 12px;
+    display: block;
+}
+.orc-modal-excluir-title {
+    margin: 0 0 8px 0;
+    color: var(--texto-principal);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.orc-modal-excluir-message {
+    color: var(--texto-mutado);
+    font-size: var(--fs-normal);
+    margin-bottom: 4px;
+}
+.orc-modal-excluir-message strong { color: var(--texto-principal); }
+.orc-modal-excluir-aviso {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    margin-top: 8px;
+}
+
+.orc-modal-excluir-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+.orc-btn-excluir-cancelar {
+    padding: 8px 24px;
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: var(--fs-normal);
+    transition: all 0.2s ease;
+    flex: 1;
+}
+.orc-btn-excluir-cancelar:hover { background: var(--hover-fino); color: var(--texto-principal); }
+.orc-btn-excluir-confirmar {
+    padding: 8px 24px;
+    border: none;
+    border-radius: 6px;
+    background: #ef4444;
+    color: #fff;
+    cursor: pointer;
+    font-size: var(--fs-normal);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+.orc-btn-excluir-confirmar:hover { background: #dc2626; transform: scale(1.02); }
+.orc-btn-excluir-confirmar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+@media (max-width: 768px) {
+    .orc-modal-box-excluir { margin: 16px; padding: 20px; }
+    .orc-modal-excluir-footer { flex-direction: column; }
+    .orc-modal-excluir-footer button { width: 100%; }
+}
+
+/* ===== modal_secao.css ===== */
+/* ========================================================== */
+/* MODAL NOVA SEÇÃO (PREFIXO orc-)                            */
+/* ========================================================== */
+
+/* ========================================================== */
+/* 1. OVERLAY                                                  */
+/* ========================================================== */
+.orc-modal-overlay-secao {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.orc-modal-overlay-secao.active {
+    display: flex !important;
+}
+
+/* ========================================================== */
+/* 2. BOX                                                     */
+/* ========================================================== */
+.orc-modal-box-secao {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 16px;
+    padding: 20px 24px;
+    max-width: 580px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: orc-modalSlideIn 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.orc-modal-box-secao::-webkit-scrollbar {
+    width: 5px;
+}
+
+.orc-modal-box-secao::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+/* ========================================================== */
+/* 3. HEADER                                                  */
+/* ========================================================== */
+.orc-modal-secao-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.orc-modal-secao-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+}
+
+.orc-modal-secao-header h4 i {
+    color: var(--cor-ativa);
+    margin-right: 6px;
+}
+
+.orc-btn-close-modal {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orc-btn-close-modal:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+/* ========================================================== */
+/* 4. TIPOS DE SEÇÃO (GRID)                                   */
+/* ========================================================== */
+.orc-secao-tipo label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.orc-tipo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin: 4px 0 12px 0;
+}
+
+.orc-tipo-btn {
+    padding: 6px 4px;
+    border: 2px solid var(--border-sutil);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 0.65rem;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-weight: 500;
+}
+
+.orc-tipo-btn i {
+    font-size: 1.1rem;
+}
+
+.orc-tipo-btn:hover {
+    border-color: var(--texto-mutado);
+    color: var(--texto-principal);
+}
+
+.orc-tipo-btn.active {
+    border-color: var(--cor-ativa);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--cor-ativa);
+}
+
+/* ========================================================== */
+/* 5. CAMPOS                                                  */
+/* ========================================================== */
+.orc-secao-campos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.orc-campo-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.orc-campo-group label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.orc-campo-group input,
+.orc-campo-group textarea,
+.orc-campo-group select {
+    padding: 6px 10px;
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    background: var(--bg-principal);
+    color: var(--texto-principal);
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.orc-campo-group input:focus,
+.orc-campo-group textarea:focus,
+.orc-campo-group select:focus {
+    outline: none;
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.orc-campo-group textarea {
+    resize: vertical;
+    min-height: 50px;
+}
+
+.orc-campos-especificos {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.orc-campos-especificos.visible {
+    display: flex;
+}
+
+/* ========================================================== */
+/* 6. PREVIEW DA SEÇÃO                                        */
+/* ========================================================== */
+.orc-secao-preview {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-sutil);
+}
+
+.orc-secao-preview label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.orc-secao-preview-box {
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-height: 40px;
+    font-size: 0.8rem;
+}
+
+.orc-secao-preview-empty {
+    color: var(--texto-discreto);
+    font-style: italic;
+    text-align: center;
+    padding: 8px;
+}
+
+/* ========================================================== */
+/* 7. FOOTER                                                  */
+/* ========================================================== */
+.orc-modal-secao-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-sutil);
+}
+
+.orc-btn-cancelar {
+    padding: 6px 16px;
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.orc-btn-cancelar:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+}
+
+.orc-btn-adicionar {
+    padding: 6px 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--cor-ativa);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: all 0.25s ease;
+}
+
+.orc-btn-adicionar:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+/* ========================================================== */
+/* 8. RESPONSIVO                                              */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .orc-modal-box-secao {
+        padding: 14px 16px;
+        margin: 10px;
+        max-height: 90vh;
+    }
+    .orc-tipo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===== modal_preview.css ===== */
+/* ========================================================== */
+/* MODAL PREVIEW (PREFIXO orc-)                               */
+/* ========================================================== */
+
+.orc-modal-overlay-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    display: none !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 10002;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.orc-modal-overlay-preview.active {
+    display: flex !important;
+}
+
+.orc-modal-box-preview {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 20px;
+    padding: 24px 28px;
+    width: 95%;
+    max-width: 1200px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    animation: orc-modalSlideIn 0.3s ease;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.orc-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.orc-preview-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+}
+
+.orc-preview-header h4 i {
+    color: var(--cor-ativa);
+    margin-right: 6px;
+}
+
+.orc-btn-close-modal {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orc-btn-close-modal:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.orc-preview-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+    background: #ffffff;
+    color: #1e293b;
+    border-radius: 10px;
+    margin: 10px 0;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.orc-preview-body h1 {
+    color: #2563eb;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.orc-preview-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.orc-preview-body th {
+    background: #f1f5f9;
+    font-weight: 600;
+    text-align: left;
+}
+
+.orc-preview-body th,
+.orc-preview-body td {
+    border: 1px solid #e2e8f0;
+    padding: 6px 10px;
+}
+
+.orc-preview-body ul {
+    padding-left: 20px;
+}
+
+.orc-preview-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.orc-preview-footer button {
+    padding: 6px 18px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.orc-btn-footer-pdf {
+    background: #dc3545;
+    border: none;
+    color: #fff;
+}
+
+.orc-btn-footer-pdf:hover {
+    background: #c82333;
+}
+
+.orc-btn-footer-cancelar {
+    background: transparent;
+    border: 1.5px solid var(--border-sutil);
+    color: var(--texto-mutado);
+}
+
+.orc-btn-footer-cancelar:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+}
+
+@media (max-width: 768px) {
+    .orc-modal-box-preview {
+        padding: 16px;
+        width: 100%;
+        max-height: 95vh;
+        margin: 8px;
+    }
+    .orc-preview-body {
+        padding: 12px 14px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ===== secoes.css ===== */
+/* ==========================================================
+   SEÇÕES - DRAG & DROP, ITENS, PREVIEW (PREFIXO orc-)
+   ========================================================== */
+
+/* CONTAINER */
+.orc-secoes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 60px;
+}
+
+/* ITEM */
+.orc-secao-item {
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: grab;
+    transition: all 0.2s ease;
+}
+.orc-secao-item:hover {
+    border-color: var(--cor-ativa);
+    box-shadow: 0 1px 8px rgba(37, 99, 235, 0.06);
+}
+.orc-secao-item.dragging {
+    opacity: 0.4;
+    border-color: var(--cor-ativa);
+}
+
+/* HEADER DO ITEM */
+.orc-secao-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.orc-secao-item-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* DRAG HANDLE */
+.orc-secao-drag-handle {
+    color: var(--texto-mutado);
+    cursor: grab;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+.orc-secao-drag-handle:hover {
+    color: var(--texto-principal);
+}
+
+/* BADGE */
+.orc-secao-tipo-badge {
+    font-size: 0.5rem;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    flex-shrink: 0;
+}
+.orc-secao-tipo-badge.secao { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.orc-secao-tipo-badge.cabecalho { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+.orc-secao-tipo-badge.tabela { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.orc-secao-tipo-badge.lista { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.orc-secao-tipo-badge.destaque { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.orc-secao-tipo-badge.valor { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.orc-secao-tipo-badge.observacao { background: rgba(107, 114, 128, 0.15); color: #6b7280; }
+
+/* TÍTULO EDITÁVEL */
+.orc-secao-item-titulo {
+    font-weight: 500;
+    color: var(--texto-principal);
+    border: none;
+    background: transparent;
+    font-size: 0.8rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    flex: 1;
+    min-width: 50px;
+    transition: background 0.2s ease;
+}
+.orc-secao-item-titulo:focus {
+    outline: none;
+    background: var(--hover-fino);
+}
+
+/* AÇÕES */
+.orc-secao-item-actions {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+.orc-secao-item-actions button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.orc-secao-item-actions button:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+}
+.orc-secao-item-actions .orc-btn-remover:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+/* CONTEÚDO */
+.orc-secao-item-conteudo {
+    padding-left: 32px;
+    color: var(--texto-mutado);
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 60px;
+    overflow-y: auto;
+    line-height: 1.4;
+}
+.orc-secao-item-conteudo .orc-empty {
+    color: var(--texto-discreto);
+    font-style: italic;
+}
+
+/* ESTADO VAZIO */
+.orc-secoes-vazio {
+    text-align: center;
+    color: var(--texto-mutado);
+    padding: 20px;
+    border: 2px dashed var(--border-sutil);
+    border-radius: 8px;
+}
+.orc-secoes-vazio i {
+    font-size: 1.8rem;
+    color: var(--texto-discreto);
+    display: block;
+    margin-bottom: 6px;
+}
+.orc-secoes-vazio p {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.orc-secoes-vazio small {
+    font-size: 0.7rem;
+    color: var(--texto-discreto);
+}
+
+/* PREVIEW */
+.orc-secao-preview-box {
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-height: 40px;
+    font-size: 0.8rem;
+}
+.orc-secao-preview-empty {
+    color: var(--texto-discreto);
+    font-style: italic;
+    text-align: center;
+    padding: 8px;
+}
+
+.orc-secao-preview-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+}
+.orc-secao-preview-titulo {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+.orc-secao-preview-conteudo {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    white-space: pre-wrap;
+}
+
+/* CABEÇALHO */
+.orc-secao-preview-cabecalho {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 2px solid #8b5cf6;
+}
+.orc-secao-preview-titulo-cabecalho {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #8b5cf6;
+}
+
+/* TABELA */
+.orc-secao-preview-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+.orc-secao-preview-tabela th {
+    background: #f1f5f9;
+    font-weight: 600;
+    padding: 4px 8px;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+}
+.orc-secao-preview-tabela td {
+    padding: 4px 8px;
+    border: 1px solid #e2e8f0;
+}
+
+/* LISTA */
+.orc-secao-preview-lista {
+    padding-left: 20px;
+    margin: 4px 0;
+}
+.orc-secao-preview-lista li {
+    margin-bottom: 2px;
+    font-size: 0.8rem;
+}
+
+/* DESTAQUE */
+.orc-secao-preview-destaque {
+    border: 2px solid;
+    border-radius: 8px;
+    padding: 12px 16px;
+}
+.orc-secao-preview-titulo-destaque {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.orc-secao-preview-conteudo-destaque {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* OBSERVAÇÃO */
+.orc-secao-preview-observacao {
+    padding: 8px 12px;
+    background: rgba(107, 114, 128, 0.08);
+    border-left: 3px solid #6b7280;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+}
+
+/* ===== secoes_valor.css ===== */
+/* ==========================================================
+   SEÇÕES - TIPO VALOR (PREFIXO orc-)
+   ========================================================== */
+
+.orc-campos-valor {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+}
+.orc-campos-valor .orc-campo-valor-descricao {
+    grid-column: 1 / 2;
+}
+.orc-campos-valor .orc-campo-valor {
+    grid-column: 2 / 3;
+}
+.orc-campos-valor .orc-campo-valor-descricao-final {
+    grid-column: 1 / 3;
+}
+.orc-campo-valor-descricao textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* INPUT COM PREFIXO */
+.orc-input-valor-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--bg-principal);
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+.orc-input-valor-wrapper:focus-within {
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+.orc-input-valor-prefixo {
+    padding: 8px 10px;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    background: var(--bg-card);
+    border-right: 1px solid var(--border-sutil);
+    font-size: 0.85rem;
+    min-width: 32px;
+    text-align: center;
+}
+.orc-input-valor {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 8px 10px !important;
+    background: transparent !important;
+    color: var(--texto-principal) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    text-align: right;
+    width: 100%;
+}
+.orc-input-valor:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+.orc-input-descricao {
+    font-size: 0.9rem !important;
+    padding: 8px 12px !important;
+}
+
+/* PREVIEW VALOR */
+.orc-secao-preview-valor {
+    border: 2px solid #10b981;
+    border-radius: 10px;
+    padding: 16px 20px;
+    background: rgba(16, 185, 129, 0.06);
+    text-align: center;
+}
+.orc-secao-preview-valor:hover {
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
+}
+.orc-secao-preview-titulo-valor {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #10b981;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+.orc-secao-preview-conteudo-valor-texto {
+    font-size: 0.85rem;
+    color: var(--texto-mutado);
+    white-space: pre-wrap;
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--bg-principal);
+    border-radius: 4px;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+.orc-secao-preview-valor-destaque {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #10b981;
+    padding: 4px 0;
+}
+.orc-secao-preview-descricao-valor {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(16, 185, 129, 0.15);
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .orc-campos-valor {
+        grid-template-columns: 1fr;
+    }
+    .orc-campos-valor .orc-campo-valor-descricao,
+    .orc-campos-valor .orc-campo-valor,
+    .orc-campos-valor .orc-campo-valor-descricao-final {
+        grid-column: 1 / 2;
+    }
+    .orc-secao-preview-valor-destaque {
+        font-size: 1.4rem;
+    }
+}
+

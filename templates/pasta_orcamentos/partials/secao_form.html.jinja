@@ -1,0 +1,92 @@
+<!-- ========================================================== -->
+<!-- PARTIAL: FORMULÁRIO DE SEÇÃO (COMPARTILHADO)              -->
+<!-- ========================================================== -->
+<div class="orc-modal-overlay-secao" id="modalNovaSecao">
+    <div class="orc-modal-box-secao">
+        <div class="orc-modal-secao-header">
+            <h4 id="modalSecaoTitulo">
+                <i class="bi bi-plus-circle"></i> Nova Seção
+            </h4>
+            <button class="orc-btn-close-modal" onclick="fecharModalNovaSecao()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form id="formNovaSecao">
+            <!-- TIPO DE SEÇÃO -->
+            <div class="orc-secao-tipo">
+                <label>Tipo de Seção</label>
+                <div class="orc-tipo-grid">
+                    <button type="button" class="orc-tipo-btn active" data-tipo="secao" onclick="selecionarTipo(this)">
+                        <i class="bi bi-paragraph"></i> Seção
+                    </button>
+                    <button type="button" class="orc-tipo-btn" data-tipo="cabecalho" onclick="selecionarTipo(this)">
+                        <i class="bi bi-heading"></i> Cabeçalho
+                    </button>
+                    <button type="button" class="orc-tipo-btn" data-tipo="tabela" onclick="selecionarTipo(this)">
+                        <i class="bi bi-table"></i> Tabela
+                    </button>
+                    <button type="button" class="orc-tipo-btn" data-tipo="lista" onclick="selecionarTipo(this)">
+                        <i class="bi bi-list-ul"></i> Lista
+                    </button>
+                    <button type="button" class="orc-tipo-btn" data-tipo="destaque" onclick="selecionarTipo(this)">
+                        <i class="bi bi-star"></i> Destaque
+                    </button>
+                    <button type="button" class="orc-tipo-btn" data-tipo="valor" onclick="selecionarTipo(this)">
+                        <i class="bi bi-currency-dollar"></i> Valor
+                    </button>
+                    <button type="button" class="orc-tipo-btn" data-tipo="observacao" onclick="selecionarTipo(this)">
+                        <i class="bi bi-info-circle"></i> Observação
+                    </button>
+                </div>
+            </div>
+
+            <!-- CAMPOS -->
+            <div class="orc-secao-campos">
+                <div class="orc-campo-group">
+                    <label>Título</label>
+                    <input type="text" name="titulo" id="novaSecaoTitulo" 
+                           placeholder="Ex: 1. OBJETIVO"
+                           oninput="atualizarPreviewSecao()">
+                </div>
+
+                <div class="orc-campo-group">
+                    <label>Conteúdo</label>
+                    <textarea name="conteudo" id="novaSecaoConteudo" rows="3" 
+                              placeholder="Digite o conteúdo da seção..."
+                              oninput="atualizarPreviewSecao()"></textarea>
+                </div>
+
+                <div class="orc-campos-especificos" id="camposEspecificos"></div>
+            </div>
+
+            <!-- BOTÃO IA (DIFERENCIAL!) -->
+            <div class="orc-secao-ia" id="secaoIaContainer" style="display: none;">
+                <button type="button" class="orc-btn-ia" onclick="gerarSecaoComIA()">
+                    <i class="bi bi-magic"></i> Gerar com IA
+                </button>
+                <div class="orc-ia-loading" id="iaLoading" style="display: none;">
+                    <i class="bi bi-arrow-repeat spin"></i> Gerando...
+                </div>
+            </div>
+
+            <!-- PREVIEW -->
+            <div class="orc-secao-preview">
+                <label>Pré-visualização</label>
+                <div id="secaoPreviewContainer" class="orc-secao-preview-box">
+                    <div class="orc-secao-preview-empty">A seção aparecerá aqui</div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="orc-modal-secao-footer">
+                <button type="button" class="orc-btn-cancelar" onclick="fecharModalNovaSecao()">
+                    Cancelar
+                </button>
+                <button type="submit" class="orc-btn-adicionar" id="btnAdicionarSecao">
+                    <i class="bi bi-check2"></i> <span id="btnAdicionarTexto">Adicionar</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

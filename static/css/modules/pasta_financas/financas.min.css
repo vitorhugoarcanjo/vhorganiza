@@ -1,4 +1,4 @@
-/* COMBINADO - 10/08/2026 21:16 */
+/* COMBINADO - 07/09/2026 23:45 */
 
 /* ===== reset.css ===== */
 /* ==========================================================================
@@ -996,10 +996,381 @@ h2 {
     max-width: 300px;
 }
 
-/* ===== import_css.css ===== */
-/* ======================= */
-/* ======= MODAIS =========*/
-/* ======================= */
+/* ===== modal_transacao.css ===== */
+/* ========================================================== */
+/* MODAL TRANSAÇÃO - FINANÇAS (100% PURO)                   */
+/* ========================================================== */
+
+/* ========================================================== */
+/* 1. OVERLAY                                                 */
+/* ========================================================== */
+.fin-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.fin-modal-overlay.active {
+    display: flex;
+}
+
+/* ========================================================== */
+/* 2. BOX - 100% DA TELA (SEM BORDA, SEM PADDING)            */
+/* ========================================================== */
+.fin-modal-box {
+    background: var(--bg-card);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    animation: finModalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+@keyframes finModalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ========================================================== */
+/* 3. HEADER                                                  */
+/* ========================================================== */
+.fin-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 2px solid var(--border-sutil);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: var(--bg-card);
+}
+
+.fin-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.fin-modal-header-left h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+}
+
+.fin-modal-header-left h3 i {
+    color: var(--cor-ativa);
+    margin-right: 8px;
+}
+
+.fin-tipo-badge {
+    font-size: 0.65rem;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    background: var(--bg-principal);
+    color: var(--texto-mutado);
+}
+
+.fin-tipo-badge.receita {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.fin-tipo-badge.despesa {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.fin-btn-close-modal {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fin-btn-close-modal:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+/* ========================================================== */
+/* 4. FORM - OCUPA TODO O ESPAÇO                             */
+/* ========================================================== */
+.fin-modal-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* 🔥 BODY - SCROLL NA LATERAL */
+.fin-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px 90px 24px;
+}
+
+/* SCROLL BONITO */
+.fin-modal-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.fin-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.fin-modal-body::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+
+.fin-modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--texto-mutado);
+}
+
+/* ========================================================== */
+/* 5. FOOTER - 100% DA LARGURA                               */
+/* ========================================================== */
+.fin-modal-overlay.active .footer-fixo-padrao {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+}
+
+/* ========================================================== */
+/* 6. RESPONSIVO                                              */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .fin-modal-header {
+        padding: 12px 16px;
+    }
+    .fin-modal-body {
+        padding: 12px 16px 80px 16px;
+    }
+    .fin-modal-header-left h3 {
+        font-size: 1rem;
+    }
+}
+
+/* ===== modal_excluir.css ===== */
+/* 🔥 MODAL DE EXCLUIR - CSS EXCLUSIVO */
+.modal-overlay-excluir {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-overlay-excluir.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-box-excluir {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-box-excluir h3 {
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.modal-box-excluir p {
+    margin: 15px 0;
+    color: #ddd;
+}
+
+.modal-actions-excluir {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-cancelar-excluir {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.btn-cancelar-excluir:hover {
+    background: #555;
+}
+
+.btn-confirmar-excluir {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.btn-confirmar-excluir:hover {
+    background: #c0392b;
+}
+
+/* ===== modal_estornar.css ===== */
+/* ========================================== */
+/* 🔥 MODAL DE ESTORNAR - CSS EXCLUSIVO */
+/* ========================================== */
+
+.modal-overlay-estornar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+
+.modal-overlay-estornar.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-box-estornar {
+    background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3f 100%);
+    border-radius: 16px;
+    padding: 28px;
+    min-width: 450px;
+    max-width: 550px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* ✅ CORRIGIDO: Nome da keyframe único */
+    animation: modalEstornarFadeIn 0.2s ease-out;
+}
+
+/* ✅ CORRIGIDO: Nome único */
+@keyframes modalEstornarFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-box-estornar h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #ff9f43;
+}
+
+.modal-box-estornar p {
+    margin: 0 0 24px 0;
+    color: #e0e0e0;
+    font-size: 1rem;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.modal-actions-estornar {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-cancelar-estornar {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background-color: #2d2d3f;
+    color: #e0e0e0;
+    border: 1px solid #3d3d4f;
+}
+
+.btn-cancelar-estornar:hover {
+    background-color: #3d3d4f;
+}
+
+.btn-confirmar-estornar {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background-color: #fd7e14;
+    color: white;
+}
+
+.btn-confirmar-estornar:hover {
+    background-color: #e66700;
+}
+
+.btn-confirmar-estornar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===== detalhes_completo.css ===== */
 /* MODAL DETALHES GLOBAL - Reutilizado por Tarefas e Finanças */
 .modal-detalhes-overlay {
     position: fixed;
@@ -1152,194 +1523,8 @@ h2 {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
-/* ========================================== */
-/* 🔥 MODAL DE ESTORNAR - CSS EXCLUSIVO */
-/* ========================================== */
 
-.modal-overlay-estornar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
-}
-
-.modal-overlay-estornar.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.modal-box-estornar {
-    background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3f 100%);
-    border-radius: 16px;
-    padding: 28px;
-    min-width: 450px;
-    max-width: 550px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    /* ✅ CORRIGIDO: Nome da keyframe único */
-    animation: modalEstornarFadeIn 0.2s ease-out;
-}
-
-/* ✅ CORRIGIDO: Nome único */
-@keyframes modalEstornarFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.modal-box-estornar h3 {
-    margin: 0 0 16px 0;
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #ff9f43;
-}
-
-.modal-box-estornar p {
-    margin: 0 0 24px 0;
-    color: #e0e0e0;
-    font-size: 1rem;
-    line-height: 1.5;
-    white-space: pre-line;
-}
-
-.modal-actions-estornar {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-}
-
-.btn-cancelar-estornar {
-    padding: 10px 24px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #2d2d3f;
-    color: #e0e0e0;
-    border: 1px solid #3d3d4f;
-}
-
-.btn-cancelar-estornar:hover {
-    background-color: #3d3d4f;
-}
-
-.btn-confirmar-estornar {
-    padding: 10px 24px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #fd7e14;
-    color: white;
-}
-
-.btn-confirmar-estornar:hover {
-    background-color: #e66700;
-}
-
-.btn-confirmar-estornar:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-/* 🔥 MODAL DE EXCLUIR - CSS EXCLUSIVO */
-.modal-overlay-excluir {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-}
-
-.modal-overlay-excluir.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-box-excluir {
-    background: #1e1e1e;
-    padding: 20px;
-    border-radius: 10px;
-    width: 350px;
-    color: white;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.modal-box-excluir h3 {
-    margin: 0 0 10px 0;
-    color: white;
-}
-
-.modal-box-excluir p {
-    margin: 15px 0;
-    color: #ddd;
-}
-
-.modal-actions-excluir {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.btn-cancelar-excluir {
-    background: #444;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    flex: 1;
-}
-
-.btn-cancelar-excluir:hover {
-    background: #555;
-}
-
-.btn-confirmar-excluir {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    flex: 1;
-}
-
-.btn-confirmar-excluir:hover {
-    background: #c0392b;
-}
-
-/* ======================= */
-/* ======= MENU =========*/
-/* ======================= */
+/* ===== click_direito.css ===== */
 /* ==========================================================
    MENU DE CONTEXTO GLOBAL
    ========================================================== */
@@ -1535,38 +1720,271 @@ h2 {
     font-weight: 600;
 }
 
-/* ======================= */
-/* ======= CRUD's =========*/
-/* ======================= */
-/* ========================================== */
-/* MODAL: NOVA TRANSAÇÃO (SÓ O ESSENCIAL)     */
-/* ========================================== */
+/* ===== form_transacao.css ===== */
+/* ========================================================== */
+/* FORM TRANSAÇÃO - PROFISSIONAL                             */
+/* ========================================================== */
 
-/* OVERLAY - fundo escuro */
-.modal-overlay-novo {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    justify-content: center;
-    align-items: center;
+/* ========================================================== */
+/* 1. GRID - 3 COLUNAS (LINHA 1)                             */
+/* ========================================================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
-.modal-overlay-novo.active {
+.descricao-full {
+    grid-column: 1 / 3;
+}
+
+/* ========================================================== */
+/* 2. GRID - 4 COLUNAS (LINHA 2)                             */
+/* ========================================================== */
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* ========================================================== */
+/* 3. FORM GROUPS                                             */
+/* ========================================================== */
+.form-group {
     display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-/* ANIMAÇÃO */
-@keyframes slideDown-novo {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
+.form-group label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group label i {
+    margin-right: 4px;
+    color: var(--cor-ativa);
+}
+
+.form-input,
+.form-select {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    background: var(--bg-principal);
+    color: var(--texto-principal);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    width: 100%;
+    height: 40px;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--texto-discreto);
+    font-size: 0.8rem;
+}
+
+/* ========================================================== */
+/* 4. TIPO BOTÕES                                             */
+/* ========================================================== */
+.tipo-container {
+    display: flex;
+    gap: 6px;
+}
+
+.tipo-btn {
+    padding: 8px 12px;
+    border: 2px solid var(--border-sutil);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+}
+
+.tipo-btn i {
+    font-size: 1.1rem;
+}
+
+.tipo-btn:hover {
+    border-color: var(--texto-mutado);
+    color: var(--texto-principal);
+}
+
+.tipo-btn.active {
+    border-color: var(--cor-ativa);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--cor-ativa);
+}
+
+.tipo-btn.receita.active {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.08);
+    color: #22c55e;
+}
+
+.tipo-btn.despesa.active {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
+}
+
+/* ========================================================== */
+/* 5. PARCELAS                                                */
+/* ========================================================== */
+.parcelas-config-area {
+    margin: 8px 0;
+    padding: 16px 20px;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+}
+
+.parcelas-config-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.parcelas-config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.parcelas-config-item label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.btn-distribuir {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--cor-ativa);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+}
+
+.btn-distribuir:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* ========================================================== */
+/* 6. TABELA PARCELAS                                         */
+/* ========================================================== */
+.parcelas-wrapper {
+    margin-top: 12px;
+    overflow-x: auto;
+}
+
+.parcelas-table-wrapper {
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.parcelas-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.parcelas-table th {
+    background: var(--bg-principal);
+    font-weight: 600;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border-sutil);
+    text-align: left;
+    color: var(--texto-mutado);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.parcelas-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+}
+
+.parcelas-table tr:last-child td {
+    border-bottom: none;
+}
+
+.parcelas-table .form-input {
+    height: 32px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+}
+
+/* ========================================================== */
+/* 7. RESPONSIVO                                              */
+/* ========================================================== */
+@media (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
+    .form-grid-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+    .descricao-full {
+        grid-column: 1 / 3;
+    }
+    .parcelas-config-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    .descricao-full {
+        grid-column: 1 / 2;
+    }
+    .parcelas-config-row {
+        grid-template-columns: 1fr;
+    }
+    .parcelas-config-area {
+        padding: 12px 14px;
     }
 }
 

@@ -92,10 +92,12 @@
                                 <!-- ========================================== -->
                                 {% if transacao[8] not in ['quitado', 'recebido'] and transacao[10] == 1 %}
                                     <!-- EDITAR -->
-                                    <a href="{{ url_for('edit_transacoes.inieditar', sequencia=transacao[0]) }}" 
-                                    class="btn-acao edit" title="Editar">
+                                    <button type="button"
+                                            class="btn-acao edit"
+                                            onclick="abrirModalEditarTransacao({{ transacao[0] }})"
+                                            title="Editar">
                                         <i class="bi bi-pencil"></i>
-                                    </a>
+                                    </button>
 
                                     <!-- EXCLUIR -->
                                     <button type="button"

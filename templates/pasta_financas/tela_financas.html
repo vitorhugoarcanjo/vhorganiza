@@ -5,7 +5,6 @@
 {% block styles %}
     <!-- ✅ APENAS 1 CSS (em vez de 5) -->
     <link rel="stylesheet" href="{{ static_v('css/modules/pasta_financas/financas.min.css') }}">
-    <link rel="stylesheet" href="{{ static_v('css/modules/pasta_financas/cruds/modal_nova_transacao.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -313,8 +312,9 @@
 </div>
 
 
-<!-- MODAIS (igual tarefas) -->
-{% include 'pasta_financas/modais/modal_nova_transacao.html' %}
+<!-- MODAIS -->
+{% include 'pasta_financas/modais/modal_nova_transacao.html.jinja' %}
+{% include 'pasta_financas/modais/modal_editar_transacao.html.jinja' %}
 {% include 'pasta_financas/modais/excluir_financas.html' %}
 {% include 'pasta_financas/modais/detalhes_completo.html' %}
 {% include 'pasta_financas/modais/modal_menu_click.html' %}

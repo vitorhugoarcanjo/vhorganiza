@@ -22,6 +22,9 @@ from rotas.logs.logs_ataques.tabela import tabela_ataque
 from rotas.auditoria_geral.pasta_tarefas.tabela import tabela_auditoria_tarefas
 from rotas.auditoria_geral.pasta_financas.tabela import tabela_auditoria_financas
 
+# TABELA ORCAMENTO
+from rotas.pasta_orcamentos.tabelas.criar_tabela_orcamentos import tabela_orcamento
+
 def criar_todas_tabelas():
     conexao = get_conexao_direct()
     cursor = conexao.cursor()
@@ -46,6 +49,9 @@ def criar_todas_tabelas():
     # AUDITORIA
     tabela_auditoria_tarefas(cursor)
     tabela_auditoria_financas(cursor)
+
+    # ORCAMENTOS
+    tabela_orcamento(cursor)
 
     # CRIA ÍNDICES
     criar_indices(cursor)

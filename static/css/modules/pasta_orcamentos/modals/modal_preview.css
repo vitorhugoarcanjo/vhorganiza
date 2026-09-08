@@ -1,0 +1,169 @@
+/* ========================================================== */
+/* MODAL PREVIEW (PREFIXO orc-)                               */
+/* ========================================================== */
+
+.orc-modal-overlay-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    display: none !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 10002;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.orc-modal-overlay-preview.active {
+    display: flex !important;
+}
+
+.orc-modal-box-preview {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 20px;
+    padding: 24px 28px;
+    width: 95%;
+    max-width: 1200px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    animation: orc-modalSlideIn 0.3s ease;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.orc-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.orc-preview-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+}
+
+.orc-preview-header h4 i {
+    color: var(--cor-ativa);
+    margin-right: 6px;
+}
+
+.orc-btn-close-modal {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orc-btn-close-modal:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.orc-preview-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+    background: #ffffff;
+    color: #1e293b;
+    border-radius: 10px;
+    margin: 10px 0;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.orc-preview-body h1 {
+    color: #2563eb;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.orc-preview-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.orc-preview-body th {
+    background: #f1f5f9;
+    font-weight: 600;
+    text-align: left;
+}
+
+.orc-preview-body th,
+.orc-preview-body td {
+    border: 1px solid #e2e8f0;
+    padding: 6px 10px;
+}
+
+.orc-preview-body ul {
+    padding-left: 20px;
+}
+
+.orc-preview-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.orc-preview-footer button {
+    padding: 6px 18px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.orc-btn-footer-pdf {
+    background: #dc3545;
+    border: none;
+    color: #fff;
+}
+
+.orc-btn-footer-pdf:hover {
+    background: #c82333;
+}
+
+.orc-btn-footer-cancelar {
+    background: transparent;
+    border: 1.5px solid var(--border-sutil);
+    color: var(--texto-mutado);
+}
+
+.orc-btn-footer-cancelar:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+}
+
+@media (max-width: 768px) {
+    .orc-modal-box-preview {
+        padding: 16px;
+        width: 100%;
+        max-height: 95vh;
+        margin: 8px;
+    }
+    .orc-preview-body {
+        padding: 12px 14px;
+        font-size: 0.8rem;
+    }
+}

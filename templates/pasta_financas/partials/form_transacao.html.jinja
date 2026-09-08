@@ -1,0 +1,114 @@
+<!-- ========================================================== -->
+<!-- PARTIAL: CAMPOS DA TRANSAÇÃO (COMPARTILHADO)              -->
+<!-- ========================================================== -->
+
+<div class="form-body">
+
+    <!-- LINHA 1: TIPO + CATEGORIA + DESCRIÇÃO -->
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Tipo</label>
+            <div class="tipo-container">
+                <button type="button" class="tipo-btn" data-tipo="vazio" disabled>
+                    <i class="bi bi-question-circle"></i> Sel.
+                </button>
+                <button type="button" class="tipo-btn receita" data-tipo="receita">
+                    <i class="bi bi-arrow-up-circle-fill"></i> Receita
+                </button>
+                <button type="button" class="tipo-btn despesa" data-tipo="despesa">
+                    <i class="bi bi-arrow-down-circle-fill"></i> Despesa
+                </button>
+            </div>
+            <input type="hidden" name="tipo" id="tipoHidden" required>
+        </div>
+
+        <div class="form-group">
+            <label>Categoria</label>
+            <select name="categoria_id" class="form-select" id="categoriaSelect">
+                <option value="">Selecione...</option>
+                {% for cat in categorias %}
+                    <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group descricao-full">
+            <label>Descrição</label>
+            <input type="text" name="descricao" id="descricaoInput" class="form-input" placeholder="Ex: Salário, Compra..." required>
+        </div>
+    </div>
+
+    <!-- LINHA 2: VALOR + PARCELAS + EMISSÃO + VENCIMENTO -->
+    <div class="form-grid-4">
+        <div class="form-group">
+            <label>Valor Total</label>
+            <input type="text" name="valor_total" id="valorTotal" class="form-input money-input" value="0,00" required>
+        </div>
+
+        <div class="form-group">
+            <label>Nº Parcelas</label>
+            <input type="number" name="total_parcelas" id="totalParcelas" 
+                   class="form-input" value="1" min="1" max="100" 
+                   inputmode="numeric" style="text-align: center;">
+        </div>
+
+        <div class="form-group">
+            <label>Data Emissão</label>
+            <input type="date" name="data_emissao" id="dataEmissao" class="form-input" value="{{ hoje }}" required>
+        </div>
+
+        <div class="form-group" id="dataVencimentoGroup">
+            <label>Data Vencimento</label>
+            <input type="date" name="data_vencimento" id="dataVencimento" class="form-input" value="{{ hoje }}">
+        </div>
+    </div>
+
+    <!-- CONFIGURAÇÕES DE PARCELAS (só aparece se parcelas > 1) -->
+    <div class="parcelas-config-area" id="parcelasConfigArea" style="display: none;">
+        <div class="parcelas-config-painel">
+            <div class="parcelas-config-row">
+                <div class="parcelas-config-item">
+                    <label>Intervalo entre parcelas</label>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="number" id="intervaloDias" class="form-input" value="30" min="1" max="365" inputmode="numeric" style="flex: 1;">
+                        <span style="display: flex; align-items: center; color: var(--texto-mutado);">dias</span>
+                    </div>
+                </div>
+                <div class="parcelas-config-item">
+                    <label>1ª Vencimento</label>
+                    <input type="date" id="primeiroVencimento" class="form-input" value="{{ hoje }}">
+                </div>
+                <div class="parcelas-config-item">
+                    <label>&nbsp;</label>
+                    <button type="button" class="btn-distribuir" id="btnDistribuir">
+                        <i class="bi bi-calculator"></i> Distribuir igualmente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABELA DE PARCELAS -->
+    <div class="parcelas-wrapper" id="parcelasWrapper" style="display: none;">
+        <div class="parcelas-table-wrapper">
+            <table class="parcelas-table" id="parcelasTable">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">Parcela</th>
+                        <th style="width: 160px;">Vencimento</th>
+                        <th style="width: 160px;">Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody id="parcelasBody">
+                    <tr><td colspan="3" style="text-align: center; color: var(--texto-mutado);">Selecione mais de 1 parcela</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- DADOS OCULTOS (EDIT) -->
+    {% if modo == 'edit' and parcelas_filhas_json %}
+        <input type="hidden" id="parcelasFilhasData" value='{{ parcelas_filhas_json }}'>
+    {% endif %}
+
+</div>

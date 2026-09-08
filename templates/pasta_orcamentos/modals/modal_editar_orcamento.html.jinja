@@ -1,0 +1,100 @@
+<!-- ========================================================== -->
+<!-- MODAL EDITAR ORÇAMENTO - VERSÃO PROFISSIONAL               -->
+<!-- ========================================================== -->
+<div class="orc-modal-overlay-editar" id="modalEditarOrcamento">
+    <div class="orc-modal-box-editar">
+
+        <!-- CABEÇALHO -->
+        <div class="orc-modal-editar-header">
+            <div class="orc-modal-editar-header-left">
+                <h3><i class="bi bi-pencil-square"></i> Editor de Orçamento</h3>
+                <span class="orc-badge-status" id="modalEditStatus">rascunho</span>
+                <span class="orc-secoes-count" id="secoesCount">0 seções</span>
+            </div>
+            <div class="orc-modal-editar-header-right">
+                <button class="orc-btn-close-modal" onclick="fecharModalEditar()" title="Fechar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- FORMULÁRIO --> 
+        <form id="formEditarOrcamento" class="orc-modal-editor-form">
+            <input type="hidden" name="id" id="editOrcamentoId">
+
+            <!-- 🔥 INFO DO ORÇAMENTO - AGORA IGUAL AO NOVO -->
+            <div class="orc-modal-editor-info">
+                <div class="orc-info-grid">  <!-- ← MUDOU: orc-info-grid -->
+                    <div class="orc-info-group">
+                        <label><i class="bi bi-tag"></i> Título *</label>
+                        <input type="text" name="titulo" id="editOrcamentoTitulo" placeholder="Ex: Desenvolvimento de Sistema" required>
+                    </div>
+                    <div class="orc-info-group">
+                        <label><i class="bi bi-person"></i> Cliente</label>
+                        <input type="text" name="cliente" id="editOrcamentoCliente" placeholder="Nome do cliente">
+                    </div>
+                    <div class="orc-info-group">
+                        <label><i class="bi bi-calendar"></i> Data</label>
+                        <input type="date" name="data" id="editOrcamentoData">
+                    </div>
+                    <div class="orc-info-group">
+                        <label><i class="bi bi-check-circle"></i> Status</label>
+                        <select name="status" id="editOrcamentoStatus" onchange="atualizarStatusBadge()">
+                            <option value="rascunho">📝 Rascunho</option>
+                            <option value="enviado">📤 Enviado</option>
+                            <option value="aprovado">✅ Aprovado</option>
+                            <option value="rejeitado">❌ Rejeitado</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="orc-modal-divider">
+
+            <!-- SEÇÕES - AGORA IGUAL AO NOVO -->
+            <div class="orc-modal-editor-secoes">
+                <div class="orc-secoes-header">
+                    <div class="orc-secoes-header-left">  <!-- ← ADICIONADO -->
+                        <h4><i class="bi bi-layers"></i> Seções do Orçamento</h4>
+                        <span class="orc-secoes-hint">Arraste para reordenar</span>  <!-- ← ADICIONADO -->
+                    </div>
+                    <div class="orc-secoes-actions">
+                        <button type="button" class="orc-btn-add-secao" onclick="abrirModalNovaSecao()">
+                            <i class="bi bi-plus-lg"></i> Adicionar Seção
+                        </button>
+                    </div>
+                </div>
+                <div id="secoes-container-modal" class="orc-secoes-container">
+                    <!-- Renderizado via JavaScript -->
+                </div>
+            </div>
+
+            <!-- BOTÕES - AGORA IGUAL AO NOVO -->
+            <div class="orc-modal-editor-footer">
+                <div class="orc-footer-left">
+                    <button type="button" class="orc-btn-icon" onclick="visualizarOrcamentoModal()" title="Visualizar orçamento">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button type="button" class="orc-btn-icon" onclick="gerarPDFModal()" title="Gerar PDF">
+                        <i class="bi bi-file-pdf"></i>
+                    </button>
+                </div>
+
+                <div class="orc-footer-right">
+                    <button type="button" class="orc-btn-footer-cancelar" onclick="fecharModalEditar()">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                    <button type="submit" class="orc-btn-footer-salvar" id="btnSalvarOrcamento">
+                        <i class="bi bi-check-circle"></i> Salvar
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- ========================================================== -->
+<!-- INCLUDE DO MODAL SEÇÃO (COMPARTILHADO)                    -->
+<!-- ========================================================== -->
+{% include 'pasta_orcamentos/partials/secao_form.html.jinja' %}

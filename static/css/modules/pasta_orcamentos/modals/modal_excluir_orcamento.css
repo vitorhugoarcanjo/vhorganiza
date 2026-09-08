@@ -1,0 +1,97 @@
+/* ========================================================== */
+/* MODAL EXCLUIR ORÇAMENTO (PREFIXO orc-)                    */
+/* ========================================================== */
+
+.orc-modal-overlay-excluir {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+.orc-modal-overlay-excluir.active { display: flex !important; }
+
+.orc-modal-box-excluir {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: orc-modalExcluirFadeIn 0.2s ease-out;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+@keyframes orc-modalExcluirFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.orc-modal-excluir-icon {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 12px;
+    display: block;
+}
+.orc-modal-excluir-title {
+    margin: 0 0 8px 0;
+    color: var(--texto-principal);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.orc-modal-excluir-message {
+    color: var(--texto-mutado);
+    font-size: var(--fs-normal);
+    margin-bottom: 4px;
+}
+.orc-modal-excluir-message strong { color: var(--texto-principal); }
+.orc-modal-excluir-aviso {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    margin-top: 8px;
+}
+
+.orc-modal-excluir-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+}
+.orc-btn-excluir-cancelar {
+    padding: 8px 24px;
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: var(--fs-normal);
+    transition: all 0.2s ease;
+    flex: 1;
+}
+.orc-btn-excluir-cancelar:hover { background: var(--hover-fino); color: var(--texto-principal); }
+.orc-btn-excluir-confirmar {
+    padding: 8px 24px;
+    border: none;
+    border-radius: 6px;
+    background: #ef4444;
+    color: #fff;
+    cursor: pointer;
+    font-size: var(--fs-normal);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+.orc-btn-excluir-confirmar:hover { background: #dc2626; transform: scale(1.02); }
+.orc-btn-excluir-confirmar:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+@media (max-width: 768px) {
+    .orc-modal-box-excluir { margin: 16px; padding: 20px; }
+    .orc-modal-excluir-footer { flex-direction: column; }
+    .orc-modal-excluir-footer button { width: 100%; }
+}

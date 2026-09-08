@@ -1,0 +1,266 @@
+/* ========================================================== */
+/* FORM TRANSAÇÃO - PROFISSIONAL                             */
+/* ========================================================== */
+
+/* ========================================================== */
+/* 1. GRID - 3 COLUNAS (LINHA 1)                             */
+/* ========================================================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.descricao-full {
+    grid-column: 1 / 3;
+}
+
+/* ========================================================== */
+/* 2. GRID - 4 COLUNAS (LINHA 2)                             */
+/* ========================================================== */
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* ========================================================== */
+/* 3. FORM GROUPS                                             */
+/* ========================================================== */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group label i {
+    margin-right: 4px;
+    color: var(--cor-ativa);
+}
+
+.form-input,
+.form-select {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    background: var(--bg-principal);
+    color: var(--texto-principal);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    width: 100%;
+    height: 40px;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--texto-discreto);
+    font-size: 0.8rem;
+}
+
+/* ========================================================== */
+/* 4. TIPO BOTÕES                                             */
+/* ========================================================== */
+.tipo-container {
+    display: flex;
+    gap: 6px;
+}
+
+.tipo-btn {
+    padding: 8px 12px;
+    border: 2px solid var(--border-sutil);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+}
+
+.tipo-btn i {
+    font-size: 1.1rem;
+}
+
+.tipo-btn:hover {
+    border-color: var(--texto-mutado);
+    color: var(--texto-principal);
+}
+
+.tipo-btn.active {
+    border-color: var(--cor-ativa);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--cor-ativa);
+}
+
+.tipo-btn.receita.active {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.08);
+    color: #22c55e;
+}
+
+.tipo-btn.despesa.active {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
+}
+
+/* ========================================================== */
+/* 5. PARCELAS                                                */
+/* ========================================================== */
+.parcelas-config-area {
+    margin: 8px 0;
+    padding: 16px 20px;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+}
+
+.parcelas-config-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.parcelas-config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.parcelas-config-item label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.btn-distribuir {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--cor-ativa);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+}
+
+.btn-distribuir:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* ========================================================== */
+/* 6. TABELA PARCELAS                                         */
+/* ========================================================== */
+.parcelas-wrapper {
+    margin-top: 12px;
+    overflow-x: auto;
+}
+
+.parcelas-table-wrapper {
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.parcelas-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.parcelas-table th {
+    background: var(--bg-principal);
+    font-weight: 600;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border-sutil);
+    text-align: left;
+    color: var(--texto-mutado);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.parcelas-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+}
+
+.parcelas-table tr:last-child td {
+    border-bottom: none;
+}
+
+.parcelas-table .form-input {
+    height: 32px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+}
+
+/* ========================================================== */
+/* 7. RESPONSIVO                                              */
+/* ========================================================== */
+@media (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .form-grid-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+    .descricao-full {
+        grid-column: 1 / 3;
+    }
+    .parcelas-config-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    .descricao-full {
+        grid-column: 1 / 2;
+    }
+    .parcelas-config-row {
+        grid-template-columns: 1fr;
+    }
+    .parcelas-config-area {
+        padding: 12px 14px;
+    }
+}

@@ -41,6 +41,15 @@ def criar_indices(cursor):
         ("idx_auditoria_usuario_id", "tarefas_auditoria", "usuario_id"),
         ("idx_auditoria_data_hora", "tarefas_auditoria", "data_hora"),
         ("idx_auditoria_acao", "tarefas_auditoria", "acao"),
+
+        # ORÇAMENTOS
+        ("idx_orcamentos_usuario_id", "orcamentos", "usuario_id"),
+        ("idx_orcamentos_status", "orcamentos", "status"),
+        ("idx_orcamentos_cliente", "orcamentos", "cliente"),
+        ("idx_orcamentos_created_at", "orcamentos", "created_at"),
+        ("idx_orcamentos_usuario_status", "orcamentos", "usuario_id, status"),
+        ("idx_orcamentos_usuario_created", "orcamentos", "usuario_id, created_at DESC"),
+        ("idx_orcamentos_cliente_status", "orcamentos", "cliente, status"),
     ]
     
     for nome, tabela, colunas in indices:

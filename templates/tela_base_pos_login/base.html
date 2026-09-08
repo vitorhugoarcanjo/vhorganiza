@@ -67,6 +67,11 @@
                             <i class="bi bi-calendar2-plus-fill"></i> Categorias
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ url_for('orcamentos.ini_orcamento') }}" class="{% if request.endpoint == 'orcamentos.ini_orcamento' %}active{% endif %}">
+                            <i class="bi bi-box2"></i> Orçamentos
+                        </a>
+                    </li>
 
                     
                     <li style="margin-top: 1.5rem;">

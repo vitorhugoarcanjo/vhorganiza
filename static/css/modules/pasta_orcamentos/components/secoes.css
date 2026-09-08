@@ -1,0 +1,261 @@
+/* ==========================================================
+   SEÇÕES - DRAG & DROP, ITENS, PREVIEW (PREFIXO orc-)
+   ========================================================== */
+
+/* CONTAINER */
+.orc-secoes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 60px;
+}
+
+/* ITEM */
+.orc-secao-item {
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: grab;
+    transition: all 0.2s ease;
+}
+.orc-secao-item:hover {
+    border-color: var(--cor-ativa);
+    box-shadow: 0 1px 8px rgba(37, 99, 235, 0.06);
+}
+.orc-secao-item.dragging {
+    opacity: 0.4;
+    border-color: var(--cor-ativa);
+}
+
+/* HEADER DO ITEM */
+.orc-secao-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.orc-secao-item-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* DRAG HANDLE */
+.orc-secao-drag-handle {
+    color: var(--texto-mutado);
+    cursor: grab;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+.orc-secao-drag-handle:hover {
+    color: var(--texto-principal);
+}
+
+/* BADGE */
+.orc-secao-tipo-badge {
+    font-size: 0.5rem;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    flex-shrink: 0;
+}
+.orc-secao-tipo-badge.secao { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.orc-secao-tipo-badge.cabecalho { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+.orc-secao-tipo-badge.tabela { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.orc-secao-tipo-badge.lista { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.orc-secao-tipo-badge.destaque { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.orc-secao-tipo-badge.valor { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.orc-secao-tipo-badge.observacao { background: rgba(107, 114, 128, 0.15); color: #6b7280; }
+
+/* TÍTULO EDITÁVEL */
+.orc-secao-item-titulo {
+    font-weight: 500;
+    color: var(--texto-principal);
+    border: none;
+    background: transparent;
+    font-size: 0.8rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    flex: 1;
+    min-width: 50px;
+    transition: background 0.2s ease;
+}
+.orc-secao-item-titulo:focus {
+    outline: none;
+    background: var(--hover-fino);
+}
+
+/* AÇÕES */
+.orc-secao-item-actions {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+.orc-secao-item-actions button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.orc-secao-item-actions button:hover {
+    background: var(--hover-fino);
+    color: var(--texto-principal);
+}
+.orc-secao-item-actions .orc-btn-remover:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+/* CONTEÚDO */
+.orc-secao-item-conteudo {
+    padding-left: 32px;
+    color: var(--texto-mutado);
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 60px;
+    overflow-y: auto;
+    line-height: 1.4;
+}
+.orc-secao-item-conteudo .orc-empty {
+    color: var(--texto-discreto);
+    font-style: italic;
+}
+
+/* ESTADO VAZIO */
+.orc-secoes-vazio {
+    text-align: center;
+    color: var(--texto-mutado);
+    padding: 20px;
+    border: 2px dashed var(--border-sutil);
+    border-radius: 8px;
+}
+.orc-secoes-vazio i {
+    font-size: 1.8rem;
+    color: var(--texto-discreto);
+    display: block;
+    margin-bottom: 6px;
+}
+.orc-secoes-vazio p {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.orc-secoes-vazio small {
+    font-size: 0.7rem;
+    color: var(--texto-discreto);
+}
+
+/* PREVIEW */
+.orc-secao-preview-box {
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-height: 40px;
+    font-size: 0.8rem;
+}
+.orc-secao-preview-empty {
+    color: var(--texto-discreto);
+    font-style: italic;
+    text-align: center;
+    padding: 8px;
+}
+
+.orc-secao-preview-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+}
+.orc-secao-preview-titulo {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+.orc-secao-preview-conteudo {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    white-space: pre-wrap;
+}
+
+/* CABEÇALHO */
+.orc-secao-preview-cabecalho {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 2px solid #8b5cf6;
+}
+.orc-secao-preview-titulo-cabecalho {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #8b5cf6;
+}
+
+/* TABELA */
+.orc-secao-preview-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+.orc-secao-preview-tabela th {
+    background: #f1f5f9;
+    font-weight: 600;
+    padding: 4px 8px;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+}
+.orc-secao-preview-tabela td {
+    padding: 4px 8px;
+    border: 1px solid #e2e8f0;
+}
+
+/* LISTA */
+.orc-secao-preview-lista {
+    padding-left: 20px;
+    margin: 4px 0;
+}
+.orc-secao-preview-lista li {
+    margin-bottom: 2px;
+    font-size: 0.8rem;
+}
+
+/* DESTAQUE */
+.orc-secao-preview-destaque {
+    border: 2px solid;
+    border-radius: 8px;
+    padding: 12px 16px;
+}
+.orc-secao-preview-titulo-destaque {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.orc-secao-preview-conteudo-destaque {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* OBSERVAÇÃO */
+.orc-secao-preview-observacao {
+    padding: 8px 12px;
+    background: rgba(107, 114, 128, 0.08);
+    border-left: 3px solid #6b7280;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+}

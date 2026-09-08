@@ -1,0 +1,101 @@
+<div class="table-responsive">
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th style="width: 60px;">#</th>
+                <th style="width: 25%;">Título</th>
+                <th style="width: 20%;">Cliente</th>
+                <th style="width: 15%;">Status</th>
+                <th style="width: 15%;">Data</th>
+                <th style="width: 25%;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if orcamentos %}
+                {% for orc in orcamentos %}
+                <tr data-id="{{ orc.id }}" class="linha-orcamento">
+                    <td class="td-id">{{ orc.id }}</td>
+                    <td class="td-titulo">{{ orc.titulo }}</td>
+                    <td>
+                        {% if orc.cliente %}
+                            {{ orc.cliente }}
+                        {% else %}
+                            <span class="text-vazio">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge-pure status-{{ orc.status }}">
+                            {% if orc.status == 'rascunho' %}📝 Rascunho
+                            {% elif orc.status == 'enviado' %}📤 Enviado
+                            {% elif orc.status == 'aprovado' %}✅ Aprovado
+                            {% elif orc.status == 'rejeitado' %}❌ Rejeitado
+                            {% else %}{{ orc.status }}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>{{ orc.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td>
+                        <div class="td-acoes">
+                            <!-- 🔥 CORRIGIDO: CHAMA A FUNÇÃO JS -->
+                            <button class="btn-acao edit" 
+                                    onclick="abrirModalEditar({{ orc.id }})"
+                                    title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn-acao view" 
+                                    onclick="visualizarOrcamentoModal({{ orc.id }})"
+                                    title="Visualizar orçamento">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <a href="{{ url_for('orcamentos.gerar_pdf', id=orc.id) }}" 
+                               class="btn-acao check" 
+                               target="_blank"
+                               title="Gerar PDF">
+                                <i class="bi bi-file-pdf"></i>
+                            </a>
+                            <button class="btn-acao delete" 
+                                    onclick="abrirModalExcluir({{ orc.id }}, '{{ orc.titulo }}')"
+                                    title="Excluir">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6" class="td-vazio">
+                        <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                        Nenhum orçamento encontrado.
+                        <br>
+                        <small class="text-muted">Clique em "NOVO" para criar o primeiro.</small>
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Atualiza contadores no footer
+    (function() {
+        const orcamentos = {{ orcamentos|tojson|safe }};
+        const total = orcamentos.length;
+        const rascunho = orcamentos.filter(o => o.status === 'rascunho').length;
+        const enviado = orcamentos.filter(o => o.status === 'enviado').length;
+        const aprovado = orcamentos.filter(o => o.status === 'aprovado').length;
+        const rejeitado = orcamentos.filter(o => o.status === 'rejeitado').length;
+        
+        const totalEl = document.getElementById('totalOrcamentos');
+        const rascunhoEl = document.getElementById('totalRascunho');
+        const enviadoEl = document.getElementById('totalEnviado');
+        const aprovadoEl = document.getElementById('totalAprovado');
+        const rejeitadoEl = document.getElementById('totalRejeitado');
+        
+        if (totalEl) totalEl.textContent = total;
+        if (rascunhoEl) rascunhoEl.textContent = rascunho;
+        if (enviadoEl) enviadoEl.textContent = enviado;
+        if (aprovadoEl) aprovadoEl.textContent = aprovado;
+        if (rejeitadoEl) rejeitadoEl.textContent = rejeitado;
+    })();
+</script>

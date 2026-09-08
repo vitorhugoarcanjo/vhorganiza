@@ -7,7 +7,6 @@ from rotas.pasta_tela_pos_login.tela_pos_login import bp_pos_login # TELA POS LO
 # PASTA FINANÇAS
 from rotas.pasta_financas import bp_financas # LÓGICA FINANÇAS - INICIO
 from rotas.pasta_financas.crud.pasta_insert.insert_transacao import bp_insert_transacao # INSERIR
-from rotas.pasta_financas.crud.pasta_edit.edit_transacao import bp_edit_transacao # EDITAR
 from rotas.pasta_financas.crud.pasta_quitar.quitar_transacao import bp_quitar # QUITAR
 from rotas.pasta_financas.menus.pasta_vinculos.vinculos_routes import bp_vinculos
 from rotas.pasta_financas.crud.pasta_estornar.estornar_transacao import bp_estornar
@@ -35,6 +34,9 @@ from rotas.middleware.logs_middleware import log_acesso_middleware
 from rotas.auditoria_geral.logica_auditoria import bp_auditoria_tarefas
 from rotas.auditoria_geral.pasta_financas.logica_auditoria import bp_auditoria_financas
 
+# PASTA ORCAMENTOS
+from rotas.pasta_orcamentos import bp_orcamentos
+
 # IMPORTS ROTAS
 def logica_imports(app):
     """ REGISTROS DO APP.BLUE... """
@@ -46,7 +48,6 @@ def logica_imports(app):
     # FINANÇAS
     app.register_blueprint(bp_financas, url_prefix="/financas")
     app.register_blueprint(bp_insert_transacao, url_prefix='/nova_transacao') # INSERIR
-    app.register_blueprint(bp_edit_transacao, url_prefix="/edit_transacoes") # EDITAR
     app.register_blueprint(bp_quitar, url_prefix="/quitar_transacao") # QUITAR
     app.register_blueprint(bp_vinculos, url_prefix="/api/financas") # MENU - VINCULOS
     app.register_blueprint(bp_estornar, url_prefix="/estornar_transacao")
@@ -68,6 +69,9 @@ def logica_imports(app):
     # AUDITORIA
     app.register_blueprint(bp_auditoria_tarefas, url_prefix="/auditoria")
     app.register_blueprint(bp_auditoria_financas, url_prefix="/auditoria_financas")
+
+    # ORCAMENTOS
+    app.register_blueprint(bp_orcamentos, url_prefix="/orcamentos")
 
 
     # PAINEL LOGS

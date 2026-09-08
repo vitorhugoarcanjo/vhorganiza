@@ -1,0 +1,54 @@
+/* ========================================================== */
+/* MODAL EDITAR ORÇAMENTO - ESPECÍFICO                       */
+/* ========================================================== */
+
+/* ========================================================== */
+/* 1. BOX - EDITAR                                            */
+/* ========================================================== */
+.orc-modal-box-editar {
+    width: 95%;
+    max-width: 1100px;
+    max-height: 92vh;
+}
+
+/* ========================================================== */
+/* 2. FORM - EDITAR                                           */
+/* ========================================================== */
+.orc-modal-editor-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ========================================================== */
+/* 3. ESPECÍFICOS DO EDITAR                                   */
+/* ========================================================== */
+/* Se tiver algo específico do EDITAR, coloque aqui */
+
+/* ========================================================== */
+/* 4. RESPONSIVO DO EDITAR                                    */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .orc-modal-box-editar {
+        padding: 16px;
+        max-height: 95vh;
+        margin: 8px;
+        border-radius: 12px;
+        width: 100% !important;
+    }
+    .orc-info-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .orc-modal-editor-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    .orc-modal-editor-footer button {
+        flex: 1;
+        min-width: 70px;
+        justify-content: center;
+    }
+}

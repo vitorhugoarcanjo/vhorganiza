@@ -1,0 +1,186 @@
+{% extends "tela_base_pos_login/base.html" %}
+
+{% block title %}Orçamentos - Gestão de Orçamentos{% endblock %}
+
+{% block styles %}
+    <!-- CSS MINIFICADO -->
+    <link rel="stylesheet" href="{{ static_v('css/modules/pasta_orcamentos/orcamento.min.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="painel-container">
+
+    <!-- ========================================== -->
+    <!-- TOPO FIXO COM FILTROS (igual finanças)      -->
+    <!-- ========================================== -->
+    <div class="painel-topo-fixo">
+        <form 
+            id="form-filtros-orcamentos"
+            hx-post="{{ url_for('orcamentos.ini_orcamento') }}" 
+            hx-target="#tabela-container"
+            hx-swap="outerHTML"
+            hx-trigger="submit, change from:.filter-auto-select">
+
+            <div class="filtros-container">
+
+                <!-- FILTRO STATUS -->
+                <div class="bloco-filtro">
+                    <div class="bloco-titulo">📊 STATUS</div>
+                    <select name="status" class="form-select filter-auto-select">
+                        <option value="" {% if status == '' %}selected{% endif %}>Todos</option>
+                        <option value="rascunho" {% if status == 'rascunho' %}selected{% endif %}>📝 Rascunho</option>
+                        <option value="enviado" {% if status == 'enviado' %}selected{% endif %}>📤 Enviado</option>
+                        <option value="aprovado" {% if status == 'aprovado' %}selected{% endif %}>✅ Aprovado</option>
+                        <option value="rejeitado" {% if status == 'rejeitado' %}selected{% endif %}>❌ Rejeitado</option>
+                    </select>
+                </div>
+
+                <!-- FILTRO DATA -->
+                <div class="bloco-filtro">
+                    <div class="bloco-titulo">📅 DATA</div>
+                    <div class="flex-row gap-1">
+                        <div class="flex-fill">
+                            <input 
+                                type="date"
+                                name="data_inicio"
+                                class="form-control"
+                                value="{{ data_inicio or '' }}">
+                        </div>
+                        <div class="flex-fill">
+                            <input 
+                                type="date" 
+                                name="data_fim" 
+                                class="form-control"
+                                value="{{ data_fim or '' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILTRO CLIENTE -->
+                <div class="bloco-filtro">
+                    <div class="bloco-titulo">👤 CLIENTE</div>
+                    <input 
+                        type="text" 
+                        name="cliente" 
+                        class="form-control"
+                        placeholder="buscar cliente..."
+                        value="{{ cliente or '' }}"
+                        hx-trigger="keyup changed delay:500ms"
+                        hx-post="{{ url_for('orcamentos.ini_orcamento') }}"
+                        hx-include="#form-filtros-orcamentos"
+                        hx-target="#tabela-container"
+                        hx-swap="outerHTML">
+                </div>
+
+                <!-- BUSCA RÁPIDA -->
+                <div class="bloco-filtro bloco-pesquisa-fim">
+                    <div>
+                        <div class="bloco-titulo">🔍 BUSCA</div>
+                        <input 
+                            type="text" 
+                            name="busca" 
+                            class="form-control"
+                            placeholder="título ou cliente..."
+                            value="{{ busca or '' }}"
+                            hx-trigger="keyup changed delay:500ms"
+                            hx-post="{{ url_for('orcamentos.ini_orcamento') }}"
+                            hx-include="#form-filtros-orcamentos"
+                            hx-target="#tabela-container"
+                            hx-swap="outerHTML">
+                    </div>
+
+                    <div class="flex-row gap-1" style="margin-top: 6px;">
+                        <a href="{{ url_for('orcamentos.limpar_filtros') }}" 
+                           class="btn-filter flex-fill" 
+                           style="text-align: center;">
+                            Limpar Todos
+                        </a>
+
+                        <button 
+                            type="submit"
+                            class="btn-filter btn-primary-pure flex-fill">
+                            Consultar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TABELA COM HTMX                             -->
+    <!-- ========================================== -->
+    <div id="tabela-container" class="painel-tabela-conteudo">
+        {% include 'pasta_orcamentos/_tabela_orcamentos.html.jinja' %}
+    </div>
+
+</div> <!-- FECHA painel-container -->
+
+<!-- ========================================== -->
+<!-- FOOTER FIXO PADRÃO (igual finanças)        -->
+<!-- ========================================== -->
+<div class="footer-fixo-padrao">
+    <div class="botoes-footer-padrao">
+        <button 
+            type="button"
+            class="btn-footer btn-footer-primary"
+            onclick="abrirModalNovoOrcamento()">
+            <i class="bi bi-plus-lg"></i>
+            <span>NOVO</span>
+        </button>
+    </div>
+
+    <div>
+        <h2>ORÇAMENTOS</h2>
+    </div>
+    
+    <div class="totalizador-footer-padrao">
+        <div class="total-item-footer">
+            <label>📄 TOTAL</label>
+            <span id="totalOrcamentos">0</span>
+        </div>
+        <div class="total-item-footer" style="color: #f59e0b;">
+            <label>📝 RASCUNHO</label>
+            <span id="totalRascunho">0</span>
+        </div>
+        <div class="total-item-footer" style="color: #2563eb;">
+            <label>📤 ENVIADO</label>
+            <span id="totalEnviado">0</span>
+        </div>
+        <div class="total-item-footer" style="color: #22c55e;">
+            <label>✅ APROVADO</label>
+            <span id="totalAprovado">0</span>
+        </div>
+        <div class="total-item-footer" style="color: #ef4444;">
+            <label>❌ REJEITADO</label>
+            <span id="totalRejeitado">0</span>
+        </div>
+        <div class="contador-footer">
+            <i class="bi bi-list-ul"></i>
+            <span>{{ orcamentos|length }} orçamentos</span>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAIS                                      -->
+<!-- ========================================== -->
+{% include 'pasta_orcamentos/modals/modal_novo_orcamento.html.jinja' %}
+{% include 'pasta_orcamentos/modals/modal_excluir_orcamento.html.jinja' %}
+{% include 'pasta_orcamentos/modals/modal_editar_orcamento.html.jinja' %}
+
+
+{% endblock %}
+
+{% block scripts %}
+
+    <!-- 🔥 SORTABLEJS - DRAG & DROP -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <!-- JS MINIFICADO -->
+    <script src="{{ static_v('js/modules/pasta_orcamentos/orcamento.min.js') }}"></script>
+    
+    <!-- HTMX do CDN -->
+    <script src="https://unpkg.com/htmx.org@2.0.0"></script>
+{% endblock %}

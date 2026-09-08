@@ -1,0 +1,33 @@
+<!-- ========================================================== -->
+<!-- MODAL EXCLUIR ORÇAMENTO (PREFIXO orc-)                    -->
+<!-- ========================================================== -->
+<div class="orc-modal-overlay-excluir" id="modalExcluirOrcamento">
+    <div class="orc-modal-box-excluir">
+        
+        <!-- ÍCONE -->
+        <span class="orc-modal-excluir-icon">
+            <i class="bi bi-exclamation-triangle"></i>
+        </span>
+
+        <!-- TÍTULO -->
+        <h3 class="orc-modal-excluir-title">Confirmar exclusão</h3>
+
+        <!-- MENSAGEM -->
+        <p class="orc-modal-excluir-message">
+            Tem certeza que deseja excluir o orçamento 
+            <strong id="nomeOrcamentoExcluir"></strong>?
+        </p>
+        <p class="orc-modal-excluir-aviso">Esta ação não pode ser desfeita.</p>
+
+        <!-- BOTÕES -->
+        <div class="orc-modal-excluir-footer">
+            <button class="orc-btn-excluir-cancelar" onclick="fecharModalExcluir()">
+                Cancelar
+            </button>
+            <button class="orc-btn-excluir-confirmar" id="btnConfirmarExcluir">
+                <i class="bi bi-trash"></i> Excluir
+            </button>
+        </div>
+
+    </div>
+</div>

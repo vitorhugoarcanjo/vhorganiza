@@ -1,0 +1,58 @@
+/* ========================================================== */
+/* MODAL NOVO ORÇAMENTO - ESPECÍFICO                         */
+/* ========================================================== */
+
+/* ========================================================== */
+/* 1. BOX - NOVO                                              */
+/* ========================================================== */
+.orc-modal-box-novo {
+    width: 98% !important;
+    max-width: 1600px !important;
+    height: 94vh !important;
+    max-height: 94vh !important;
+}
+
+/* ========================================================== */
+/* 2. FORM - NOVO                                             */
+/* ========================================================== */
+.orc-modal-novo-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ========================================================== */
+/* 3. ESPECÍFICOS DO NOVO                                     */
+/* ========================================================== */
+/* Se tiver algo específico do NOVO, coloque aqui */
+
+/* ========================================================== */
+/* 4. RESPONSIVO DO NOVO                                      */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .orc-modal-box-novo {
+        height: 98vh !important;
+        max-height: 98vh !important;
+        border-radius: 12px;
+        width: 100% !important;
+    }
+    .orc-modal-novo-header-left h3 {
+        font-size: 1rem;
+    }
+    .orc-modal-novo-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    .orc-footer-left,
+    .orc-footer-right {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .orc-modal-novo-footer button {
+        flex: 1;
+        min-width: 70px;
+        justify-content: center;
+    }
+}

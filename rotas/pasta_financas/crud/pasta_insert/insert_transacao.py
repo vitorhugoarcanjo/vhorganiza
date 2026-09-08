@@ -40,7 +40,7 @@ def initransacao():
 
     if request.method == 'GET':
         return render_template(
-            'pasta_financas/crud/insert_transacao.html',
+            'pasta_financas/modais/modal_nova_transacao.html.jinja',
             hoje=hoje,
             categorias=categorias
         )

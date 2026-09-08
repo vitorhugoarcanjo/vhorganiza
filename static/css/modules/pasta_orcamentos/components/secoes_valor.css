@@ -1,0 +1,125 @@
+/* ==========================================================
+   SEÇÕES - TIPO VALOR (PREFIXO orc-)
+   ========================================================== */
+
+.orc-campos-valor {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+}
+.orc-campos-valor .orc-campo-valor-descricao {
+    grid-column: 1 / 2;
+}
+.orc-campos-valor .orc-campo-valor {
+    grid-column: 2 / 3;
+}
+.orc-campos-valor .orc-campo-valor-descricao-final {
+    grid-column: 1 / 3;
+}
+.orc-campo-valor-descricao textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* INPUT COM PREFIXO */
+.orc-input-valor-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--bg-principal);
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+.orc-input-valor-wrapper:focus-within {
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+.orc-input-valor-prefixo {
+    padding: 8px 10px;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    background: var(--bg-card);
+    border-right: 1px solid var(--border-sutil);
+    font-size: 0.85rem;
+    min-width: 32px;
+    text-align: center;
+}
+.orc-input-valor {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 8px 10px !important;
+    background: transparent !important;
+    color: var(--texto-principal) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    text-align: right;
+    width: 100%;
+}
+.orc-input-valor:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+.orc-input-descricao {
+    font-size: 0.9rem !important;
+    padding: 8px 12px !important;
+}
+
+/* PREVIEW VALOR */
+.orc-secao-preview-valor {
+    border: 2px solid #10b981;
+    border-radius: 10px;
+    padding: 16px 20px;
+    background: rgba(16, 185, 129, 0.06);
+    text-align: center;
+}
+.orc-secao-preview-valor:hover {
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
+}
+.orc-secao-preview-titulo-valor {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #10b981;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+.orc-secao-preview-conteudo-valor-texto {
+    font-size: 0.85rem;
+    color: var(--texto-mutado);
+    white-space: pre-wrap;
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--bg-principal);
+    border-radius: 4px;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+.orc-secao-preview-valor-destaque {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #10b981;
+    padding: 4px 0;
+}
+.orc-secao-preview-descricao-valor {
+    font-size: 0.8rem;
+    color: var(--texto-mutado);
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(16, 185, 129, 0.15);
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .orc-campos-valor {
+        grid-template-columns: 1fr;
+    }
+    .orc-campos-valor .orc-campo-valor-descricao,
+    .orc-campos-valor .orc-campo-valor,
+    .orc-campos-valor .orc-campo-valor-descricao-final {
+        grid-column: 1 / 2;
+    }
+    .orc-secao-preview-valor-destaque {
+        font-size: 1.4rem;
+    }
+}
