@@ -63,7 +63,7 @@
         </div>
     </div>
 
-    <!-- CONFIGURAÇÕES DE PARCELAS (só aparece se parcelas > 1) -->
+    <!-- CONFIGURAÇÕES DE PARCELAS -->
     <div class="parcelas-config-area" id="parcelasConfigArea" style="display: none;">
         <div class="parcelas-config-painel">
             <div class="parcelas-config-row">
@@ -107,8 +107,6 @@
     </div>
 
     <!-- DADOS OCULTOS (EDIT) -->
-    {% if modo == 'edit' and parcelas_filhas_json %}
-        <input type="hidden" id="parcelasFilhasData" value='{{ parcelas_filhas_json }}'>
-    {% endif %}
+    <input type="hidden" id="parcelasFilhasData" value='{{ parcelas_filhas_json or '[]' }}'>
 
 </div>

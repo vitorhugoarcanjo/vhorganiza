@@ -1,5 +1,5 @@
 # ========================================================== #
-# EDITAR TRANSAÇÃO - ROTAS (SEM BLUEPRINT)
+# EDITAR TRANSAÇÃO - ROTAS
 # ========================================================== #
 
 from flask import request, session, jsonify, render_template, redirect, url_for
@@ -19,6 +19,9 @@ def converter_valor_br(valor_str):
     valor_str = valor_str.replace(',', '.') 
     return float(valor_str)
 
+# ========================================================== #
+# 1. RETORNA O HTML DO MODAL
+# ========================================================== #
 @login_required
 def editar_modal(sequencia):
     """Retorna o HTML do modal de edição"""
@@ -33,7 +36,6 @@ def editar_modal(sequencia):
     
     transacao_pai_id = transacao_raw[12]
     if transacao_pai_id:
-        # 🔥 CORRIGIDO: financas.editar_modal
         return redirect(url_for('financas.editar_modal', sequencia=transacao_pai_id))
     
     parcelas_raw = EditarTransacaoService.buscar_parcelas(cursor, sequencia)
@@ -51,23 +53,34 @@ def editar_modal(sequencia):
         hoje=hoje
     )
 
+# ========================================================== #
+# 2. RETORNA OS DADOS EM JSON (CORRIGIDO)
+# ========================================================== #
 @login_required
 def dados_json(sequencia):
     """Retorna os dados da transação em JSON"""
     user_id = session['user_id']
     conexao, cursor = ini_conexao()
     
+    # 🔥 BUSCA A TRANSAÇÃO SOLICITADA
     transacao_raw = EditarTransacaoService.buscar_transacao(cursor, sequencia, user_id)
     if not transacao_raw:
         return jsonify({'success': False, 'error': 'Transação não encontrada'}), 404
     
+    # 🔥 SE FOR PARCELA, BUSCA O PAI
     transacao_pai_id = transacao_raw[12]
     if transacao_pai_id:
-        # 🔥 CORRIGIDO: financas.editar_modal
-        return redirect(url_for('financas.editar_modal', sequencia=transacao_pai_id))
+        # 🔥 BUSCA A TRANSAÇÃO PAI
+        transacao_raw = EditarTransacaoService.buscar_transacao(cursor, transacao_pai_id, user_id)
+        if not transacao_raw:
+            return jsonify({'success': False, 'error': 'Transação pai não encontrada'}), 404
+        # 🔥 USA O ID DO PAI
+        sequencia = transacao_pai_id
     
+    # 🔥 BUSCA AS PARCELAS DO PAI
     parcelas_raw = EditarTransacaoService.buscar_parcelas(cursor, sequencia)
     
+    # 🔥 MONTA O JSON DE RESPOSTA
     return jsonify({
         'success': True,
         'data': {
@@ -90,6 +103,9 @@ def dados_json(sequencia):
         }
     })
 
+# ========================================================== #
+# 3. SALVA A EDIÇÃO
+# ========================================================== #
 @login_required
 def salvar_edicao(sequencia):
     """Salva a edição da transação"""

@@ -4,7 +4,7 @@
 <div class="fin-modal-overlay" id="modalNovaTransacao">
     <div class="fin-modal-box">
 
-        <!-- CABEÇALHO DO MODAL -->
+        <!-- CABEÇALHO -->
         <div class="fin-modal-header">
             <div class="fin-modal-header-left">
                 <h3><i class="bi bi-cash-coin"></i> Nova Transação</h3>
@@ -17,41 +17,47 @@
             </div>
         </div>
 
-        <!-- CORPO DO MODAL (USA O PARTIAL) -->
-        <div class="fin-modal-body">
-            {# 🔥 O PARTIAL USA DIRETO AS VARIÁVEIS DO BACKEND #}
-            {# hoje, categorias, acao, titulo, etc #}
-            {% include 'pasta_financas/partials/form_transacao.html.jinja' %}
-        </div>
-
-        <!-- FOOTER DO MODAL -->
-        <div class="footer-fixo-padrao" id="footerFixoModal">
-            <div class="botoes-footer-padrao">
-                <button type="submit" form="form-transacao" class="btn-footer btn-footer-primary">
-                    <i class="bi bi-save"></i> SALVAR
-                </button>
-                <button type="button" class="btn-footer-cancelar" onclick="fecharModalNovaTransacao()">
-                    <i class="bi bi-x-circle"></i> CANCELAR
-                </button>
+        <!-- FORMULÁRIO -->
+        <form id="formNovaTransacao" class="fin-modal-form">
+            
+            <!-- CORPO (USA O PARTIAL) -->
+            <div class="fin-modal-body">
+                {% set modo = 'insert' %}
+                {% set hoje = hoje or '' %}
+                {% set categorias = categorias or [] %}
+                {% set parcelas_filhas_json = '[]' %}
+                
+                {% include 'pasta_financas/partials/form_transacao.html.jinja' %}
             </div>
 
-            <h2>NOVO - FINANÇAS</h2>
-
-            <div class="totalizador-footer-padrao">
-                <div class="total-item-footer valor-original">
-                    <label>Valor Total:</label>
-                    <span id="totalOriginal">R$ 0,00</span>
+            <!-- FOOTER -->
+            <div class="footer-fixo-padrao" id="footerFixoModal">
+                <div class="botoes-footer-padrao">
+                    <button type="submit" form="formNovaTransacao" class="btn-footer btn-footer-primary">
+                        <i class="bi bi-save"></i> SALVAR
+                    </button>
+                    <button type="button" class="btn-footer-cancelar" onclick="fecharModalNovaTransacao()">
+                        <i class="bi bi-x-circle"></i> CANCELAR
+                    </button>
                 </div>
-                <div class="total-item-footer soma-parcelas">
-                    <label>Soma Parcelas:</label>
-                    <span id="somaParcelas">R$ 0,00</span>
-                </div>
-                <div class="total-item-footer diferenca" id="diferencaItem">
-                    <label>Diferença:</label>
-                    <span id="diferencaValor">R$ 0,00</span>
+                <h2>NOVO - FINANÇAS</h2>
+                <div class="totalizador-footer-padrao">
+                    <div class="total-item-footer valor-original">
+                        <label>Valor Total:</label>
+                        <span id="totalOriginal">R$ 0,00</span>
+                    </div>
+                    <div class="total-item-footer soma-parcelas">
+                        <label>Soma Parcelas:</label>
+                        <span id="somaParcelas">R$ 0,00</span>
+                    </div>
+                    <div class="total-item-footer diferenca" id="diferencaItem">
+                        <label>Diferença:</label>
+                        <span id="diferencaValor">R$ 0,00</span>
+                    </div>
                 </div>
             </div>
-        </div>
+
+        </form>
 
     </div>
 </div>

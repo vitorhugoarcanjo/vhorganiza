@@ -1,5 +1,5 @@
 // ==========================================================
-// MODAL EDITAR TRANSAÇÃO
+// MODAL EDITAR TRANSAÇÃO - PROFISSIONAL (AJAX + JSON)
 // ==========================================================
 
 (function() {
@@ -13,7 +13,7 @@
     function abrirModalEditarTransacao(id) {
         console.log('🔓 Abrindo modal Editar Transação', id);
         transacaoId = id;
-        
+
         var modal = document.getElementById('modalEditarTransacao');
         if (!modal) {
             console.error('❌ Modal não encontrado!');
@@ -34,28 +34,31 @@
             `;
         }
 
-        // 🔥 PASSO 1: CARREGA O HTML DO MODAL (COM PREFIXO /financas/)
-        fetch('/financas/edit_transacoes/' + id, {
+        fetch('/financas/edit_transacoes/dados/' + id, {
             method: 'GET',
             headers: {
+                'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(function(response) {
-            if (response.redirected) {
-                window.location.href = response.url;
-                return;
+            if (!response.ok) {
+                throw new Error('Erro na requisição: ' + response.status);
             }
-            return response.text();
+            return response.json();
         })
-        .then(function(html) {
-            if (html) {
-                var modalBox = modal.querySelector('.fin-modal-box');
-                if (modalBox) {
-                    modalBox.innerHTML = html;
+        .then(function(result) {
+            if (result && result.success) {
+                if (result.data.sequencia && result.data.sequencia !== id) {
+                    transacaoId = result.data.sequencia;
+                    console.log('🔄 ID atualizado para o pai:', transacaoId);
                 }
-                // 🔥 PASSO 2: CARREGA OS DADOS EM JSON (COM PREFIXO /financas/)
-                carregarDados(id);
+                // 🔥 RESTAURA O FORM E PREENCHE
+                restaurarForm(result.data);
+            } else {
+                if (body) {
+                    body.innerHTML = '<div style="color: #ef4444; padding: 20px;">' + (result.error || 'Erro ao carregar dados') + '</div>';
+                }
             }
         })
         .catch(function(error) {
@@ -67,38 +70,30 @@
     }
 
     // ==========================================================
-    // CARREGAR DADOS (JSON)
+    // RESTAURAR FORM
     // ==========================================================
-    function carregarDados(id) {
-        // 🔥 COM PREFIXO /financas/
-        fetch('/financas/edit_transacoes/dados/' + id, {
+    function restaurarForm(data) {
+        console.log('📦 Restaurando form com dados:', data);
+
+        var modal = document.getElementById('modalEditarTransacao');
+        var body = modal.querySelector('.fin-modal-body');
+
+        fetch('/financas/edit_transacoes/' + data.sequencia, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(function(response) { return response.json(); })
-        .then(function(result) {
-            if (result.success) {
-                if (result.data.sequencia && result.data.sequencia !== id) {
-                    transacaoId = result.data.sequencia;
-                    console.log('🔄 Redirecionado para o pai:', transacaoId);
-                }
-                preencherForm(result.data);
-            } else {
-                var body = document.querySelector('#modalEditarTransacao .fin-modal-body');
-                if (body) {
-                    body.innerHTML = '<div style="color: #ef4444; padding: 20px;">' + (result.error || 'Erro ao carregar dados') + '</div>';
-                }
+        .then(function(response) { return response.text(); })
+        .then(function(html) {
+            if (body && html) {
+                body.innerHTML = html;
+                // 🔥 DEPOIS QUE O HTML FOI RESTAURADO, PREENCHE OS CAMPOS
+                preencherForm(data);
             }
         })
         .catch(function(error) {
-            console.error('❌ Erro:', error);
-            var body = document.querySelector('#modalEditarTransacao .fin-modal-body');
-            if (body) {
-                body.innerHTML = '<div style="color: #ef4444; padding: 20px;">Erro ao carregar dados</div>';
-            }
+            console.error('❌ Erro ao restaurar form:', error);
         });
     }
 
@@ -108,9 +103,11 @@
     function preencherForm(data) {
         console.log('📦 Preenchendo form com:', data);
 
+        // 1. TÍTULO
         var seqSpan = document.getElementById('finEditarSequencia');
         if (seqSpan) seqSpan.textContent = '#' + data.sequencia;
 
+        // 2. BADGE
         var badge = document.getElementById('finEditarTipoBadge');
         if (badge) {
             if (data.tipo === 'receita') {
@@ -125,6 +122,7 @@
             }
         }
 
+        // 3. CAMPOS PRINCIPAIS
         var descricao = document.getElementById('descricaoInput');
         if (descricao) descricao.value = data.descricao || '';
 
@@ -143,9 +141,19 @@
         var dataVencimento = document.getElementById('dataVencimento');
         if (dataVencimento) dataVencimento.value = data.data_vencimento || '';
 
+        // 4. CATEGORIA
         var categoria = document.getElementById('categoriaSelect');
-        if (categoria) categoria.value = data.categoria_id || '';
+        if (categoria) {
+            // 🔥 AS CATEGORIAS JÁ ESTÃO NO HTML (VIA JINJA)
+            // SÓ PRECISA SELECIONAR A CATEGORIA CORRETA
+            if (data.categoria_id) {
+                categoria.value = data.categoria_id;
+            } else {
+                categoria.value = '';
+            }
+        }
 
+        // 5. PARCELAS
         var totalParcelas = document.getElementById('totalParcelas');
         if (totalParcelas) totalParcelas.value = data.total_parcelas || 1;
 
@@ -155,7 +163,8 @@
         var primeiroVencimento = document.getElementById('primeiroVencimento');
         if (primeiroVencimento) primeiroVencimento.value = data.data_vencimento || '';
 
-        document.querySelectorAll('#form-transacao .tipo-btn').forEach(function(btn) {
+        // 6. TIPO
+        document.querySelectorAll('#formEditarTransacao .tipo-btn').forEach(function(btn) {
             btn.classList.remove('active');
             if (btn.dataset.tipo === data.tipo) {
                 btn.classList.add('active');
@@ -165,47 +174,33 @@
         var tipoHidden = document.getElementById('tipoHidden');
         if (tipoHidden) tipoHidden.value = data.tipo || '';
 
-        var tbody = document.getElementById('parcelasBody');
-        if (!tbody) return;
-
-        if (data.parcelas && data.parcelas.length > 0) {
-            var html = '';
-            var numParcelas = data.parcelas.length;
-            data.parcelas.forEach(function(p) {
-                var valorFormatado = parseFloat(p.valor).toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                html += '<tr>';
-                html += '<td><strong>' + p.numero + '/' + numParcelas + '</strong></td>';
-                html += '<td><input type="date" class="form-input data-parcela" value="' + p.data_vencimento + '" style="max-width: 140px;"></td>';
-                html += '<td><input type="text" class="form-input valor-parcela-input" value="' + valorFormatado + '" style="max-width: 120px; text-align: right;"></td>';
-                html += '</tr>';
-            });
-            tbody.innerHTML = html;
-
-            document.getElementById('parcelasConfigArea').style.display = 'block';
-            document.getElementById('parcelasWrapper').style.display = 'block';
-
-            tbody.querySelectorAll('.valor-parcela-input').forEach(function(input) {
-                input.addEventListener('input', function() {
-                    if (typeof formatarValor === 'function') formatarValor(this);
-                    if (typeof atualizarTotais === 'function') atualizarTotais();
-                });
-            });
-            tbody.querySelectorAll('.data-parcela').forEach(function(input) {
-                input.addEventListener('change', function() {
-                    if (typeof atualizarTotais === 'function') atualizarTotais();
-                });
-            });
-        } else {
-            document.getElementById('parcelasConfigArea').style.display = 'none';
-            document.getElementById('parcelasWrapper').style.display = 'none';
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--texto-mutado);">Selecione mais de 1 parcela</td></tr>';
+        // 7. PARCELAS FILHAS (CAMPO OCULTO)
+        var parcelasData = document.getElementById('parcelasFilhasData');
+        if (parcelasData) {
+            parcelasData.value = JSON.stringify(data.parcelas || []);
         }
 
-        if (typeof atualizarTotais === 'function') {
-            atualizarTotais();
+        // 8. DISPARA O CARREGAMENTO DAS PARCELAS
+        if (data.total_parcelas > 1) {
+            var event = new Event('change');
+            document.getElementById('totalParcelas')?.dispatchEvent(event);
+        }
+
+        // 9. ATUALIZA TOTAIS
+        if (typeof window.atualizarTotalizador === 'function') {
+            setTimeout(function() {
+                window.atualizarTotalizador();
+            }, 200);
+        }
+
+        // 10. AJUSTA O ID DO FORM PARA O SUBMIT
+        var form = document.getElementById('formEditarTransacao');
+        if (form) {
+            form.id = 'formEditarTransacao';
+            var submitBtn = document.querySelector('#footerFixoEditar .btn-footer-primary');
+            if (submitBtn) {
+                submitBtn.setAttribute('form', 'formEditarTransacao');
+            }
         }
     }
 
@@ -223,18 +218,21 @@
     }
 
     // ==========================================================
-    // SALVAR
+    // SALVAR (VIA AJAX)
     // ==========================================================
     function salvarEditarTransacao() {
-        var form = document.getElementById('form-transacao');
+        var form = document.getElementById('formEditarTransacao');
         if (!form) return;
 
-        var btn = document.getElementById('btn-submit');
+        var btn = document.querySelector('#footerFixoEditar .btn-footer-primary');
         if (!btn) return;
 
         var textoOriginal = btn.innerHTML;
         btn.disabled = true;
         btn.innerHTML = '<i class="bi bi-spinner bi-spin"></i> Salvando...';
+
+        var formData = new FormData(form);
+        var data = Object.fromEntries(formData.entries());
 
         var parcelas = [];
         document.querySelectorAll('#parcelasBody tr').forEach(function(row) {
@@ -246,12 +244,8 @@
                 });
             }
         });
-
-        var formData = new FormData(form);
-        var data = Object.fromEntries(formData.entries());
         data.parcelas = parcelas;
 
-        // 🔥 COM PREFIXO /financas/
         fetch('/financas/edit_transacoes/' + transacaoId, {
             method: 'POST',
             headers: {
@@ -285,7 +279,9 @@
     // ==========================================================
     window.abrirModalEditarTransacao = abrirModalEditarTransacao;
     window.fecharModalEditarTransacao = fecharModalEditarTransacao;
+    window.salvarEditarTransacao = salvarEditarTransacao;
 
+    // ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             var modal = document.getElementById('modalEditarTransacao');
@@ -295,10 +291,22 @@
         }
     });
 
+    // Clique no overlay
     document.addEventListener('click', function(e) {
         var modal = document.getElementById('modalEditarTransacao');
         if (modal && modal.classList.contains('active') && e.target === modal) {
             fecharModalEditarTransacao();
+        }
+    });
+
+    // 🔥 EVENTO DE SUBMIT DO FORM
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('formEditarTransacao');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                salvarEditarTransacao();
+            });
         }
     });
 

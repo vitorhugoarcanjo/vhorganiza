@@ -1,6 +1,9 @@
-<!-- MODAL: EDITAR TRANSAÇÃO -->
+<!-- ========================================================== -->
+<!-- MODAL: EDITAR TRANSAÇÃO                                    -->
+<!-- ========================================================== -->
 <div class="fin-modal-overlay" id="modalEditarTransacao">
     <div class="fin-modal-box">
+
         <!-- CABEÇALHO -->
         <div class="fin-modal-header">
             <div class="fin-modal-header-left">
@@ -14,36 +17,48 @@
             </div>
         </div>
 
-        <!-- CORPO (USA O PARTIAL) -->
-        <div class="fin-modal-body">
-            {% include 'pasta_financas/partials/form_transacao.html.jinja' %}
-        </div>
+        <!-- FORMULÁRIO -->
+        <form id="formEditarTransacao" class="fin-modal-form">
+            
+            <!-- CORPO (USA O PARTIAL) -->
+            <div class="fin-modal-body">
+                {# 🔥 O PARTIAL USA DIRETO AS VARIÁVEIS DO BACKEND #}
+                {% set modo = 'edit' %}
+                {% set hoje = hoje or '' %}
+                {% set categorias = categorias or [] %}
+                {% set parcelas_filhas_json = parcelas_filhas_json or '[]' %}
+                
+                {% include 'pasta_financas/partials/form_transacao.html.jinja' %}
+            </div>
 
-        <!-- FOOTER -->
-        <div class="footer-fixo-padrao" id="footerFixoEditar">
-            <div class="botoes-footer-padrao">
-                <button type="submit" form="form-transacao" class="btn-footer btn-footer-primary">
-                    <i class="bi bi-save"></i> ATUALIZAR
-                </button>
-                <button type="button" class="btn-footer-cancelar" onclick="fecharModalEditarTransacao()">
-                    <i class="bi bi-x-circle"></i> CANCELAR
-                </button>
+            <!-- FOOTER -->
+            <div class="footer-fixo-padrao" id="footerFixoEditar">
+                <div class="botoes-footer-padrao">
+                    <button type="submit" form="formEditarTransacao" class="btn-footer btn-footer-primary">
+                        <i class="bi bi-save"></i> ATUALIZAR
+                    </button>
+                    <button type="button" class="btn-footer-cancelar" onclick="fecharModalEditarTransacao()">
+                        <i class="bi bi-x-circle"></i> CANCELAR
+                    </button>
+                </div>
+                <h2>EDITAR - TRANSAÇÃO</h2>
+                <div class="totalizador-footer-padrao">
+                    <div class="total-item-footer valor-original">
+                        <label>Valor Total:</label>
+                        <span id="totalOriginal">R$ 0,00</span>
+                    </div>
+                    <div class="total-item-footer soma-parcelas">
+                        <label>Soma Parcelas:</label>
+                        <span id="somaParcelas">R$ 0,00</span>
+                    </div>
+                    <div class="total-item-footer diferenca" id="diferencaItem">
+                        <label>Diferença:</label>
+                        <span id="diferencaValor">R$ 0,00</span>
+                    </div>
+                </div>
             </div>
-            <h2>EDITAR - TRANSAÇÃO</h2>
-            <div class="totalizador-footer-padrao">
-                <div class="total-item-footer valor-original">
-                    <label>Valor Total:</label>
-                    <span id="totalOriginal">R$ 0,00</span>
-                </div>
-                <div class="total-item-footer soma-parcelas">
-                    <label>Soma Parcelas:</label>
-                    <span id="somaParcelas">R$ 0,00</span>
-                </div>
-                <div class="total-item-footer diferenca" id="diferencaItem">
-                    <label>Diferença:</label>
-                    <span id="diferencaValor">R$ 0,00</span>
-                </div>
-            </div>
-        </div>
+
+        </form>
+
     </div>
 </div>
