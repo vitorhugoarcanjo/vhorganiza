@@ -1,4 +1,5 @@
 from flask import render_template, session, request, redirect, url_for
+from datetime import date
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
 
@@ -35,10 +36,14 @@ def ini_financas():
     if not is_htmx:
         categorias_usuario = service.buscar_categorias(user_id)
 
+    categorias_modal = [(cat[0], cat[1]) for cat in categorias_usuario]
+
+    # 🔥 DATA DE HOJE
+    hoje = date.today().isoformat()
+
     # BUSCA TRANSACOES
     transacoes_raw = service.buscar_transacoes(user_id, filtros)
     transacoes = FinancasFormatters.formatar_transacoes(transacoes_raw)
-    
 
     # 3. Renderiza para o HTMX
     if is_htmx:
@@ -55,7 +60,10 @@ def ini_financas():
                           categorias_usuario=categorias_usuario,
                           categorias_filtro=filtros['categorias'],
                           mostrar_inativas=filtros['mostrar_inativas'],
-                          user_nome=session.get('user_nome'))
+                          user_nome=session.get('user_nome'),
+                          categorias=categorias_modal,  # 🔥 ADICIONA AQUI!
+                          hoje=hoje)  # 🔥 ADICIONA AQUI!
+                          
 
 
 def _renderizar_htmx(transacoes, data_inicio, data_fim, filtros):

@@ -26,6 +26,7 @@
                 {% set modo = 'edit' %}
                 {% set hoje = hoje or '' %}
                 {% set categorias = categorias or [] %}
+                {% set transacao = transacao or [] %}
                 {% set parcelas_filhas_json = parcelas_filhas_json or '[]' %}
                 
                 {% include 'pasta_financas/partials/form_transacao.html.jinja' %}

@@ -9,8 +9,12 @@ from .crud.pasta_delete.delete_transacao import ini_inativar_financas
 from .crud.pasta_estornar.reativar_transacao import ini_reativar_financas
 
 # 🔥 IMPORTA O BLUEPRINT DE EDIÇÃO
-from .crud.pasta_edit.edit_transacao import editar_modal, dados_json, salvar_edicao
 
+# ========================================================== #
+# ROTAS ORGANIZADAS CORRETAMENTE, FAZER ISSO NOS DEMAIS DEPOIS ...
+# ========================================================== #
+from .crud.pasta_insert import bp_insert
+from .crud.pasta_edit import bp_edit
 # ========================================================== #
 # ROTAS PRINCIPAIS
 # ========================================================== #
@@ -21,9 +25,9 @@ bp_financas.add_url_rule('/limpar_filtros', view_func=limpar_filtros)
 # ========================================================== #
 # 🔥 ROTAS DE EDIÇÃO (USANDO add_url_rule)
 # ========================================================== #
-bp_financas.add_url_rule('/edit_transacoes/<int:sequencia>', view_func=editar_modal, methods=['GET'])
-bp_financas.add_url_rule('/edit_transacoes/dados/<int:sequencia>', view_func=dados_json, methods=['GET'])
-bp_financas.add_url_rule('/edit_transacoes/<int:sequencia>', view_func=salvar_edicao, methods=['POST'])
+bp_financas.register_blueprint(bp_insert, url_prefix='/nova_transacao')
+bp_financas.register_blueprint(bp_edit, url_prefix='/edit_transacoes')
+
 
 # ========================================================== #
 # FUNÇÕES CRUD

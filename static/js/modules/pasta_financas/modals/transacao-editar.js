@@ -1,5 +1,5 @@
 // ==========================================================
-// MODAL EDITAR TRANSAÇÃO - PROFISSIONAL (AJAX + JSON)
+// MODAL EDITAR TRANSAÇÃO - DEFINITIVO
 // ==========================================================
 
 (function() {
@@ -20,20 +20,41 @@
             return;
         }
 
+        // 🔥 ABRE O MODAL
         modal.classList.add('active');
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
 
+        // 🔥 MOSTRA LOADING (NÃO SUBSTITUI O HTML)
         var body = modal.querySelector('.fin-modal-body');
         if (body) {
-            body.innerHTML = `
-                <div style="text-align: center; padding: 30px; color: var(--texto-mutado);">
-                    <div class="spinner-pure"></div>
-                    <p style="margin-top: 10px;">Carregando dados...</p>
-                </div>
+            // 🔥 CRIA UM OVERLAY DE LOADING POR CIMA DO CONTEÚDO
+            var loadingDiv = document.createElement('div');
+            loadingDiv.id = 'editLoadingOverlay';
+            loadingDiv.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                z-index: 10;
+                border-radius: 8px;
             `;
+            loadingDiv.innerHTML = `
+                <div class="spinner-pure" style="width: 40px; height: 40px; border: 4px solid #fff; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                <p style="color: #fff; margin-top: 10px;">Carregando dados...</p>
+            `;
+            // 🔥 USA POSITION RELATIVE NO BODY
+            body.style.position = 'relative';
+            body.appendChild(loadingDiv);
         }
 
+        // 🔥 BUSCA OS DADOS EM JSON
         fetch('/financas/edit_transacoes/dados/' + id, {
             method: 'GET',
             headers: {
@@ -49,12 +70,18 @@
         })
         .then(function(result) {
             if (result && result.success) {
+                // 🔥 ATUALIZA O ID (SE FOR PARCELA, VAI SER O PAI)
                 if (result.data.sequencia && result.data.sequencia !== id) {
                     transacaoId = result.data.sequencia;
                     console.log('🔄 ID atualizado para o pai:', transacaoId);
                 }
-                // 🔥 RESTAURA O FORM E PREENCHE
-                restaurarForm(result.data);
+                
+                // 🔥 REMOVE O LOADING
+                var overlay = document.getElementById('editLoadingOverlay');
+                if (overlay) overlay.remove();
+
+                // 🔥 PREENCHE OS CAMPOS (DIRETAMENTE, SEM RECARREGAR HTML)
+                preencherForm(result.data);
             } else {
                 if (body) {
                     body.innerHTML = '<div style="color: #ef4444; padding: 20px;">' + (result.error || 'Erro ao carregar dados') + '</div>';
@@ -63,6 +90,8 @@
         })
         .catch(function(error) {
             console.error('❌ Erro:', error);
+            var overlay = document.getElementById('editLoadingOverlay');
+            if (overlay) overlay.remove();
             if (body) {
                 body.innerHTML = '<div style="color: #ef4444; padding: 20px;">Erro ao carregar dados</div>';
             }
@@ -70,35 +99,7 @@
     }
 
     // ==========================================================
-    // RESTAURAR FORM
-    // ==========================================================
-    function restaurarForm(data) {
-        console.log('📦 Restaurando form com dados:', data);
-
-        var modal = document.getElementById('modalEditarTransacao');
-        var body = modal.querySelector('.fin-modal-body');
-
-        fetch('/financas/edit_transacoes/' + data.sequencia, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(function(response) { return response.text(); })
-        .then(function(html) {
-            if (body && html) {
-                body.innerHTML = html;
-                // 🔥 DEPOIS QUE O HTML FOI RESTAURADO, PREENCHE OS CAMPOS
-                preencherForm(data);
-            }
-        })
-        .catch(function(error) {
-            console.error('❌ Erro ao restaurar form:', error);
-        });
-    }
-
-    // ==========================================================
-    // PREENCHER FORM
+    // PREENCHER FORM (DIRETO, SEM RECARREGAR HTML)
     // ==========================================================
     function preencherForm(data) {
         console.log('📦 Preenchendo form com:', data);
@@ -122,7 +123,7 @@
             }
         }
 
-        // 3. CAMPOS PRINCIPAIS
+        // 3. CAMPOS
         var descricao = document.getElementById('descricaoInput');
         if (descricao) descricao.value = data.descricao || '';
 
@@ -144,13 +145,7 @@
         // 4. CATEGORIA
         var categoria = document.getElementById('categoriaSelect');
         if (categoria) {
-            // 🔥 AS CATEGORIAS JÁ ESTÃO NO HTML (VIA JINJA)
-            // SÓ PRECISA SELECIONAR A CATEGORIA CORRETA
-            if (data.categoria_id) {
-                categoria.value = data.categoria_id;
-            } else {
-                categoria.value = '';
-            }
+            categoria.value = data.categoria_id || '';
         }
 
         // 5. PARCELAS
@@ -186,22 +181,14 @@
             document.getElementById('totalParcelas')?.dispatchEvent(event);
         }
 
-        // 9. ATUALIZA TOTAIS
-        if (typeof window.atualizarTotalizador === 'function') {
+        // 9. TOTAIS
+        if (typeof window.atualizarTotais === 'function') {
             setTimeout(function() {
-                window.atualizarTotalizador();
+                window.atualizarTotais();
             }, 200);
         }
 
-        // 10. AJUSTA O ID DO FORM PARA O SUBMIT
-        var form = document.getElementById('formEditarTransacao');
-        if (form) {
-            form.id = 'formEditarTransacao';
-            var submitBtn = document.querySelector('#footerFixoEditar .btn-footer-primary');
-            if (submitBtn) {
-                submitBtn.setAttribute('form', 'formEditarTransacao');
-            }
-        }
+        console.log('✅ Form preenchido com sucesso!');
     }
 
     // ==========================================================
@@ -218,7 +205,7 @@
     }
 
     // ==========================================================
-    // SALVAR (VIA AJAX)
+    // SALVAR
     // ==========================================================
     function salvarEditarTransacao() {
         var form = document.getElementById('formEditarTransacao');
@@ -279,7 +266,6 @@
     // ==========================================================
     window.abrirModalEditarTransacao = abrirModalEditarTransacao;
     window.fecharModalEditarTransacao = fecharModalEditarTransacao;
-    window.salvarEditarTransacao = salvarEditarTransacao;
 
     // ESC
     document.addEventListener('keydown', function(e) {
@@ -291,22 +277,10 @@
         }
     });
 
-    // Clique no overlay
     document.addEventListener('click', function(e) {
         var modal = document.getElementById('modalEditarTransacao');
         if (modal && modal.classList.contains('active') && e.target === modal) {
             fecharModalEditarTransacao();
-        }
-    });
-
-    // 🔥 EVENTO DE SUBMIT DO FORM
-    document.addEventListener('DOMContentLoaded', function() {
-        var form = document.getElementById('formEditarTransacao');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                salvarEditarTransacao();
-            });
         }
     });
 

@@ -1,10 +1,17 @@
 # ==========================================================
-# EDITAR TRANSAÇÃO - VALIDAÇÕES
+# INSERIR TRANSAÇÃO - VALIDAÇÕES
 # ==========================================================
 
-def validar_dados_edicao(dados):
-    """Valida os dados de edição"""
+def validar_dados_insercao(dados):
+    """Valida os dados antes de inserir"""
     erros = []
+    
+    # Valida tipo
+    tipo = dados.get('tipo')
+    if not tipo:
+        erros.append({'campo': 'tipo', 'mensagem': 'Selecione o tipo (Receita ou Despesa)'})
+    elif tipo not in ['receita', 'despesa']:
+        erros.append({'campo': 'tipo', 'mensagem': 'Tipo inválido'})
     
     # Valida descrição
     descricao = dados.get('descricao', '').strip()

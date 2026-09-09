@@ -18,7 +18,6 @@
         var hidden = document.getElementById('tipoHidden');
         if (hidden) hidden.value = btn.dataset.tipo;
         
-        // Atualiza badge
         var badge = document.getElementById('finTipoBadge') || document.getElementById('finEditarTipoBadge');
         if (badge) {
             var tipo = btn.dataset.tipo;
@@ -131,7 +130,6 @@
         
         tbody.innerHTML = html;
         
-        // Eventos
         tbody.querySelectorAll('.valor-parcela-input').forEach(function(input) {
             input.addEventListener('input', function() { formatarValor(this); atualizarTotais(); });
         });
@@ -190,6 +188,62 @@
     }
 
     // ==========================================================
+    // 🔥 SUBMIT DO FORM (NOVO)
+    // ==========================================================
+    function submitForm(form) {
+        var btn = document.getElementById('btn-submit');
+        if (!btn) return;
+
+        var textoOriginal = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-spinner bi-spin"></i> Salvando...';
+
+        var formData = new FormData(form);
+        var data = Object.fromEntries(formData.entries());
+
+        // Coleta parcelas
+        var parcelas = [];
+        document.querySelectorAll('#parcelasBody tr').forEach(function(row) {
+            var inputs = row.querySelectorAll('input');
+            if (inputs.length === 2) {
+                parcelas.push({
+                    vencimento: inputs[0].value,
+                    valor: inputs[1].value
+                });
+            }
+        });
+        data.parcelas = parcelas;
+
+        // 🔥 USA A ROTA CORRETA
+        fetch('/financas/nova_transacao/salvar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(result) {
+            if (result.success) {
+                if (window.Notificacao) window.Notificacao.sucesso(result.message);
+                if (window.fecharModalNovaTransacao) window.fecharModalNovaTransacao();
+                setTimeout(function() { window.location.reload(); }, 500);
+            } else {
+                if (window.Notificacao) window.Notificacao.erro(result.message || result.error || 'Erro ao salvar');
+                btn.disabled = false;
+                btn.innerHTML = textoOriginal;
+            }
+        })
+        .catch(function(error) {
+            console.error('❌ Erro:', error);
+            if (window.Notificacao) window.Notificacao.erro('Erro ao salvar transação');
+            btn.disabled = false;
+            btn.innerHTML = textoOriginal;
+        });
+    }
+
+    // ==========================================================
     // EXPORTA
     // ==========================================================
     window.selecionarTipo = selecionarTipo;
@@ -228,6 +282,19 @@
         
         // Carregar parcelas existentes (EDITAR)
         carregarParcelasExistentes();
+
+        // 🔥 SUBMIT DO FORM (NOVO)
+        var form = document.getElementById('form-transacao');
+        if (form) {
+            // Remove listener antigo
+            var novoForm = form.cloneNode(true);
+            form.parentNode.replaceChild(novoForm, form);
+
+            novoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitForm(this);
+            });
+        }
     });
 
     console.log('✅ TRANSACAO-FORM carregado!');
