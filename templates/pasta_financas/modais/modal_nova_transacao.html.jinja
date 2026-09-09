@@ -7,40 +7,42 @@
         <!-- CABEÇALHO -->
         <div class="fin-modal-header">
             <div class="fin-modal-header-left">
-                <h3><i class="bi bi-cash-coin"></i> Nova Transação</h3>
-                <span class="fin-tipo-badge" id="finTipoBadge">📊 Selecionar</span>
+                <h3><i class="bi bi-plus-circle-fill"></i> Nova Transação</h3>
             </div>
             <div class="fin-modal-header-right">
-                <button class="fin-btn-close-modal" onclick="fecharModalNovaTransacao()" title="Fechar">
+                <button type="button" class="fin-btn-close-modal" onclick="fecharModalNovaTransacao()" title="Fechar">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
         </div>
 
         <!-- FORMULÁRIO -->
-        <form id="formNovaTransacao" class="fin-modal-form">
+        <form id="formNovaTransacao" 
+              class="fin-modal-form"
+              hx-post="{{ url_for('financas.insert_transacoes.salvar_nova_transacao') }}"
+              hx-target="#tabela-container" 
+              hx-swap="innerHTML"
+              hx-on::after-request="if(event.detail.successful) { fecharModalNovaTransacao(); this.reset(); }">
             
-            <!-- CORPO (USA O PARTIAL) -->
+            <!-- CORPO (COMPARTILHADO VIA PARTIAL) -->
             <div class="fin-modal-body">
-                {% set modo = 'insert' %}
-                {% set hoje = hoje or '' %}
-                {% set categorias = categorias or [] %}
-                {% set parcelas_filhas_json = '[]' %}
-                
+                {% set modo = 'new' %}
                 {% include 'pasta_financas/partials/form_transacao.html.jinja' %}
             </div>
 
-            <!-- FOOTER -->
-            <div class="footer-fixo-padrao" id="footerFixoModal">
+            <!-- FOOTER COM TOTALIZADOR E BOTÕES -->
+            <div class="footer-fixo-padrao" id="footerFixoNova">
                 <div class="botoes-footer-padrao">
                     <button type="submit" form="formNovaTransacao" class="btn-footer btn-footer-primary">
-                        <i class="bi bi-save"></i> SALVAR
+                        <i class="bi bi-check-lg"></i> SALVAR
                     </button>
                     <button type="button" class="btn-footer-cancelar" onclick="fecharModalNovaTransacao()">
                         <i class="bi bi-x-circle"></i> CANCELAR
                     </button>
                 </div>
-                <h2>NOVO - FINANÇAS</h2>
+                
+                <h2>NOVA - TRANSAÇÃO</h2>
+                
                 <div class="totalizador-footer-padrao">
                     <div class="total-item-footer valor-original">
                         <label>Valor Total:</label>

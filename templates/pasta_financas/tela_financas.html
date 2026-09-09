@@ -310,15 +310,15 @@
 
 <!-- MODAIS -->
 {% include 'pasta_financas/modais/modal_nova_transacao.html.jinja' %}
-{% include 'pasta_financas/modais/modal_editar_transacao.html.jinja' %}
 {% include 'pasta_financas/modais/excluir_financas.html' %}
 {% include 'pasta_financas/modais/detalhes_completo.html' %}
 {% include 'pasta_financas/modais/modal_menu_click.html' %}
 {% include 'pasta_financas/modais/modal_estornar_finan.html' %}
 {% include 'pasta_financas/modais/modal_reativar_inativo.html' %}
 
+<!-- Container dinâmico para carregar o Modal de Edição via HTMX -->
+<div id="modal-editar-container"></div>
 
-<!-- MODAIS (igual tarefas) -->
 {% block scripts %}
     <!-- JS MINIFICADO -->
     <script src="{{ static_v('js/modules/pasta_financas/financas.min.js') }}"></script>

@@ -1,5 +1,5 @@
 <!-- ========================================================== -->
-<!-- PARTIAL: CAMPOS DA TRANSAÇÃO (COMPARTILHADO)              -->
+<!-- PARTIAL: CAMPOS DA TRANSAÇÃO (NOVO / EDIT)                 -->
 <!-- ========================================================== -->
 
 <div class="form-body">
@@ -9,17 +9,17 @@
         <div class="form-group">
             <label>Tipo</label>
             <div class="tipo-container">
-                <button type="button" class="tipo-btn" data-tipo="vazio" disabled>
+                <button type="button" class="tipo-btn {% if not transacao %}active{% endif %}" data-tipo="vazio" disabled>
                     <i class="bi bi-question-circle"></i> Sel.
                 </button>
-                <button type="button" class="tipo-btn receita" data-tipo="receita">
+                <button type="button" class="tipo-btn receita {% if transacao and transacao.tipo == 'receita' %}active{% endif %}" data-tipo="receita">
                     <i class="bi bi-arrow-up-circle-fill"></i> Receita
                 </button>
-                <button type="button" class="tipo-btn despesa" data-tipo="despesa">
+                <button type="button" class="tipo-btn despesa {% if transacao and transacao.tipo == 'despesa' %}active{% endif %}" data-tipo="despesa">
                     <i class="bi bi-arrow-down-circle-fill"></i> Despesa
                 </button>
             </div>
-            <input type="hidden" name="tipo" id="tipoHidden" required>
+            <input type="hidden" name="tipo" id="tipoHidden" value="{{ transacao.tipo if transacao else '' }}" required>
         </div>
 
         <div class="form-group">
@@ -27,14 +27,22 @@
             <select name="categoria_id" class="form-select" id="categoriaSelect">
                 <option value="">Selecione...</option>
                 {% for cat in categorias %}
-                    <option value="{{ cat[0] }}">{{ cat[1] }}</option>
+                    <option value="{{ cat[0] }}" {% if transacao and transacao.categoria_id == cat[0] %}selected{% endif %}>
+                        {{ cat[1] }}
+                    </option>
                 {% endfor %}
             </select>
         </div>
 
         <div class="form-group descricao-full">
             <label>Descrição</label>
-            <input type="text" name="descricao" id="descricaoInput" class="form-input" placeholder="Ex: Salário, Compra..." required>
+            <input type="text" 
+                   name="descricao" 
+                   id="descricaoInput" 
+                   class="form-input" 
+                   placeholder="Ex: Salário, Supermercado..." 
+                   value="{{ transacao.descricao if transacao else '' }}" 
+                   required>
         </div>
     </div>
 
@@ -42,24 +50,44 @@
     <div class="form-grid-4">
         <div class="form-group">
             <label>Valor Total</label>
-            <input type="text" name="valor_total" id="valorTotal" class="form-input money-input" value="0,00" required>
+            <input type="text" 
+                   name="valor_total" 
+                   id="valorTotal" 
+                   class="form-input money-input" 
+                   value="{{ '%.2f'|format(transacao.valor_total)|replace('.', ',') if transacao and transacao.valor_total else '0,00' }}" 
+                   required>
         </div>
 
         <div class="form-group">
             <label>Nº Parcelas</label>
-            <input type="number" name="total_parcelas" id="totalParcelas" 
-                   class="form-input" value="1" min="1" max="100" 
-                   inputmode="numeric" style="text-align: center;">
+            <input type="number" 
+                   name="total_parcelas" 
+                   id="totalParcelas" 
+                   class="form-input" 
+                   value="{{ transacao.total_parcelas if transacao and transacao.total_parcelas else '1' }}" 
+                   min="1" 
+                   max="100" 
+                   inputmode="numeric" 
+                   style="text-align: center;">
         </div>
 
         <div class="form-group">
             <label>Data Emissão</label>
-            <input type="date" name="data_emissao" id="dataEmissao" class="form-input" value="{{ hoje }}" required>
+            <input type="date" 
+                   name="data_emissao" 
+                   id="dataEmissao" 
+                   class="form-input" 
+                   value="{{ transacao.data_emissao if transacao and transacao.data_emissao else hoje }}" 
+                   required>
         </div>
 
         <div class="form-group" id="dataVencimentoGroup">
             <label>Data Vencimento</label>
-            <input type="date" name="data_vencimento" id="dataVencimento" class="form-input" value="{{ hoje }}">
+            <input type="date" 
+                   name="data_vencimento" 
+                   id="dataVencimento" 
+                   class="form-input" 
+                   value="{{ transacao.data_vencimento if transacao and transacao.data_vencimento else hoje }}">
         </div>
     </div>
 
@@ -75,8 +103,8 @@
                     </div>
                 </div>
                 <div class="parcelas-config-item">
-                    <label>1ª Vencimento</label>
-                    <input type="date" id="primeiroVencimento" class="form-input" value="{{ hoje }}">
+                    <label>1º Vencimento</label>
+                    <input type="date" id="primeiroVencimento" class="form-input" value="{{ transacao.data_vencimento if transacao and transacao.data_vencimento else hoje }}">
                 </div>
                 <div class="parcelas-config-item">
                     <label>&nbsp;</label>
@@ -106,7 +134,7 @@
         </div>
     </div>
 
-    <!-- DADOS OCULTOS (EDIT) -->
-    <input type="hidden" id="parcelasFilhasData" value='{{ parcelas_filhas_json or '[]' }}'>
+    <!-- DADOS OCULTOS (ÚTIL PARA O MODO EDIT OU CASO PRECISE DE JSON DE PARCELAS) -->
+    <input type="hidden" id="parcelasFilhasData" value='{{ parcelas_filhas_json or "[]" }}'>
 
 </div>

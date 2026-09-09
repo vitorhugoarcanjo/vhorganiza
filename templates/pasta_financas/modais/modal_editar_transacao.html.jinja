@@ -1,28 +1,34 @@
 <!-- ========================================================== -->
 <!-- MODAL: EDITAR TRANSAÇÃO                                    -->
 <!-- ========================================================== -->
-<div class="fin-modal-overlay" id="modalEditarTransacao">
+<div class="fin-modal-overlay active" id="modalEditarTransacao" style="display: flex;">
     <div class="fin-modal-box">
 
-        <!-- CABEÇALHO -->
+        <!-- CABEÇALHO LIMPO (SEM BADGE REDUNDANTE) -->
         <div class="fin-modal-header">
             <div class="fin-modal-header-left">
-                <h3><i class="bi bi-pencil-square"></i> Editar Transação <span id="finEditarSequencia">#0</span></h3>
-                <span class="fin-tipo-badge" id="finEditarTipoBadge">📊 Selecionar</span>
+                <h3>
+                    <i class="bi bi-pencil-square"></i> Editar Transação 
+                    <span id="finEditarSequencia">#{{ transacao[0] if transacao else '0' }}</span>
+                </h3>
             </div>
             <div class="fin-modal-header-right">
-                <button class="fin-btn-close-modal" onclick="fecharModalEditarTransacao()" title="Fechar">
+                <button type="button" class="fin-btn-close-modal" onclick="fecharModalEditarTransacao()" title="Fechar">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
         </div>
 
-        <!-- FORMULÁRIO -->
-        <form id="formEditarTransacao" class="fin-modal-form">
+        <!-- FORMULÁRIO COM HTMX -->
+        <form id="formEditarTransacao" 
+              class="fin-modal-form"
+              hx-post="{{ url_for('financas.atualizar_transacao', transacao_id=transacao[0]) if transacao else '#' }}" 
+              hx-target="#tabela-container" 
+              hx-swap="innerHTML"
+              hx-on::after-request="if(event.detail.successful) fecharModalEditarTransacao()">
             
-            <!-- CORPO (USA O PARTIAL) -->
+            <!-- CORPO (USA O PARTIAL QUE JÁ CONTÉM TIPO, CATEGORIA, VALORES, ETC.) -->
             <div class="fin-modal-body">
-                {# 🔥 O PARTIAL USA DIRETO AS VARIÁVEIS DO BACKEND #}
                 {% set modo = 'edit' %}
                 {% set hoje = hoje or '' %}
                 {% set categorias = categorias or [] %}
@@ -32,7 +38,7 @@
                 {% include 'pasta_financas/partials/form_transacao.html.jinja' %}
             </div>
 
-            <!-- FOOTER -->
+            <!-- FOOTER COM TOTALIZADOR E BOTÕES -->
             <div class="footer-fixo-padrao" id="footerFixoEditar">
                 <div class="botoes-footer-padrao">
                     <button type="submit" form="formEditarTransacao" class="btn-footer btn-footer-primary">
@@ -42,7 +48,9 @@
                         <i class="bi bi-x-circle"></i> CANCELAR
                     </button>
                 </div>
+                
                 <h2>EDITAR - TRANSAÇÃO</h2>
+                
                 <div class="totalizador-footer-padrao">
                     <div class="total-item-footer valor-original">
                         <label>Valor Total:</label>
@@ -63,3 +71,16 @@
 
     </div>
 </div>
+
+<script>
+    function fecharModalEditarTransacao() {
+        const container = document.getElementById('modal-editar-container');
+        if (container) {
+            container.innerHTML = '';
+        } else {
+            const modal = document.getElementById('modalEditarTransacao');
+            if (modal) modal.style.display = 'none';
+        }
+        document.body.style.overflow = '';
+    }
+</script>

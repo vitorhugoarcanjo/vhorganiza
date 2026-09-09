@@ -92,10 +92,11 @@
                                 <!-- ========================================== -->
                                 {% if transacao[8] not in ['quitado', 'recebido'] and transacao[10] == 1 %}
                                     <!-- EDITAR -->
-                                    <button type="button"
-                                            class="btn-acao edit"
-                                            onclick="abrirModalEditarTransacao({{ transacao[0] }})"
-                                            title="Editar">
+                                    <button type="button" 
+                                            class="btn-icon"
+                                            hx-get="{{ url_for('financas.carregar_modal_edicao', transacao_id=item[0]) }}"
+                                            hx-target="#modal-editar-container"
+                                            hx-swap="innerHTML">
                                         <i class="bi bi-pencil"></i>
                                     </button>
 
