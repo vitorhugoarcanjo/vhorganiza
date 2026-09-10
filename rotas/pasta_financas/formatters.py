@@ -9,19 +9,25 @@ class FinancasFormatters:
         transacoes = []
 
         for t in transacoes_raw:
-            # Pega as parcelas se existirem na tupla
+            # Pega as parcelas e IDs auxiliares de forma segura
             numero_parcela = t[11] if len(t) > 11 else None
             total_parcelas = t[12] if len(t) > 12 else None
+            transacao_pai_id = t[13] if len(t) > 13 else None
+            
+            # Se a query traz o valor_parcela na última coluna (índice 14), capturamos ele.
+            # Caso contrário, assumimos o valor_total como fallback.
+            valor_total_bruto = float(t[3]) if t[3] is not None else 0.0
+            valor_parcela_bruto = float(t[14]) if len(t) > 14 and t[14] is not None else valor_total_bruto
 
-            # Preserva o valor numérico (float) para cálculos de soma/totais no backend
-            valor_bruto = float(t[3]) if t[3] is not None else 0.0
+            # 💡 Regra limpa no Python: se for parcela filha, o valor da linha é o da parcela!
+            valor_efetivo = valor_parcela_bruto if transacao_pai_id is not None else valor_total_bruto
 
             transacao_dict = {
                 "sequencia_transacoes": t[0],
                 "id": t[1],
                 "tipo": t[2],
-                "valor_raw": valor_bruto,                            # Para somas no Python
-                "valor": formatar_moeda_br(t[3]),                    # Ex: "R$ 150,00" para exibição
+                "valor_raw": valor_efetivo,                            # Para somas corretas no backend (ex: R$ 5,00)
+                "valor": formatar_moeda_br(valor_efetivo),             # Ex: "R$ 5,00" formatado para exibição na tabela
                 "descricao": t[4] or 'Sem descrição',
                 "data_emissao": formatar_data_br(t[5]),
                 "categoria_nome": t[6],
@@ -31,7 +37,7 @@ class FinancasFormatters:
                 "ativo": t[10],
                 "numero_parcela": numero_parcela,
                 "total_parcelas": total_parcelas,
-                "transacao_pai_id": t[13] if len(t) > 13 else None,
+                "transacao_pai_id": transacao_pai_id,
                 
                 # Rótulo amigável para parcelas
                 "parcela_label": f"{numero_parcela}/{total_parcelas}" if numero_parcela and total_parcelas and total_parcelas > 1 else 'À vista'

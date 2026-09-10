@@ -97,7 +97,7 @@ class InserirTransacaoService:
     @staticmethod
     def criar_transacao_parcelada(cursor, user_id, dados):
         """
-        Cria uma transação PAI (registro agrupador) e N transações FILHAS.
+        Cria uma transação PAI (registro agrupador sem sequência numérica visual) e N transações FILHAS.
         """
         try:
             total_parcelas = int(dados['total_parcelas'])
@@ -121,9 +121,7 @@ class InserirTransacaoService:
                 if diferenca != 0:
                     valores_parcelas[-1] = round(valores_parcelas[-1] + diferenca, 2)
 
-            # 2. Cria a Transação PAI
-            sequencia_pai = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
-
+            # 💡 2. Cria a Transação PAI COM 'sequencia_transacoes' COMO NULL (Não consome número da sequência visual!)
             cursor.execute("""
                 INSERT INTO transacoes (
                     user_id, sequencia_transacoes, tipo,
@@ -131,11 +129,10 @@ class InserirTransacaoService:
                     data_emissao, data_vencimento,
                     total_parcelas, intervalo_dias, transacao_pai_id, status, ativo
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NULL, 'aberto', 1)
+                VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, NULL, 'aberto', 1)
                 RETURNING id
             """, (
                 user_id, 
-                sequencia_pai, 
                 dados['tipo'],
                 valor_total, 
                 dados['descricao'], 
@@ -148,7 +145,7 @@ class InserirTransacaoService:
 
             pai_id = cursor.fetchone()[0]
 
-            # 3. Cria as Transações FILHAS
+            # 3. Cria as Transações FILHAS (Elas sim ganham a sequência numérica contínua oficial)
             data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
 
             for i in range(1, total_parcelas + 1):
@@ -187,19 +184,10 @@ class InserirTransacaoService:
 
             return True, {
                 "pai_id": pai_id,
-                "sequencia_pai": sequencia_pai,
                 "total_parcelas": total_parcelas,
                 "mensagem": f"Transação parcelada em {total_parcelas}x registrada com sucesso!"
             }
 
-        except KeyError as e:
-            msg = f"Campo obrigatório ausente nas parcelas: {str(e)}"
-            logger.error(msg)
-            return False, msg
-        except ValueError as e:
-            msg = f"Erro de conversão de dados (valor/data inválidos): {str(e)}"
-            logger.error(msg)
-            return False, msg
         except Exception as e:
             msg = f"Erro inesperado ao criar parcelas: {str(e)}"
             logger.error(msg)
