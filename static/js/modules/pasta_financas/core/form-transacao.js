@@ -1,302 +1,229 @@
 // ==========================================================
-// TRANSAÇÃO - FORM COMPARTILHADO (NOVA + EDITAR)
+// FORMULÁRIO DE TRANSAÇÃO (LÓGICA E SUBMISSÃO)
 // ==========================================================
 
 (function() {
     'use strict';
 
-    // ==========================================================
-    // SELECIONAR TIPO
-    // ==========================================================
-    function selecionarTipo(btn) {
-        var container = btn.closest('.tipo-container');
-        container.querySelectorAll('.tipo-btn:not([disabled])').forEach(function(b) {
-            b.classList.remove('active');
-        });
-        btn.classList.add('active');
-        
-        var hidden = document.getElementById('tipoHidden');
-        if (hidden) hidden.value = btn.dataset.tipo;
-        
-        var badge = document.getElementById('finTipoBadge') || document.getElementById('finEditarTipoBadge');
-        if (badge) {
-            var tipo = btn.dataset.tipo;
-            if (tipo === 'receita') {
-                badge.textContent = '📈 Receita';
-                badge.className = 'fin-tipo-badge receita';
-            } else if (tipo === 'despesa') {
-                badge.textContent = '📉 Despesa';
-                badge.className = 'fin-tipo-badge despesa';
-            } else {
-                badge.textContent = '📊 Selecionar';
-                badge.className = 'fin-tipo-badge';
-            }
-        }
-    }
+    function initFormTransacao() {
+        var form = document.getElementById('formNovaTransacao') || document.getElementById('form-transacao');
+        if (!form) return;
 
-    // ==========================================================
-    // FORMATAR VALOR
-    // ==========================================================
-    function formatarValor(input) {
-        var valor = input.value.replace(/\D/g, '');
-        if (valor === '') {
-            input.value = '0,00';
-            return;
-        }
-        var numero = parseInt(valor) / 100;
-        var formatado = numero.toLocaleString('pt-BR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-        input.value = formatado;
-        atualizarTotais();
-    }
+        if (form.dataset.initialized === 'true') return;
+        form.dataset.initialized = 'true';
 
-    // ==========================================================
-    // ATUALIZAR TOTAIS
-    // ==========================================================
-    function atualizarTotais() {
-        var valorTotal = document.getElementById('valorTotal')?.value || '0,00';
-        
-        var totalOriginal = document.getElementById('totalOriginal');
-        if (totalOriginal) totalOriginal.textContent = 'R$ ' + valorTotal;
-        
-        var soma = 0;
-        document.querySelectorAll('#parcelasBody .valor-parcela-input').forEach(function(input) {
-            var val = input.value.replace('.', '').replace(',', '.');
-            if (!isNaN(parseFloat(val))) {
-                soma += parseFloat(val);
-            }
-        });
-        
-        var somaFormatada = soma.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        var somaParcelas = document.getElementById('somaParcelas');
-        if (somaParcelas) somaParcelas.textContent = 'R$ ' + somaFormatada;
-        
-        var totalNum = parseFloat(valorTotal.replace('.', '').replace(',', '.'));
-        var diferenca = totalNum - soma;
-        var difFormatada = diferenca.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        var difValor = document.getElementById('diferencaValor');
-        if (difValor) difValor.textContent = 'R$ ' + difFormatada;
-        
-        var difItem = document.getElementById('diferencaItem');
-        if (difItem) {
-            difItem.style.display = Math.abs(diferenca) < 0.01 ? 'none' : 'block';
-        }
-    }
+        var valorTotalInput = document.getElementById('valorTotal');
+        var totalParcelasInput = document.getElementById('totalParcelas');
+        var tipoHidden = document.getElementById('tipoHidden');
+        var finTipoBadge = document.getElementById('finTipoBadge');
+        var parcelasConfigArea = document.getElementById('parcelasConfigArea');
+        var parcelasWrapper = document.getElementById('parcelasWrapper');
+        var parcelasBody = document.getElementById('parcelasBody');
 
-    // ==========================================================
-    // GERAR PARCELAS
-    // ==========================================================
-    function gerarParcelas() {
-        var numParcelas = parseInt(document.getElementById('totalParcelas').value) || 1;
-        var configArea = document.getElementById('parcelasConfigArea');
-        var wrapper = document.getElementById('parcelasWrapper');
-        var tbody = document.getElementById('parcelasBody');
-        
-        if (numParcelas <= 1) {
-            if (configArea) configArea.style.display = 'none';
-            if (wrapper) wrapper.style.display = 'none';
-            if (tbody) tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--texto-mutado);">Selecione mais de 1 parcela</td></tr>';
-            return;
+        // Inicializa o módulo de parcelas externo de forma segura
+        if (window.GeradorParcelasFinancas) {
+            window.GeradorParcelasFinancas.init({ form: form });
         }
-        
-        if (configArea) configArea.style.display = 'block';
-        if (wrapper) wrapper.style.display = 'block';
-        
-        var valorTotal = document.getElementById('valorTotal').value || '0,00';
-        var valorNumerico = parseFloat(valorTotal.replace('.', '').replace(',', '.'));
-        var valorParcela = valorNumerico / numParcelas;
-        
-        if (!tbody) return;
-        
-        var html = '';
-        var primeiroVencimento = document.getElementById('primeiroVencimento').value;
-        var intervalo = parseInt(document.getElementById('intervaloDias').value) || 30;
-        var dataAtual = new Date(primeiroVencimento);
-        
-        for (var i = 1; i <= numParcelas; i++) {
-            var valorFormatado = valorParcela.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            var dataFormatada = dataAtual.toISOString().split('T')[0];
-            
-            html += '<tr>';
-            html += '<td><strong>' + i + '/' + numParcelas + '</strong></td>';
-            html += '<td><input type="date" class="form-input data-parcela" value="' + dataFormatada + '" style="max-width: 140px;"></td>';
-            html += '<td><input type="text" class="form-input valor-parcela-input" value="' + valorFormatado + '" style="max-width: 120px; text-align: right;"></td>';
-            html += '</tr>';
-            
-            dataAtual.setDate(dataAtual.getDate() + intervalo);
-        }
-        
-        tbody.innerHTML = html;
-        
-        tbody.querySelectorAll('.valor-parcela-input').forEach(function(input) {
-            input.addEventListener('input', function() { formatarValor(this); atualizarTotais(); });
-        });
-        tbody.querySelectorAll('.data-parcela').forEach(function(input) {
-            input.addEventListener('change', atualizarTotais);
-        });
-        
-        atualizarTotais();
-    }
 
-    // ==========================================================
-    // CARREGAR PARCELAS EXISTENTES (EDITAR)
-    // ==========================================================
-    function carregarParcelasExistentes() {
-        var dataInput = document.getElementById('parcelasFilhasData');
-        if (!dataInput || !dataInput.value) return;
-        
-        try {
-            var parcelas = JSON.parse(dataInput.value);
-            if (!parcelas || parcelas.length === 0) return;
-            
-            var numParcelas = parcelas.length;
-            document.getElementById('totalParcelas').value = numParcelas;
-            document.getElementById('primeiroVencimento').value = parcelas[0].data_vencimento || '';
-            
-            var tbody = document.getElementById('parcelasBody');
-            if (!tbody) return;
-            
-            var html = '';
-            parcelas.forEach(function(p, i) {
-                var num = i + 1;
-                html += '<tr>';
-                html += '<td><strong>' + num + '/' + numParcelas + '</strong></td>';
-                html += '<td><input type="date" class="form-input data-parcela" value="' + p.data_vencimento + '" style="max-width: 140px;"></td>';
-                html += '<td><input type="text" class="form-input valor-parcela-input" value="' + p.valor + '" style="max-width: 120px; text-align: right;"></td>';
-                html += '</tr>';
+        function resetarFormulario() {
+            form.reset();
+
+            if (tipoHidden) tipoHidden.value = '';
+
+            document.querySelectorAll('.tipo-btn').forEach(function(b) {
+                b.classList.remove('active');
             });
-            
-            tbody.innerHTML = html;
-            
-            document.getElementById('parcelasConfigArea').style.display = 'block';
-            document.getElementById('parcelasWrapper').style.display = 'block';
-            
-            tbody.querySelectorAll('.valor-parcela-input').forEach(function(input) {
-                input.addEventListener('input', function() { formatarValor(this); atualizarTotais(); });
-            });
-            tbody.querySelectorAll('.data-parcela').forEach(function(input) {
-                input.addEventListener('change', atualizarTotais);
-            });
-            
-            atualizarTotais();
-            
-        } catch (e) {
-            console.warn('Erro ao carregar parcelas:', e);
+
+            if (finTipoBadge) {
+                finTipoBadge.textContent = '📊 Selecionar';
+                finTipoBadge.className = 'fin-tipo-badge';
+            }
+
+            if (parcelasConfigArea) parcelasConfigArea.style.display = 'none';
+            if (parcelasWrapper) parcelasWrapper.style.display = 'none';
+            if (parcelasBody) parcelasBody.innerHTML = '';
+
+            if (valorTotalInput) valorTotalInput.value = '0,00';
         }
-    }
 
-    // ==========================================================
-    // 🔥 SUBMIT DO FORM (NOVO)
-    // ==========================================================
-    function submitForm(form) {
-        var btn = document.getElementById('btn-submit');
-        if (!btn) return;
+        window.resetarFormularioTransacao = resetarFormulario;
 
-        var textoOriginal = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="bi bi-spinner bi-spin"></i> Salvando...';
-
-        var formData = new FormData(form);
-        var data = Object.fromEntries(formData.entries());
-
-        // Coleta parcelas
-        var parcelas = [];
-        document.querySelectorAll('#parcelasBody tr').forEach(function(row) {
-            var inputs = row.querySelectorAll('input');
-            if (inputs.length === 2) {
-                parcelas.push({
-                    vencimento: inputs[0].value,
-                    valor: inputs[1].value
-                });
-            }
-        });
-        data.parcelas = parcelas;
-
-        // 🔥 USA A ROTA CORRETA
-        fetch('/financas/nova_transacao/salvar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(function(response) { return response.json(); })
-        .then(function(result) {
-            if (result.success) {
-                if (window.Notificacao) window.Notificacao.sucesso(result.message);
-                if (window.fecharModalNovaTransacao) window.fecharModalNovaTransacao();
-                setTimeout(function() { window.location.reload(); }, 500);
-            } else {
-                if (window.Notificacao) window.Notificacao.erro(result.message || result.error || 'Erro ao salvar');
-                btn.disabled = false;
-                btn.innerHTML = textoOriginal;
-            }
-        })
-        .catch(function(error) {
-            console.error('❌ Erro:', error);
-            if (window.Notificacao) window.Notificacao.erro('Erro ao salvar transação');
-            btn.disabled = false;
-            btn.innerHTML = textoOriginal;
-        });
-    }
-
-    // ==========================================================
-    // EXPORTA
-    // ==========================================================
-    window.selecionarTipo = selecionarTipo;
-    window.formatarValor = formatarValor;
-    window.atualizarTotais = atualizarTotais;
-    window.gerarParcelas = gerarParcelas;
-    window.carregarParcelasExistentes = carregarParcelasExistentes;
-
-    // ==========================================================
-    // INICIALIZAR
-    // ==========================================================
-    document.addEventListener('DOMContentLoaded', function() {
-        // Tipo
-        document.querySelectorAll('.tipo-btn:not([disabled])').forEach(function(btn) {
+        // 1. Alternar Tipo de Transação (Receita / Despesa)
+        document.querySelectorAll('.tipo-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                selecionarTipo(this);
+                document.querySelectorAll('.tipo-btn').forEach(function(b) {
+                    b.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                var tipo = this.getAttribute('data-tipo');
+                if (tipoHidden) tipoHidden.value = (tipo === 'vazio') ? '' : tipo;
+
+                if (finTipoBadge) {
+                    if (tipo === 'receita') {
+                        finTipoBadge.textContent = '📈 Receita';
+                        finTipoBadge.className = 'fin-tipo-badge receita';
+                    } else if (tipo === 'despesa') {
+                        finTipoBadge.textContent = '📉 Despesa';
+                        finTipoBadge.className = 'fin-tipo-badge despesa';
+                    } else {
+                        finTipoBadge.textContent = '📊 Selecionar';
+                        finTipoBadge.className = 'fin-tipo-badge';
+                    }
+                }
             });
         });
-        
-        // Valor
-        var valorInput = document.getElementById('valorTotal');
-        if (valorInput) {
-            valorInput.addEventListener('input', function() {
-                formatarValor(this);
-                if (document.getElementById('totalParcelas').value > 1) {
-                    gerarParcelas();
+
+        // 2. Formatação Monetária e sincronização com as parcelas
+        if (valorTotalInput) {
+            valorTotalInput.addEventListener('input', function(e) {
+                var value = e.target.value.replace(/\D/g, '');
+                if (!value) {
+                    e.target.value = '0,00';
+                    if (typeof form._gerarParcelasFinancas === 'function') form._gerarParcelasFinancas();
+                    return;
+                }
+                var floatVal = (parseFloat(value) / 100).toFixed(2);
+                var parts = floatVal.split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                e.target.value = parts.join(',');
+
+                if (typeof form._gerarParcelasFinancas === 'function') {
+                    form._gerarParcelasFinancas();
                 }
             });
         }
-        
-        // Parcelas
-        document.getElementById('totalParcelas')?.addEventListener('change', gerarParcelas);
-        document.getElementById('btnDistribuir')?.addEventListener('click', gerarParcelas);
-        document.getElementById('primeiroVencimento')?.addEventListener('change', gerarParcelas);
-        document.getElementById('intervaloDias')?.addEventListener('change', gerarParcelas);
-        
-        // Carregar parcelas existentes (EDITAR)
-        carregarParcelasExistentes();
 
-        // 🔥 SUBMIT DO FORM (NOVO)
-        var form = document.getElementById('form-transacao');
-        if (form) {
-            // Remove listener antigo
-            var novoForm = form.cloneNode(true);
-            form.parentNode.replaceChild(novoForm, form);
+        // 3. Envio do Formulário via AJAX
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-            novoForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                submitForm(this);
+            if (!tipoHidden || !tipoHidden.value) {
+                if (window.Notificacao) {
+                    window.Notificacao.aviso('Selecione o tipo de transação (Receita ou Despesa).');
+                } else {
+                    alert('Selecione o tipo de transação!');
+                }
+                return;
+            }
+
+            var strValor = (valorTotalInput ? valorTotalInput.value : '0,00').replace(/\./g, '').replace(',', '.');
+            if (parseFloat(strValor) <= 0) {
+                if (window.Notificacao) {
+                    window.Notificacao.aviso('Informe um valor válido maior que zero.');
+                } else {
+                    alert('Informe um valor válido!');
+                }
+                return;
+            }
+
+            var formData = new FormData(form);
+            var numParcelas = parseInt(totalParcelasInput ? totalParcelasInput.value : 1) || 1;
+
+            if (numParcelas > 1 && parcelasBody) {
+                var parcelasData = [];
+                var rows = parcelasBody.querySelectorAll('tr');
+
+                rows.forEach(function(row, idx) {
+                    var inputVal = row.querySelector('.parcela-valor');
+                    var inputData = row.querySelector('.parcela-data');
+
+                    if (inputVal && inputData) {
+                        var v = parseFloat(inputVal.value.replace(/\./g, '').replace(',', '.')) || 0;
+                        parcelasData.push({
+                            numero: idx + 1,
+                            valor: v,
+                            data_vencimento: inputData.value
+                        });
+                    }
+                });
+
+                formData.append('parcelas_detalhes', JSON.stringify(parcelasData));
+            }
+
+            var submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
+            fetch(form.action || window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(function(res) {
+                return res.json().then(function(data) {
+                    return { ok: res.ok, data: data };
+                });
+            })
+            .then(function(result) {
+                var data = result.data;
+
+                if (!result.ok || data.success === false || data.sucesso === false) {
+                    var msg = data.mensagem || data.erro || 'Ocorreu um erro ao salvar a transação.';
+                    if (window.Notificacao) {
+                        window.Notificacao.erro(msg);
+                    } else {
+                        alert(msg);
+                    }
+                    return;
+                }
+
+                if (window.Notificacao) {
+                    window.Notificacao.sucesso(data.mensagem || 'Transação salva com sucesso!');
+                }
+
+                resetarFormulario();
+
+                if (typeof window.fecharModalNovaTransacao === 'function') {
+                    window.fecharModalNovaTransacao();
+                }
+
+                if (typeof window.carregarTransacoes === 'function') {
+                    window.carregarTransacoes();
+                } else if (window.htmx) {
+                    htmx.ajax('GET', '/financas', '#tabela-container');
+                } else {
+                    setTimeout(function() { window.location.reload(); }, 1000);
+                }
+            })
+            .catch(function(err) {
+                console.error('❌ Erro no cadastro:', err);
+                if (window.Notificacao) {
+                    window.Notificacao.erro('Falha na comunicação com o servidor.');
+                } else {
+                    alert('Falha na comunicação com o servidor.');
+                }
+            })
+            .finally(function() {
+                if (submitBtn) submitBtn.disabled = false;
+            });
+        });
+
+        // 4. Fechamento de Modal e Limpeza
+        document.querySelectorAll('[data-dismiss="modal"], .btn-cancelar, [data-bs-dismiss="modal"]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                resetarFormulario();
+            });
+        });
+
+        var modalElement = document.getElementById('modalNovaTransacao') || form.closest('.modal');
+        if (modalElement && window.jQuery) {
+            $(modalElement).on('hidden.bs.modal', function() {
+                resetarFormulario();
+            });
+        } else if (modalElement) {
+            modalElement.addEventListener('hidden.bs.modal', function() {
+                resetarFormulario();
             });
         }
-    });
 
-    console.log('✅ TRANSACAO-FORM carregado!');
+        console.log('✅ FORM TRANSAÇÃO inicializado!');
+    }
 
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFormTransacao);
+    } else {
+        initFormTransacao();
+    }
 })();

@@ -9,7 +9,7 @@
             <div class="fin-modal-header-left">
                 <h3>
                     <i class="bi bi-pencil-square"></i> Editar Transação 
-                    <span id="finEditarSequencia">#{{ transacao[0] if transacao else '0' }}</span>
+                    <span id="finEditarSequencia">#{{ transacao['sequencia_transacoes'] if transacao else '0' }}</span>
                 </h3>
             </div>
             <div class="fin-modal-header-right">
@@ -19,13 +19,10 @@
             </div>
         </div>
 
-        <!-- FORMULÁRIO COM HTMX -->
+        <!-- FORMULÁRIO CONTROLADO VIA JS PURO -->
         <form id="formEditarTransacao" 
-              class="fin-modal-form"
-              hx-post="{{ url_for('financas.atualizar_transacao', transacao_id=transacao[0]) if transacao else '#' }}" 
-              hx-target="#tabela-container" 
-              hx-swap="innerHTML"
-              hx-on::after-request="if(event.detail.successful) fecharModalEditarTransacao()">
+            class="fin-modal-form"
+            onsubmit="event.preventDefault(); salvarEditarTransacao();">
             
             <!-- CORPO (USA O PARTIAL QUE JÁ CONTÉM TIPO, CATEGORIA, VALORES, ETC.) -->
             <div class="fin-modal-body">
@@ -41,7 +38,7 @@
             <!-- FOOTER COM TOTALIZADOR E BOTÕES -->
             <div class="footer-fixo-padrao" id="footerFixoEditar">
                 <div class="botoes-footer-padrao">
-                    <button type="submit" form="formEditarTransacao" class="btn-footer btn-footer-primary">
+                    <button type="submit" class="btn-footer btn-footer-primary">
                         <i class="bi bi-save"></i> ATUALIZAR
                     </button>
                     <button type="button" class="btn-footer-cancelar" onclick="fecharModalEditarTransacao()">

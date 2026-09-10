@@ -2,6 +2,7 @@ from flask import render_template, session, request, redirect, url_for
 from datetime import date
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
+from utils.fomatacoes.data_reutilizavel import formatar_moeda_br
 
 from .filters import FinancasFilters
 from .services.services_financas import FinancasServices
@@ -27,7 +28,7 @@ def ini_financas():
         'tipo_data': tipo_data
     })            
     
-    # 2. Busca dados
+    # 2. BUSCA DADOS NO BANCO DE DADOS
     conexao, cursor = ini_conexao()
     service = FinancasServices(conexao, cursor)
 
@@ -37,43 +38,60 @@ def ini_financas():
         categorias_usuario = service.buscar_categorias(user_id)
 
     categorias_modal = [(cat[0], cat[1]) for cat in categorias_usuario]
-
-    # 🔥 DATA DE HOJE
     hoje = date.today().isoformat()
 
-    # BUSCA TRANSACOES
+    # BUSCA E FORMATAR TRANSAÇÕES (retorna lista de Dicionários)
     transacoes_raw = service.buscar_transacoes(user_id, filtros)
     transacoes = FinancasFormatters.formatar_transacoes(transacoes_raw)
 
-    # 3. Renderiza para o HTMX
+    # 🔥 CALCULA TOTAIS USANDO O 'valor_raw' (FLOAT BRUTO) E FORMATA
+    receitas_raw = sum(t['valor_raw'] for t in transacoes if t.get('tipo') == 'receita')
+    despesas_raw = sum(t['valor_raw'] for t in transacoes if t.get('tipo') == 'despesa')
+
+    totais = {
+        'receitas': formatar_moeda_br(receitas_raw),
+        'despesas': formatar_moeda_br(despesas_raw)
+    }
+
+    # 3. RENDERIZAÇÃO PARA HTMX
     if is_htmx:
-        return _renderizar_htmx(transacoes, data_inicio, data_fim, filtros)
+        return _renderizar_htmx(transacoes, data_inicio, data_fim, filtros, totais)
 
-    return render_template('pasta_financas/tela_financas.html',
-                          data_inicio=data_inicio,
-                          data_fim=data_fim,
-                          tipo_data=tipo_data,
-                          descricao=filtros['descricao'],
-                          tipo=filtros['tipo'],
-                          status=filtros['status'],
-                          transacoes=transacoes,
-                          categorias_usuario=categorias_usuario,
-                          categorias_filtro=filtros['categorias'],
-                          mostrar_inativas=filtros['mostrar_inativas'],
-                          user_nome=session.get('user_nome'),
-                          categorias=categorias_modal,  # 🔥 ADICIONA AQUI!
-                          hoje=hoje)  # 🔥 ADICIONA AQUI!
-                          
+    # 4. RENDERIZAÇÃO COMPLETA DA PÁGINA (Padrão/F5)
+    return render_template(
+        'pasta_financas/tela_financas.html',
+        data_inicio=data_inicio,
+        data_fim=data_fim,
+        tipo_data=tipo_data,
+        descricao=filtros['descricao'],
+        tipo=filtros['tipo'],
+        status=filtros['status'],
+        transacoes=transacoes,
+        totais=totais, # ENVIADO PARA O FOOTER DA PÁGINA ("R$ X.XXX,XX")
+        categorias_usuario=categorias_usuario,
+        categorias_filtro=filtros['categorias'],
+        mostrar_inativas=filtros['mostrar_inativas'],
+        user_nome=session.get('user_nome'),
+        categorias=categorias_modal,
+        hoje=hoje
+    )
 
 
-def _renderizar_htmx(transacoes, data_inicio, data_fim, filtros):
-    """ RENDERIZA APENAS A TABELA PARA HTMX """
-    tabela_html = render_template('pasta_financas/_tabela_financas.html',
-                                  transacoes=transacoes,
-                                  data_inicio=data_inicio,
-                                  data_fim=data_fim)
+def _renderizar_htmx(transacoes, data_inicio, data_fim, filtros, totais):
+    """ RENDERIZA APENAS A TABELA E ATUALIZA INPUTS/RODAPÉ VIA HTMX (OOB) """
     
-    inputs_html = f"""
+    # 1. Renderiza o trecho da tabela
+    tabela_html = render_template(
+        'pasta_financas/_tabela_financas.html',
+        transacoes=transacoes,
+        data_inicio=data_inicio,
+        data_fim=data_fim,
+        tipo_data=filtros.get('tipo_data'),
+        mostrar_inativas=filtros.get('mostrar_inativas')
+    )
+    
+    # 2. Fragmentos Out-Of-Band (OOB) para atualizar os filtros de data e os valores do rodapé
+    inputs_e_totais_oob_html = f"""
         <input type="date" name="data_inicio" id="data_inicio_input" 
                class="form-control" value="{data_inicio or ''}" 
                hx-swap-oob="outerHTML:#data_inicio_input">
@@ -84,9 +102,13 @@ def _renderizar_htmx(transacoes, data_inicio, data_fim, filtros):
                value="{filtros['mostrar_inativas']}" 
                id="mostrar_inativas_input" 
                hx-swap-oob="outerHTML:#mostrar_inativas_input">
-"""
+        
+        <!-- 🔥 ATUALIZA OS TOTAIS DO RODAPÉ AUTOMATICAMENTE VIA HTMX (JÁ FORMATADOS EM R$) -->
+        <span id="totalReceitas" hx-swap-oob="innerHTML">{totais['receitas']}</span>
+        <span id="totalDespesas" hx-swap-oob="innerHTML">{totais['despesas']}</span>
+    """
     
-    return tabela_html + inputs_html
+    return tabela_html + inputs_e_totais_oob_html
 
 
 # DETALHES DA TRANSAÇÃO

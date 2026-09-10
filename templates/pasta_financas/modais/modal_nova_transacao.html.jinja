@@ -19,10 +19,8 @@
         <!-- FORMULÁRIO -->
         <form id="formNovaTransacao" 
               class="fin-modal-form"
-              hx-post="{{ url_for('financas.insert_transacoes.salvar_nova_transacao') }}"
-              hx-target="#tabela-container" 
-              hx-swap="innerHTML"
-              hx-on::after-request="if(event.detail.successful) { fecharModalNovaTransacao(); this.reset(); }">
+              action="{{ url_for('financas.insert_transacoes.salvar_nova_transacao') }}"
+              method="POST">
             
             <!-- CORPO (COMPARTILHADO VIA PARTIAL) -->
             <div class="fin-modal-body">
@@ -33,7 +31,7 @@
             <!-- FOOTER COM TOTALIZADOR E BOTÕES -->
             <div class="footer-fixo-padrao" id="footerFixoNova">
                 <div class="botoes-footer-padrao">
-                    <button type="submit" form="formNovaTransacao" class="btn-footer btn-footer-primary">
+                    <button type="submit" class="btn-footer btn-footer-primary">
                         <i class="bi bi-check-lg"></i> SALVAR
                     </button>
                     <button type="button" class="btn-footer-cancelar" onclick="fecharModalNovaTransacao()">

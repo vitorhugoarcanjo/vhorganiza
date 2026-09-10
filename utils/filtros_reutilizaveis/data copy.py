@@ -75,7 +75,7 @@ def filtro_datas(data_hoje, prefixo='tarefas'):
             session[s('data_inicio_intervalo')] = None
             session[s('data_fim_intervalo')] = None
         
-        # ===== NAVEGAÇÃO DE DIAS =====
+        # ===== NAVEGAÇÃO DE DIAS (CORRIGIDO) =====
         elif tipo_filtro == 'ontem':
             if session[s('modo')] == 'intervalo':
                 inicio = datetime.strptime(session[s('data_inicio_intervalo')], '%Y-%m-%d').date()
@@ -86,17 +86,28 @@ def filtro_datas(data_hoje, prefixo='tarefas'):
                 session[s('data_fim_intervalo')] = novo_fim.strftime('%Y-%m-%d')
                 data_inicio = novo_inicio
                 data_fim = novo_fim
+            
+            # ✅ CORREÇÃO: Mês inteiro deslocado em -1 dia
             elif session[s('modo')] == 'mes_completo':
+                # Pega o início e fim do mês atual
                 ano, mes = session[s('mes_corrente')]
-                primeiro_dia = date(ano, mes, 1)
-                ultimo_dia = date(ano, mes, monthrange(ano, mes)[1])
-                novo_inicio = primeiro_dia - timedelta(days=1)
-                novo_fim = ultimo_dia - timedelta(days=1)
-                session[s('modo')] = 'intervalo'
+                inicio_mes = date(ano, mes, 1)
+                fim_mes = date(ano, mes, monthrange(ano, mes)[1])
+                
+                # Desloca TUDO em -1 dia
+                novo_inicio = inicio_mes - timedelta(days=1)
+                novo_fim = fim_mes - timedelta(days=1)
+                
+                # Salva na session
                 session[s('data_inicio_intervalo')] = novo_inicio.strftime('%Y-%m-%d')
                 session[s('data_fim_intervalo')] = novo_fim.strftime('%Y-%m-%d')
+                session[s('modo')] = 'intervalo'  # Muda para intervalo
+                session[s('dia_referencia')] = novo_inicio.day
+                session[s('mes_corrente')] = (novo_inicio.year, novo_inicio.month)
+                
                 data_inicio = novo_inicio
                 data_fim = novo_fim
+            
             else:
                 dia_atual = datetime.strptime(session[s('dia_corrente')], '%Y-%m-%d').date()
                 dia_novo = dia_atual - timedelta(days=1)
@@ -106,7 +117,7 @@ def filtro_datas(data_hoje, prefixo='tarefas'):
                 session[s('mes_corrente')] = (dia_novo.year, dia_novo.month)
                 data_inicio = dia_novo
                 data_fim = dia_novo
-        
+
         elif tipo_filtro == 'amanha':
             if session[s('modo')] == 'intervalo':
                 inicio = datetime.strptime(session[s('data_inicio_intervalo')], '%Y-%m-%d').date()
@@ -117,17 +128,28 @@ def filtro_datas(data_hoje, prefixo='tarefas'):
                 session[s('data_fim_intervalo')] = novo_fim.strftime('%Y-%m-%d')
                 data_inicio = novo_inicio
                 data_fim = novo_fim
+            
+            # ✅ CORREÇÃO: Mês inteiro deslocado em +1 dia
             elif session[s('modo')] == 'mes_completo':
+                # Pega o início e fim do mês atual
                 ano, mes = session[s('mes_corrente')]
-                primeiro_dia = date(ano, mes, 1)
-                ultimo_dia = date(ano, mes, monthrange(ano, mes)[1])
-                novo_inicio = primeiro_dia + timedelta(days=1)
-                novo_fim = ultimo_dia + timedelta(days=1)
-                session[s('modo')] = 'intervalo'
+                inicio_mes = date(ano, mes, 1)
+                fim_mes = date(ano, mes, monthrange(ano, mes)[1])
+                
+                # Desloca TUDO em +1 dia
+                novo_inicio = inicio_mes + timedelta(days=1)
+                novo_fim = fim_mes + timedelta(days=1)
+                
+                # Salva na session
                 session[s('data_inicio_intervalo')] = novo_inicio.strftime('%Y-%m-%d')
                 session[s('data_fim_intervalo')] = novo_fim.strftime('%Y-%m-%d')
+                session[s('modo')] = 'intervalo'  # Muda para intervalo
+                session[s('dia_referencia')] = novo_inicio.day
+                session[s('mes_corrente')] = (novo_inicio.year, novo_inicio.month)
+                
                 data_inicio = novo_inicio
                 data_fim = novo_fim
+            
             else:
                 dia_atual = datetime.strptime(session[s('dia_corrente')], '%Y-%m-%d').date()
                 dia_novo = dia_atual + timedelta(days=1)
@@ -147,7 +169,7 @@ def filtro_datas(data_hoje, prefixo='tarefas'):
             session[s('data_inicio_intervalo')] = None
             session[s('data_fim_intervalo')] = None
 
-        # ===== NAVEGAÇÃO ENTRE MESES =====
+        # ===== NAVEGAÇÃO ENTRE MESES (CORRIGIDO) =====
         elif tipo_filtro == 'mes_passado':
             ano, mes = session[s('mes_corrente')]
             if mes == 1:
@@ -160,17 +182,49 @@ def filtro_datas(data_hoje, prefixo='tarefas'):
             if session[s('modo')] == 'mes_completo':
                 data_inicio = date(ano, mes, 1)
                 data_fim = date(ano, mes, monthrange(ano, mes)[1])
+            
+            # ✅ CORREÇÃO: Mantém o intervalo deslocado em -1 mês
             elif session[s('modo')] == 'intervalo':
+                # Pega o início e fim do intervalo atual
+                inicio_atual = datetime.strptime(session[s('data_inicio_intervalo')], '%Y-%m-%d').date()
+                fim_atual = datetime.strptime(session[s('data_fim_intervalo')], '%Y-%m-%d').date()
+                
+                # Calcula a duração do intervalo
+                duracao = (fim_atual - inicio_atual).days
+                
+                # Cria novo mês de referência
+                novo_inicio = date(ano, mes, 1)
+                novo_fim = date(ano, mes, monthrange(ano, mes)[1])
+                
+                # Ajusta para manter a mesma duração do intervalo original
+                # Mas mantendo dentro do mês
                 dia_ref = session[s('dia_referencia')]
                 ultimo_dia = monthrange(ano, mes)[1]
+                
+                # Ajusta o dia de referência se passar do último dia do mês
                 if dia_ref > ultimo_dia:
                     dia_ref = ultimo_dia
-                data_ref = date(ano, mes, dia_ref)
-                session[s('modo')] = 'dia'
-                session[s('dia_corrente')] = data_ref.strftime('%Y-%m-%d')
-                data_inicio = data_ref
-                data_fim = data_ref
-            else:
+                
+                # Calcula novo início baseado no dia de referência
+                # Subtrai a duração para manter o mesmo tamanho do intervalo
+                novo_inicio = date(ano, mes, dia_ref) - timedelta(days=duracao)
+                
+                # Se o novo início for antes do primeiro dia do mês, ajusta
+                if novo_inicio < date(ano, mes, 1):
+                    novo_inicio = date(ano, mes, 1)
+                    novo_fim = novo_inicio + timedelta(days=duracao)
+                    # Se o fim passar do mês, ajusta para o último dia
+                    if novo_fim > date(ano, mes, monthrange(ano, mes)[1]):
+                        novo_fim = date(ano, mes, monthrange(ano, mes)[1])
+                
+                session[s('data_inicio_intervalo')] = novo_inicio.strftime('%Y-%m-%d')
+                session[s('data_fim_intervalo')] = novo_fim.strftime('%Y-%m-%d')
+                session[s('dia_referencia')] = novo_inicio.day
+                
+                data_inicio = novo_inicio
+                data_fim = novo_fim
+            
+            else:  # modo 'dia'
                 dia_ref = session[s('dia_referencia')]
                 ultimo_dia = monthrange(ano, mes)[1]
                 if dia_ref > ultimo_dia:
@@ -192,17 +246,43 @@ def filtro_datas(data_hoje, prefixo='tarefas'):
             if session[s('modo')] == 'mes_completo':
                 data_inicio = date(ano, mes, 1)
                 data_fim = date(ano, mes, monthrange(ano, mes)[1])
+            
+            # ✅ CORREÇÃO: Mantém o intervalo deslocado em +1 mês
             elif session[s('modo')] == 'intervalo':
+                # Pega o início e fim do intervalo atual
+                inicio_atual = datetime.strptime(session[s('data_inicio_intervalo')], '%Y-%m-%d').date()
+                fim_atual = datetime.strptime(session[s('data_fim_intervalo')], '%Y-%m-%d').date()
+                
+                # Calcula a duração do intervalo
+                duracao = (fim_atual - inicio_atual).days
+                
+                # Cria novo mês de referência
+                novo_inicio = date(ano, mes, 1)
+                novo_fim = date(ano, mes, monthrange(ano, mes)[1])
+                
+                # Ajusta para manter a mesma duração do intervalo original
                 dia_ref = session[s('dia_referencia')]
                 ultimo_dia = monthrange(ano, mes)[1]
+                
                 if dia_ref > ultimo_dia:
                     dia_ref = ultimo_dia
-                data_ref = date(ano, mes, dia_ref)
-                session[s('modo')] = 'dia'
-                session[s('dia_corrente')] = data_ref.strftime('%Y-%m-%d')
-                data_inicio = data_ref
-                data_fim = data_ref
-            else:
+                
+                novo_inicio = date(ano, mes, dia_ref) - timedelta(days=duracao)
+                
+                if novo_inicio < date(ano, mes, 1):
+                    novo_inicio = date(ano, mes, 1)
+                    novo_fim = novo_inicio + timedelta(days=duracao)
+                    if novo_fim > date(ano, mes, monthrange(ano, mes)[1]):
+                        novo_fim = date(ano, mes, monthrange(ano, mes)[1])
+                
+                session[s('data_inicio_intervalo')] = novo_inicio.strftime('%Y-%m-%d')
+                session[s('data_fim_intervalo')] = novo_fim.strftime('%Y-%m-%d')
+                session[s('dia_referencia')] = novo_inicio.day
+                
+                data_inicio = novo_inicio
+                data_fim = novo_fim
+            
+            else:  # modo 'dia'
                 dia_ref = session[s('dia_referencia')]
                 ultimo_dia = monthrange(ano, mes)[1]
                 if dia_ref > ultimo_dia:

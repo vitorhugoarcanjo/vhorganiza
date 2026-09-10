@@ -19,7 +19,7 @@
                     <i class="bi bi-arrow-down-circle-fill"></i> Despesa
                 </button>
             </div>
-            <input type="hidden" name="tipo" id="tipoHidden" value="{{ transacao.tipo if transacao else '' }}" required>
+            <input type="hidden" name="tipo" id="tipoHidden" value="{{ transacao.tipo if transacao else '' }}">
         </div>
 
         <div class="form-group">
@@ -42,7 +42,7 @@
                    class="form-input" 
                    placeholder="Ex: Salário, Supermercado..." 
                    value="{{ transacao.descricao if transacao else '' }}" 
-                   required>
+                >
         </div>
     </div>
 
@@ -55,7 +55,7 @@
                    id="valorTotal" 
                    class="form-input money-input" 
                    value="{{ '%.2f'|format(transacao.valor_total)|replace('.', ',') if transacao and transacao.valor_total else '0,00' }}" 
-                   required>
+                >
         </div>
 
         <div class="form-group">
@@ -78,7 +78,7 @@
                    id="dataEmissao" 
                    class="form-input" 
                    value="{{ transacao.data_emissao if transacao and transacao.data_emissao else hoje }}" 
-                   required>
+                >
         </div>
 
         <div class="form-group" id="dataVencimentoGroup">
@@ -98,13 +98,13 @@
                 <div class="parcelas-config-item">
                     <label>Intervalo entre parcelas</label>
                     <div style="display: flex; gap: 6px;">
-                        <input type="number" id="intervaloDias" class="form-input" value="30" min="1" max="365" inputmode="numeric" style="flex: 1;">
+                        <input type="number" id="intervaloDias" name="intervalo_dias" class="form-input" value="30" min="1" max="365" inputmode="numeric" style="flex: 1;">
                         <span style="display: flex; align-items: center; color: var(--texto-mutado);">dias</span>
                     </div>
                 </div>
                 <div class="parcelas-config-item">
                     <label>1º Vencimento</label>
-                    <input type="date" id="primeiroVencimento" class="form-input" value="{{ transacao.data_vencimento if transacao and transacao.data_vencimento else hoje }}">
+                    <input type="date" id="primeiroVencimento" name="primeiro_vencimento" class="form-input" value="{{ transacao.data_vencimento if transacao and transacao.data_vencimento else hoje }}">
                 </div>
                 <div class="parcelas-config-item">
                     <label>&nbsp;</label>
@@ -134,7 +134,7 @@
         </div>
     </div>
 
-    <!-- DADOS OCULTOS (ÚTIL PARA O MODO EDIT OU CASO PRECISE DE JSON DE PARCELAS) -->
+    <!-- DADOS OCULTOS -->
     <input type="hidden" id="parcelasFilhasData" value='{{ parcelas_filhas_json or "[]" }}'>
 
 </div>

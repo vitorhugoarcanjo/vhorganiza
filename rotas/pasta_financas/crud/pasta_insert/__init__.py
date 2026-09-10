@@ -4,12 +4,12 @@
 
 from flask import Blueprint
 
-# 🔥 CRIA O BLUEPRINT
+# 1. Cria o Blueprint local
 bp_insert = Blueprint('insert_transacoes', __name__)
 
-# 🔥 IMPORTA AS FUNÇÕES
+# 2. Importa as funções (após a declaração do Blueprint)
 from .insert_transacao import nova_transacao_modal, salvar_nova_transacao
 
-# 🔥 REGISTRA AS ROTAS (usando add_url_rule)
+# 3. Registra as regras de URL
 bp_insert.add_url_rule('/modal', view_func=nova_transacao_modal, methods=['GET'])
 bp_insert.add_url_rule('/salvar', view_func=salvar_nova_transacao, methods=['POST'])

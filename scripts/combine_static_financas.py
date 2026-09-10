@@ -20,13 +20,13 @@ JS_FILES = [
     # ========================================= #
     # COMPONENTS
     # ========================================= #
-    'static/js/modules/pasta_financas/modals/transacao-nova.js',
-    'static/js/modules/pasta_financas/modals/transacao-editar.js',
+    'static/js/modules/pasta_financas/components/parcelas-calc.js',
 
     # ========================================= #
     # MODALS
     # ========================================= #
-
+    'static/js/modules/pasta_financas/modals/transacao-nova.js',
+    'static/js/modules/pasta_financas/modals/transacao-editar.js',
 
     # ========================
     # FINANCAS

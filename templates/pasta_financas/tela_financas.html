@@ -48,7 +48,6 @@
                             HOJE
                         </button>
 
-
                         <button 
                             type="button"
                             hx-post="{{ url_for('financas.ini_financas') }}"
@@ -116,19 +115,20 @@
                                 class="form-control" 
                                 value="{{ data_fim or '' }}">
                         </div>
-
                     </div>
+
                     <div style="margin-top: 3px;">
                         <select name="tipo_data" class="form-select filter-auto-select">
                             <option value="emissao" {% if tipo_data == 'emissao' %}selected{% endif %}>📅 DATA EMISSÃO</option>
                             <option value="vencimento" {% if tipo_data == 'vencimento' %}selected{% endif %}>⏰ DATA VENCIMENTO</option>
                         </select>
                     </div>
-                    <!-- 🔥 CAMPO OCULTO (igual tarefas) -->
+
+                    <!-- 🔥 CAMPO OCULTO -->
                     <input type="hidden" name="mostrar_inativas" id="mostrar_inativas_input" value="{{ mostrar_inativas }}">
                 </div>
 
-                <!-- CATEGORIAS (igual) -->
+                <!-- CATEGORIAS -->
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">🏷️ CATEGORIAS</div>
                     <div class="lista-categorias scroll-fino">
@@ -147,23 +147,25 @@
                             <input 
                                 type="checkbox" 
                                 name="categorias" 
-                                value="{{ cat[0] }}" 
+                                value="{{ cat.id if cat.id is defined else cat[0] }}" 
                                 class="me-1 filter-auto-checkbox"
-                                {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
-                            <span class="span_categorias" style="color: {{ cat[2] }}; font-weight: 500;">{{ cat[1] }}</span>
+                                {% if categorias_filtro and (cat.id|string if cat.id is defined else cat[0]|string) in categorias_filtro %}checked{% endif %}>
+                            <span class="span_categorias" style="color: {{ cat.cor if cat.cor is defined else cat[2] }}; font-weight: 500;">
+                                {{ cat.nome if cat.nome is defined else cat[1] }}
+                            </span>
                         </label>
                         {% endfor %}
                     </div>
                 </div>
 
-                <!-- OUTROS FILTROS (igual tarefas) -->
+                <!-- OUTROS FILTROS -->
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">📊 OUTROS FILTROS</div>
                     
                     <div class="flex-row gap-2">
                         <div class="flex-fill">
                             <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Status</label>
-                            <select name="status" class="form-select  filter-auto-select">
+                            <select name="status" class="form-select filter-auto-select">
                                 <option value="" {% if status == '' %}selected{% endif %}>Todos</option>
                                 <option value="aberto" {% if status == 'aberto' %}selected{% endif %}>🔴 Aberto</option>
                                 <option value="quitado" {% if status == 'quitado' %}selected{% endif %}>✅ Quitado</option>
@@ -181,7 +183,7 @@
                         </div>
                     </div>
 
-                    <!-- 🔥 FILTRO ATIVAS/INATIVAS/TODAS (igual tarefas) -->
+                    <!-- FILTRO ATIVAS/INATIVAS/TODAS -->
                     <div style="margin-top: 4px;">
                         <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Transação:</label>
                         <div id="botoes-transacao" class="flex-row gap-1">
@@ -221,7 +223,7 @@
                     </div>
                 </div>
 
-                <!-- BUSCA + LIMPAR (igual) -->
+                <!-- BUSCA + LIMPAR -->
                 <div class="bloco-filtro bloco-pesquisa-fim">
                     <div>
                         <div class="bloco-titulo">🔍 DESCRIÇÃO</div>
@@ -240,8 +242,8 @@
 
                     <div class="flex-row gap-1" style="margin-top: 6px;">
                         <a href="{{ url_for('financas.limpar_filtros') }}" 
-                        class="btn-filter flex-fill" 
-                        style="text-align: center;">
+                           class="btn-filter flex-fill" 
+                           style="text-align: center;">
                             Limpar Todos
                         </a>
 
@@ -262,13 +264,11 @@
         {% include 'pasta_financas/_tabela_financas.html' %}
     </div>
 
-
 </div> <!-- FECHA painel-container -->
 
 <!-- FOOTER FIXO PADRÃO -->
 <div class="footer-fixo-padrao">
     <div class="botoes-footer-padrao">
-        <!-- BOTÃO PARA CRIAR O MODAL FUTURAMENTE -->
         <button 
             type="button"
             class="btn-footer btn-footer-primary"
@@ -288,15 +288,15 @@
     <div class="totalizador-footer-padrao">
         <div class="total-item-footer total-receita">
             <label>📈 RECEITAS</label>
-            <span id="totalReceitas">R$ 0,00</span>
+            <span id="totalReceitas">{{ totais.receitas if totais else 'R$ 0,00' }}</span>
         </div>
         <div class="total-item-footer total-despesa">
             <label>📉 DESPESAS</label>
-            <span id="totalDespesas">R$ 0,00</span>
+            <span id="totalDespesas">{{ totais.despesas if totais else 'R$ 0,00' }}</span>
         </div>
         <div class="total-item-footer total-saldo">
             <label>💰 SALDO</label>
-            <span id="totalSaldo">R$ 0,00</span>
+            <span id="totalSaldo">{{ totais.saldo if totais else 'R$ 0,00' }}</span>
         </div>
         <div class="contador-footer">
             <i class="bi bi-list-ul"></i>
@@ -304,9 +304,6 @@
         </div>
     </div>
 </div>
-
-</div>
-
 
 <!-- MODAIS -->
 {% include 'pasta_financas/modais/modal_nova_transacao.html.jinja' %}
@@ -318,14 +315,12 @@
 
 <!-- Container dinâmico para carregar o Modal de Edição via HTMX -->
 <div id="modal-editar-container"></div>
+{% endblock %}
 
 {% block scripts %}
     <!-- JS MINIFICADO -->
     <script src="{{ static_v('js/modules/pasta_financas/financas.min.js') }}"></script>
     
-    <!-- 🔥 HTMX do CDN (rápido) -->
+    <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
-
-{% endblock %}
-
 {% endblock %}

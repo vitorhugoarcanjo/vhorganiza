@@ -5,74 +5,47 @@
 (function() {
     'use strict';
 
-    // ==========================================================
-    // TOTALIZADORES
-    // ==========================================================
-    function calcularTotaisFinancas() {
-        var linhas = document.querySelector('.custom-table tbody')?.children || [];
-        var totalReceitas = 0;
-        var totalDespesas = 0;
-        
-        for (var i = 0; i < linhas.length; i++) {
-            var linha = linhas[i];
-            if (linha.querySelector('td[colspan]')) continue;
-            
-            var colunas = linha.cells;
-            if (colunas.length < 3) continue;
-            
-            var tipo = colunas[1]?.innerText || '';
-            var valorTexto = colunas[2]?.innerText || 'R$ 0,00';
-            
-            var valor = parseFloat(valorTexto.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()) || 0;
-            
-            if (tipo.includes('Receita')) totalReceitas += valor;
-            else if (tipo.includes('Despesa')) totalDespesas += valor;
-        }
-        
-        var saldo = totalReceitas - totalDespesas;
-        var formatar = function(v) {
-            return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-        };
-        
-        var elReceitas = document.getElementById('totalReceitas');
-        var elDespesas = document.getElementById('totalDespesas');
-        var elSaldo = document.getElementById('totalSaldo');
-        
-        if (elReceitas) elReceitas.innerHTML = formatar(totalReceitas);
-        if (elDespesas) elDespesas.innerHTML = formatar(totalDespesas);
-        if (elSaldo) elSaldo.innerHTML = formatar(saldo);
+    /**
+     * Recarrega a tabela de finanças via HTMX mantendo os filtros atuais.
+     * Busca a URL do data-attribute do container ou usa '/financas' como fallback.
+     */
+    function recarregarTabelaFinancas() {
+        var tabelaContainer = document.getElementById('tabela-container');
+        if (!tabelaContainer) return;
+
+        // Recupera a URL configurada no data-url-refresh do container, ou usa a rota principal
+        var urlRefresh = tabelaContainer.dataset.urlRefresh || '/financas';
+
+        htmx.ajax('GET', urlRefresh, {
+            target: '#tabela-container',
+            swap: 'outerHTML'
+        });
     }
 
-    // ==========================================================
-    // INICIALIZAR
-    // ==========================================================
+    /**
+     * Inicializa os ouvintes de eventos da página.
+     */
     function init() {
-        // Totalizadores
-        setTimeout(calcularTotaisFinancas, 100);
-        
-        // HTMX - atualiza totalizadores
-        document.addEventListener('htmx:afterSwap', function(evento) {
-            if (evento.detail.target?.id === 'tabela-container') {
-                setTimeout(calcularTotaisFinancas, 150);
-            }
+        // Escuta evento personalizado enviado pelo backend (Response Header: HX-Trigger: atualizarTabelaFinancas)
+        document.body.addEventListener('atualizarTabelaFinancas', function() {
+            recarregarTabelaFinancas();
         });
-        
-        document.addEventListener('htmx:afterRequest', function(evento) {
-            var target = evento.detail.target;
-            if (target && (target.id === 'tabela-container' || target.closest('#tabela-container'))) {
-                setTimeout(calcularTotaisFinancas, 150);
+
+        // Re-inicializa componentes após troca do fragmento HTMX na tabela
+        document.addEventListener('htmx:afterSwap', function(evento) {
+            if (evento.detail.target && evento.detail.target.id === 'tabela-container') {
+                // Eventos de clique com o botão direito ou inicializações de UI da tabela podem vir aqui
+                if (typeof window.inicializarMenuContexto === 'function') {
+                    window.inicializarMenuContexto();
+                }
             }
         });
     }
 
-    // ==========================================================
-    // EXPORTA
-    // ==========================================================
-    window.calcularTotaisFinancas = calcularTotaisFinancas;
+    // Exporta a função para escopo global para acionamento direto via onclick ou outros modais
+    window.recarregarTabelaFinancas = recarregarTabelaFinancas;
 
-    // ==========================================================
-    // EXECUTAR
-    // ==========================================================
+    // Executar após o carregamento da árvore DOM
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

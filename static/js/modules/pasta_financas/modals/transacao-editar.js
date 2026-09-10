@@ -28,7 +28,6 @@
         // 🔥 MOSTRA LOADING (NÃO SUBSTITUI O HTML)
         var body = modal.querySelector('.fin-modal-body');
         if (body) {
-            // 🔥 CRIA UM OVERLAY DE LOADING POR CIMA DO CONTEÚDO
             var loadingDiv = document.createElement('div');
             loadingDiv.id = 'editLoadingOverlay';
             loadingDiv.style.cssText = `
@@ -49,7 +48,6 @@
                 <div class="spinner-pure" style="width: 40px; height: 40px; border: 4px solid #fff; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
                 <p style="color: #fff; margin-top: 10px;">Carregando dados...</p>
             `;
-            // 🔥 USA POSITION RELATIVE NO BODY
             body.style.position = 'relative';
             body.appendChild(loadingDiv);
         }
@@ -70,17 +68,14 @@
         })
         .then(function(result) {
             if (result && result.success) {
-                // 🔥 ATUALIZA O ID (SE FOR PARCELA, VAI SER O PAI)
                 if (result.data.sequencia && result.data.sequencia !== id) {
                     transacaoId = result.data.sequencia;
                     console.log('🔄 ID atualizado para o pai:', transacaoId);
                 }
                 
-                // 🔥 REMOVE O LOADING
                 var overlay = document.getElementById('editLoadingOverlay');
                 if (overlay) overlay.remove();
 
-                // 🔥 PREENCHE OS CAMPOS (DIRETAMENTE, SEM RECARREGAR HTML)
                 preencherForm(result.data);
             } else {
                 if (body) {
@@ -103,6 +98,10 @@
     // ==========================================================
     function preencherForm(data) {
         console.log('📦 Preenchendo form com:', data);
+
+        if (data.sequencia) {
+            transacaoId = data.sequencia;
+        }
 
         // 1. TÍTULO
         var seqSpan = document.getElementById('finEditarSequencia');
@@ -266,6 +265,7 @@
     // ==========================================================
     window.abrirModalEditarTransacao = abrirModalEditarTransacao;
     window.fecharModalEditarTransacao = fecharModalEditarTransacao;
+    window.salvarEditarTransacao = salvarEditarTransacao;
 
     // ESC
     document.addEventListener('keydown', function(e) {

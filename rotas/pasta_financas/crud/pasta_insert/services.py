@@ -1,123 +1,216 @@
 # ==========================================================
-# INSERIR TRANSAÇÃO - SERVICES
+# INSERIR TRANSAÇÃO - SERVICES (PostgreSQL)
 # ==========================================================
 
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 import json
-from utils.database.conexao_global import ini_conexao
+import logging
+
+# Importação da função centralizada que utiliza ZoneInfo + tzdata
+from utils.fomatacoes.data_reutilizavel import obter_hoje_cuiaba
+
+logger = logging.getLogger(__name__)
+
 
 class InserirTransacaoService:
     
     @staticmethod
     def get_proxima_sequencia(cursor, user_id):
-        """Retorna a próxima sequência para o usuário"""
+        """Retorna a próxima sequência de transações para o usuário especificado."""
         cursor.execute("""
             SELECT COALESCE(MAX(sequencia_transacoes), 0) + 1 
-            FROM transacoes WHERE user_id = %s
+            FROM transacoes 
+            WHERE user_id = %s
         """, (user_id,))
-        return cursor.fetchone()[0]
+        res = cursor.fetchone()
+        return res[0] if res else 1
 
     @staticmethod
     def buscar_categorias(cursor, user_id):
-        """Busca categorias do usuário"""
-        cursor.execute("""
-            SELECT id, nome FROM categorias_financas
-            WHERE user_id = %s
-        """, (user_id,))
-        return cursor.fetchall()
-    
+        """Retorna as categorias cadastradas do usuário."""
+        try:
+            cursor.execute("""
+                SELECT id, nome 
+                FROM categorias_financas
+                WHERE user_id = %s
+                ORDER BY nome ASC
+            """, (user_id,))
+            return cursor.fetchall()
+        except Exception as e:
+            logger.error(f"Erro ao buscar categorias do usuário {user_id}: {str(e)}")
+            return []
+
     @staticmethod
     def criar_transacao_simples(cursor, user_id, dados):
-        """Cria uma transação sem parcelas"""
-        sequencia = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
-        
-        cursor.execute("""
-            INSERT INTO transacoes (
-                user_id, sequencia_transacoes, tipo,
-                valor_total, descricao, categoria_id,
-                data_emissao, data_vencimento,
-                total_parcelas, numero_parcela, status, ativo
-            )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
-        """, (
-            user_id, sequencia, dados['tipo'],
-            dados['valor_total'], dados['descricao'], dados['categoria_id'],
-            dados['data_emissao'], dados['data_vencimento'],
-            1, 1
-        ))
-        
-        return sequencia
-    
-    @staticmethod
-    def criar_transacao_parcelada(cursor, user_id, dados):
-        """Cria uma transação com múltiplas parcelas"""
-        total_parcelas = dados['total_parcelas']
-        intervalo_dias = dados['intervalo_dias'] or 30
-        primeiro_vencimento = dados['primeiro_vencimento'] or dados['data_vencimento'] or dados['data_emissao']
-        
-        # Calcula valores das parcelas
-        if dados.get('valores_parcelas') and len(dados['valores_parcelas']) > 0:
-            valores_parcelas = dados['valores_parcelas']
-        else:
-            valor_por_parcela = dados['valor_total'] / total_parcelas
-            valores_parcelas = [valor_por_parcela] * total_parcelas
-        
-        # 🔥 1. Cria a transação PAI
-        sequencia_pai = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
-        
-        cursor.execute("""
-            INSERT INTO transacoes (
-                user_id, sequencia_transacoes, tipo,
-                valor_total, descricao, categoria_id,
-                data_emissao, data_vencimento,
-                total_parcelas, intervalo_dias, status, ativo
-            )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
-        """, (
-            user_id, sequencia_pai, dados['tipo'],
-            dados['valor_total'], dados['descricao'], dados['categoria_id'],
-            dados['data_emissao'], primeiro_vencimento,
-            total_parcelas, intervalo_dias
-        ))
-        
-        # 🔥 2. Cria cada parcela filha
-        for i in range(1, total_parcelas + 1):
-            if i == 1:
-                data_venc_parcela = primeiro_vencimento
-            else:
-                data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
-                data_venc_parcela = (data_base + timedelta(days=(i-1) * intervalo_dias)).strftime('%Y-%m-%d')
-            
-            valor_parcela = valores_parcelas[i-1]
-            sequencia_parcela = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
-            
+        """
+        Cria uma transação única/à vista (1/1 parcela).
+        Retorna uma tupla (sucesso: bool, resultado: dict ou str).
+        """
+        try:
+            sequencia = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
+            valor_total = float(dados['valor_total'])
+
+            # Se a data vier vazia/ausente no dict, garante a data atual de Cuiabá via utilitário
+            hoje_cuiaba = obter_hoje_cuiaba()
+            data_emissao = dados.get('data_emissao') or hoje_cuiaba
+            data_vencimento = dados.get('data_vencimento') or data_emissao
+
             cursor.execute("""
                 INSERT INTO transacoes (
                     user_id, sequencia_transacoes, tipo,
                     valor_total, valor_parcela, descricao, categoria_id,
                     data_emissao, data_vencimento,
-                    total_parcelas, numero_parcela, sequencia_parcela,
-                    transacao_pai_id, status, ativo
+                    total_parcelas, numero_parcela, transacao_pai_id, status, ativo
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 1, 1, NULL, 'aberto', 1)
+                RETURNING id
             """, (
-                user_id, sequencia_parcela, dados['tipo'],
-                valor_parcela, valor_parcela, 
-                f"{dados['descricao']} - Parcela {i}/{total_parcelas}", 
+                user_id, 
+                sequencia, 
+                dados['tipo'],
+                valor_total, 
+                valor_total,
+                dados['descricao'], 
                 dados['categoria_id'],
-                dados['data_emissao'], data_venc_parcela,
-                total_parcelas, i, i,
-                sequencia_pai
+                data_emissao, 
+                data_vencimento
             ))
-        
-        return sequencia_pai, total_parcelas
-    
+
+            transacao_id = cursor.fetchone()[0]
+
+            return True, {
+                "transacao_id": transacao_id,
+                "sequencia": sequencia,
+                "total_parcelas": 1,
+                "mensagem": "Transação simples registrada com sucesso!"
+            }
+
+        except KeyError as e:
+            msg = f"Campo obrigatório ausente: {str(e)}"
+            logger.error(msg)
+            return False, msg
+        except Exception as e:
+            msg = f"Erro ao inserir transação simples: {str(e)}"
+            logger.error(msg)
+            return False, msg
+
+    @staticmethod
+    def criar_transacao_parcelada(cursor, user_id, dados):
+        """
+        Cria uma transação PAI (registro agrupador) e N transações FILHAS.
+        """
+        try:
+            total_parcelas = int(dados['total_parcelas'])
+            if total_parcelas < 1:
+                return False, "O número de parcelas deve ser maior ou igual a 1."
+
+            intervalo_dias = int(dados.get('intervalo_dias') or 30)
+            hoje_cuiaba = obter_hoje_cuiaba()
+            
+            data_emissao = dados.get('data_emissao') or hoje_cuiaba
+            primeiro_vencimento = dados.get('primeiro_vencimento') or dados.get('data_vencimento') or data_emissao
+            valor_total = float(dados['valor_total'])
+
+            # 1. Cálculo dos valores de cada parcela
+            if dados.get('valores_parcelas') and len(dados['valores_parcelas']) == total_parcelas:
+                valores_parcelas = [float(v) for v in dados['valores_parcelas']]
+            else:
+                valor_por_parcela = round(valor_total / total_parcelas, 2)
+                valores_parcelas = [valor_por_parcela] * total_parcelas
+                diferenca = round(valor_total - sum(valores_parcelas), 2)
+                if diferenca != 0:
+                    valores_parcelas[-1] = round(valores_parcelas[-1] + diferenca, 2)
+
+            # 2. Cria a Transação PAI
+            sequencia_pai = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
+
+            cursor.execute("""
+                INSERT INTO transacoes (
+                    user_id, sequencia_transacoes, tipo,
+                    valor_total, descricao, categoria_id,
+                    data_emissao, data_vencimento,
+                    total_parcelas, intervalo_dias, transacao_pai_id, status, ativo
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NULL, 'aberto', 1)
+                RETURNING id
+            """, (
+                user_id, 
+                sequencia_pai, 
+                dados['tipo'],
+                valor_total, 
+                dados['descricao'], 
+                dados['categoria_id'],
+                data_emissao, 
+                primeiro_vencimento,
+                total_parcelas, 
+                intervalo_dias
+            ))
+
+            pai_id = cursor.fetchone()[0]
+
+            # 3. Cria as Transações FILHAS
+            data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
+
+            for i in range(1, total_parcelas + 1):
+                if i == 1:
+                    data_venc_parcela = primeiro_vencimento
+                else:
+                    data_venc_parcela = (data_base + timedelta(days=(i - 1) * intervalo_dias)).strftime('%Y-%m-%d')
+
+                valor_parcela = valores_parcelas[i - 1]
+                sequencia_parcela = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
+
+                cursor.execute("""
+                    INSERT INTO transacoes (
+                        user_id, sequencia_transacoes, tipo,
+                        valor_total, valor_parcela, descricao, categoria_id,
+                        data_emissao, data_vencimento,
+                        total_parcelas, numero_parcela, sequencia_parcela,
+                        transacao_pai_id, status, ativo
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
+                """, (
+                    user_id, 
+                    sequencia_parcela, 
+                    dados['tipo'],
+                    valor_total, 
+                    valor_parcela, 
+                    f"{dados['descricao']} ({i}/{total_parcelas})", 
+                    dados['categoria_id'],
+                    data_emissao, 
+                    data_venc_parcela,
+                    total_parcelas, 
+                    i, 
+                    i,
+                    pai_id
+                ))
+
+            return True, {
+                "pai_id": pai_id,
+                "sequencia_pai": sequencia_pai,
+                "total_parcelas": total_parcelas,
+                "mensagem": f"Transação parcelada em {total_parcelas}x registrada com sucesso!"
+            }
+
+        except KeyError as e:
+            msg = f"Campo obrigatório ausente nas parcelas: {str(e)}"
+            logger.error(msg)
+            return False, msg
+        except ValueError as e:
+            msg = f"Erro de conversão de dados (valor/data inválidos): {str(e)}"
+            logger.error(msg)
+            return False, msg
+        except Exception as e:
+            msg = f"Erro inesperado ao criar parcelas: {str(e)}"
+            logger.error(msg)
+            return False, msg
+
     @staticmethod
     def registrar_auditoria(transacao_id, descricao, total_parcelas=None):
-        """Registra auditoria da criação"""
+        """Registra log de auditoria da criação da transação."""
         try:
             from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
-            
+
             if total_parcelas and total_parcelas > 1:
                 acao = 'criada_parcelada'
                 valor_novo = json.dumps({
@@ -129,7 +222,7 @@ class InserirTransacaoService:
                 valor_novo = json.dumps([
                     {'campo': 'transação', 'depois': descricao}
                 ], ensure_ascii=False)
-            
+
             AuditoriaFinanceiraService.registrar(
                 transacao_id=transacao_id,
                 acao=acao,
@@ -138,4 +231,4 @@ class InserirTransacaoService:
                 valor_novo=valor_novo
             )
         except Exception as e:
-            print(f"Erro na auditoria: {e}")
+            logger.warning(f"Falha ao gravar auditoria para transação {transacao_id}: {str(e)}")

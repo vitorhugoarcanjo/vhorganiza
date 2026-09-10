@@ -1,6 +1,5 @@
-
 <!-- TABELA -->
-<div id="tabela-container">
+<div id="tabela-container" data-url-refresh="{{ url_for('financas.ini_financas') }}">
     <div class="painel-tabela-conteudo scroll-fino">
         <div class="table-responsive">
             <table class="custom-table">
@@ -20,64 +19,70 @@
                 <tbody>
                     {% if transacoes %}
                         {% for transacao in transacoes %}
-                        <tr>
-                            <!-- SEQ (índice 0 = sequencia_transacoes) -->
-                            <td class="td-id">{{ transacao[0] }}</td>
+                        <tr class="{% if transacao['ativa'] == 0 %}transacao-inativa opacity-50{% endif %}">
+                            <!-- SEQ -->
+                            <td class="td-id">{{ transacao['sequencia_transacoes'] }}</td>
                             
-                            <!-- TIPO (índice 2) -->
+                            <!-- TIPO -->
                             <td>
-                                {% if transacao[2] == 'receita' %}
+                                {% if transacao['tipo'] == 'receita' %}
                                     <span class="badge-pure bg-success">📈 Receita</span>
                                 {% else %}
                                     <span class="badge-pure bg-warning text-dark">📉 Despesa</span>
                                 {% endif %}
                             </td>
 
-                            <!-- VALOR (índice 3) -->
-                            <td class="td-titulo">{{ transacao[3] }}</td>
+                            <!-- VALOR -->
+                            <td class="td-titulo">
+                                {% if transacao['valor'] is number %}
+                                    R$ {{ "%.2f"|format(transacao['valor'])|replace('.', ',') }}
+                                {% else %}
+                                    {{ transacao['valor'] }}
+                                {% endif %}
+                            </td>
                             
-                            <!-- DESCRIÇÃO (índice 4) -->
-                            <td class="td-titulo" title="{{ transacao[4] }}">{{ transacao[4] }}</td>
+                            <!-- DESCRIÇÃO -->
+                            <td class="td-titulo" title="{{ transacao['descricao'] }}">{{ transacao['descricao'] }}</td>
                             
-                            <!-- STATUS (índice 8) -->
+                            <!-- STATUS -->
                             <td>
-                                {% if transacao[8] == 'aberto' %}
+                                {% if transacao['status'] == 'aberto' %}
                                     <span class="badge-pure bg-danger">🔴 Aberto</span>
-                                {% elif transacao[8] == 'quitado' %}
+                                {% elif transacao['status'] == 'quitado' %}
                                     <span class="badge-pure bg-success">✅ Quitado</span>
                                 {% else %}
                                     <span class="badge-pure bg-success">💰 Recebido</span>
                                 {% endif %}
                             </td>
                             
-                            <!-- CATEGORIA (índice 6 e 7) -->
+                            <!-- CATEGORIA -->
                             <td>
-                                {% if transacao[6] %}
-                                    <span class="badge-pure tag-categoria" style="background-color: {{ transacao[7] }}; color: white; border: none;">
-                                        {{ transacao[6] }}
+                                {% if transacao['categoria'] %}
+                                    <span class="badge-pure tag-categoria" style="background-color: {{ transacao['cor_categoria'] or '#6c757d' }}; color: white; border: none;">
+                                        {{ transacao['categoria'] }}
                                     </span>
                                 {% else %}
                                     <span class="text-vazio">-</span>
                                 {% endif %}
                             </td>
                             
-                            <!-- EMISSÃO (índice 5) -->
-                            <td>{{ transacao[5] or '-' }}</td>
+                            <!-- EMISSÃO -->
+                            <td>{{ transacao['data_emissao'] or '-' }}</td>
                             
-                            <!-- VENCIMENTO (índice 9) -->
-                            <td>{{ transacao[9] or '-' }}</td>
-
+                            <!-- VENCIMENTO -->
+                            <td>{{ transacao['data_vencimento'] or '-' }}</td>
+                            
                             <!-- AÇÕES -->
-                            <td class="td-acoes">
-                                <!-- 🔥 DETALHES (sempre mostra) -->
+                            <td class="td-acoes text-center">
+                                <!-- DETALHES -->
                                 <button type="button" class="btn-acao view" title="Ver detalhes" 
-                                        onclick="verDetalhesTransacao({{ transacao[0] }})">
+                                        onclick="verDetalhesTransacao({{ transacao['sequencia_transacoes'] }})">
                                     <i class="bi bi-eye"></i>
                                 </button>
 
-                                <!-- 🔥 AUDITORIA (sempre mostra) -->
+                                <!-- AUDITORIA -->
                                 <a href="{{ url_for('auditoria_financas.historico_transacao', 
-                                                    transacao_id=transacao[0],
+                                                    transacao_id=transacao['sequencia_transacoes'],
                                                     mostrar_inativas=mostrar_inativas,
                                                     data_inicio=data_inicio,
                                                     data_fim=data_fim,
@@ -87,61 +92,56 @@
                                     <i class="bi bi-clock-history"></i>
                                 </a>
 
-                                <!-- ========================================== -->
-                                <!-- BOTÕES PARA TRANSAÇÕES ABERTAS -->
-                                <!-- ========================================== -->
-                                {% if transacao[8] not in ['quitado', 'recebido'] and transacao[10] == 1 %}
-                                    <!-- EDITAR -->
-                                    <button type="button" 
-                                            class="btn-icon"
-                                            hx-get="{{ url_for('financas.carregar_modal_edicao', transacao_id=item[0]) }}"
-                                            hx-target="#modal-editar-container"
-                                            hx-swap="innerHTML">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-
-                                    <!-- EXCLUIR -->
-                                    <button type="button"
-                                            class="btn-acao delete btn-excluir"
-                                            data-id="{{ transacao[0] }}"
-                                            data-desc="{{ transacao[4] }}"
-                                            title="Excluir">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-
-                                    <!-- QUITAR/RECEBER -->
-                                    {% if transacao[2] == 'despesa' and transacao[8] == 'aberto' %}
-                                        <button onclick="quitarTransacao({{ transacao[0] }}, this)" 
-                                                class="btn-acao check" title="Quitar">
-                                            <i class="bi bi-check-lg"></i>
+                                {% if transacao['ativo'] == 1 %}
+                                    <!-- TRANSAÇÕES ATIVAS -->
+                                    
+                                    {% if transacao['status'] not in ['quitado', 'recebido'] %}
+                                        <!-- EDITAR (Apenas se não estiver quitado/recebido) -->
+                                        <button type="button" 
+                                                class="btn-acao edit"
+                                                hx-get="{{ url_for('financas.edit_transacoes.editar_modal', sequencia=transacao['sequencia_transacoes']) }}"
+                                                hx-target="#modal-editar-container"
+                                                hx-swap="innerHTML"
+                                                title="Editar">
+                                            <i class="bi bi-pencil"></i>
                                         </button>
-                                    {% elif transacao[2] == 'receita' and transacao[8] == 'aberto' %}
-                                        <button onclick="quitarTransacao({{ transacao[0] }}, this)" 
-                                                class="btn-acao check" title="Receber">
-                                            <i class="bi bi-cash-stack"></i>
+
+                                        <!-- EXCLUIR (Apenas se não estiver quitado/recebido) -->
+                                        <button type="button"
+                                                class="btn-acao delete btn-excluir"
+                                                data-id="{{ transacao['sequencia_transacoes'] }}"
+                                                data-desc="{{ transacao['descricao'] }}"
+                                                title="Excluir">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+
+                                        <!-- QUITAR / RECEBER (Apenas se estiver em aberto) -->
+                                        {% if transacao['status'] == 'aberto' %}
+                                            <button onclick="quitarTransacao({{ transacao['sequencia_transacoes'] }}, this)" 
+                                                    class="btn-acao check" 
+                                                    title="{{ 'Quitar' if transacao['tipo'] == 'despesa' else 'Receber' }}">
+                                                <i class="bi {{ 'bi-check-lg' if transacao['tipo'] == 'despesa' else 'bi-cash-stack' }}"></i>
+                                            </button>
+                                        {% endif %}
+
+                                    {% else %}
+                                        <!-- ESTORNAR (Aparece quando está quitado ou recebido) -->
+                                        <button type="button"
+                                                class="btn-acao undo btn-estornar"
+                                                data-id="{{ transacao['sequencia_transacoes'] }}"
+                                                data-desc="{{ transacao['descricao'] }}"
+                                                data-tipo="{{ transacao['tipo'] }}"
+                                                title="Estornar">
+                                            <i class="bi bi-arrow-return-left"></i>
                                         </button>
                                     {% endif %}
-                                
-                                <!-- ========================================== -->
-                                <!-- BOTÃO ESTORNAR (aparece se estiver quitado/recebido) -->
-                                <!-- ========================================== -->
-                                {% elif transacao[8] in ['quitado', 'recebido'] and transacao[10] == 1 %}
-                                    <button type="button"
-                                            class="btn-acao undo btn-estornar"
-                                            data-id="{{ transacao[0] }}"
-                                            data-desc="{{ transacao[4] }}"
-                                            data-tipo="{{ transacao[2] }}"
-                                            title="Estornar"
-                                            formnovalidate>
-                                        <i class="bi bi-arrow-return-left"></i>
-                                    </button>
-                                {% endif %}
 
-                                {% if transacao[10] == 0 %}
+                                {% else %}
+                                    <!-- REATIVAR (Aparece estritamente quando ativa == 0 / inativa) -->
                                     <button type="button"
                                             class="btn-acao reativar btn-reativar"
-                                            data-id="{{ transacao[0] }}"
-                                            data-desc="{{ transacao[4] }}"
+                                            data-id="{{ transacao['sequencia_transacoes'] }}"
+                                            data-desc="{{ transacao['descricao'] }}"
                                             title="Reativar">
                                         <i class="bi bi-arrow-repeat"></i>
                                     </button>
@@ -151,7 +151,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="9" class="text-center py-4 text-white-50">Nenhuma transação cadastrada ou nesse período</td>
+                            <td colspan="9" class="text-center py-4 text-white-50">Nenhuma transação cadastrada ou encontrada para este período.</td>
                         </tr>
                     {% endif %}
                 </tbody>
