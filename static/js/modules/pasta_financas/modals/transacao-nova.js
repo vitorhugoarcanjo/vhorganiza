@@ -1,109 +1,92 @@
 // ==========================================================
-// MÓDULO: MODAL DE NOVA TRANSAÇÃO (APENAS CONTROLE DE ABRIR/FECHAR)
+// MODAL NOVA TRANSAÇÃO - v2 (usa TransacaoForm)
 // ==========================================================
 (function() {
     'use strict';
 
-    function obterDataLocalHoje() {
-        var hoje = new Date();
-        var ano = hoje.getFullYear();
-        var mes = String(hoje.getMonth() + 1).padStart(2, '0');
-        var dia = String(hoje.getDate()).padStart(2, '0');
-        return ano + '-' + mes + '-' + dia;
-    }
+    var formInstance = null;
 
-    function limparFormularioModal() {
-        var form = document.getElementById('formNovaTransacao') || document.getElementById('form-transacao');
-        if (!form) return;
+    function instanciar() {
+        var formEl = document.getElementById('formNovaTransacao');
+        if (!formEl) return null;
+        if (formInstance) return formInstance;
 
-        form.reset();
+        formInstance = new window.TransacaoForm(formEl, {
+            mode: 'create',
+            onSubmitSuccess: function(result) {
+                if (window.Notificacao) window.Notificacao.sucesso(result.message || 'Transação salva!');
+                fecharModalNovaTransacao();
 
-        var hojeStr = obterDataLocalHoje();
-        var valorTotal = form.querySelector('#valorTotal');
-        if (valorTotal) valorTotal.value = '0,00';
-
-        var totalParcelas = form.querySelector('#totalParcelas');
-        if (totalParcelas) totalParcelas.value = '1';
-
-        ['dataEmissao', 'dataVencimento', 'primeiroVencimento'].forEach(function(id) {
-            var el = form.querySelector('#' + id);
-            if (el) el.value = hojeStr;
+                // Recarrega tabela via HTMX
+                if (window.recarregarTabelaFinancas) {
+                    window.recarregarTabelaFinancas();
+                } else if (window.htmx) {
+                    htmx.ajax('GET', '/financas', '#tabela-container');
+                } else {
+                    setTimeout(function() { window.location.reload(); }, 600);
+                }
+            }
         });
-
-        var tipoHidden = form.querySelector('#tipoHidden');
-        if (tipoHidden) tipoHidden.value = '';
-
-        form.querySelectorAll('.tipo-btn').forEach(function(b) {
-            b.classList.remove('active');
-        });
-
-        var badge = form.querySelector('#finTipoBadge');
-        if (badge) {
-            badge.textContent = '📊 Selecionar';
-            badge.className = 'fin-tipo-badge';
-        }
-
-        var configArea = form.querySelector('#parcelasConfigArea');
-        if (configArea) configArea.style.display = 'none';
-
-        var wrapper = form.querySelector('#parcelasWrapper');
-        if (wrapper) wrapper.style.display = 'none';
-
-        var parcelasBody = form.querySelector('#parcelasBody');
-        if (parcelasBody) {
-            parcelasBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--texto-mutado);">Selecione mais de 1 parcela</td></tr>';
-        }
+        return formInstance;
     }
 
     function abrirModalNovaTransacao() {
-        console.log('🔓 Abrindo modal Nova Transação');
         var modal = document.getElementById('modalNovaTransacao');
         if (!modal) return;
 
-        limparFormularioModal();
+        var f = instanciar();
+        if (f) f.reset();
 
         modal.classList.add('active');
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
 
         setTimeout(function() {
-            var desc = document.getElementById('descricaoInput');
+            var desc = modal.querySelector('.js-descricao');
             if (desc) desc.focus();
         }, 100);
     }
 
     function fecharModalNovaTransacao() {
-        console.log('🔒 Fechando modal Nova Transação');
         var modal = document.getElementById('modalNovaTransacao');
         if (modal) {
             modal.classList.remove('active');
             modal.style.display = 'none';
         }
         document.body.style.overflow = '';
-        limparFormularioModal();
+        var f = instanciar();
+        if (f) f.reset();
     }
 
-    // Exportações globais para abrir/fechar via HTML
+    function salvarNovaTransacao() {
+        var f = instanciar();
+        if (!f) return;
+
+        var btn = document.querySelector('#footerFixoNova .btn-footer-primary');
+        if (btn) { btn.disabled = true; btn.dataset.txt = btn.innerHTML; btn.innerHTML = 'Salvando...'; }
+
+        f.submit('/financas/nova_transacao/salvar')
+         .catch(function() { /* já notificado */ })
+         .finally(function() {
+            if (btn) { btn.disabled = false; btn.innerHTML = btn.dataset.txt || 'SALVAR'; }
+         });
+    }
+
     window.abrirModalNovaTransacao = abrirModalNovaTransacao;
     window.fecharModalNovaTransacao = fecharModalNovaTransacao;
+    window.salvarNovaTransacao = salvarNovaTransacao;
 
-    // Fechar com ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             var modal = document.getElementById('modalNovaTransacao');
-            if (modal && modal.classList.contains('active')) {
-                fecharModalNovaTransacao();
-            }
+            if (modal && modal.classList.contains('active')) fecharModalNovaTransacao();
         }
     });
 
-    // Fechar clicando no fundo escuro
     document.addEventListener('click', function(e) {
         var modal = document.getElementById('modalNovaTransacao');
-        if (modal && modal.classList.contains('active') && e.target === modal) {
-            fecharModalNovaTransacao();
-        }
+        if (modal && modal.classList.contains('active') && e.target === modal) fecharModalNovaTransacao();
     });
 
-    console.log('✅ MODAL NOVA TRANSAÇÃO (Controlador) carregado!');
+    console.log('✅ MODAL NOVA TRANSAÇÃO v2 carregado!');
 })();

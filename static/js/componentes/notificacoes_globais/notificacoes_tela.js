@@ -51,15 +51,15 @@ if (window.Notificacao) {
         },
         
         sucesso(mensagem, duracao = 3000) {
-            return this._mostrar(mensagem, 'sucesso', duracao);
+            return window.Notificacao._mostrar(mensagem, 'sucesso', duracao);
         },
         
         erro(mensagem, duracao = 5000) {
-            return this._mostrar(mensagem, 'erro', duracao);
+            return window.Notificacao._mostrar(mensagem, 'erro', duracao);
         },
         
         aviso(mensagem, duracao = 4000) {
-            return this._mostrar(mensagem, 'aviso', duracao);
+            return window.Notificacao._mostrar(mensagem, 'aviso', duracao);
         }
     };
 

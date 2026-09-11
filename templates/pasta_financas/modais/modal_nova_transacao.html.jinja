@@ -1,10 +1,9 @@
 <!-- ========================================================== -->
-<!-- MODAL: NOVA TRANSAÇÃO                                      -->
+<!-- MODAL: NOVA TRANSAÇÃO - v2                                 -->
 <!-- ========================================================== -->
 <div class="fin-modal-overlay" id="modalNovaTransacao">
     <div class="fin-modal-box">
 
-        <!-- CABEÇALHO -->
         <div class="fin-modal-header">
             <div class="fin-modal-header-left">
                 <h3><i class="bi bi-plus-circle-fill"></i> Nova Transação</h3>
@@ -16,19 +15,14 @@
             </div>
         </div>
 
-        <!-- FORMULÁRIO -->
-        <form id="formNovaTransacao" 
-              class="fin-modal-form"
-              action="{{ url_for('financas.insert_transacoes.salvar_nova_transacao') }}"
-              method="POST">
-            
-            <!-- CORPO (COMPARTILHADO VIA PARTIAL) -->
+        <form id="formNovaTransacao" class="fin-modal-form" onsubmit="event.preventDefault(); salvarNovaTransacao();">
+
             <div class="fin-modal-body">
-                {% set modo = 'new' %}
+                {% set hoje = hoje or '' %}
+                {% set categorias = categorias or [] %}
                 {% include 'pasta_financas/partials/form_transacao.html.jinja' %}
             </div>
 
-            <!-- FOOTER COM TOTALIZADOR E BOTÕES -->
             <div class="footer-fixo-padrao" id="footerFixoNova">
                 <div class="botoes-footer-padrao">
                     <button type="submit" class="btn-footer btn-footer-primary">
@@ -38,21 +32,21 @@
                         <i class="bi bi-x-circle"></i> CANCELAR
                     </button>
                 </div>
-                
+
                 <h2>NOVA - TRANSAÇÃO</h2>
-                
+
                 <div class="totalizador-footer-padrao">
                     <div class="total-item-footer valor-original">
                         <label>Valor Total:</label>
-                        <span id="totalOriginal">R$ 0,00</span>
+                        <span class="js-total-original">R$ 0,00</span>
                     </div>
                     <div class="total-item-footer soma-parcelas">
                         <label>Soma Parcelas:</label>
-                        <span id="somaParcelas">R$ 0,00</span>
+                        <span class="js-soma-parcelas">R$ 0,00</span>
                     </div>
-                    <div class="total-item-footer diferenca" id="diferencaItem">
+                    <div class="total-item-footer diferenca">
                         <label>Diferença:</label>
-                        <span id="diferencaValor">R$ 0,00</span>
+                        <span class="js-diferenca-valor">R$ 0,00</span>
                     </div>
                 </div>
             </div>

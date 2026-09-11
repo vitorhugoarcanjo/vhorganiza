@@ -102,6 +102,7 @@
                                                 hx-get="{{ url_for('financas.edit_transacoes.editar_modal', sequencia=transacao['sequencia_transacoes']) }}"
                                                 hx-target="#modal-editar-container"
                                                 hx-swap="innerHTML"
+                                                data-id="{{ transacao['sequencia_transacoes'] }}"
                                                 title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </button>

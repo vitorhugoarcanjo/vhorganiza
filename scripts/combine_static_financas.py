@@ -15,12 +15,16 @@ JS_FILES = [
     # ========================================= #
     # CORE
     # ========================================= #
-    'static/js/modules/pasta_financas/core/form-transacao.js',
+    'static/js/modules/pasta_financas/core/api-transacao.js',
+    'static/js/modules/pasta_financas/core/formatadores.js',
+    'static/js/modules/pasta_financas/core/TransacaoForm.js',   # 🔥 ADICIONA ISSO (antes dos modals)
 
     # ========================================= #
     # COMPONENTS
     # ========================================= #
-    'static/js/modules/pasta_financas/components/parcelas-calc.js',
+    'static/js/modules/pasta_financas/components/totalizadores.js',
+    'static/js/modules/pasta_financas/components/botoes_outros_filtros.js',
+    'static/js/modules/pasta_financas/components/ordenacao.js',
 
     # ========================================= #
     # MODALS
@@ -40,11 +44,9 @@ JS_FILES = [
 
     
     # BLOCO ALTERNATIVOS
-    'static/js/modules/pasta_financas/totalizadores/totalizadores.js',
-    'static/js/modules/pasta_financas/ordenacao_colunas/ordenacao.js',
+
 
     # BLOCO DE FILTROS
-    'static/js/modules/pasta_financas/filtros/botoes_outros_filtros.js',
     
     # Menu
     'static/js/modules/pasta_financas/menu_click/click_direito.js',

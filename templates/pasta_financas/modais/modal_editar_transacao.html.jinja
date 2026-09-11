@@ -1,17 +1,14 @@
 <!-- ========================================================== -->
-<!-- MODAL: EDITAR TRANSAÇÃO                                    -->
+<!-- MODAL: EDITAR TRANSAÇÃO - v2                                -->
 <!-- ========================================================== -->
 <div class="fin-modal-overlay active" id="modalEditarTransacao" style="display: flex;">
     <div class="fin-modal-box">
 
-        <!-- CABEÇALHO LIMPO (SEM BADGE REDUNDANTE) -->
         <div class="fin-modal-header">
             <div class="fin-modal-header-left">
-                <h3>
-                    <i class="bi bi-pencil-square"></i> Editar Transação 
-                    <span id="finEditarSequencia">#{{ transacao['sequencia_transacoes'] if transacao else '0' }}</span>
-                </h3>
+                <h3 id="finEditarSequencia">Editar Transação #{{ sequencia }}</h3>
             </div>
+
             <div class="fin-modal-header-right">
                 <button type="button" class="fin-btn-close-modal" onclick="fecharModalEditarTransacao()" title="Fechar">
                     <i class="bi bi-x-lg"></i>
@@ -19,23 +16,17 @@
             </div>
         </div>
 
-        <!-- FORMULÁRIO CONTROLADO VIA JS PURO -->
-        <form id="formEditarTransacao" 
-            class="fin-modal-form"
-            onsubmit="event.preventDefault(); salvarEditarTransacao();">
-            
-            <!-- CORPO (USA O PARTIAL QUE JÁ CONTÉM TIPO, CATEGORIA, VALORES, ETC.) -->
+        <form id="formEditarTransacao"
+              class="fin-modal-form"
+              data-transacao-id="{{ sequencia }}"
+              onsubmit="event.preventDefault(); salvarEditarTransacao();">
+
             <div class="fin-modal-body">
-                {% set modo = 'edit' %}
                 {% set hoje = hoje or '' %}
                 {% set categorias = categorias or [] %}
-                {% set transacao = transacao or [] %}
-                {% set parcelas_filhas_json = parcelas_filhas_json or '[]' %}
-                
                 {% include 'pasta_financas/partials/form_transacao.html.jinja' %}
             </div>
 
-            <!-- FOOTER COM TOTALIZADOR E BOTÕES -->
             <div class="footer-fixo-padrao" id="footerFixoEditar">
                 <div class="botoes-footer-padrao">
                     <button type="submit" class="btn-footer btn-footer-primary">
@@ -45,21 +36,21 @@
                         <i class="bi bi-x-circle"></i> CANCELAR
                     </button>
                 </div>
-                
+
                 <h2>EDITAR - TRANSAÇÃO</h2>
-                
+
                 <div class="totalizador-footer-padrao">
                     <div class="total-item-footer valor-original">
                         <label>Valor Total:</label>
-                        <span id="totalOriginal">R$ 0,00</span>
+                        <span class="js-total-original">R$ 0,00</span>
                     </div>
                     <div class="total-item-footer soma-parcelas">
                         <label>Soma Parcelas:</label>
-                        <span id="somaParcelas">R$ 0,00</span>
+                        <span class="js-soma-parcelas">R$ 0,00</span>
                     </div>
-                    <div class="total-item-footer diferenca" id="diferencaItem">
+                    <div class="total-item-footer diferenca">
                         <label>Diferença:</label>
-                        <span id="diferencaValor">R$ 0,00</span>
+                        <span class="js-diferenca-valor">R$ 0,00</span>
                     </div>
                 </div>
             </div>
@@ -68,16 +59,3 @@
 
     </div>
 </div>
-
-<script>
-    function fecharModalEditarTransacao() {
-        const container = document.getElementById('modal-editar-container');
-        if (container) {
-            container.innerHTML = '';
-        } else {
-            const modal = document.getElementById('modalEditarTransacao');
-            if (modal) modal.style.display = 'none';
-        }
-        document.body.style.overflow = '';
-    }
-</script>
