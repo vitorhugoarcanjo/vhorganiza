@@ -55,14 +55,19 @@ def salvar_nova_transacao():
             'primeiro_vencimento': request.form.get('primeiroVencimento') or request.form.get('data_vencimento') or hoje,
         }
 
-        # Coleta parcelas dinâmicas se houver
+        # 🔥 Coleta parcelas com VALOR e VENCIMENTO individuais
         parcelas = []
         for i in range(1, dados['total_parcelas'] + 1):
             valor = request.form.get(f'parcela_valor_{i}')
+            vencimento = request.form.get(f'parcela_vencimento_{i}')
             if valor:
-                parcelas.append(converter_valor_br(valor))
+                parcelas.append({
+                    'numero': i,
+                    'valor': converter_valor_br(valor),
+                    'vencimento': vencimento,
+                })
         if parcelas:
-            dados['valores_parcelas'] = parcelas
+            dados['parcelas'] = parcelas
 
         # Executa validações de formulário
         erros = validar_dados_insercao(dados)

@@ -21,8 +21,15 @@
         this.onSubmitSuccess = this.options.onSubmitSuccess || null;
         this.onSubmitError = this.options.onSubmitError || null;
 
+        // Pega o modal pai pra acessar os totalizadores do footer
+        var modal = formEl.closest('.fin-modal-overlay') || formEl.closest('body');
+
+
         // Elementos internos (escopados — sem colisão)
         this.el = {
+            totalOriginal:  modal.querySelector('.js-total-original'),
+            somaParcelas:   modal.querySelector('.js-soma-parcelas'),
+            diferenca:      modal.querySelector('.js-diferenca-valor'),
             tipoHidden:        formEl.querySelector('.js-tipo-hidden'),
             tipoBtns:          formEl.querySelectorAll('.js-tipo-btn'),
             descricao:         formEl.querySelector('.js-descricao'),
@@ -31,7 +38,6 @@
             totalParcelas:     formEl.querySelector('.js-total-parcelas'),
             dataEmissao:       formEl.querySelector('.js-data-emissao'),
             dataVencimento:    formEl.querySelector('.js-data-vencimento'),
-            primeiroVenc:      formEl.querySelector('.js-primeiro-vencimento'),
             intervaloDias:     formEl.querySelector('.js-intervalo-dias'),
             parcelasConfig:    formEl.querySelector('.js-parcelas-config'),
             parcelasWrapper:   formEl.querySelector('.js-parcelas-wrapper'),
@@ -41,6 +47,7 @@
 
         // Estado interno das parcelas em modo edit (fonte da verdade do front)
         this._parcelasCarregadas = null;
+        this._datasEditadasManualmente = false;
 
         this._bind();
     }
@@ -61,13 +68,22 @@
             });
         });
 
-        // Máscara monetária + recálculo
         if (this.el.valorTotal) {
             this.el.valorTotal.addEventListener('input', function(e) {
                 if (window.FormatadoresFinancas) {
                     e.target.value = window.FormatadoresFinancas.mascaraMoeda(e.target);
                 }
-                self._recalcularSeVazio();
+                self._redistribuirValores();        // 🔥 redistribui nas parcelas
+                self._atualizarTotalizadores();     // 🔥 atualiza footer
+            });
+        }
+
+        // 🔥 Escuta mudanças de valores das parcelas (delegation)
+        if (this.el.parcelasBody) {
+            this.el.parcelasBody.addEventListener('input', function(e) {
+                if (e.target && e.target.classList.contains('js-parcela-valor')) {
+                    self._atualizarTotalizadores();
+                }
             });
         }
 
@@ -78,31 +94,111 @@
             });
         }
 
-        // Primeiro vencimento
-        if (this.el.primeiroVenc) {
-            this.el.primeiroVenc.addEventListener('change', function() {
-                self._onTotalParcelasChange();
-            });
-        }
-
         // Botão "Distribuir igualmente"
         if (this.el.btnDistribuir) {
             this.el.btnDistribuir.addEventListener('click', function() {
                 self.distribuirIgualmente();
             });
         }
+
+        // 🔥 Intervalo entre parcelas — recalcula datas SE o usuário não editou manualmente
+        if (this.el.intervaloDias) {
+            this.el.intervaloDias.addEventListener('input', function() {
+                self._recalcularDatasSeNaoEditadas();
+            });
+            this.el.intervaloDias.addEventListener('change', function() {
+                self._recalcularDatasSeNaoEditadas();
+            });
+        }
+   
+
+        // 🔥 Detecta edição manual em qualquer data de parcela (event delegation)
+        if (this.el.parcelasBody) {
+            this.el.parcelasBody.addEventListener('change', function(e) {
+                if (e.target && e.target.classList.contains('js-parcela-data')) {
+                    self._datasEditadasManualmente = true;
+                    console.log('🔓 Modo manual ativado — intervalo não vai mais sobrescrever');
+                }
+            });
+            this.el.parcelasBody.addEventListener('input', function(e) {
+                if (e.target && e.target.classList.contains('js-parcela-data')) {
+                    self._datasEditadasManualmente = true;
+                }
+            });
+        }
+
+        // Data de emissão — recalcula datas das parcelas SE o usuário não editou manualmente
+        if (this.el.dataEmissao) {
+            this.el.dataEmissao.addEventListener('change', function() {
+                self._recalcularDatasSeNaoEditadas();
+            });
+        }
+    };
+
+    TransacaoForm.prototype._redistribuirValores = function() {
+        var rows = this.el.parcelasBody ? this.el.parcelasBody.querySelectorAll('tr') : [];
+        if (rows.length <= 1) return; // 1 parcela, valor é o próprio total
+
+        var valorTotal = window.FormatadoresFinancas
+            ? window.FormatadoresFinancas.paraFloat(this.el.valorTotal.value)
+            : 0;
+        var n = rows.length;
+        var valorBase = Math.floor((valorTotal / n) * 100) / 100;
+        var resto = parseFloat((valorTotal - (valorBase * n)).toFixed(2));
+
+        rows.forEach(function(row, idx) {
+            var input = row.querySelector('.js-parcela-valor');
+            if (!input) return;
+            var v = (idx === 0) ? (valorBase + resto) : valorBase;
+            input.value = v.toFixed(2).replace('.', ',');
+        });
     };
 
     TransacaoForm.prototype._onTotalParcelasChange = function() {
-        // Se o usuário mudou o total de parcelas manualmente, descarta o cache
-        // das parcelas do banco e regenera do zero
         this._parcelasCarregadas = null;
+        this._datasEditadasManualmente = false;
+        this._toggleDataVencimento();
         this._renderParcelasDoZero();
+        this._atualizarTotalizadores();  
     };
 
-    TransacaoForm.prototype._recalcularSeVazio = function() {
-        // Se não há parcelas renderizadas ainda (create vazio), nada a fazer
-        if (!this.el.parcelasBody) return;
+    // 🔥 NOVO MÉTODO: esconde o input "Data Vencimento" quando tem mais de 1 parcela
+    TransacaoForm.prototype._toggleDataVencimento = function() {
+        var total = parseInt(this.el.totalParcelas ? this.el.totalParcelas.value : 1) || 1;
+        var grupo = this.el.dataVencimento ? this.el.dataVencimento.closest('.form-group') : null;
+
+        if (grupo) {
+            grupo.style.display = (total > 1) ? 'none' : '';
+        }
+    };
+
+    TransacaoForm.prototype._recalcularDatasSeNaoEditadas = function() {
+        // Se o usuário já editou uma data manualmente, respeita e não mexe
+        if (this._datasEditadasManualmente) return;
+
+        var rows = this.el.parcelasBody ? this.el.parcelasBody.querySelectorAll('tr') : [];
+        if (rows.length <= 1) return;
+
+        // 🔥 Base = data de emissão
+        var dataEmissao = this.el.dataEmissao ? this.el.dataEmissao.value : '';
+        if (!dataEmissao) return;
+
+        var intervalo = this.el.intervaloDias ? (parseInt(this.el.intervaloDias.value) || 30) : 30;
+        var dataBase = new Date(dataEmissao + 'T00:00:00');
+
+        rows.forEach(function(row, idx) {
+            var inputData = row.querySelector('.js-parcela-data');
+            if (!inputData) return;
+
+            // 🔥 Regra B: parcela (idx+1) = emissão + ((idx+1) * intervalo)
+            var d = new Date(dataBase.getTime());
+            d.setDate(d.getDate() + ((idx + 1) * intervalo));
+
+            var ano = d.getFullYear();
+            var mes = String(d.getMonth() + 1).padStart(2, '0');
+            var dia = String(d.getDate()).padStart(2, '0');
+            inputData.value = ano + '-' + mes + '-' + dia;
+        });
     };
 
     // ==========================================================
@@ -124,7 +220,6 @@
 
         if (this.el.dataEmissao)    this.el.dataEmissao.value = data.data_vencimento || '';
         if (this.el.dataVencimento) this.el.dataVencimento.value = data.data_vencimento || '';
-        if (this.el.primeiroVenc)   this.el.primeiroVenc.value = data.data_vencimento || '';
         if (this.el.categoria)      this.el.categoria.value = data.categoria_id || '';
         if (this.el.totalParcelas)  this.el.totalParcelas.value = data.total_parcelas || 1;
         if (this.el.tipoHidden)     this.el.tipoHidden.value = data.tipo || '';
@@ -145,6 +240,8 @@
         });
 
         this._parcelasCarregadas = (parcelas.length > 0) ? parcelas : null;
+        this._datasEditadasManualmente = false;   
+        this._toggleDataVencimento();  
 
         // Decide: renderiza do banco ou gera do zero
         if (this._parcelasCarregadas && this._parcelasCarregadas.length > 1) {
@@ -152,6 +249,7 @@
         } else {
             this._renderParcelasDoZero();
         }
+        this._atualizarTotalizadores();
     };
 
     // ==========================================================
@@ -188,7 +286,12 @@
             valor_total: valorTotal,
             data_emissao: this.el.dataEmissao ? this.el.dataEmissao.value : '',
             data_vencimento: this.el.dataVencimento ? this.el.dataVencimento.value : '',
-            primeiroVencimento: this.el.primeiroVenc ? this.el.primeiroVenc.value : '',
+            
+            primeiroVencimento: (function() {
+                var primeiraData = parcelas.length > 0 ? parcelas[0].vencimento : '';
+                return primeiraData || (this.el.dataVencimento ? this.el.dataVencimento.value : '');
+            }).call(this),
+
             intervaloDias: this.el.intervaloDias ? (parseInt(this.el.intervaloDias.value) || 30) : 30,
             total_parcelas: totalParcelas,
             parcelas: parcelas
@@ -201,6 +304,7 @@
     TransacaoForm.prototype.reset = function() {
         this.form.reset();
         this._parcelasCarregadas = null;
+        this._datasEditadasManualmente = false;   
 
         if (this.el.tipoHidden) this.el.tipoHidden.value = '';
         this.el.tipoBtns.forEach(function(b) { b.classList.remove('active'); });
@@ -213,6 +317,8 @@
             this.el.parcelasBody.innerHTML =
                 '<tr><td colspan="3" class="parcelas-vazio">Selecione mais de 1 parcela</td></tr>';
         }
+        this._toggleDataVencimento();  
+        this._atualizarTotalizadores();
     };
 
     // ==========================================================
@@ -285,6 +391,7 @@
                 '</tr>';
         });
         this.el.parcelasBody.innerHTML = html;
+        this._atualizarTotalizadores();
     };
 
     TransacaoForm.prototype._renderParcelasDoZero = function() {
@@ -297,6 +404,7 @@
             if (this.el.parcelasWrapper) this.el.parcelasWrapper.style.display = 'none';
             this.el.parcelasBody.innerHTML =
                 '<tr><td colspan="3" class="parcelas-vazio">Selecione mais de 1 parcela</td></tr>';
+            this._atualizarTotalizadores();
             return;
         }
 
@@ -320,18 +428,23 @@
         var valorBase = Math.floor((valorTotal / numParcelas) * 100) / 100;
         var resto = parseFloat((valorTotal - (valorBase * numParcelas)).toFixed(2));
 
-        var primeiroVenc = this.el.primeiroVenc ? this.el.primeiroVenc.value : '';
+        // 🔥 Base = data de emissão
+        var dataEmissao = this.el.dataEmissao ? this.el.dataEmissao.value : '';
         var intervalo = this.el.intervaloDias ? (parseInt(this.el.intervaloDias.value) || 30) : 30;
+        var dataBase = dataEmissao ? new Date(dataEmissao + 'T00:00:00') : new Date();
 
         var html = '';
-        var dataAtual = primeiroVenc ? new Date(primeiroVenc + 'T00:00:00') : new Date();
 
         for (var i = 1; i <= numParcelas; i++) {
             var valorParcela = (i === 1) ? (valorBase + resto) : valorBase;
 
-            var ano = dataAtual.getFullYear();
-            var mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-            var dia = String(dataAtual.getDate()).padStart(2, '0');
+            // 🔥 Regra B: parcela i = emissão + (i * intervalo)
+            var dataParcela = new Date(dataBase.getTime());
+            dataParcela.setDate(dataParcela.getDate() + (i * intervalo));
+
+            var ano = dataParcela.getFullYear();
+            var mes = String(dataParcela.getMonth() + 1).padStart(2, '0');
+            var dia = String(dataParcela.getDate()).padStart(2, '0');
             var dataFmt = ano + '-' + mes + '-' + dia;
 
             html += '<tr>' +
@@ -339,10 +452,9 @@
                 '<td><input type="text" class="form-control form-control-sm parcela-valor js-parcela-valor" value="' + valorParcela.toFixed(2).replace('.', ',') + '"></td>' +
                 '<td><input type="date" class="form-control form-control-sm parcela-data js-parcela-data" value="' + dataFmt + '"></td>' +
                 '</tr>';
-
-            dataAtual.setDate(dataAtual.getDate() + intervalo);
         }
         this.el.parcelasBody.innerHTML = html;
+        this._atualizarTotalizadores();
     };
 
     // ==========================================================
@@ -359,12 +471,34 @@
         var valorBase = Math.floor((valorTotal / n) * 100) / 100;
         var resto = parseFloat((valorTotal - (valorBase * n)).toFixed(2));
 
+        // 🔥 Base = data de emissão
+        var dataEmissao = this.el.dataEmissao ? this.el.dataEmissao.value : '';
+        var intervalo = this.el.intervaloDias ? (parseInt(this.el.intervaloDias.value) || 30) : 30;
+        var dataBase = dataEmissao ? new Date(dataEmissao + 'T00:00:00') : new Date();
+
         rows.forEach(function(row, idx) {
-            var input = row.querySelector('.js-parcela-valor');
-            if (!input) return;
-            var v = (idx === 0) ? (valorBase + resto) : valorBase;
-            input.value = v.toFixed(2).replace('.', ',');
+            // Valores
+            var inputValor = row.querySelector('.js-parcela-valor');
+            if (inputValor) {
+                var v = (idx === 0) ? (valorBase + resto) : valorBase;
+                inputValor.value = v.toFixed(2).replace('.', ',');
+            }
+
+            // 🔥 Datas: parcela (idx+1) = emissão + ((idx+1) * intervalo)
+            var inputData = row.querySelector('.js-parcela-data');
+            if (inputData) {
+                var d = new Date(dataBase.getTime());
+                d.setDate(d.getDate() + ((idx + 1) * intervalo));
+                var ano = d.getFullYear();
+                var mes = String(d.getMonth() + 1).padStart(2, '0');
+                var dia = String(d.getDate()).padStart(2, '0');
+                inputData.value = ano + '-' + mes + '-' + dia;
+            }
         });
+
+        this._parcelasCarregadas = null;
+        this._datasEditadasManualmente = false;
+        this._atualizarTotalizadores();
     };
 
     // ==========================================================
@@ -382,12 +516,50 @@
         fd.append('intervaloDias', data.intervaloDias);
         fd.append('primeiroVencimento', data.primeiroVencimento);
 
-        // Parcelas dinâmicas (formato esperado pelo backend: parcela_valor_1, parcela_valor_2...)
+        // 🔥 Manda VALOR e VENCIMENTO individuais de cada parcela
         (data.parcelas || []).forEach(function(p, i) {
             fd.append('parcela_valor_' + (i + 1), p.valor);
+            fd.append('parcela_vencimento_' + (i + 1), p.vencimento);  // 🔥 NOVO
         });
 
         return fd;
+    };
+
+    // ==========================================================
+    // TOTALIZADOR: Totaliza insert E edit
+    // ==========================================================
+    TransacaoForm.prototype._atualizarTotalizadores = function() {
+        var totalParcelas = this.el.totalParcelas ? (parseInt(this.el.totalParcelas.value) || 1) : 1;
+        var valorTotal = this.el.valorTotal && window.FormatadoresFinancas
+            ? window.FormatadoresFinancas.paraFloat(this.el.valorTotal.value)
+            : 0;
+
+        // Formata R$ XX,XX
+        var fmt = function(v) {
+            return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+
+        // Soma das parcelas
+        var soma = 0;
+        if (this.el.parcelasBody) {
+            this.el.parcelasBody.querySelectorAll('.js-parcela-valor').forEach(function(inp) {
+                soma += window.FormatadoresFinancas
+                    ? window.FormatadoresFinancas.paraFloat(inp.value)
+                    : parseFloat(inp.value) || 0;
+            });
+        }
+
+        var diferenca = valorTotal - soma;
+
+        // Mostra/esconde baseado no modo
+        var mostrar = totalParcelas > 1;
+        var wrapper = this.el.totalOriginal ? this.el.totalOriginal.closest('.totalizador-footer-padrao') : null;
+        if (wrapper) wrapper.style.visibility = mostrar ? 'visible' : 'hidden';
+
+        // Atualiza valores
+        if (this.el.totalOriginal) this.el.totalOriginal.textContent = fmt(valorTotal);
+        if (this.el.somaParcelas)  this.el.somaParcelas.textContent  = fmt(soma);
+        if (this.el.diferenca)     this.el.diferenca.textContent     = fmt(diferenca);
     };
 
     // ==========================================================

@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <!-- CONFIGURAÇÕES DE PARCELAS -->
+    <!-- CONFIGURAÇÕES DE PARCELAS (só o intervalo — sem 1º vencimento) -->
     <div class="parcelas-config-area js-parcelas-config" style="display: none;">
         <div class="parcelas-config-painel">
             <div class="parcelas-config-row">
@@ -97,13 +97,6 @@
                     </div>
                 </div>
                 <div class="parcelas-config-item">
-                    <label>1º Vencimento</label>
-                    <input type="date"
-                           name="primeiro_vencimento"
-                           class="form-input js-primeiro-vencimento"
-                           value="{{ hoje }}">
-                </div>
-                <div class="parcelas-config-item">
                     <label>&nbsp;</label>
                     <button type="button" class="btn-distribuir js-btn-distribuir">
                         <i class="bi bi-calculator"></i> Distribuir igualmente
@@ -113,7 +106,7 @@
         </div>
     </div>
 
-    <!-- TABELA DE PARCELAS -->
+        <!-- TABELA DE PARCELAS -->
     <div class="parcelas-wrapper js-parcelas-wrapper" style="display: none;">
         <div class="parcelas-table-wrapper">
             <table class="parcelas-table">

@@ -97,7 +97,8 @@ class InserirTransacaoService:
     @staticmethod
     def criar_transacao_parcelada(cursor, user_id, dados):
         """
-        Cria uma transação PAI (registro agrupador sem sequência numérica visual) e N transações FILHAS.
+        Cria uma transação PAI (registro agrupador sem sequência) e N transações FILHAS.
+        🔥 As datas e valores das filhas vêm do front (respeitam edição manual).
         """
         try:
             total_parcelas = int(dados['total_parcelas'])
@@ -106,22 +107,42 @@ class InserirTransacaoService:
 
             intervalo_dias = int(dados.get('intervalo_dias') or 30)
             hoje_cuiaba = obter_hoje_cuiaba()
-            
+
             data_emissao = dados.get('data_emissao') or hoje_cuiaba
-            primeiro_vencimento = dados.get('primeiro_vencimento') or dados.get('data_vencimento') or data_emissao
             valor_total = float(dados['valor_total'])
 
-            # 1. Cálculo dos valores de cada parcela
-            if dados.get('valores_parcelas') and len(dados['valores_parcelas']) == total_parcelas:
-                valores_parcelas = [float(v) for v in dados['valores_parcelas']]
-            else:
+            # 🔥 FONTE DA VERDADE: parcelas que vieram do front
+            parcelas_input = dados.get('parcelas') or []
+
+            # Fallback: se o front não mandou, gera com intervalo
+            if not parcelas_input or len(parcelas_input) != total_parcelas:
+                primeiro_vencimento = (
+                    dados.get('primeiro_vencimento')
+                    or dados.get('primeiroVencimento')
+                    or dados.get('data_vencimento')
+                    or data_emissao
+                )
+                data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
+
                 valor_por_parcela = round(valor_total / total_parcelas, 2)
                 valores_parcelas = [valor_por_parcela] * total_parcelas
                 diferenca = round(valor_total - sum(valores_parcelas), 2)
                 if diferenca != 0:
                     valores_parcelas[-1] = round(valores_parcelas[-1] + diferenca, 2)
 
-            # 💡 2. Cria a Transação PAI COM 'sequencia_transacoes' COMO NULL (Não consome número da sequência visual!)
+                parcelas_input = []
+                for i in range(1, total_parcelas + 1):
+                    if i == 1:
+                        data_venc = primeiro_vencimento
+                    else:
+                        data_venc = (data_base + timedelta(days=(i - 1) * intervalo_dias)).strftime('%Y-%m-%d')
+                    parcelas_input.append({
+                        'numero': i,
+                        'valor': valores_parcelas[i - 1],
+                        'vencimento': data_venc,
+                    })
+
+            # 💡 1. Cria a Transação PAI (sequencia_transacoes = NULL)
             cursor.execute("""
                 INSERT INTO transacoes (
                     user_id, sequencia_transacoes, tipo,
@@ -132,30 +153,24 @@ class InserirTransacaoService:
                 VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, NULL, 'aberto', 1)
                 RETURNING id
             """, (
-                user_id, 
+                user_id,
                 dados['tipo'],
-                valor_total, 
-                dados['descricao'], 
+                valor_total,
+                dados['descricao'],
                 dados['categoria_id'],
-                data_emissao, 
-                primeiro_vencimento,
-                total_parcelas, 
+                data_emissao,
+                parcelas_input[0]['vencimento'],   # 1º venc = data da parcela 1
+                total_parcelas,
                 intervalo_dias
             ))
 
             pai_id = cursor.fetchone()[0]
 
-            # 3. Cria as Transações FILHAS (Elas sim ganham a sequência numérica contínua oficial)
-            data_base = datetime.strptime(primeiro_vencimento, '%Y-%m-%d')
-
-            for i in range(1, total_parcelas + 1):
-                if i == 1:
-                    data_venc_parcela = primeiro_vencimento
-                else:
-                    data_venc_parcela = (data_base + timedelta(days=(i - 1) * intervalo_dias)).strftime('%Y-%m-%d')
-
-                valor_parcela = valores_parcelas[i - 1]
+            # 2. Cria as FILHAS usando EXATAMENTE o que veio do front
+            for i, p in enumerate(parcelas_input, start=1):
                 sequencia_parcela = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
+                valor_parcela = float(p['valor'])
+                data_venc_parcela = p['vencimento']
 
                 cursor.execute("""
                     INSERT INTO transacoes (
@@ -167,17 +182,17 @@ class InserirTransacaoService:
                     )
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
                 """, (
-                    user_id, 
-                    sequencia_parcela, 
+                    user_id,
+                    sequencia_parcela,
                     dados['tipo'],
-                    valor_total, 
-                    valor_parcela, 
-                    f"{dados['descricao']} ({i}/{total_parcelas})", 
+                    valor_total,
+                    valor_parcela,
+                    f"{dados['descricao']} ({i}/{total_parcelas})",
                     dados['categoria_id'],
-                    data_emissao, 
+                    data_emissao,
                     data_venc_parcela,
-                    total_parcelas, 
-                    i, 
+                    total_parcelas,
+                    i,
                     i,
                     pai_id
                 ))
