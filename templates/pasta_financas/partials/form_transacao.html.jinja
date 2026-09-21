@@ -1,3 +1,4 @@
+<!-- templates\pasta_financas\partials\form_transacao.html.jinja -->
 <!-- ========================================================== -->
 <!-- PARTIAL: CAMPOS DA TRANSAÇÃO (NOVO / EDIT) - v2             -->
 <!-- Sem IDs globais. Tudo via .js-* para o TransacaoForm achar. -->
@@ -46,10 +47,13 @@
     <div class="form-grid-4">
         <div class="form-group">
             <label>Valor Total</label>
-            <input type="text"
-                   name="valor_total"
-                   class="form-input money-input js-valor-total"
-                   value="0,00">
+            <div class="input-com-prefixo">
+                <span class="prefixo-moeda">R$</span>
+                <input type="text"
+                    name="valor_total"
+                    class="money-input js-valor-total"
+                    value="0,00">
+            </div>
         </div>
 
         <div class="form-group">

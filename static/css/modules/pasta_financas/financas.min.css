@@ -1,4 +1,4 @@
-/* COMBINADO - 11/09/2026 22:39 */
+/* COMBINADO - 21/09/2026 12:48 */
 
 /* ===== reset.css ===== */
 /* ==========================================================================
@@ -1721,6 +1721,8 @@ h2 {
 }
 
 /* ===== form_transacao.css ===== */
+/* static\css\modules\pasta_financas\components\form_transacao.css */
+
 /* ========================================================== */
 /* FORM TRANSAÇÃO - PROFISSIONAL                             */
 /* ========================================================== */
@@ -1953,7 +1955,53 @@ h2 {
 }
 
 /* ========================================================== */
-/* 7. RESPONSIVO                                              */
+/* 7. INPUT COM PREFIXO (R$, %, etc.)                         */
+/* ========================================================== */
+.input-com-prefixo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-principal);
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    padding: 0 12px;
+    height: 40px;
+    transition: all 0.2s ease;
+}
+
+.input-com-prefixo:focus-within {
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-com-prefixo .prefixo-moeda {
+    color: var(--texto-mutado);
+    font-weight: 600;
+    font-size: 0.9rem;
+    user-select: none;
+    pointer-events: none;
+}
+
+.input-com-prefixo input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--texto-principal);
+    font-size: 0.9rem;
+    font-family: inherit;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.input-com-prefixo input::placeholder {
+    color: var(--texto-discreto);
+    font-size: 0.8rem;
+}
+
+/* ========================================================== */
+/* 8. RESPONSIVO                                              */
 /* ========================================================== */
 @media (max-width: 1024px) {
     .form-grid {

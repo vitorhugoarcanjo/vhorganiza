@@ -1,3 +1,4 @@
+// static\js\modules\pasta_financas\core\TransacaoForm.js
 // ==========================================================
 // TransacaoForm - Classe única para os modais Nova e Editar
 // ==========================================================
@@ -551,15 +552,27 @@
 
         var diferenca = valorTotal - soma;
 
-        // Mostra/esconde baseado no modo
-        var mostrar = totalParcelas > 1;
-        var wrapper = this.el.totalOriginal ? this.el.totalOriginal.closest('.totalizador-footer-padrao') : null;
-        if (wrapper) wrapper.style.visibility = mostrar ? 'visible' : 'hidden';
+        // 🔥 Valor Total SEMPRE visível. Soma/Diferença só se > 1 parcela.
+        var mostrarSoma = totalParcelas > 1;
 
         // Atualiza valores
         if (this.el.totalOriginal) this.el.totalOriginal.textContent = fmt(valorTotal);
         if (this.el.somaParcelas)  this.el.somaParcelas.textContent  = fmt(soma);
         if (this.el.diferenca)     this.el.diferenca.textContent     = fmt(diferenca);
+
+        // 🔥 Mostra/esconde os blocos individualmente
+        if (this.el.totalOriginal) {
+            var blocoTotal = this.el.totalOriginal.closest('.total-item-footer');
+            if (blocoTotal) blocoTotal.style.display = '';  // sempre visível
+        }
+        if (this.el.somaParcelas) {
+            var blocoSoma = this.el.somaParcelas.closest('.total-item-footer');
+            if (blocoSoma) blocoSoma.style.display = mostrarSoma ? '' : 'none';
+        }
+        if (this.el.diferenca) {
+            var blocoDif = this.el.diferenca.closest('.total-item-footer');
+            if (blocoDif) blocoDif.style.display = mostrarSoma ? '' : 'none';
+        }
     };
 
     // ==========================================================
