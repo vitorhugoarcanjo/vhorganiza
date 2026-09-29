@@ -1,11 +1,10 @@
-// static\js\modules\pasta_financas\acoes_e_modais\pasta_excluir\excluir_financas.js
-// Sistema de Exclusão de Finanças - UNIFICADO
+// Sistema de Exclusão de Finanças - UNIFICADO + Delegation
 (function() {
     // ===== PARTE 1: CONFIGURA O MODAL =====
     function initModal() {
         const modal = document.getElementById("modalExcluirFinancas");
         if (!modal) return;
-        
+
         if (!window.abrirModalExcluirFinancas) {
             window.abrirModalExcluirFinancas = function({ titulo, texto, onConfirm }) {
                 const modalEl = document.getElementById("modalExcluirFinancas");
@@ -34,7 +33,7 @@
                 btnConfirmar.onclick = async () => {
                     if (bloqueio) return;
                     bloqueio = true;
-                    
+
                     const originalText = btnConfirmar.innerText;
                     btnConfirmar.innerText = "Processando...";
 
@@ -61,18 +60,11 @@
             };
         }
     }
-    
-    // ===== PARTE 2: CONFIGURA OS BOTÕES =====
-    function initBotoes() {
-        document.querySelectorAll('.btn-excluir').forEach(btn => {
-            btn.onclick = null;
-            btn.addEventListener('click', handleExcluirClick);
-        });
-    }
-    
-    async function handleExcluirClick(e) {
+
+    // ===== PARTE 2: HANDLER DO CLIQUE =====
+    async function handleExcluirClick(e, btn) {
         e.preventDefault();
-        const btn = e.currentTarget;
+
         const id = btn.dataset.id;
         const descricao = btn.dataset.desc;
 
@@ -85,7 +77,7 @@
         window.abrirModalExcluirFinancas({
             titulo: "Inativar Transação",
             texto: `Deseja inativar a transação: "${descricao}"?`,
-            
+
             onConfirm: async () => {
                 try {
                     btn.disabled = true;
@@ -122,50 +114,41 @@
                     } else {
                         // CASO: É uma parcela
                         if (data.tipo_parcelamento === 'parcela') {
-                            // Restaura o botão original
                             btn.disabled = false;
                             btn.style.opacity = '1';
                             btn.innerHTML = '<i class="bi bi-trash"></i>';
-                            
-                            // Fecha o modal atual
+
                             const modalEl = document.getElementById("modalExcluirFinancas");
                             if (modalEl) modalEl.classList.remove('active');
-                            
-                            // Limpa pendente anterior
+
                             window.parcelamentoPendente = null;
-                            
-                            // Delay para garantir que o modal anterior fechou
+
                             setTimeout(() => {
-                                // Abre NOVO modal perguntando sobre inativar todas as parcelas
                                 window.abrirModalExcluirFinancas({
                                     titulo: "⚠️ Atenção! Parcelamento Detectado",
                                     texto: `${data.mensagem}\n\nDeseja inativar TODAS as parcelas deste parcelamento?`,
                                     onConfirm: async () => {
-                                        // Desabilita o botão original novamente
                                         btn.disabled = true;
                                         btn.style.opacity = '0.5';
                                         btn.innerHTML = '⏳';
-                                        
+
                                         await excluirParcelamentoCompleto(data.transacao_pai_id, btn);
                                     }
                                 });
                             }, 200);
-                            
-                            // Interrompe o fluxo do onConfirm
+
                             throw new Error('parcela_detectada');
                         }
-                        
+
                         // CASO: É transação principal com parcelas
                         if (data.tipo_parcelamento === 'transacao_com_parcelas') {
-                            // Restaura o botão original
                             btn.disabled = false;
                             btn.style.opacity = '1';
                             btn.innerHTML = '<i class="bi bi-trash"></i>';
-                            
-                            // Fecha o modal atual
+
                             const modalEl = document.getElementById("modalExcluirFinancas");
                             if (modalEl) modalEl.classList.remove('active');
-                            
+
                             setTimeout(() => {
                                 window.abrirModalExcluirFinancas({
                                     titulo: "⚠️ Atenção! Transação com Parcelas",
@@ -178,10 +161,10 @@
                                     }
                                 });
                             }, 200);
-                            
+
                             throw new Error('parcela_detectada');
                         }
-                        
+
                         throw new Error(data.error);
                     }
 
@@ -196,7 +179,7 @@
             }
         });
     }
-    
+
     // FUNÇÃO PARA EXCLUIR PARCELAMENTO COMPLETO
     async function excluirParcelamentoCompleto(transacaoPaiId, btnOriginal) {
         try {
@@ -207,9 +190,9 @@
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 if (window.Notificacao) window.Notificacao.sucesso(data.message || 'Parcelamento inativado com sucesso!');
                 setTimeout(() => {
@@ -227,15 +210,26 @@
             }
         }
     }
-    
+
+    // ===== PARTE 3: DELEGATION (o fix) =====
+    // 🔥 UM listener no document. Funciona pra botões que existem agora
+    //    e pra botões que o HTMX vai criar no futuro.
+    function initDelegation() {
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-excluir');
+            if (!btn) return;
+            handleExcluirClick(e, btn);
+        });
+    }
+
     // ===== INICIALIZA =====
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             initModal();
-            initBotoes();
+            initDelegation();
         });
     } else {
         initModal();
-        initBotoes();
+        initDelegation();
     }
 })();
