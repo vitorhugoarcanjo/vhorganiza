@@ -1,3 +1,4 @@
+// static\js\modules\pasta_financas\acoes_e_modais\pasta_excluir\excluir_financas.js
 // Sistema de Exclusão de Finanças - UNIFICADO
 (function() {
     // ===== PARTE 1: CONFIGURA O MODAL =====

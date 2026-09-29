@@ -1,3 +1,4 @@
+# rotas\pasta_financas\crud\pasta_delete\delete_transacao.py
 from flask import jsonify, session
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao

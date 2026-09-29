@@ -1,3 +1,4 @@
+# rotas\pasta_financas\__init__.py
 from flask import Blueprint
 
 # BLUEPRINT PRINCIPAL - FINANÇAS
