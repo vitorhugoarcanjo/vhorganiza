@@ -57,9 +57,9 @@
                             
                             <!-- CATEGORIA -->
                             <td>
-                                {% if transacao['categoria'] %}
-                                    <span class="badge-pure tag-categoria" style="background-color: {{ transacao['cor_categoria'] or '#6c757d' }}; color: white; border: none;">
-                                        {{ transacao['categoria'] }}
+                                {% if transacao['categoria_nome'] %}
+                                    <span class="badge-pure tag-categoria" style="background-color: {{ transacao['categoria_cor'] or '#6c757d' }}; color: white; border: none;">
+                                        {{ transacao['categoria_nome'] }}
                                     </span>
                                 {% else %}
                                     <span class="text-vazio">-</span>

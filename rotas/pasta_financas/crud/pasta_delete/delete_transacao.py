@@ -94,13 +94,13 @@ def ini_inativar_financas(bp):
         try:
             conexao, cursor = ini_conexao()
 
-            # BUSCA A DESCRICAO DA TRANSACAO PRINCIPAL
+            # 🔥 FIX: busca o PAI pelo ID (não por sequencia_transacoes, que é NULL no pai)
             cursor.execute("""
                 SELECT descricao, data_vencimento, status, total_parcelas
                 FROM transacoes
-                WHERE sequencia_transacoes = %s AND user_id = %s
+                WHERE id = %s AND user_id = %s
             """, (transacao_pai_id, session['user_id']))
-            
+
             transacao_principal = cursor.fetchone()
 
             if not transacao_principal:
@@ -109,18 +109,17 @@ def ini_inativar_financas(bp):
                     'error': 'Transação principal não encontrada.'
                 }), 404
 
-            # Índices: 0=descricao, 1=data_vencimento, 2=status, 3=total_parcelas
             descricao = transacao_principal[0]
             total_parcelas = transacao_principal[3]
 
-            # INATIVA A TRANSAÇÃO PRINCIPAL E TODAS AS PARCELAS
+            # Inativa o PAI + todas as FILHAS
             cursor.execute("""
                 UPDATE transacoes
                 SET ativo = 0,
                     excluido_em = CURRENT_TIMESTAMP,
                     excluido_por = %s,
                     data_alteracao = CURRENT_TIMESTAMP
-                WHERE (sequencia_transacoes = %s OR transacao_pai_id = %s)
+                WHERE (id = %s OR transacao_pai_id = %s)
                 AND user_id = %s
                 AND ativo = 1
             """, (session['user_id'], transacao_pai_id, transacao_pai_id, session['user_id']))
@@ -133,7 +132,7 @@ def ini_inativar_financas(bp):
                 'message': f'Parcelamento "{descricao}" e suas {total_parcelas} parcelas foram inativados.',
                 'total_parcelas': total_afetadas
             }), 200
-        
+
         except Exception as e:
             logger.error(f"Erro ao inativar parcelamento: {e}")
             return jsonify({

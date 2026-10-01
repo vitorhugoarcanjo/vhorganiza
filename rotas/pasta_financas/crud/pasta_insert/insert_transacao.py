@@ -1,3 +1,5 @@
+# rotas\pasta_financas\crud\pasta_insert\insert_transacao.py
+
 import traceback
 from flask import request, session, jsonify, render_template
 from rotas.middleware.autenticacao import login_required

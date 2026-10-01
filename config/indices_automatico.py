@@ -22,6 +22,13 @@ def criar_indices(cursor):
         ("idx_transacoes_user_tipo", "transacoes", "user_id, tipo"),
         ("idx_transacoes_user_status", "transacoes", "user_id, status"),
         ("idx_transacoes_user_data_emissao", "transacoes", "user_id, data_emissao"),
+        ("idx_transacoes_pai", "transacoes", "transacao_pai_id"),
+        ("idx_transacoes_user_pai", "transacoes", "user_id, transacao_pai_id"),
+        ("idx_transacoes_user_ativo", "transacoes", "user_id, ativo"),
+        ("idx_transacoes_user_ativo_emissao", "transacoes", "user_id, ativo, data_emissao DESC"),
+        ("idx_transacoes_user_sequencia", "transacoes", "user_id, sequencia_transacoes"),
+        ("idx_transacoes_sequencia_user", "transacoes", "sequencia_transacoes, user_id"),
+        ("idx_transacoes_categoria_id", "transacoes", "categoria_id"),
         
         # CATEGORIAS
         ("idx_categorias_tarefas_user_id", "categorias_tarefas", "user_id"),
