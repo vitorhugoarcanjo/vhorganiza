@@ -4,7 +4,6 @@
 # EDITAR TRANSAÇÃO - SERVICES
 # ==========================================================
 
-from datetime import datetime, date, timedelta
 import json
 import logging
 
@@ -38,7 +37,7 @@ class EditarTransacaoService:
         cursor.execute("""
             SELECT id, sequencia_transacoes, tipo, descricao, valor_total,
                    data_vencimento, categoria_id, status,
-                   numero_parcela, total_parcelas, transacao_pai_id
+                   numero_parcela, total_parcelas, transacao_pai_id, data_emissao
             FROM transacoes
             WHERE sequencia_transacoes = %s AND user_id = %s
         """, (sequencia, user_id))
@@ -49,7 +48,7 @@ class EditarTransacaoService:
         cursor.execute("""
             SELECT id, sequencia_transacoes, tipo, descricao, valor_total,
                    data_vencimento, categoria_id, status,
-                   numero_parcela, total_parcelas, transacao_pai_id
+                   numero_parcela, total_parcelas, transacao_pai_id, data_emissao
             FROM transacoes
             WHERE id = %s AND user_id = %s
         """, (transacao_id, user_id))
@@ -85,27 +84,6 @@ class EditarTransacaoService:
         """, (pai_id,))
         return cursor.fetchall()
 
-    # ==========================================================
-    # SERIALIZAÇÃO PRO MODAL
-    # ==========================================================
-    @staticmethod
-    def data_para_dicionario(transacao_raw):
-        if not transacao_raw:
-            return None
-        return {
-            'id': transacao_raw[0],
-            'sequencia_transacoes': transacao_raw[1],
-            'tipo': transacao_raw[2],
-            'descricao': transacao_raw[3],
-            'valor_total': transacao_raw[4],
-            'data_vencimento': str(transacao_raw[5]) if transacao_raw[5] else '',
-            'categoria_id': transacao_raw[6],
-            'status': transacao_raw[7],
-            'numero_parcelas': transacao_raw[8],
-            'total_parcelas': transacao_raw[9] or 1,
-            'transacao_pai_id': transacao_raw[10]
-        }
-
     @staticmethod
     def formatar_transacao_para_modal(transacao_raw, parcelas_raw):
         lista_parcelas = []
@@ -127,6 +105,8 @@ class EditarTransacaoService:
 
     # ==========================================================
     # ATUALIZAR TRANSAÇÃO
+    # 🔥 A QUANTIDADE de parcelas é IMUTÁVEL
+    # 🔥 Só edita descrição, valor total, datas, categoria e valores/datas individuais
     # ==========================================================
     @staticmethod
     def atualizar_transacao(cursor, conexao, sequencia_ou_id, user_id, dados):
@@ -143,7 +123,6 @@ class EditarTransacaoService:
         data_emissao = dados.get('data_emissao') or None
         data_vencimento = dados.get('data_vencimento') or None
         categoria_id = dados.get('categoria_id') or None
-        total_parcelas = int(dados.get('total_parcelas', 1))
 
         dados_antes = (
             transacao_atual[4], transacao_atual[3], transacao_atual[5],
@@ -152,6 +131,7 @@ class EditarTransacaoService:
         total_parcelas_antes = transacao_atual[9] or 1
 
         # Atualiza o PAI (ou a transação simples)
+        # 🔥 NÃO atualiza total_parcelas (quantidade é imutável)
         cursor.execute("""
             UPDATE transacoes
             SET descricao = %s,
@@ -159,25 +139,18 @@ class EditarTransacaoService:
                 data_emissao = %s,
                 data_vencimento = %s,
                 categoria_id = %s,
-                total_parcelas = %s,
                 data_alteracao = CURRENT_TIMESTAMP
             WHERE id = %s AND user_id = %s
         """, (descricao, valor, data_emissao, data_vencimento, categoria_id,
-              total_parcelas, pai_id_real, user_id))
+              pai_id_real, user_id))
 
-        # Se envolve parcelamento, gerencia as filhas
-        if total_parcelas > 1 or total_parcelas_antes > 1:
-            EditarTransacaoService._gerenciar_parcelas(
+        # 🔥 Se era parcelada, atualiza as filhas (sem mexer em quantidade)
+        if total_parcelas_antes > 1:
+            EditarTransacaoService._atualizar_filhas(
                 cursor=cursor,
                 pai_id=pai_id_real,
-                user_id=user_id,
-                tipo=tipo,
                 descricao=descricao,
-                valor=valor,
-                total_parcelas=total_parcelas,
-                total_parcelas_antes=total_parcelas_antes,
-                intervalo_dias=dados.get('intervaloDias', 30),
-                primeiro_vencimento=dados.get('primeiroVencimento') or data_vencimento or data_emissao,
+                tipo=tipo,
                 parcelas_input=dados.get('parcelas', []),
                 data_emissao=data_emissao,
                 categoria_id=categoria_id,
@@ -194,157 +167,55 @@ class EditarTransacaoService:
         }
 
     # ==========================================================
-    # GERENCIAR PARCELAS (criar/atualizar/remover filhas)
-    # 🔥 FONTE DA VERDADE: dados.get('parcelas') do front
+    # ATUALIZAR FILHAS
+    # 🔥 NÃO cria, NÃO deleta — a quantidade é imutável.
+    # 🔥 FONTE DA VERDADE: dados['parcelas'] do front
     # ==========================================================
     @staticmethod
-    def _gerenciar_parcelas(cursor, pai_id, user_id, tipo, descricao, valor,
-                            total_parcelas, total_parcelas_antes, intervalo_dias,
-                            primeiro_vencimento, parcelas_input, data_emissao,
-                            categoria_id):
+    def _atualizar_filhas(cursor, pai_id, descricao, tipo, parcelas_input, data_emissao, categoria_id):
+        if not parcelas_input:
+            return
 
-        # Busca filhas ativas atuais
+        # Busca filhas ativas
         cursor.execute("""
-            SELECT id, sequencia_transacoes, numero_parcela, valor_total, data_vencimento
+            SELECT id, numero_parcela
             FROM transacoes
             WHERE transacao_pai_id = %s AND ativo = 1
             ORDER BY numero_parcela
         """, (pai_id,))
-        parcelas_existentes = cursor.fetchall()
+        existentes = cursor.fetchall()
 
-        # ======================================================
-        # CASO 1: continua parcelada (total > 1)
-        # ======================================================
-        if total_parcelas > 1:
+        # Mapeia numero_parcela -> id
+        mapa = {row[1]: row[0] for row in existentes}
+        total = len(existentes)
 
-            # 🔥 Monta a lista de parcelas finais — prioriza o FRONT
-            parcelas_finais = []
+        for p in parcelas_input:
+            num = int(p.get('numero') or 0)
+            if num not in mapa:
+                continue   # segurança: ignora parcelas que não existem
 
-            if parcelas_input and len(parcelas_input) == total_parcelas:
-                # Fonte da verdade: front
-                for i, p in enumerate(parcelas_input, start=1):
-                    parcelas_finais.append({
-                        'numero': i,
-                        'valor': float(p['valor']),
-                        'vencimento': p['vencimento'],
-                    })
-            else:
-                # Fallback: recalcula (só se o front não mandou nada)
-                valor_por_parcela = round(valor / total_parcelas, 2)
-                valores = [valor_por_parcela] * total_parcelas
-                dif = round(valor - sum(valores), 2)
-                if dif != 0:
-                    valores[-1] = round(valores[-1] + dif, 2)
+            parcela_id = mapa[num]
+            valor = float(p['valor'])
+            vencimento = p['vencimento']
 
-                if not primeiro_vencimento:
-                    primeiro_vencimento = datetime.now().strftime('%Y-%m-%d')
-                elif isinstance(primeiro_vencimento, (datetime, date)):
-                    primeiro_vencimento = primeiro_vencimento.strftime('%Y-%m-%d')
-
-                data_base = datetime.strptime(str(primeiro_vencimento)[:10], '%Y-%m-%d')
-
-                for i in range(1, total_parcelas + 1):
-                    if i == 1:
-                        data_venc = primeiro_vencimento
-                    else:
-                        data_venc = (data_base + timedelta(days=(i - 1) * int(intervalo_dias or 30))).strftime('%Y-%m-%d')
-
-                    parcelas_finais.append({
-                        'numero': i,
-                        'valor': valores[i - 1],
-                        'vencimento': data_venc,
-                    })
-
-            # Se o total DIMINUIU: desativa as filhas que sobraram
-            if len(parcelas_existentes) > total_parcelas:
-                cursor.execute("""
-                    UPDATE transacoes
-                    SET ativo = 0, excluido_em = CURRENT_TIMESTAMP
-                    WHERE transacao_pai_id = %s AND ativo = 1 AND numero_parcela > %s
-                """, (pai_id, total_parcelas))
-
-            # Atualiza ou cria cada parcela
-            for i, p in enumerate(parcelas_finais, start=1):
-                valor_parcela = p['valor']
-                data_venc_parcela = p['vencimento']
-
-                parcela_existente = next((x for x in parcelas_existentes if x[2] == i), None)
-
-                if parcela_existente:
-                    # UPDATE com data/valor/categoria/emissão EXATOS
-                    cursor.execute("""
-                        UPDATE transacoes
-                        SET valor_total = %s,
-                            valor_parcela = %s,
-                            data_vencimento = %s,
-                            descricao = %s,
-                            categoria_id = %s,
-                            data_emissao = %s,
-                            total_parcelas = %s,
-                            data_alteracao = CURRENT_TIMESTAMP
-                        WHERE id = %s
-                    """, (
-                        valor_parcela,
-                        valor_parcela,
-                        data_venc_parcela,
-                        f'{descricao} ({i}/{total_parcelas})',
-                        categoria_id,
-                        data_emissao,
-                        total_parcelas,
-                        parcela_existente[0]
-                    ))
-                else:
-                    # INSERT de parcela nova (total aumentou)
-                    sequencia_parcela = EditarTransacaoService._get_proxima_sequencia(cursor, user_id)
-                    cursor.execute("""
-                        INSERT INTO transacoes (
-                            user_id, sequencia_transacoes, tipo,
-                            valor_total, valor_parcela, descricao, categoria_id,
-                            data_emissao, data_vencimento,
-                            total_parcelas, numero_parcela, sequencia_parcela,
-                            transacao_pai_id, status, ativo
-                        )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'aberto', 1)
-                    """, (
-                        user_id,
-                        sequencia_parcela,
-                        tipo,
-                        valor_parcela,
-                        valor_parcela,
-                        f'{descricao} ({i}/{total_parcelas})',
-                        categoria_id,
-                        data_emissao,
-                        data_venc_parcela,
-                        total_parcelas,
-                        i,
-                        i,
-                        pai_id
-                    ))
-
-            # Atualiza o intervalo do PAI
             cursor.execute("""
                 UPDATE transacoes
-                SET intervalo_dias = %s
-                WHERE id = %s AND user_id = %s
-            """, (intervalo_dias, pai_id, user_id))
-
-        # ======================================================
-        # CASO 2: virou simples (era parcelada, virou 1 parcela)
-        # ======================================================
-        elif total_parcelas_antes > 1 and total_parcelas == 1:
-            cursor.execute("""
-                UPDATE transacoes
-                SET ativo = 0, excluido_em = CURRENT_TIMESTAMP
-                WHERE transacao_pai_id = %s AND ativo = 1
-            """, (pai_id,))
-
-    # ==========================================================
-    # HELPER: próxima sequência visual
-    # ==========================================================
-    @staticmethod
-    def _get_proxima_sequencia(cursor, user_id):
-        cursor.execute(
-            "SELECT COALESCE(MAX(sequencia_transacoes), 0) + 1 FROM transacoes WHERE user_id = %s",
-            (user_id,)
-        )
-        return cursor.fetchone()[0]
+                SET valor_total = %s,
+                    valor_parcela = %s,
+                    data_vencimento = %s,
+                    descricao = %s,
+                    categoria_id = %s,
+                    data_emissao = %s,
+                    total_parcelas = %s,
+                    data_alteracao = CURRENT_TIMESTAMP
+                WHERE id = %s
+            """, (
+                valor,
+                valor,
+                vencimento,
+                f'{descricao} ({num}/{total})',
+                categoria_id,
+                data_emissao,
+                total,
+                parcela_id
+            ))

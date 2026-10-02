@@ -69,6 +69,7 @@ def dados_json(sequencia):
                 'tipo': transacao[2],
                 'descricao': transacao[3] or '',
                 'valor_total': float(transacao[4]) if transacao[4] else 0.0,
+                'data_emissao': _formatar_data_iso(transacao[11]),
                 'data_vencimento': _formatar_data_iso(transacao[5]),
                 'categoria_id': transacao[6],
                 'status': transacao[7],
@@ -108,13 +109,6 @@ def salvar_edicao(sequencia):
             dados['valor_total'] = converter_valor_br(str(dados.get('valor_total')))
         else:
             dados['valor_total'] = 0.0
-
-        dados['intervaloDias'] = dados.get('intervaloDias') or dados.get('intervalo_dias', 30)
-        dados['primeiroVencimento'] = (
-            dados.get('primeiroVencimento')
-            or dados.get('primeiro_vencimento')
-            or dados.get('data_vencimento')
-        )
 
         erros = validar_dados_edicao(dados)
         if erros:

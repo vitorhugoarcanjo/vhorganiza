@@ -1,3 +1,5 @@
+// static\js\modules\pasta_financas\modals\transacao-editar.js
+
 // ==========================================================
 // MODAL EDITAR TRANSAÇÃO - v3 (HTMX injeta, JS popula)
 // ==========================================================

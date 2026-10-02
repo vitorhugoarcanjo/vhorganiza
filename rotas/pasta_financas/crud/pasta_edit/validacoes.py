@@ -1,3 +1,4 @@
+# rotas\pasta_financas\crud\pasta_edit\validacoes.py
 # ==========================================================
 # EDITAR TRANSAÇÃO - VALIDAÇÕES
 # ==========================================================
@@ -20,15 +21,6 @@ def validar_dados_edicao(dados):
             erros.append({'campo': 'valor_total', 'mensagem': 'Valor deve ser maior que zero'})
     except (ValueError, TypeError):
         erros.append({'campo': 'valor_total', 'mensagem': 'Valor inválido'})
-    
-    # Valida total parcelas
-    total_parcelas = dados.get('total_parcelas', 1)
-    try:
-        total_parcelas = int(total_parcelas)
-        if total_parcelas < 1 or total_parcelas > 100:
-            erros.append({'campo': 'total_parcelas', 'mensagem': 'Número de parcelas inválido (1-100)'})
-    except (ValueError, TypeError):
-        erros.append({'campo': 'total_parcelas', 'mensagem': 'Número de parcelas inválido'})
     
     return erros
 
