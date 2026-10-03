@@ -6,9 +6,7 @@ from rotas.pasta_tela_pos_login.tela_pos_login import bp_pos_login # TELA POS LO
 
 # PASTA FINANÇAS
 from rotas.pasta_financas import bp_financas # LÓGICA FINANÇAS - INICIO
-from rotas.pasta_financas.crud.pasta_quitar.quitar_transacao import bp_quitar # QUITAR
 from rotas.pasta_financas.menus.pasta_vinculos.vinculos_routes import bp_vinculos
-from rotas.pasta_financas.crud.pasta_estornar.estornar_transacao import bp_estornar
 
 
 # PASTA DASHBOARD
@@ -46,9 +44,7 @@ def logica_imports(app):
 
     # FINANÇAS
     app.register_blueprint(bp_financas, url_prefix="/financas")
-    app.register_blueprint(bp_quitar, url_prefix="/quitar_transacao") # QUITAR
     app.register_blueprint(bp_vinculos, url_prefix="/api/financas") # MENU - VINCULOS
-    app.register_blueprint(bp_estornar, url_prefix="/estornar_transacao")
 
     # DASHBOARD
     app.register_blueprint(bp_dashboard, url_prefix="/dashboard")

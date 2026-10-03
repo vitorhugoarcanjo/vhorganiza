@@ -358,6 +358,21 @@
             if (window.Notificacao) window.Notificacao.aviso('Informe um valor maior que zero.');
             return Promise.reject(new Error('valor invalido'));
         }
+        
+        // 🔥 NOVA VALIDAÇÃO: soma das parcelas deve bater com o valor total
+        if (data.parcelas && data.parcelas.length > 1) {
+            var soma = data.parcelas.reduce(function(acc, p) {
+                return acc + p.valor;
+            }, 0);
+            soma = parseFloat(soma.toFixed(2));
+
+            if (Math.abs(data.valor_total - soma) > 0.01) {
+                var msg = 'A soma das parcelas (R$ ' + soma.toFixed(2).replace('.', ',') +
+                        ') precisa ser igual ao Valor Total (R$ ' + data.valor_total.toFixed(2).replace('.', ',') + ').';
+                if (window.Notificacao) window.Notificacao.erro(msg);
+                return Promise.reject(new Error('soma_nao_bate'));
+            }
+        }
 
         var body = this.mode === 'create'
             ? this._toFormData(data)
@@ -374,11 +389,18 @@
         .then(function(r) { return r.json().then(function(j) { return { ok: r.ok, data: j }; }); })
         .then(function(res) {
             if (!res.ok || res.data.success === false) {
-                var msg = res.data.error || res.data.message || 'Erro ao salvar.';
+                var msg;
+                if (res.data.errors && res.data.errors.length > 0) {
+                    msg = res.data.errors[0].mensagem;
+                } else {
+                    msg = res.data.error || res.data.message || 'Erro ao salvar.';
+                }
                 if (self.onSubmitError) self.onSubmitError(msg);
                 else if (window.Notificacao) window.Notificacao.erro(msg);
                 throw new Error(msg);
             }
+
+            // 🔥 ADICIONA ISSO:
             if (self.onSubmitSuccess) self.onSubmitSuccess(res.data);
             return res.data;
         });
@@ -567,13 +589,26 @@
             var blocoTotal = this.el.totalOriginal.closest('.total-item-footer');
             if (blocoTotal) blocoTotal.style.display = '';
         }
+
         if (this.el.somaParcelas) {
             var blocoSoma = this.el.somaParcelas.closest('.total-item-footer');
             if (blocoSoma) blocoSoma.style.display = mostrarSoma ? '' : 'none';
         }
+
         if (this.el.diferenca) {
             var blocoDif = this.el.diferenca.closest('.total-item-footer');
-            if (blocoDif) blocoDif.style.display = mostrarSoma ? '' : 'none';
+            if (blocoDif) {
+                blocoDif.style.display = mostrarSoma ? '' : 'none';
+
+                // 🔥 Pinta de vermelho se a diferença não bate
+                if (mostrarSoma && Math.abs(diferenca) > 0.01) {
+                    blocoDif.style.color = '#ef4444';
+                    this.el.diferenca.style.color = '#ef4444';
+                } else {
+                    blocoDif.style.color = '';
+                    this.el.diferenca.style.color = '';
+                }
+            }
         }
     };
 

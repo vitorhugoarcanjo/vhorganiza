@@ -6,22 +6,38 @@
 def validar_dados_edicao(dados):
     """Valida os dados de edição"""
     erros = []
-    
+
     # Valida descrição
     descricao = dados.get('descricao', '').strip()
     if not descricao:
         erros.append({'campo': 'descricao', 'mensagem': 'Descrição é obrigatória'})
-    
+
     # Valida valor
     valor = dados.get('valor_total', 0)
     if isinstance(valor, str):
         valor = valor.replace('R$', '').strip().replace('.', '').replace(',', '.')
     try:
-        if float(valor) <= 0:
+        valor_float = float(valor)
+        if valor_float <= 0:
             erros.append({'campo': 'valor_total', 'mensagem': 'Valor deve ser maior que zero'})
     except (ValueError, TypeError):
+        valor_float = 0.0
         erros.append({'campo': 'valor_total', 'mensagem': 'Valor inválido'})
-    
+
+    # 🔥 NOVA VALIDAÇÃO: soma das parcelas deve bater com o valor total
+    parcelas = dados.get('parcelas', [])
+    if len(parcelas) > 1:
+        try:
+            soma = round(sum(float(p['valor']) for p in parcelas), 2)
+            if abs(valor_float - soma) > 0.01:
+                fmt = lambda v: f'R$ {v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+                erros.append({
+                    'campo': 'valor_total',
+                    'mensagem': f'A soma das parcelas ({fmt(soma)}) precisa ser igual ao Valor Total ({fmt(valor_float)}).'
+                })
+        except (ValueError, TypeError, KeyError):
+            erros.append({'campo': 'parcelas', 'mensagem': 'Erro ao validar valores das parcelas'})
+
     return erros
 
 def converter_valor_br(valor_str):

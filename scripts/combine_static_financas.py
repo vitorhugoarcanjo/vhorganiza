@@ -39,7 +39,7 @@ JS_FILES = [
     'static/js/modules/pasta_financas/acoes_e_modais/detalhes_completo/detalhes_completo.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_excluir/excluir_financas.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_estornar_quitado.js',
-    'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_reativar_inativo.js',
+    'static/js/modules/pasta_financas/acoes_e_modais/pasta_reativar/modal_reativar_inativo.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_quitar/btn_quitar.js',
 
     

@@ -76,7 +76,7 @@ class EditarTransacaoService:
     @staticmethod
     def buscar_parcelas_filhas(cursor, pai_id):
         cursor.execute("""
-            SELECT id, sequencia_transacoes, numero_parcela, valor_total,
+            SELECT id, sequencia_transacoes, numero_parcela, valor_parcela,
                    data_vencimento, status, descricao
             FROM transacoes
             WHERE transacao_pai_id = %s

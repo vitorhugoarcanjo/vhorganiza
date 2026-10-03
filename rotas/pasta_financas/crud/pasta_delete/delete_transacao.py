@@ -1,141 +1,153 @@
-# rotas\pasta_financas\crud\pasta_delete\delete_transacao.py
-from flask import jsonify, session
+# rotas/pasta_financas/crud/pasta_delete/delete_transacao.py
+from flask import session, make_response, render_template
+import json
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
+from rotas.pasta_financas.services.services_financas import FinancasServices
+from rotas.pasta_financas.filters import FinancasFilters
+from rotas.pasta_financas.formatters import FinancasFormatters
 import logging
 
 logger = logging.getLogger(__name__)
 
-def ini_inativar_financas(bp):
-    
-    # INATIVAR FINANCAS UNICO
-    @bp.route('/excluir/<int:transacao_id>', methods=['DELETE'])
-    @login_required
-    def inativar_financa(transacao_id):
-        try:
-            conexao, cursor = ini_conexao()
 
-            # 1. Verifica se existe
-            cursor.execute("""
-                SELECT descricao, valor_parcela, valor_total, total_parcelas, numero_parcela, transacao_pai_id, tipo, status
-                FROM transacoes
-                WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
-            """, (transacao_id, session['user_id']))
-            
-            transacao = cursor.fetchone()
+# ==========================================================
+# HELPER — busca transações com filtros da sessão
+# ==========================================================
+def _buscar_transacoes_com_filtros(cursor, user_id):
+    data_inicio, data_fim, tipo_data = FinancasFilters.processar_filtros_data()
+    filtros = FinancasFilters.recuperar_filtros(session)
+    filtros.update({
+        'data_inicio': data_inicio,
+        'data_fim': data_fim,
+        'tipo_data': tipo_data,
+    })
+    service = FinancasServices(conexao=None, cursor=cursor)
+    transacoes_raw = service.buscar_transacoes(user_id, filtros)
+    return FinancasFormatters.formatar_transacoes(transacoes_raw)
 
-            if not transacao:
-                return jsonify({
-                    'success': False,
-                    'error': 'Transação não encontrada ou já inativada.'
-                }), 404
-            
-            # Índices: 0=descricao, 1=valor_parcela, 2=valor_total, 3=total_parcelas, 4=numero_parcela, 5=transacao_pai_id, 6=tipo, 7=status
-            descricao = transacao[0]
-            tipo = transacao[6]
-            total_parcelas = transacao[3]
-            numero_parcela = transacao[4]
-            transacao_pai_id = transacao[5]
 
-            # Caso 1: É uma parcela (tem pai)
+def _render_tbody(user_id, cursor):
+    transacoes = _buscar_transacoes_com_filtros(cursor, user_id)
+    return render_template(
+        'pasta_financas/partials/_tbody_transacoes.html.jinja',
+        transacoes=transacoes,
+        mostrar_inativas=session.get('financas_mostrar_inativas', '0'),
+        data_inicio='', data_fim='', tipo_data='emissao'
+    )
+
+
+# ==========================================================
+# POST — INATIVA 1 TRANSAÇÃO
+# ==========================================================
+@login_required
+def inativar_financa(transacao_id):
+    user_id = session['user_id']
+    conexao, cursor = ini_conexao()
+
+    try:
+        cursor.execute("""
+            SELECT descricao, total_parcelas, numero_parcela, transacao_pai_id
+            FROM transacoes
+            WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
+        """, (transacao_id, user_id))
+
+        transacao = cursor.fetchone()
+        if not transacao:
+            conexao.close()
+            return '', 404
+
+        transacao_pai_id = transacao[3]
+        eh_parcelamento = (
+            transacao_pai_id is not None or
+            (transacao[1] and transacao[1] > 1)
+        )
+
+        if eh_parcelamento:
             if transacao_pai_id is not None:
-                return jsonify({
-                    'success': False,
-                    'tipo_parcelamento': 'parcela',
-                    'mensagem': f'Esta é a parcela {numero_parcela}/{total_parcelas} de um parcelamento.',
-                    'tipo': tipo,
-                    'transacao_pai_id': transacao_pai_id,
-                    'numero_parcela': numero_parcela,
-                    'total_parcelas': total_parcelas,
-                    'descricao': descricao
-                }), 400
-            
-            # Caso 2: É a transação principal com parcelas
-            if total_parcelas and total_parcelas > 1:
-                return jsonify({
-                    'success': False,
-                    'tipo_parcelamento': 'transacao_com_parcelas',
-                    'mensagem': f'Esta transação possui {total_parcelas} parcelas.',
-                    'tipo': tipo,
-                    'total_parcelas': total_parcelas,
-                    'transacao_id': transacao_id,
-                    'descricao': descricao
-                }), 400
+                pai_real_id = transacao_pai_id
+            else:
+                cursor.execute("""
+                    SELECT id FROM transacoes
+                    WHERE sequencia_transacoes = %s AND user_id = %s
+                """, (transacao_id, user_id))
+                pai_real = cursor.fetchone()
+                pai_real_id = pai_real[0] if pai_real else None
 
-            # 3. Caso 3: Transação simples (sem parcelas) - PODE EXCLUIR
-            cursor.execute("""
-                UPDATE transacoes
-                SET ativo = 0,
-                    excluido_em = CURRENT_TIMESTAMP,
-                    excluido_por = %s,
-                    data_alteracao = CURRENT_TIMESTAMP
-                WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
-            """, (session['user_id'], transacao_id, session['user_id']))
-            conexao.commit()
+            html = _render_tbody(user_id, cursor)
+            conexao.close()
 
-            return jsonify({
-                'success': True,
-                'message': f'Transação "{descricao}" inativada com sucesso!'
-            }), 200
+            resp = make_response(html)
+            resp.headers['HX-Trigger'] = json.dumps({
+                'pedirConfirmacaoParcelamento': {
+                    'pai_id': pai_real_id,
+                    'descricao': transacao[0]
+                }
+            })
+            return resp
 
-        except Exception as e:
-            logger.error(f"Erro inesperado: {e}")
-            return jsonify({
-                'success': False,
-                'error': f'Erro inesperado: {str(e)}'
-            }), 500
+        cursor.execute("""
+            UPDATE transacoes
+            SET ativo = 0,
+                excluido_em = CURRENT_TIMESTAMP,
+                excluido_por = %s,
+                data_alteracao = CURRENT_TIMESTAMP
+            WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
+        """, (user_id, transacao_id, user_id))
+        conexao.commit()
 
-    # INATIVAR FINANCAS PARCELADO
-    @bp.route('/excluir_parcelamento/<int:transacao_pai_id>', methods=['DELETE'])
-    @login_required
-    def excluir_parcelamento_completo(transacao_pai_id):
-        """ INATIVA A TRANSAÇÃO PRINCIPAL E TODAS AS SUAS PARCELAS """
+        html = _render_tbody(user_id, cursor)
+        conexao.close()
 
-        try:
-            conexao, cursor = ini_conexao()
+        resp = make_response(html)
+        resp.headers['HX-Trigger'] = 'transacaoInativada'
+        return resp
 
-            # 🔥 FIX: busca o PAI pelo ID (não por sequencia_transacoes, que é NULL no pai)
-            cursor.execute("""
-                SELECT descricao, data_vencimento, status, total_parcelas
-                FROM transacoes
-                WHERE id = %s AND user_id = %s
-            """, (transacao_pai_id, session['user_id']))
+    except Exception as e:
+        conexao.rollback()
+        logger.error(f"Erro ao inativar transação {transacao_id}: {e}")
+        conexao.close()
+        return '', 500
 
-            transacao_principal = cursor.fetchone()
 
-            if not transacao_principal:
-                return jsonify({
-                    'success': False,
-                    'error': 'Transação principal não encontrada.'
-                }), 404
+# ==========================================================
+# POST — INATIVA PARCELAMENTO COMPLETO
+# ==========================================================
+@login_required
+def excluir_parcelamento_completo(pai_id):
+    user_id = session['user_id']
+    conexao, cursor = ini_conexao()
 
-            descricao = transacao_principal[0]
-            total_parcelas = transacao_principal[3]
+    try:
+        cursor.execute("""
+            SELECT id FROM transacoes
+            WHERE id = %s AND user_id = %s AND ativo = 1
+        """, (pai_id, user_id))
 
-            # Inativa o PAI + todas as FILHAS
-            cursor.execute("""
-                UPDATE transacoes
-                SET ativo = 0,
-                    excluido_em = CURRENT_TIMESTAMP,
-                    excluido_por = %s,
-                    data_alteracao = CURRENT_TIMESTAMP
-                WHERE (id = %s OR transacao_pai_id = %s)
-                AND user_id = %s
-                AND ativo = 1
-            """, (session['user_id'], transacao_pai_id, transacao_pai_id, session['user_id']))
-            conexao.commit()
+        if not cursor.fetchone():
+            conexao.close()
+            return '', 404
 
-            total_afetadas = cursor.rowcount
+        cursor.execute("""
+            UPDATE transacoes
+            SET ativo = 0,
+                excluido_em = CURRENT_TIMESTAMP,
+                excluido_por = %s,
+                data_alteracao = CURRENT_TIMESTAMP
+            WHERE (id = %s OR transacao_pai_id = %s)
+            AND user_id = %s AND ativo = 1
+        """, (user_id, pai_id, pai_id, user_id))
+        conexao.commit()
 
-            return jsonify({
-                'success': True,
-                'message': f'Parcelamento "{descricao}" e suas {total_parcelas} parcelas foram inativados.',
-                'total_parcelas': total_afetadas
-            }), 200
+        html = _render_tbody(user_id, cursor)
+        conexao.close()
 
-        except Exception as e:
-            logger.error(f"Erro ao inativar parcelamento: {e}")
-            return jsonify({
-                'success': False,
-                'error': f'Erro ao inativar parcelamento: {str(e)}'
-            }), 500
+        resp = make_response(html)
+        resp.headers['HX-Trigger'] = 'transacaoInativada'
+        return resp
+
+    except Exception as e:
+        conexao.rollback()
+        logger.error(f"Erro ao inativar parcelamento {pai_id}: {e}")
+        conexao.close()
+        return '', 500
