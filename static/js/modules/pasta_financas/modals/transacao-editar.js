@@ -18,7 +18,15 @@
             onSubmitSuccess: function(result) {
                 if (window.Notificacao) window.Notificacao.sucesso(result.message || 'Transação atualizada!');
                 fecharModalEditarTransacao();
-                setTimeout(function() { window.location.reload(); }, 400);
+
+                // 🔥 Recarrega só a tabela via HTMX
+                if (window.recarregarTabelaFinancas) {
+                    window.recarregarTabelaFinancas();
+                } else if (window.htmx) {
+                    htmx.ajax('GET', '/financas', '#tabela-container');
+                } else {
+                    setTimeout(function() { window.location.reload(); }, 600);
+                }
             }
         });
         return formInstance;

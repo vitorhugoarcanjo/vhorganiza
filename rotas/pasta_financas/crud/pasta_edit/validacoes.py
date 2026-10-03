@@ -1,4 +1,4 @@
-# rotas\pasta_financas\crud\pasta_edit\validacoes.py
+# rotas/pasta_financas/crud/pasta_edit/validacoes.py
 # ==========================================================
 # EDITAR TRANSAÇÃO - VALIDAÇÕES
 # ==========================================================
@@ -12,10 +12,8 @@ def validar_dados_edicao(dados):
     if not descricao:
         erros.append({'campo': 'descricao', 'mensagem': 'Descrição é obrigatória'})
 
-    # Valida valor
+    # 🔥 Valida valor (aceita float direto OU string BR)
     valor = dados.get('valor_total', 0)
-    if isinstance(valor, str):
-        valor = valor.replace('R$', '').strip().replace('.', '').replace(',', '.')
     try:
         valor_float = float(valor)
         if valor_float <= 0:
@@ -24,7 +22,7 @@ def validar_dados_edicao(dados):
         valor_float = 0.0
         erros.append({'campo': 'valor_total', 'mensagem': 'Valor inválido'})
 
-    # 🔥 NOVA VALIDAÇÃO: soma das parcelas deve bater com o valor total
+    # 🔥 Validação: soma das parcelas deve bater com o valor total
     parcelas = dados.get('parcelas', [])
     if len(parcelas) > 1:
         try:
@@ -40,11 +38,17 @@ def validar_dados_edicao(dados):
 
     return erros
 
+
 def converter_valor_br(valor_str):
-    """Converte formato brasileiro '1.234,56' para float"""
+    """
+    Converte formato brasileiro '1.234,56' para float.
+    🔥 Só usar quando o valor vier como STRING do form.
+    """
     if not valor_str:
         return 0.0
-    valor_str = valor_str.replace('R$', '').strip()
+    if isinstance(valor_str, (int, float)):
+        return float(valor_str)
+    valor_str = str(valor_str).replace('R$', '').strip()
     valor_str = valor_str.replace('.', '')
     valor_str = valor_str.replace(',', '.')
     return float(valor_str)

@@ -1,3 +1,4 @@
+// static\js\modules\pasta_financas\core\formatadores.js
 (function() {
     'use strict';
     window.FormatadoresFinancas = {

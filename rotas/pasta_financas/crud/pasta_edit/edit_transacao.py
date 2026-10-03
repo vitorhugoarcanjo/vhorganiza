@@ -105,8 +105,14 @@ def salvar_edicao(sequencia):
     try:
         dados = request.json or {}
 
-        if dados.get('valor_total'):
-            dados['valor_total'] = converter_valor_br(str(dados.get('valor_total')))
+        valor = dados.get('valor_total')
+
+        if isinstance(valor, (int, float)):
+            # 🔥 JSON mandou número (1009.9) — usa direto
+            dados['valor_total'] = float(valor)
+        elif isinstance(valor, str) and valor.strip():
+            # 🔥 Se vier string BR ("1.009,90"), aí sim converte
+            dados['valor_total'] = converter_valor_br(valor)
         else:
             dados['valor_total'] = 0.0
 
