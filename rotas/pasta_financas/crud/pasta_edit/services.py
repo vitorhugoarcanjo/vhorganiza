@@ -105,8 +105,7 @@ class EditarTransacaoService:
 
     # ==========================================================
     # ATUALIZAR TRANSAÇÃO
-    # 🔥 A QUANTIDADE de parcelas é IMUTÁVEL
-    # 🔥 Retorna dados_antes pra auditoria
+    # 🔥 Retorna dados_antes/dados_depois + parcelas_antes/parcelas_depois
     # ==========================================================
     @staticmethod
     def atualizar_transacao(cursor, conexao, sequencia_ou_id, user_id, dados):
@@ -117,8 +116,9 @@ class EditarTransacaoService:
             return {'success': False, 'error': 'Transação não encontrada'}
 
         tipo = transacao_atual[2]
+        total_parcelas_antes = transacao_atual[9] or 1
 
-        # 🔥 Dados ANTES (pra auditoria)
+        # 🔥 Dados ANTES do PAI (pra auditoria)
         dados_antes = {
             'tipo':             transacao_atual[2],
             'descricao':        transacao_atual[3],
@@ -129,7 +129,23 @@ class EditarTransacaoService:
             'data_emissao':     str(transacao_atual[11]) if transacao_atual[11] else '',
         }
 
-        # 🔥 Dados DEPOIS (do form)
+        # 🔥 Parcelas ANTES (só se for parcelada)
+        parcelas_antes = []
+        if total_parcelas_antes > 1:
+            cursor.execute("""
+                SELECT numero_parcela, valor_parcela, data_vencimento
+                FROM transacoes
+                WHERE transacao_pai_id = %s AND ativo = 1
+                ORDER BY numero_parcela
+            """, (pai_id_real,))
+            for row in cursor.fetchall():
+                parcelas_antes.append({
+                    'numero':     row[0],
+                    'valor':      float(row[1]) if row[1] else 0.0,
+                    'vencimento': str(row[2]) if row[2] else '',
+                })
+
+        # 🔥 Dados DEPOIS do PAI
         descricao = dados.get('descricao', '').strip()
         valor = float(dados.get('valor_total', 0.0))
         data_emissao = dados.get('data_emissao') or None
@@ -146,7 +162,17 @@ class EditarTransacaoService:
             'data_emissao':     data_emissao,
         }
 
-        # Atualiza o PAI (ou a transação simples)
+        # 🔥 Parcelas DEPOIS (do form)
+        parcelas_depois = []
+        if total_parcelas_antes > 1:
+            for p in (dados.get('parcelas') or []):
+                parcelas_depois.append({
+                    'numero':     int(p.get('numero') or 0),
+                    'valor':      float(p.get('valor') or 0),
+                    'vencimento': p.get('vencimento') or '',
+                })
+
+        # Atualiza o PAI
         cursor.execute("""
             UPDATE transacoes
             SET descricao = %s,
@@ -160,7 +186,6 @@ class EditarTransacaoService:
               pai_id_real, user_id))
 
         # Se era parcelada, atualiza as filhas
-        total_parcelas_antes = transacao_atual[9] or 1
         if total_parcelas_antes > 1:
             EditarTransacaoService._atualizar_filhas(
                 cursor=cursor,
@@ -174,9 +199,12 @@ class EditarTransacaoService:
 
         return {
             'success': True,
-            'id_interno': pai_id_real,     # 🆕 pro insert_transacao usar
-            'dados_antes': dados_antes,    # 🆕
-            'dados_depois': dados_depois,  # 🆕
+            'id_interno': pai_id_real,
+            'total_parcelas': total_parcelas_antes,
+            'dados_antes': dados_antes,
+            'dados_depois': dados_depois,
+            'parcelas_antes': parcelas_antes,
+            'parcelas_depois': parcelas_depois,
         }
 
     # ==========================================================

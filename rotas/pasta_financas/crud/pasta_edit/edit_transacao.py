@@ -16,6 +16,9 @@ from .validacoes import validar_dados_edicao, converter_valor_br
 logger = logging.getLogger(__name__)
 
 
+# ==========================================================
+# HELPERS
+# ==========================================================
 def _formatar_data_iso(valor):
     if not valor:
         return ''
@@ -31,8 +34,21 @@ def _fmt_moeda(v):
         return str(v)
 
 
+def _fmt_data_br(data_iso):
+    """YYYY-MM-DD → DD/MM/YYYY"""
+    if not data_iso:
+        return ''
+    s = str(data_iso)[:10]
+    if len(s) == 10 and s[4] == '-':
+        return f'{s[8:10]}/{s[5:7]}/{s[0:4]}'
+    return s
+
+
+# ==========================================================
+# DIFF — PAI
+# ==========================================================
 def _montar_diff(antes, depois):
-    """Compara antes/depois e retorna lista de alterações."""
+    """Compara antes/depois do PAI e retorna lista de alterações."""
     mapa_campos = {
         'tipo':            'Tipo',
         'descricao':       'Descrição',
@@ -71,6 +87,50 @@ def _montar_diff(antes, depois):
     return alteracoes
 
 
+# ==========================================================
+# DIFF — FILHAS (parcelas)
+# ==========================================================
+def _montar_diff_filhas(parcelas_antes, parcelas_depois):
+    """Compara cada filha (parcela) antes/depois."""
+    alteracoes = []
+
+    # Mapeia por número de parcela
+    mapa_antes = {p['numero']: p for p in parcelas_antes}
+    mapa_depois = {p['numero']: p for p in parcelas_depois}
+
+    for num in sorted(set(mapa_antes.keys()) | set(mapa_depois.keys())):
+        antes = mapa_antes.get(num)
+        depois = mapa_depois.get(num)
+
+        if not antes or not depois:
+            continue
+
+        # Valor
+        v_antes = float(antes.get('valor') or 0)
+        v_depois = float(depois.get('valor') or 0)
+        if abs(v_antes - v_depois) > 0.001:
+            alteracoes.append({
+                'campo': f'Parcela {num} — Valor',
+                'antes': _fmt_moeda(v_antes),
+                'depois': _fmt_moeda(v_depois),
+            })
+
+        # Vencimento
+        d_antes = str(antes.get('vencimento') or '').strip()
+        d_depois = str(depois.get('vencimento') or '').strip()
+        if d_antes != d_depois:
+            alteracoes.append({
+                'campo': f'Parcela {num} — Vencimento',
+                'antes': _fmt_data_br(d_antes) or '(vazio)',
+                'depois': _fmt_data_br(d_depois) or '(vazio)',
+            })
+
+    return alteracoes
+
+
+# ==========================================================
+# 1. GET — MODAL VAZIO
+# ==========================================================
 @login_required
 def editar_modal(sequencia):
     user_id = session['user_id']
@@ -91,6 +151,9 @@ def editar_modal(sequencia):
         conexao.close()
 
 
+# ==========================================================
+# 2. GET — DADOS JSON
+# ==========================================================
 @login_required
 def dados_json(sequencia):
     user_id = session['user_id']
@@ -135,6 +198,9 @@ def dados_json(sequencia):
         conexao.close()
 
 
+# ==========================================================
+# 3. POST — SALVAR (com DIFF PAI + FILHAS)
+# ==========================================================
 @login_required
 def salvar_edicao(sequencia):
     user_id = session['user_id']
@@ -163,13 +229,24 @@ def salvar_edicao(sequencia):
             conexao.rollback()
             return jsonify({'success': False, 'error': resultado.get('error')}), 400
 
-        # 🆕 Auditoria com DIFF (antes/depois)
+        # ==========================================================
+        # AUDITORIA — PAI + FILHAS
+        # ==========================================================
         id_interno = resultado.get('id_interno')
         dados_antes = resultado.get('dados_antes', {})
         dados_depois = resultado.get('dados_depois', {})
+        parcelas_antes = resultado.get('parcelas_antes', [])
+        parcelas_depois = resultado.get('parcelas_depois', [])
 
+        # 1. Diff do PAI
         alteracoes = _montar_diff(dados_antes, dados_depois)
 
+        # 2. Diff das FILHAS (se for parcelada)
+        if parcelas_antes or parcelas_depois:
+            alteracoes_filhas = _montar_diff_filhas(parcelas_antes, parcelas_depois)
+            alteracoes.extend(alteracoes_filhas)
+
+        # 3. Registra se houve alteração
         if alteracoes:
             AuditoriaFinanceiraService.registrar(
                 transacao_id=id_interno,

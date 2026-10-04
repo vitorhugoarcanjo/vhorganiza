@@ -14,14 +14,14 @@ from .services_auditoria import AuditoriaFinanceiraService
 def historico_transacao(transacao_id):
     """
     Recebe a SEQUÊNCIA (URL: /auditoria/transacao/<seq>).
-    Traduz pra ID interno e busca auditoria.
+    Traduz pra ID interno + resolve o PAI (se for filha).
     """
     user_id = session['user_id']
     conexao, cursor = ini_conexao()
 
-    # 🆕 Busca transação pelo ID interno + dados pra header
+    # 1. Busca a transação clicada
     cursor.execute("""
-        SELECT id, sequencia_transacoes, descricao, tipo, valor_total
+        SELECT id, sequencia_transacoes, descricao, tipo, valor_total, transacao_pai_id
         FROM transacoes
         WHERE sequencia_transacoes = %s AND user_id = %s
     """, (transacao_id, user_id))
@@ -31,17 +31,34 @@ def historico_transacao(transacao_id):
         return '', 404
 
     id_interno = row[0]
+    transacao_pai_id = row[5]
 
-    # 🆕 Monta a tupla no mesmo formato que o template espera:
-    # transacao[1] = descricao, transacao[2] = tipo, transacao[3] = valor
-    transacao = (row[1], row[2], row[3], row[4])
+    # 2. 🔥 Se for FILHA, busca o PAI (pra header + auditoria)
+    if transacao_pai_id:
+        cursor.execute("""
+            SELECT id, sequencia_transacoes, descricao, tipo, valor_total
+            FROM transacoes
+            WHERE id = %s AND user_id = %s
+        """, (transacao_pai_id, user_id))
+        pai_row = cursor.fetchone()
 
-    # 🔥 Busca auditoria pelo ID INTERNO (não pela sequência)
+        if pai_row:
+            # Usa dados do PAI pro header e auditoria
+            id_interno = pai_row[0]
+            transacao = (pai_row[1], pai_row[2], pai_row[3], pai_row[4])
+        else:
+            # Fallback: usa a filha
+            transacao = (row[1], row[2], row[3], row[4])
+    else:
+        # Simples: usa a própria
+        transacao = (row[1], row[2], row[3], row[4])
+
+    # 3. Busca auditoria
     historico = AuditoriaFinanceiraService.listar_por_transacao_formatado(id_interno)
 
     return render_template(
         'pasta_auditoria/pasta_financas/modal_auditoria.html.jinja',
         historico=historico,
         transacao=transacao,
-        transacao_id=transacao_id,   # exibe a SEQUÊNCIA no header
+        transacao_id=transacao_id,   # exibe a SEQUÊNCIA da filha (URL) no header
     )
