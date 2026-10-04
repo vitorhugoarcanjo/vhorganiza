@@ -1,3 +1,4 @@
+# app.py
 """ ARQUIVO PRINCIPAL """
 import os
 import hashlib

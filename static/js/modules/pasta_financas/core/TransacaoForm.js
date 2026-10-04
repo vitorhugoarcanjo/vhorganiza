@@ -374,12 +374,11 @@
             }
         }
 
-        var body = this.mode === 'create'
-            ? this._toFormData(data)
-            : JSON.stringify(data);
-
-        var headers = { 'X-Requested-With': 'XMLHttpRequest' };
-        if (this.mode !== 'create') headers['Content-Type'] = 'application/json';
+        var body = JSON.stringify(data);
+        var headers = {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+        };
 
         return fetch(url, {
             method: 'POST',

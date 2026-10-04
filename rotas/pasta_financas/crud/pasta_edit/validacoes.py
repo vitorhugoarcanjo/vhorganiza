@@ -39,16 +39,15 @@ def validar_dados_edicao(dados):
     return erros
 
 
-def converter_valor_br(valor_str):
-    """
-    Converte formato brasileiro '1.234,56' para float.
-    🔥 Só usar quando o valor vier como STRING do form.
-    """
-    if not valor_str:
+def converter_valor_br(valor):
+    if valor is None:
         return 0.0
-    if isinstance(valor_str, (int, float)):
+    if isinstance(valor, (int, float)):
+        return float(valor)
+    try:
+        valor_str = str(valor).replace('R$', '').strip()
+        if ',' in valor_str:                              # ✅ SÓ remove ponto se tiver vírgula
+            valor_str = valor_str.replace('.', '').replace(',', '.')
         return float(valor_str)
-    valor_str = str(valor_str).replace('R$', '').strip()
-    valor_str = valor_str.replace('.', '')
-    valor_str = valor_str.replace(',', '.')
-    return float(valor_str)
+    except (ValueError, TypeError):                        # ✅ Fallback seguro
+        return 0.0

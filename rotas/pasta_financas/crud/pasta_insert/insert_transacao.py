@@ -1,6 +1,6 @@
 # rotas\pasta_financas\crud\pasta_insert\insert_transacao.py
 
-import traceback
+import logging
 from flask import request, session, jsonify, render_template
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
@@ -11,6 +11,7 @@ from utils.fomatacoes.data_reutilizavel import obter_hoje_cuiaba
 from .services import InserirTransacaoService
 from .validacoes import validar_dados_insercao, converter_valor_br
 
+logger = logging.getLogger(__name__)
 
 # ========================================================== #
 # 1. GET - RETORNA O HTML DO MODAL
@@ -45,29 +46,28 @@ def salvar_nova_transacao():
 
     try:
         # Extrai e limpa dados do FORM
+        payload = request.json or {}
+
         dados = {
-            'tipo': request.form.get('tipo'),
-            'valor_total': converter_valor_br(request.form.get('valor_total')),
-            'descricao': request.form.get('descricao', '').strip(),
-            'data_emissao': request.form.get('data_emissao') or hoje,
-            'data_vencimento': request.form.get('data_vencimento') or hoje,
-            'categoria_id': request.form.get('categoria_id') or None,
-            'total_parcelas': int(request.form.get('total_parcelas') or 1),
-            'intervalo_dias': int(request.form.get('intervaloDias') or 30),
-            'primeiro_vencimento': request.form.get('primeiroVencimento') or request.form.get('data_vencimento') or hoje,
+            'tipo': payload.get('tipo'),
+            'valor_total': converter_valor_br(payload.get('valor_total')),
+            'descricao': (payload.get('descricao') or '').strip(),
+            'data_emissao': payload.get('data_emissao') or hoje,
+            'data_vencimento': payload.get('data_vencimento') or hoje,
+            'categoria_id': payload.get('categoria_id') or None,
+            'total_parcelas': int(payload.get('total_parcelas') or 1),
+            'intervalo_dias': int(payload.get('intervaloDias') or 30),
+            'primeiro_vencimento': payload.get('primeiroVencimento') or payload.get('data_vencimento') or hoje,
         }
 
-        # 🔥 Coleta parcelas com VALOR e VENCIMENTO individuais
+        # 🔥 MUDANÇA GRANDE: agora as parcelas JÁ VÊM COMO ARRAY do front
         parcelas = []
-        for i in range(1, dados['total_parcelas'] + 1):
-            valor = request.form.get(f'parcela_valor_{i}')
-            vencimento = request.form.get(f'parcela_vencimento_{i}')
-            if valor:
-                parcelas.append({
-                    'numero': i,
-                    'valor': converter_valor_br(valor),
-                    'vencimento': vencimento,
-                })
+        for p in (payload.get('parcelas') or []):
+            parcelas.append({
+                'numero': int(p.get('numero') or 0),
+                'valor': converter_valor_br(p.get('valor')),
+                'vencimento': p.get('vencimento'),
+            })
         if parcelas:
             dados['parcelas'] = parcelas
 
@@ -120,7 +120,7 @@ def salvar_nova_transacao():
 
     except Exception as e:
         conexao.rollback()
-        traceback.print_exc()
+        logger.exception(f"Erro ao salvar nova transação user_id={user_id}")
         return jsonify({
             'success': False,
             'error': 'Erro interno no servidor ao salvar a transação.',

@@ -2,13 +2,15 @@
 # ==========================================================
 # EDITAR TRANSAÇÃO - FUNÇÕES (view_funcs)
 # ==========================================================
-
+import logging
 from flask import request, session, jsonify, render_template, redirect, url_for
 from rotas.middleware.autenticacao import login_required
 from datetime import date, datetime
 from utils.database.conexao_global import ini_conexao
 from .services import EditarTransacaoService
 from .validacoes import validar_dados_edicao, converter_valor_br
+
+logger = logging.getLogger(__name__)
 
 
 def _formatar_data_iso(valor):
@@ -136,8 +138,7 @@ def salvar_edicao(sequencia):
 
     except Exception as e:
         conexao.rollback()
-        import traceback
-        traceback.print_exc()
+        logger.exception(f"Erro ao salvar edição sequencia={sequencia} user_id={user_id}")
         return jsonify({'success': False, 'error': str(e)}), 500
     finally:
         conexao.close()
