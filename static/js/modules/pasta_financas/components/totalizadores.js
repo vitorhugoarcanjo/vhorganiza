@@ -1,5 +1,4 @@
 // static/js/modules/pasta_financas/components/totalizadores.js
-// totalizadores.js - VERSÃO SIMPLIFICADA E CORRIGIDA
 
 function calcularTotaisFinancas() {
     const linhas = document.querySelector('.custom-table tbody')?.children || [];
@@ -34,42 +33,23 @@ function calcularTotaisFinancas() {
     if (elSaldo) elSaldo.innerHTML = formatar(saldo);
 }
 
-// ==========================================================
-// 🔥 INICIALIZAÇÃO
-// ==========================================================
-
-// 1. Quando a página carregar
+// 1. Carga inicial
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(calcularTotaisFinancas, 100);
-    });
+    document.addEventListener('DOMContentLoaded', calcularTotaisFinancas);
 } else {
-    setTimeout(calcularTotaisFinancas, 100);
+    calcularTotaisFinancas();
 }
 
-// 2. 🔥 ÚNICO listener — afterRequest (SEMPRE dispara, mesmo com tbody)
-//    Cobre: filtros, excluir, reativar, quitar, estornar, inserir, editar
-document.body.addEventListener('htmx:afterRequest', function(evt) {
+// 2. 🔥 Único listener — afterSwap (DOM pronto, sem setTimeout)
+document.body.addEventListener('htmx:afterSwap', function(evt) {
     const target = evt.detail.target;
     if (!target) return;
 
-    const path = evt.detail.pathInfo?.requestPath || '';
-
-    const alvoRelevante = (
-        target.id === 'tabela-container' ||
+    if (target.id === 'tabela-container' ||
         target.id === 'tbody-transacoes' ||
-        target.closest('#tabela-container') ||
-        path.includes('/financas') ||
-        path.includes('/excluir') ||
-        path.includes('/reativar') ||
-        path.includes('/quitar') ||
-        path.includes('/estornar')
-    );
-
-    if (alvoRelevante) {
-        // 🔥 50ms garante que o swap do tbody terminou
-        setTimeout(calcularTotaisFinancas, 50);
+        target.closest('#tabela-container')) {
+        calcularTotaisFinancas();
     }
 });
 
-console.log('✅ Totalizadores carregados e monitorando mudanças!');
+console.log('✅ Totalizadores carregados!');

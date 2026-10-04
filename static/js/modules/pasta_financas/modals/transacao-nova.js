@@ -1,3 +1,5 @@
+// static\js\modules\pasta_financas\modals\transacao-nova.js
+
 // ==========================================================
 // MODAL NOVA TRANSAÇÃO - v2 (usa TransacaoForm)
 // ==========================================================
