@@ -1,3 +1,4 @@
+// static\js\componentes\notificacoes_globais\notificacoes_tela.js
 if (window.Notificacao) {
     console.warn("Notificacao já existe - evitando duplicação");
 } else {

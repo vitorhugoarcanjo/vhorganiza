@@ -64,16 +64,14 @@
         </button>
 
         <!-- AUDITORIA -->
-        <a href="{{ url_for('auditoria_financas.historico_transacao',
-                            transacao_id=transacao['sequencia_transacoes'],
-                            mostrar_inativas=mostrar_inativas,
-                            data_inicio=data_inicio,
-                            data_fim=data_fim,
-                            tipo_data=tipo_data) }}"
-           class="btn-acao audit"
-           title="Ver histórico de alterações">
+        <button type="button"
+                class="btn-acao audit"
+                hx-get="{{ url_for('auditoria.historico_transacao', transacao_id=transacao['sequencia_transacoes']) }}"
+                hx-target="#modal-auditoria-container"
+                hx-swap="innerHTML"
+                title="Ver histórico de alterações">
             <i class="bi bi-clock-history"></i>
-        </a>
+        </button>
 
         {% if transacao['ativo'] == 1 %}
             {% if transacao['status'] not in ['quitado', 'recebido'] %}

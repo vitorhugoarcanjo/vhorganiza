@@ -1,0 +1,50 @@
+<!-- templates/pasta_tarefas/modais/modal_editar_tarefa.html.jinja -->
+<div class="fin-modal-overlay active" id="modalEditarTarefa" style="display: flex;">
+    <div class="fin-modal-box">
+
+        <div class="fin-modal-header">
+            <div class="fin-modal-header-left">
+                <h3 id="finEditarSequencia">Editar Tarefa #{{ sequencia }}</h3>
+            </div>
+            <div class="fin-modal-header-right">
+                <button type="button" class="fin-btn-close-modal"
+                        onclick="fecharModalEditarTarefa()" title="Fechar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <form id="formEditarTarefa"
+              class="fin-modal-form"
+              data-tarefa-sequencia="{{ sequencia }}"
+              onsubmit="event.preventDefault(); salvarEditarTarefa();">
+
+            <div class="fin-modal-body">
+                {% set categorias = categorias or [] %}
+                {% include 'pasta_tarefas/partials/form_tarefa.html.jinja' %}
+            </div>
+
+            <div class="footer-fixo-padrao" id="footerFixoEditar">
+                <div class="botoes-footer-padrao">
+                    <button type="submit" class="btn-footer btn-footer-primary">
+                        <i class="bi bi-save"></i> ATUALIZAR
+                    </button>
+                    <button type="button" class="btn-footer-cancelar"
+                            onclick="fecharModalEditarTarefa()">
+                        <i class="bi bi-x-circle"></i> CANCELAR
+                    </button>
+                </div>
+
+                <h2>EDITAR - TAREFA</h2>
+
+                <div class="totalizador-footer-padrao">
+                    <div class="contador-footer">
+                        <i class="bi bi-info-circle"></i>
+                        <span>Edite os campos acima</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

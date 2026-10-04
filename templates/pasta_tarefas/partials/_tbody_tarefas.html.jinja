@@ -1,0 +1,13 @@
+{# templates/pasta_tarefas/partials/_tbody_tarefas.html.jinja #}
+{# Partial: <tbody> com todas as linhas da tabela #}
+<tbody id="tbody-tarefas">
+    {% if tarefas %}
+        {% for tarefa in tarefas %}
+            {% include 'pasta_tarefas/partials/_linha_tarefa.html.jinja' %}
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="9" class="text-center py-4 text-white-50">Nenhuma tarefa cadastrada ou encontrada para este período.</td>
+        </tr>
+    {% endif %}
+</tbody>

@@ -1,11 +1,14 @@
-# rotas\pasta_financas\crud\pasta_insert\insert_transacao.py
+# rotas/pasta_financas/crud/pasta_insert/insert_transacao.py
+# ==========================================================
+# INSERIR TRANSAÇÃO - VIEW
+# ==========================================================
 
 import logging
+import json
 from flask import request, session, jsonify, render_template
 from rotas.middleware.autenticacao import login_required
+from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 from utils.database.conexao_global import ini_conexao
-
-# IMPORTAÇÃO CENTRALIZADA (Remove o fuso redundante criado com timedelta)
 from utils.fomatacoes.data_reutilizavel import obter_hoje_cuiaba
 
 from .services import InserirTransacaoService
@@ -13,16 +16,20 @@ from .validacoes import validar_dados_insercao, converter_valor_br
 
 logger = logging.getLogger(__name__)
 
-# ========================================================== #
-# 1. GET - RETORNA O HTML DO MODAL
-# ========================================================== #
+
+def _fmt_moeda(v):
+    """Formata valor pra exibição BR."""
+    try:
+        return f'R$ {float(v):,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+    except Exception:
+        return str(v)
+
+
 @login_required
 def nova_transacao_modal():
-    """Retorna o HTML do modal de nova transação"""
     user_id = session.get('user_id')
     hoje = obter_hoje_cuiaba()
 
-    # O Flask/g gerencia a abertura e o fechamento no teardown
     conexao, cursor = ini_conexao()
     categorias = InserirTransacaoService.buscar_categorias(cursor, user_id)
 
@@ -33,19 +40,14 @@ def nova_transacao_modal():
     )
 
 
-# ========================================================== #
-# 2. POST - SALVA A TRANSAÇÃO VIA AJAX
-# ========================================================== #
 @login_required
 def salvar_nova_transacao():
-    """Salva a nova transação e retorna JSON"""
     user_id = session.get('user_id')
     hoje = obter_hoje_cuiaba()
 
     conexao, cursor = ini_conexao()
 
     try:
-        # Extrai e limpa dados do FORM
         payload = request.json or {}
 
         dados = {
@@ -60,7 +62,6 @@ def salvar_nova_transacao():
             'primeiro_vencimento': payload.get('primeiroVencimento') or payload.get('data_vencimento') or hoje,
         }
 
-        # 🔥 MUDANÇA GRANDE: agora as parcelas JÁ VÊM COMO ARRAY do front
         parcelas = []
         for p in (payload.get('parcelas') or []):
             parcelas.append({
@@ -71,12 +72,13 @@ def salvar_nova_transacao():
         if parcelas:
             dados['parcelas'] = parcelas
 
-        # Executa validações de formulário
         erros = validar_dados_insercao(dados)
         if erros:
             return jsonify({'success': False, 'errors': erros}), 400
 
-        # Processamento conforme o número de parcelas
+        # ==========================================================
+        # SIMPLES
+        # ==========================================================
         if dados['total_parcelas'] <= 1:
             sucesso, resultado = InserirTransacaoService.criar_transacao_simples(cursor, user_id, dados)
 
@@ -84,10 +86,28 @@ def salvar_nova_transacao():
                 conexao.rollback()
                 return jsonify({'success': False, 'error': resultado}), 400
 
-            conexao.commit()
-
             transacao_id = resultado.get('transacao_id')
-            InserirTransacaoService.registrar_auditoria(transacao_id, dados['descricao'])
+
+            # 🔥 Auditoria — captura TODOS os campos
+            alteracoes = [
+                {'campo': 'Tipo',         'depois': dados['tipo'].title()},
+                {'campo': 'Valor Total',  'depois': _fmt_moeda(dados['valor_total'])},
+                {'campo': 'Descrição',    'depois': dados['descricao']},
+                {'campo': 'Data Emissão', 'depois': dados['data_emissao']},
+                {'campo': 'Vencimento',   'depois': dados['data_vencimento']},
+                {'campo': 'Parcelas',     'depois': '1x (à vista)'},
+            ]
+
+            AuditoriaFinanceiraService.registrar(
+                transacao_id=transacao_id,
+                acao='criada',
+                campo_alterado='multiplos',
+                valor_antigo=None,
+                valor_novo=json.dumps(alteracoes, ensure_ascii=False),
+                conexao=conexao,
+            )
+
+            conexao.commit()
 
             return jsonify({
                 'success': True,
@@ -96,6 +116,9 @@ def salvar_nova_transacao():
                 'transacao_id': transacao_id
             }), 201
 
+        # ==========================================================
+        # PARCELADA
+        # ==========================================================
         else:
             sucesso, resultado = InserirTransacaoService.criar_transacao_parcelada(cursor, user_id, dados)
 
@@ -103,12 +126,29 @@ def salvar_nova_transacao():
                 conexao.rollback()
                 return jsonify({'success': False, 'error': resultado}), 400
 
-            conexao.commit()
-
             pai_id = resultado.get('pai_id')
             total_parcelas = resultado.get('total_parcelas', dados['total_parcelas'])
 
-            InserirTransacaoService.registrar_auditoria(pai_id, dados['descricao'], total_parcelas)
+            # 🔥 Auditoria — captura TODOS os campos
+            alteracoes = [
+                {'campo': 'Tipo',        'depois': dados['tipo'].title()},
+                {'campo': 'Valor Total', 'depois': _fmt_moeda(dados['valor_total'])},
+                {'campo': 'Descrição',   'depois': dados['descricao']},
+                {'campo': 'Data Emissão','depois': dados['data_emissao']},
+                {'campo': 'Parcelas',    'depois': f'{total_parcelas}x'},
+                {'campo': 'Intervalo',   'depois': f'{dados["intervalo_dias"]} dias'},
+            ]
+
+            AuditoriaFinanceiraService.registrar(
+                transacao_id=pai_id,
+                acao='criada_parcelada',
+                campo_alterado='multiplos',
+                valor_antigo=None,
+                valor_novo=json.dumps(alteracoes, ensure_ascii=False),
+                conexao=conexao,
+            )
+
+            conexao.commit()
 
             return jsonify({
                 'success': True,

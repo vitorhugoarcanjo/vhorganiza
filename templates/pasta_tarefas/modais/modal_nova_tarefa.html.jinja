@@ -1,0 +1,49 @@
+<!-- templates/pasta_tarefas/modais/modal_nova_tarefa.html.jinja -->
+<div class="fin-modal-overlay active" id="modalNovaTarefa" style="display: flex;">
+    <div class="fin-modal-box">
+
+        <div class="fin-modal-header">
+            <div class="fin-modal-header-left">
+                <h3><i class="bi bi-plus-circle"></i> Nova Tarefa</h3>
+            </div>
+            <div class="fin-modal-header-right">
+                <button type="button" class="fin-btn-close-modal"
+                        onclick="fecharModalNovaTarefa()" title="Fechar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <form id="formNovaTarefa"
+              class="fin-modal-form"
+              onsubmit="event.preventDefault(); salvarNovaTarefa();">
+
+            <div class="fin-modal-body">
+                {% set categorias = categorias or [] %}
+                {% include 'pasta_tarefas/partials/form_tarefa.html.jinja' %}
+            </div>
+
+            <div class="footer-fixo-padrao" id="footerFixoNova">
+                <div class="botoes-footer-padrao">
+                    <button type="submit" class="btn-footer btn-footer-primary">
+                        <i class="bi bi-save"></i> SALVAR
+                    </button>
+                    <button type="button" class="btn-footer-cancelar"
+                            onclick="fecharModalNovaTarefa()">
+                        <i class="bi bi-x-circle"></i> CANCELAR
+                    </button>
+                </div>
+
+                <h2>NOVA - TAREFA</h2>
+
+                <div class="totalizador-footer-padrao">
+                    <div class="contador-footer">
+                        <i class="bi bi-info-circle"></i>
+                        <span>Preencha os campos acima</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

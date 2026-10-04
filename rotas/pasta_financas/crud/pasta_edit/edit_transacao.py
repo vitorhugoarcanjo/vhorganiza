@@ -1,10 +1,13 @@
-# rotas\pasta_financas\crud\pasta_edit\edit_transacao.py
+# rotas/pasta_financas/crud/pasta_edit/edit_transacao.py
 # ==========================================================
 # EDITAR TRANSAÇÃO - FUNÇÕES (view_funcs)
 # ==========================================================
+
 import logging
-from flask import request, session, jsonify, render_template, redirect, url_for
+import json
+from flask import request, session, jsonify, render_template
 from rotas.middleware.autenticacao import login_required
+from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 from datetime import date, datetime
 from utils.database.conexao_global import ini_conexao
 from .services import EditarTransacaoService
@@ -14,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 def _formatar_data_iso(valor):
-    """Auxiliar para converter date/datetime em string 'YYYY-MM-DD' sem explodir se já for str"""
     if not valor:
         return ''
     if isinstance(valor, (date, datetime)):
@@ -22,18 +24,60 @@ def _formatar_data_iso(valor):
     return str(valor)[:10]
 
 
-# ========================================================== #
-# 1. GET - RETORNA O MODAL COM DADOS
-# ========================================================== #
+def _fmt_moeda(v):
+    try:
+        return f'R$ {float(v):,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+    except Exception:
+        return str(v)
+
+
+def _montar_diff(antes, depois):
+    """Compara antes/depois e retorna lista de alterações."""
+    mapa_campos = {
+        'tipo':            'Tipo',
+        'descricao':       'Descrição',
+        'valor_total':     'Valor Total',
+        'data_emissao':    'Data Emissão',
+        'data_vencimento': 'Vencimento',
+        'categoria_id':    'Categoria',
+        'status':          'Status',
+    }
+
+    alteracoes = []
+    for campo, label in mapa_campos.items():
+        v_antes = antes.get(campo)
+        v_depois = depois.get(campo)
+
+        # Normaliza
+        if campo == 'valor_total':
+            v_antes = float(v_antes or 0)
+            v_depois = float(v_depois or 0)
+            if abs(v_antes - v_depois) > 0.001:
+                alteracoes.append({
+                    'campo': label,
+                    'antes': _fmt_moeda(v_antes),
+                    'depois': _fmt_moeda(v_depois),
+                })
+        else:
+            v_antes_s = str(v_antes or '').strip()
+            v_depois_s = str(v_depois or '').strip()
+            if v_antes_s != v_depois_s:
+                alteracoes.append({
+                    'campo': label,
+                    'antes': v_antes_s or '(vazio)',
+                    'depois': v_depois_s or '(vazio)',
+                })
+
+    return alteracoes
+
+
 @login_required
 def editar_modal(sequencia):
-    """Só renderiza o esqueleto do modal. Os dados vêm via /dados/<seq>."""
     user_id = session['user_id']
     hoje = date.today().isoformat()
 
     conexao, cursor = ini_conexao()
     try:
-        # Categorias são necessárias pra montar o <select> no HTML
         categorias = EditarTransacaoService.buscar_categorias(cursor, user_id) \
                      if hasattr(EditarTransacaoService, 'buscar_categorias') else []
 
@@ -47,12 +91,8 @@ def editar_modal(sequencia):
         conexao.close()
 
 
-# ========================================================== #
-# 2. GET - RETORNA OS DADOS EM JSON
-# ========================================================== #
 @login_required
 def dados_json(sequencia):
-    """Retorna os dados da transação em JSON"""
     user_id = session['user_id']
     conexao, cursor = ini_conexao()
 
@@ -67,7 +107,7 @@ def dados_json(sequencia):
             'success': True,
             'data': {
                 'id': transacao[0],
-                'sequencia': sequencia,   # 🔥 FIX: antes era transacao[1] (None no pai)
+                'sequencia': sequencia,
                 'tipo': transacao[2],
                 'descricao': transacao[3] or '',
                 'valor_total': float(transacao[4]) if transacao[4] else 0.0,
@@ -95,12 +135,8 @@ def dados_json(sequencia):
         conexao.close()
 
 
-# ========================================================== #
-# 3. POST - SALVA A EDIÇÃO
-# ========================================================== #
 @login_required
 def salvar_edicao(sequencia):
-    """Salva a edição da transação"""
     user_id = session['user_id']
     conexao, cursor = ini_conexao()
 
@@ -108,12 +144,9 @@ def salvar_edicao(sequencia):
         dados = request.json or {}
 
         valor = dados.get('valor_total')
-
         if isinstance(valor, (int, float)):
-            # 🔥 JSON mandou número (1009.9) — usa direto
             dados['valor_total'] = float(valor)
         elif isinstance(valor, str) and valor.strip():
-            # 🔥 Se vier string BR ("1.009,90"), aí sim converte
             dados['valor_total'] = converter_valor_br(valor)
         else:
             dados['valor_total'] = 0.0
@@ -127,7 +160,25 @@ def salvar_edicao(sequencia):
         )
 
         if not resultado.get('success'):
+            conexao.rollback()
             return jsonify({'success': False, 'error': resultado.get('error')}), 400
+
+        # 🆕 Auditoria com DIFF (antes/depois)
+        id_interno = resultado.get('id_interno')
+        dados_antes = resultado.get('dados_antes', {})
+        dados_depois = resultado.get('dados_depois', {})
+
+        alteracoes = _montar_diff(dados_antes, dados_depois)
+
+        if alteracoes:
+            AuditoriaFinanceiraService.registrar(
+                transacao_id=id_interno,
+                acao='editada',
+                campo_alterado='multiplos',
+                valor_antigo=None,
+                valor_novo=json.dumps(alteracoes, ensure_ascii=False),
+                conexao=conexao,
+            )
 
         conexao.commit()
 

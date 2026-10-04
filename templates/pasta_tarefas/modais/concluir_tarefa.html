@@ -1,24 +1,39 @@
-<!-- FUNDO ESCURO (OVERLAY) -->
-<div id="modalConcluir" class="modal-concluir-overlay">
-    <!-- CAIXA DO MODAL -->
-    <div class="modal-concluir-container">
-        <div class="modal-concluir-header">
-            <span class="modal-concluir-title">✅ Concluir Tarefa</span>
-            <button class="modal-concluir-close" onclick="fecharModalConcluir()">&times;</button>
+<!-- templates/pasta_tarefas/modais/concluir_tarefa.html -->
+<div class="modal-confirmacao-overlay"
+     id="modalConcluirTarefa"
+     onclick="fecharModalConcluir(event)">
+
+    <div class="modal-confirmacao-box confirmar-concluir"
+         onclick="event.stopPropagation()">
+
+        <h3><i class="bi bi-check-circle"></i> Concluir Tarefa</h3>
+
+        <p id="concluirTitulo">Tarefa: —</p>
+
+        <label for="motivoConclusao"
+               style="display:block; margin-top:10px; text-align:left; font-size:0.8rem; color:#aaa;">
+            <i class="bi bi-chat-left-text"></i> Motivo / observações (opcional)
+        </label>
+        <textarea id="motivoConclusao"
+                  name="motivo_conclusao"
+                  class="form-input"
+                  rows="3"
+                  placeholder="Ex: Finalizada dentro do prazo..."
+                  style="margin-top:6px;"></textarea>
+
+        <div class="modal-confirmacao-actions">
+            <button type="button"
+                    class="btn-confirmacao-cancelar"
+                    id="btnCancelarConcluirTarefa"
+                    onclick="fecharModalConcluir(null)">
+                <i class="bi bi-x-circle"></i> CANCELAR
+            </button>
+            <button type="button"
+                    class="btn-confirmacao-confirmar"
+                    id="btnConfirmarConcluirTarefa">
+                <i class="bi bi-check-lg"></i> CONCLUIR
+            </button>
         </div>
-        
-        <div class="modal-concluir-body">
-            <form id="formConcluir" method="POST">
-                <div class="modal-concluir-field full-width">
-                    <label class="field-label">Motivo (Opcional)</label>
-                    <textarea name="motivo_conclusao" class="form-control" style="height: 80px;"></textarea>
-                </div>
-                
-                <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px;">
-                    <button type="button" class="btn-pure" onclick="fecharModalConcluir()">Cancelar</button>
-                    <button type="submit" class="btn-pure btn-primary-pure">Concluir</button>
-                </div>
-            </form>
-        </div>
+
     </div>
 </div>

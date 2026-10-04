@@ -1,3 +1,4 @@
+# rotas\pasta_tarefas\tabelas\tabela_tarefas.py
 def criar_tabela_tarefas(cursor):
     cursor.execute("""
             SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='tarefas')

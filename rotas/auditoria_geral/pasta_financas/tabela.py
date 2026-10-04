@@ -1,3 +1,4 @@
+# rotas\auditoria_geral\pasta_financas\tabela.py
 def tabela_auditoria_financas(cursor):
     cursor.execute("""
         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'financas_auditoria')

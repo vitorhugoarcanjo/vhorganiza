@@ -1,11 +1,24 @@
-<!-- templates\pasta_financas\modais\modal_estornar_finan.html -->
-<div id="modalEstornar" class="modal-overlay-estornar">
-    <div class="modal-box-estornar">
+<!-- templates/pasta_financas/modais/modal_estornar_finan.html -->
+<div id="modalEstornar"
+     class="modal-confirmacao-overlay"
+     onclick="fecharModalEstornar(event)">
+
+    <div class="modal-confirmacao-box confirmar-estornar" onclick="event.stopPropagation()">
         <h3 id="modalEstornarTitulo">⚠️ Estornar Transação</h3>
         <p id="modalEstornarTexto">Tem certeza que deseja estornar esta transação?</p>
-        <div class="modal-actions-estornar">
-            <button id="btnCancelarEstornar" class="btn-cancelar-estornar">Cancelar</button>
-            <button id="btnConfirmarEstornar" class="btn-confirmar-estornar">Confirmar Estorno</button>
+
+        <div class="modal-confirmacao-actions">
+            <button type="button"
+                    id="btnCancelarEstornar"
+                    class="btn-confirmacao-cancelar"
+                    onclick="fecharModalEstornar(null)">
+                Cancelar
+            </button>
+            <button type="button"
+                    id="btnConfirmarEstornar"
+                    class="btn-confirmacao-confirmar">
+                Confirmar Estorno
+            </button>
         </div>
     </div>
 </div>

@@ -7,46 +7,65 @@ from datetime import datetime
 # ==========================
 
 JS_FILES = [
-    # 1. MODAIS
-    'static/js/modules/pasta_tarefas/modais/pasta_excluir/modal_excluir_global.js',
-    'static/js/modules/pasta_tarefas/modais/pasta_excluir/btn_excluir.js',
-    'static/js/modules/pasta_tarefas/modais/concluir_tarefas.js',
-    'static/js/modules/pasta_tarefas/modais/detalhes_completo.js',
-    
-    # 2. TOTALIZADORES
-    'static/js/modules/pasta_tarefas/totalizadores/totalizadores.js',
-    
-    # 3. ORDENAÇÃO
-    'static/js/modules/pasta_tarefas/ordenacao_colunas/ordenacao.js',
+    # ========================================= #
+    # CORE (classe base compartilhada)
+    # ========================================= #
+    'static/js/modules/pasta_tarefas/core/TarefaForm.js',
 
+    # ========================================= #
+    # COMPONENTS (sincronização HTMX)
+    # ========================================= #
+    'static/js/modules/pasta_tarefas/components/totalizadores.js',
+    'static/js/modules/pasta_tarefas/components/botoes_filtros.js',
+    'static/js/modules/pasta_tarefas/components/ordenacao.js',
+
+    # ========================================= #
+    # MODAIS (nova / editar)
+    # ========================================= #
+    'static/js/modules/pasta_tarefas/modals/tarefa-nova.js',
+    'static/js/modules/pasta_tarefas/modals/tarefa-editar.js',
+
+    # ========================================= #
+    # AÇÕES E MODAIS (excluir / concluir / detalhes)
+    # ========================================= #
+    'static/js/modules/pasta_tarefas/acoes_e_modais/pasta_excluir/excluir_tarefa.js',
+    'static/js/modules/pasta_tarefas/acoes_e_modais/pasta_concluir/concluir_tarefa.js',
+    'static/js/modules/pasta_tarefas/acoes_e_modais/pasta_detalhes/detalhes_tarefa.js',
+    'static/js/modules/pasta_tarefas/acoes_e_modais/pasta_reabrir/reabrir_tarefa.js',
+    'static/js/modules/pasta_tarefas/acoes_e_modais/pasta_reativar/reativar_tarefa.js',
+    'static/js/modules/pasta_tarefas/acoes_e_modais/pasta_auditoria/auditoria_tarefa.js',
+
+    # ========================================= #
+    # ORQUESTRADOR (por último — depende de tudo)
+    # ========================================= #
+    'static/js/modules/pasta_tarefas/tarefas.js',
 ]
 
-
 CSS_FILES = [
-    # exemplo: 'static/tela_base_telas_unificadas/estrutura_global.css',
-    # ========================================= #
-    # COMPONENTS
-    # ========================================= #
-    'static/css/components/buttons.css',
-    'static/css/components/filters.css',
-    'static/css/components/footer.css',
-    'static/css/components/tables.css',
-
     # ========================================= #
     # CORE
     # ========================================= #
     'static/css/core/reset.css',
     'static/css/core/responsive.css',
 
+    # ========================================= #
+    # COMPONENTS (MESMA LISTA DO FINANÇAS)
+    # ========================================= #
+    'static/css/components/buttons.css',
+    'static/css/components/filters.css',
+    'static/css/components/footer.css',
+    'static/css/components/tables.css',
+    'static/css/components/modal.css',
+    'static/css/components/modal_confirmacao.css',
+    'static/css/components/modal_detalhes.css',
+    'static/css/components/form.css',
+    'static/css/components/modal_auditoria.css',
 
     # ========================================= #
-    # AJUSTAR OS CSS DOS MODAIS...
+    # ESPECÍFICO DO TAREFAS
     # ========================================= #
-    'static/css/modules/pasta_tarefas/modais/concluir_tarefa.css',
-    'static/css/modules/pasta_tarefas/modais/detalhes_completo.css',
-    'static/css/modules/pasta_tarefas/modais/excluir_global.css',
+    # (nada por enquanto — quando tiver, adiciona aqui)
 ]
-
 
 # ==========================
 # FUNÇÃO PARA RESOLVER @import

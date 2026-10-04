@@ -41,12 +41,7 @@ JS_FILES = [
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_estornar_quitado.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_reativar/modal_reativar_inativo.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_quitar/btn_quitar.js',
-
-    
-    # BLOCO ALTERNATIVOS
-
-
-    # BLOCO DE FILTROS
+    'static/js/modules/pasta_financas/acoes_e_modais/pasta_auditoria/auditoria_financas.js',
     
     # Menu
     'static/js/modules/pasta_financas/menu_click/click_direito.js',
@@ -55,33 +50,28 @@ JS_FILES = [
 
 CSS_FILES = [
     # ========================================= #
-    # CORE (COMPARTILHADO - JÁ EXISTE)
+    # CORE
     # ========================================= #
     'static/css/core/reset.css',
     'static/css/core/responsive.css',
 
     # ========================================= #
-    # COMPONENTS (COMPARTILHADO - JÁ EXISTE)
+    # COMPONENTS (COMPARTILHADO)
     # ========================================= #
     'static/css/components/buttons.css',
     'static/css/components/filters.css',
     'static/css/components/footer.css',
     'static/css/components/tables.css',
+    'static/css/components/modal.css',
+    'static/css/components/modal_confirmacao.css',
+    'static/css/components/modal_detalhes.css',
+    'static/css/components/form.css',
+    'static/css/components/modal_auditoria.css',
 
     # ========================================= #
-    # FINANÇAS (ESPECÍFICO - SÓ ISSO!)
+    # ESPECÍFICO DO FINANÇAS
     # ========================================= #
-    'static/css/modules/pasta_financas/modals/modal_transacao.css',
-    'static/css/modules/pasta_financas/acoes_e_modais/modal_excluir.css',
-    'static/css/modules/pasta_financas/acoes_e_modais/modal_estornar.css',
-    'static/css/modules/pasta_financas/acoes_e_modais/detalhes_completo.css',
-    'static/css/modules/pasta_financas/menu_click/click_direito.css',
-
-    # ========================================= #
-    # COMPONENTS (ESPECIFICO)
-    # ========================================= #
-    'static/css/modules/pasta_financas/components/form_transacao.css',
-
+    'static/css/modules/pasta_financas/components/parcelas.css',
 ]
 
 # ==========================

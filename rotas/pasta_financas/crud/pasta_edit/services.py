@@ -106,7 +106,7 @@ class EditarTransacaoService:
     # ==========================================================
     # ATUALIZAR TRANSAÇÃO
     # 🔥 A QUANTIDADE de parcelas é IMUTÁVEL
-    # 🔥 Só edita descrição, valor total, datas, categoria e valores/datas individuais
+    # 🔥 Retorna dados_antes pra auditoria
     # ==========================================================
     @staticmethod
     def atualizar_transacao(cursor, conexao, sequencia_ou_id, user_id, dados):
@@ -118,20 +118,35 @@ class EditarTransacaoService:
 
         tipo = transacao_atual[2]
 
+        # 🔥 Dados ANTES (pra auditoria)
+        dados_antes = {
+            'tipo':             transacao_atual[2],
+            'descricao':        transacao_atual[3],
+            'valor_total':      float(transacao_atual[4]) if transacao_atual[4] else 0.0,
+            'data_vencimento':  str(transacao_atual[5]) if transacao_atual[5] else '',
+            'categoria_id':     transacao_atual[6],
+            'status':           transacao_atual[7],
+            'data_emissao':     str(transacao_atual[11]) if transacao_atual[11] else '',
+        }
+
+        # 🔥 Dados DEPOIS (do form)
         descricao = dados.get('descricao', '').strip()
         valor = float(dados.get('valor_total', 0.0))
         data_emissao = dados.get('data_emissao') or None
         data_vencimento = dados.get('data_vencimento') or None
         categoria_id = dados.get('categoria_id') or None
 
-        dados_antes = (
-            transacao_atual[4], transacao_atual[3], transacao_atual[5],
-            transacao_atual[6], transacao_atual[7], transacao_atual[9]
-        )
-        total_parcelas_antes = transacao_atual[9] or 1
+        dados_depois = {
+            'tipo':             tipo,
+            'descricao':        descricao,
+            'valor_total':      valor,
+            'data_vencimento':  data_vencimento,
+            'categoria_id':     categoria_id,
+            'status':           transacao_atual[7],
+            'data_emissao':     data_emissao,
+        }
 
         # Atualiza o PAI (ou a transação simples)
-        # 🔥 NÃO atualiza total_parcelas (quantidade é imutável)
         cursor.execute("""
             UPDATE transacoes
             SET descricao = %s,
@@ -144,7 +159,8 @@ class EditarTransacaoService:
         """, (descricao, valor, data_emissao, data_vencimento, categoria_id,
               pai_id_real, user_id))
 
-        # 🔥 Se era parcelada, atualiza as filhas (sem mexer em quantidade)
+        # Se era parcelada, atualiza as filhas
+        total_parcelas_antes = transacao_atual[9] or 1
         if total_parcelas_antes > 1:
             EditarTransacaoService._atualizar_filhas(
                 cursor=cursor,
@@ -158,12 +174,9 @@ class EditarTransacaoService:
 
         return {
             'success': True,
-            'dados_antes': dados_antes,
-            'descricao': descricao,
-            'valor': valor,
-            'data_emissao': data_emissao,
-            'data_vencimento': data_vencimento,
-            'categoria_id': categoria_id
+            'id_interno': pai_id_real,     # 🆕 pro insert_transacao usar
+            'dados_antes': dados_antes,    # 🆕
+            'dados_depois': dados_depois,  # 🆕
         }
 
     # ==========================================================

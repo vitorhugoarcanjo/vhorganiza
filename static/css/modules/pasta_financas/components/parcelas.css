@@ -1,0 +1,115 @@
+/* static/css/modules/pasta_financas/components/parcelas.css
+   ==========================================================
+   PARCELAS - EXCLUSIVO DE FINANÇAS
+   ========================================================== */
+
+.parcelas-config-area {
+    margin: 8px 0;
+    padding: 16px 20px;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+}
+
+.parcelas-config-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.parcelas-config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.parcelas-config-item label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.btn-distribuir {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--cor-ativa);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+}
+
+.btn-distribuir:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.parcelas-wrapper {
+    margin-top: 12px;
+    overflow-x: auto;
+}
+
+.parcelas-table-wrapper {
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.parcelas-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.parcelas-table th {
+    background: var(--bg-principal);
+    font-weight: 600;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border-sutil);
+    text-align: left;
+    color: var(--texto-mutado);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.parcelas-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+}
+
+.parcelas-table tr:last-child td {
+    border-bottom: none;
+}
+
+.parcelas-table .form-input {
+    height: 32px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 1024px) {
+    .parcelas-config-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .parcelas-config-row {
+        grid-template-columns: 1fr;
+    }
+    .parcelas-config-area {
+        padding: 12px 14px;
+    }
+}

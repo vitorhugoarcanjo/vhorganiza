@@ -1,3 +1,4 @@
+# config\imports_rotas.py
 """ ARQUIVO IMPORTS DE ROTAS """
 from rotas.pasta_login.pasta_acesso_login.logica_login import bp_login # LOGIN
 from rotas.pasta_login.recuperar_senha.recuperar_senha import bp_recuperar # RECUPERAR SENHA
@@ -16,9 +17,7 @@ from rotas.pasta_dashboard.dashboard import bp_dashboard
 from rotas.pasta_config.config import bp_config
 
 # PASTA TAREFAS
-from rotas.pasta_tarefas.tela_tarefas import bp_tela_tarefas # LÓGICA TAREFAS - INICIO
-from rotas.pasta_tarefas.crud_tarefas.pasta_insert.tela_insert import bp_insert_tarefas # INSERIR
-from rotas.pasta_tarefas.crud_tarefas.pasta_edit.logica_edit import bp_tela_edit # EDITAR
+from rotas.pasta_tarefas import bp_tarefas
 
 # PASTA CATEGORIAS
 from rotas.pasta_categorias.logica_insert_categorias import bp_categorias
@@ -28,8 +27,7 @@ from rotas.logs import importar_logs
 from rotas.middleware.logs_middleware import log_acesso_middleware
 
 # PASTA AUDITORIA
-from rotas.auditoria_geral.logica_auditoria import bp_auditoria_tarefas
-from rotas.auditoria_geral.pasta_financas.logica_auditoria import bp_auditoria_financas
+from rotas.auditoria_geral import bp_auditoria
 
 # PASTA ORCAMENTOS
 from rotas.pasta_orcamentos import bp_orcamentos
@@ -53,16 +51,13 @@ def logica_imports(app):
     app.register_blueprint(bp_config, url_prefix="/config")
 
     # TAREFAS
-    app.register_blueprint(bp_tela_tarefas, url_prefix="/tarefas")
-    app.register_blueprint(bp_insert_tarefas, url_prefix="/insert_tarefas")
-    app.register_blueprint(bp_tela_edit, url_prefix="/editar_tarefa")
+    app.register_blueprint(bp_tarefas, url_prefix="/tarefas")
 
     # CATEGORIAS
     app.register_blueprint(bp_categorias, url_prefix="/categorias")
 
     # AUDITORIA
-    app.register_blueprint(bp_auditoria_tarefas, url_prefix="/auditoria")
-    app.register_blueprint(bp_auditoria_financas, url_prefix="/auditoria_financas")
+    app.register_blueprint(bp_auditoria, url_prefix="/auditoria")
 
     # ORCAMENTOS
     app.register_blueprint(bp_orcamentos, url_prefix="/orcamentos")

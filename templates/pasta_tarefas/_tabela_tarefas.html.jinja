@@ -1,0 +1,24 @@
+{# templates/pasta_tarefas/_tabela_tarefas.html.jinja #}
+{# TABELA #}
+<div id="tabela-container" data-url-refresh="{{ url_for('tarefas.ini_tarefas') }}">
+    <div class="painel-tabela-conteudo scroll-fino">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 65px;">Nº REG.</th>
+                        <th>TÍTULO</th>
+                        <th style="width: 110px;">STATUS</th>
+                        <th style="width: 105px;">DATA INICIO</th>
+                        <th style="width: 105px;">DATA FINAL</th>
+                        <th style="width: 120px;">DATA FINALIZAÇÃO</th>
+                        <th style="width: 130px;">CATEGORIA</th>
+                        <th style="width: 110px;">PRIORIDADE</th>
+                        <th style="width: 145px; text-align: center;">AÇÕES</th>
+                    </tr>
+                </thead>
+                {% include 'pasta_tarefas/partials/_tbody_tarefas.html.jinja' %}
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,3 +1,4 @@
+<!-- templates/pasta_tarefas/tela_tarefas.html.jinja -->
 {% extends "tela_base_pos_login/base.html" %}
 
 {% block title %}Gestão de Tarefas{% endblock %}
@@ -9,10 +10,17 @@
 {% block content %}
 <div class="painel-container">
 
+    <!-- ========================================================== -->
+    <!-- FILTROS                                                     -->
+    <!-- ========================================================== -->
     <div class="painel-topo-fixo">
-        <form action="{{ url_for('tarefas.ini_tarefas') }}" method="POST" class="form-filtros-total">
+        <form id="formFiltrosTarefas"
+              hx-post="{{ url_for('tarefas.ini_tarefas') }}"
+              hx-target="#tabela-container"
+              hx-swap="outerHTML"
+              class="form-filtros-total">
             <div class="filtros-container">
-                
+
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">📅 DATA</div>
                     <div class="flex-row gap-1">
@@ -27,32 +35,36 @@
                     </div>
                     <div class="flex-row gap-1" style="margin-top: 3px;">
                         <div class="flex-fill">
-                            <input type="date" name="data_inicio" class="form-control" value="{{ data_inicio or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                            <input type="date" name="data_inicio" id="data_inicio_input" class="form-control"
+                                   value="{{ data_inicio or '' }}">
                         </div>
                         <div class="flex-fill">
-                            <input type="date" name="data_fim" class="form-control" value="{{ data_fim or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                            <input type="date" name="data_fim" id="data_fim_input" class="form-control"
+                                   value="{{ data_fim or '' }}">
                         </div>
                     </div>
                     <div style="margin-top: 3px;">
                         <select name="tipo_data" class="form-select">
-                            <option value="inicio" {% if tipo_data == 'inicio' %}selected{% endif %}>📅 DATA INICIO</option>
-                            <option value="final" {% if tipo_data == 'final' %}selected{% endif %}>⏰ DATA FINAL</option>
+                            <option value="inicio"      {% if tipo_data == 'inicio' %}selected{% endif %}>📅 DATA INICIO</option>
+                            <option value="final"       {% if tipo_data == 'final' %}selected{% endif %}>⏰ DATA FINAL</option>
                             <option value="finalizacao" {% if tipo_data == 'finalizacao' %}selected{% endif %}>✅ DATA FINALIZAÇÃO</option>
                         </select>
                     </div>
-                    <input type="hidden" name="mostrar_inativas" value="{{ mostrar_inativas }}">
+                    <input type="hidden" name="mostrar_inativas" id="mostrar_inativas_input" value="{{ mostrar_inativas }}">
                 </div>
-                
+
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">🏷️ CATEGORIAS</div>
                     <div class="lista-categorias scroll-fino">
                         <label class="label-categoria">
-                            <input type="checkbox" name="categorias" value="null" class="me-1" {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
+                            <input type="checkbox" name="categorias" value="null" class="me-1"
+                                   {% if categorias_filtro and 'null' in categorias_filtro %}checked{% endif %}>
                             <span class="span_categorias">📭 SEM CATEGORIA</span>
                         </label>
                         {% for cat in categorias_usuario %}
                         <label class="label-categoria">
-                            <input type="checkbox" name="categorias" value="{{ cat[0] }}" class="me-1" {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
+                            <input type="checkbox" name="categorias" value="{{ cat[0] }}" class="me-1"
+                                   {% if categorias_filtro and cat[0]|string in categorias_filtro %}checked{% endif %}>
                             <span class="span_categorias" style="color: {{ cat[2] }}; font-weight: 500;">{{ cat[1] }}</span>
                         </label>
                         {% endfor %}
@@ -61,7 +73,7 @@
 
                 <div class="bloco-filtro">
                     <div class="bloco-titulo">📊 OUTROS FILTROS</div>
-                    
+
                     <div class="flex-row gap-2">
                         <div class="flex-fill">
                             <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Status</label>
@@ -74,7 +86,7 @@
                                 <option value="pendente_em_andamento" {% if status_filtro == 'pendente_em_andamento' %}selected{% endif %}>🔄 Pend+Andam</option>
                             </select>
                         </div>
-                        
+
                         <div class="flex-fill">
                             <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Prioridade</label>
                             <select name="prioridade" class="form-select">
@@ -89,10 +101,25 @@
 
                     <div style="margin-top: 4px;">
                         <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Tarefa:</label>
-                        <div class="flex-row gap-1">
-                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='0') }}" class="btn-filter flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}">Ativas</a>
-                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='1') }}" class="btn-filter flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}">Inativas</a>
-                            <a href="{{ url_for('tarefas.ini_tarefas', mostrar_inativas='2') }}" class="btn-filter flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}">Todas</a>
+                        <div class="flex-row gap-1" id="botoes-transacao">
+                            <button type="button"
+                                    class="btn-filter flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}"
+                                    hx-post="{{ url_for('tarefas.ini_tarefas') }}"
+                                    hx-vals='{"mostrar_inativas": "0"}'
+                                    hx-target="#tabela-container"
+                                    hx-swap="outerHTML">Ativas</button>
+                            <button type="button"
+                                    class="btn-filter flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}"
+                                    hx-post="{{ url_for('tarefas.ini_tarefas') }}"
+                                    hx-vals='{"mostrar_inativas": "1"}'
+                                    hx-target="#tabela-container"
+                                    hx-swap="outerHTML">Inativas</button>
+                            <button type="button"
+                                    class="btn-filter flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}"
+                                    hx-post="{{ url_for('tarefas.ini_tarefas') }}"
+                                    hx-vals='{"mostrar_inativas": "2"}'
+                                    hx-target="#tabela-container"
+                                    hx-swap="outerHTML">Todas</button>
                         </div>
                     </div>
                 </div>
@@ -100,11 +127,12 @@
                 <div class="bloco-filtro bloco-pesquisa-fim">
                     <div>
                         <div class="bloco-titulo">🔍 DESCRIÇÃO</div>
-                        <input type="text" name="descricao" class="form-control" placeholder="buscar..." value="{{ descricao_filtro or '' }}" onkeypress="if(event.key === 'Enter'){ event.preventDefault(); this.form.querySelector('button[value=\'consultar\']').click(); }">
+                        <input type="text" name="descricao" class="form-control" placeholder="buscar..."
+                               value="{{ descricao_filtro or '' }}">
                     </div>
                     <div class="flex-row gap-1" style="margin-top: 6px;">
                         <a href="{{ url_for('tarefas.limpar_filtros') }}" class="btn-pure flex-fill" style="text-align: center;">Limpar Todos</a>
-                        <button type="submit" name="tipo_filtro" value="consultar" class="btn-pure btn-primary-pure flex-fill">Consultar</button>
+                        <button type="submit" class="btn-pure btn-primary-pure flex-fill">Consultar</button>
                     </div>
                 </div>
 
@@ -112,130 +140,27 @@
         </form>
     </div>
 
-    <div class="painel-tabela-conteudo scroll-fino">
-        <div class="table-responsive">
-            <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th>Nº REG.</th>
-                        <th>TÍTULO</th>
-                        <th>STATUS</th>
-                        <th>DATA INICIO</th>
-                        <th>DATA FINAL</th>
-                        <th>DATA FINALIZAÇÃO</th>
-                        <th>CATEGORIA</th>
-                        <th>PRIORIDADE</th>
-                        <th>AÇÕES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if tarefas %}
-                        {% for tarefa in tarefas %}
-                        <tr>
-                            <td class="td-id">{{ tarefa[0] }}</td>
-                            <td class="td-titulo" title="{{ tarefa[1] }}">{{ tarefa[1] }}</td>
-                            <td>
-                                {% if tarefa[3] == 'concluido' %}
-                                    <span class="badge-pure bg-success">✅ Concluída</span>
-                                {% elif tarefa[3] == 'em andamento' %}
-                                    <span class="badge-pure bg-warning text-dark">⏳ Andamento</span>
-                                {% else %}
-                                    <span class="badge-pure bg-danger">⏰ Pendente</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ tarefa[4] or '-' }}</td>
-                            <td>{{ tarefa[5] or '-' }}</td>
-                            <td>
-                                {% if tarefa[6] and tarefa[6] != '-' %}
-                                    <span class="badge-pure bg-success">{{ tarefa[6] }}</span>
-                                {% else %}
-                                    <span class="text-vazio">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if tarefa[9] %}
-                                    <span class="badge-pure tag-categoria" style="background-color: {{ tarefa[10] }}; color: white; border: none;">
-                                        {{ tarefa[9] }}
-                                    </span>
-                                {% else %}
-                                    <span class="text-vazio">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if tarefa[8] %}
-                                    {% set prio_class = 'bg-danger' if tarefa[8] == 'alta' else 'bg-warning text-dark' if tarefa[8] == 'media' else 'bg-success' %}
-                                    <span class="badge-pure {{ prio_class }}">{{ tarefa[8]|title }}</span>
-                                {% else %}
-                                    <span class="text-vazio">-</span>
-                                {% endif %}
-                            </td>
-
-                            <!-- ACÕES -->
-                            <td class="td-acoes">
-                                <button type="button" class="btn-acao view" title="Ver detalhes" onclick="verDetalhes({{ tarefa[0] }})">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                                <a href="{{ url_for('auditoria.historico_tarefa', 
-                                                    tarefa_seq=tarefa[0],
-                                                    mostrar_inativas=request.args.get('mostrar_inativas', '0'),
-                                                    data_inicio=request.args.get('data_inicio'),
-                                                    data_fim=request.args.get('data_fim'),
-                                                    tipo_data=request.args.get('tipo_data', 'inicio')) }}" 
-                                   class="btn-acao audit" 
-                                   title="Ver histórico de alterações">
-                                    <i class="bi bi-clock-history"></i>
-                                </a>
-
-                                {% if tarefa[3] != 'concluido' and tarefa[11] == 1 %}
-                                    
-
-                                    <!-- BOTÃO CONCLUIR TAREFAS -->
-                                    <button 
-                                        type="button"
-                                        class="btn-acao check btn-concluir"
-                                        data-url="{{ url_for('tarefas.concluir_tarefa', tarefa_seq=tarefa[0]) }}">
-                                        <i class="bi bi-check-lg"></i>
-                                    </button>
-                                    
-                                    
-                                    <a href="{{ url_for('editar_tarefa.iniedittarefa', tarefa_seq=tarefa[0]) }}" class="btn-acao edit" title="Editar">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    
-                                    <!-- BOTAO INATIVAR / EXCLUIR -->
-                                    <button 
-                                        type="button"
-                                        class="btn-acao delete btn-excluir"
-                                        data-id="{{ tarefa[0] }}"
-                                        data-desc="{{ tarefa[1] }}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="9" class="text-center py-4 text-white-50">Nenhuma tarefa cadastrada ou nesse período</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <!-- ========================================================== -->
+    <!-- TABELA (partial)                                            -->
+    <!-- ========================================================== -->
+    {% include 'pasta_tarefas/_tabela_tarefas.html.jinja' %}
 </div>
 
 
-<!-- FOOTER FIXO PADRÃO (IGUAL FINANÇAS) -->
-<!-- tela_tarefas.html -->
-
+<!-- ========================================================== -->
+<!-- FOOTER FIXO                                                 -->
+<!-- ========================================================== -->
 <div class="footer-fixo-padrao">
     <div class="botoes-footer-padrao">
-        <a href="{{ url_for('insert_tarefas.ini_insert') }}" class="btn-footer btn-footer-primary" title="Nova Tarefa">
+        <button type="button"
+                class="btn-footer btn-footer-primary"
+                hx-get="{{ url_for('tarefas.insert_tarefas.nova_tarefa_modal') }}"
+                hx-target="#modal-nova-container"
+                hx-swap="innerHTML"
+                title="Nova Tarefa">
             <i class="bi bi-plus-lg"></i>
             <span>NOVO</span>
-        </a>
+        </button>
         <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn-footer btn-footer-secondary" title="Categorias">
             <i class="bi bi-tags"></i>
             <span>CATEGORIAS</span>
@@ -245,19 +170,19 @@
     <div>
         <h2>TAREFAS</h2>
     </div>
-    
+
     <div class="totalizador-footer-padrao">
         <div class="total-item-footer total-pendente">
             <label>⏰ PENDENTES</label>
-            <span id="totalPendentes">0</span>
+            <span id="totalPendentes">{{ contadores.pendentes }}</span>
         </div>
         <div class="total-item-footer total-andamento">
             <label>⏳ ANDAMENTO</label>
-            <span id="totalAndamento">0</span>
+            <span id="totalAndamento">{{ contadores.andamento }}</span>
         </div>
         <div class="total-item-footer total-concluidas">
             <label>✅ CONCLUÍDAS</label>
-            <span id="totalConcluidas">0</span>
+            <span id="totalConcluidas">{{ contadores.concluidas }}</span>
         </div>
         <div class="contador-footer">
             <i class="bi bi-list-ul"></i>
@@ -266,16 +191,24 @@
     </div>
 </div>
 
-    <!-- HTML MODAL - CONCLUIR TAREFA / DETALHES AUDITORIA / EXCLUIR TAREFA -->
-    {% include 'pasta_tarefas/modais/concluir_tarefa.html' %}
-    {% include 'pasta_tarefas/modais/detalhes_completo.html' %}
-    {% include 'pasta_tarefas/modais/excluir_tarefa.html' %}
-    <!-- CSS NO TOPO -->
 
-    {% block scripts %}
-    <script src="{{ static_v('js/modules/pasta_tarefas/tarefas.min.js') }}"></script>
-    {% endblock %}
+<!-- ========================================================== -->
+<!-- CONTAINERS DOS MODAIS                                       -->
+<!-- ========================================================== -->
+<div id="modal-nova-container"></div>
+<div id="modal-editar-container"></div>
+<div id="modal-auditoria-container"></div>
+
+<!-- Modais fixos (concluir / excluir / detalhes) -->
+{% include 'pasta_tarefas/modais/concluir_tarefa.html' %}
+{% include 'pasta_tarefas/modais/detalhes_completo.html' %}
+{% include 'pasta_tarefas/modais/excluir_tarefa.html' %}
+{% include 'pasta_tarefas/modais/reabrir_tarefa.html' %}
+{% include 'pasta_tarefas/modais/reativar_tarefa.html' %} 
+
+{% endblock %}
 
 
-
+{% block scripts %}
+<script src="{{ static_v('js/modules/pasta_tarefas/tarefas.min.js') }}"></script>
 {% endblock %}

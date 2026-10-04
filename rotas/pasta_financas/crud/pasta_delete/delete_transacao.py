@@ -1,12 +1,13 @@
 # rotas/pasta_financas/crud/pasta_delete/delete_transacao.py
 from flask import session, make_response, render_template
 import json
+import logging
 from rotas.middleware.autenticacao import login_required
+from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 from utils.database.conexao_global import ini_conexao
 from rotas.pasta_financas.services.services_financas import FinancasServices
 from rotas.pasta_financas.filters import FinancasFilters
 from rotas.pasta_financas.formatters import FinancasFormatters
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -42,12 +43,13 @@ def _render_tbody(user_id, cursor):
 # ==========================================================
 @login_required
 def inativar_financa(transacao_id):
+    """transacao_id aqui é a SEQUÊNCIA visual"""
     user_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
         cursor.execute("""
-            SELECT descricao, total_parcelas, numero_parcela, transacao_pai_id
+            SELECT id, descricao, total_parcelas, numero_parcela, transacao_pai_id
             FROM transacoes
             WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
         """, (transacao_id, user_id))
@@ -57,12 +59,19 @@ def inativar_financa(transacao_id):
             conexao.close()
             return '', 404
 
-        transacao_pai_id = transacao[3]
+        id_interno = transacao[0]                # 🆕
+        descricao = transacao[1]
+        total_parcelas = transacao[2]
+        transacao_pai_id = transacao[4]
+
         eh_parcelamento = (
             transacao_pai_id is not None or
-            (transacao[1] and transacao[1] > 1)
+            (total_parcelas and total_parcelas > 1)
         )
 
+        # ==========================================================
+        # PARCELAMENTO → pede confirmação
+        # ==========================================================
         if eh_parcelamento:
             if transacao_pai_id is not None:
                 pai_real_id = transacao_pai_id
@@ -81,19 +90,33 @@ def inativar_financa(transacao_id):
             resp.headers['HX-Trigger'] = json.dumps({
                 'pedirConfirmacaoParcelamento': {
                     'pai_id': pai_real_id,
-                    'descricao': transacao[0]
+                    'descricao': descricao
                 }
             })
             return resp
 
+        # ==========================================================
+        # SIMPLES → inativa + audita
+        # ==========================================================
         cursor.execute("""
             UPDATE transacoes
             SET ativo = 0,
                 excluido_em = CURRENT_TIMESTAMP,
                 excluido_por = %s,
                 data_alteracao = CURRENT_TIMESTAMP
-            WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
-        """, (user_id, transacao_id, user_id))
+            WHERE id = %s AND user_id = %s AND ativo = 1
+        """, (user_id, id_interno, user_id))
+
+        # 🔥 Auditoria transacional
+        AuditoriaFinanceiraService.registrar(
+            transacao_id=id_interno,
+            acao='excluida',
+            campo_alterado='ativo',
+            valor_antigo='1',
+            valor_novo='0',
+            conexao=conexao,
+        )
+
         conexao.commit()
 
         html = _render_tbody(user_id, cursor)
@@ -120,11 +143,12 @@ def excluir_parcelamento_completo(pai_id):
 
     try:
         cursor.execute("""
-            SELECT id FROM transacoes
+            SELECT id, descricao FROM transacoes
             WHERE id = %s AND user_id = %s AND ativo = 1
         """, (pai_id, user_id))
 
-        if not cursor.fetchone():
+        pai = cursor.fetchone()
+        if not pai:
             conexao.close()
             return '', 404
 
@@ -137,6 +161,17 @@ def excluir_parcelamento_completo(pai_id):
             WHERE (id = %s OR transacao_pai_id = %s)
             AND user_id = %s AND ativo = 1
         """, (user_id, pai_id, pai_id, user_id))
+
+        # 🔥 Auditoria (usa o id do PAI)
+        AuditoriaFinanceiraService.registrar(
+            transacao_id=pai_id,
+            acao='excluida_parcelada',
+            campo_alterado='ativo',
+            valor_antigo='1',
+            valor_novo='0',
+            conexao=conexao,
+        )
+
         conexao.commit()
 
         html = _render_tbody(user_id, cursor)

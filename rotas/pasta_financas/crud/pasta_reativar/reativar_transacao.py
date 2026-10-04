@@ -1,6 +1,7 @@
 # rotas/pasta_financas/crud/pasta_reativar/reativar_transacao.py
 from flask import session, jsonify, make_response, render_template
 from rotas.middleware.autenticacao import login_required
+from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 from utils.database.conexao_global import ini_conexao
 from rotas.pasta_financas.formatters import FinancasFormatters
 from rotas.pasta_financas.services.services_financas import FinancasServices
@@ -11,11 +12,6 @@ from rotas.pasta_financas.filters import FinancasFilters
 # HELPER — busca as transações da listagem COM FILTROS
 # ==========================================================
 def _buscar_transacoes_com_filtros(cursor, user_id):
-    """
-    Reaproveita a mesma lógica da tela principal.
-    Retorna a lista JÁ formatada.
-    """
-    # Processa e recupera filtros da sessão (igual a tela faz)
     data_inicio, data_fim, tipo_data = FinancasFilters.processar_filtros_data()
     filtros = FinancasFilters.recuperar_filtros(session)
     filtros.update({
@@ -30,7 +26,7 @@ def _buscar_transacoes_com_filtros(cursor, user_id):
 
 
 # ==========================================================
-# GET — verifica o tipo (mantém JSON)
+# GET — verifica o tipo (JSON)
 # ==========================================================
 @login_required
 def verificar_reativacao_view(transacao_seq):
@@ -91,7 +87,7 @@ def reativar_view(transacao_seq):
     conexao, cursor = ini_conexao()
 
     cursor.execute("""
-        SELECT descricao
+        SELECT id, descricao
         FROM transacoes
         WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 0
     """, (transacao_seq, user_id))
@@ -101,17 +97,30 @@ def reativar_view(transacao_seq):
         conexao.close()
         return '', 404
 
+    id_interno = transacao[0]   # 🆕
+
     cursor.execute("""
         UPDATE transacoes
         SET ativo = 1,
             excluido_em = NULL,
             excluido_por = NULL,
             data_alteracao = CURRENT_TIMESTAMP
-        WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 0
-    """, (transacao_seq, user_id))
+        WHERE id = %s AND user_id = %s AND ativo = 0
+    """, (id_interno, user_id))
+
+    # 🔥 Auditoria
+    AuditoriaFinanceiraService.registrar(
+        transacao_id=id_interno,
+        acao='reativada',
+        campo_alterado='ativo',
+        valor_antigo='0',
+        valor_novo='1',
+        conexao=conexao,
+    )
+
     conexao.commit()
 
-    # Busca atualizada (mesma query padrão)
+    # Busca atualizada
     cursor.execute("""
         SELECT t.sequencia_transacoes, t.id, t.tipo, t.valor_total, t.descricao, t.data_emissao,
                c.nome AS categoria_nome, c.cor AS categoria_cor,
@@ -119,8 +128,8 @@ def reativar_view(transacao_seq):
                t.numero_parcela, t.total_parcelas, t.transacao_pai_id, t.valor_parcela
         FROM transacoes t
         LEFT JOIN categorias_financas c ON c.id = t.categoria_id
-        WHERE t.sequencia_transacoes = %s AND t.user_id = %s
-    """, (transacao_seq, user_id))
+        WHERE t.id = %s AND t.user_id = %s
+    """, (id_interno, user_id))
 
     transacao_atualizada = cursor.fetchone()
     conexao.close()
@@ -143,7 +152,7 @@ def reativar_view(transacao_seq):
 
 
 # ==========================================================
-# POST — reativa parcelamento completo → devolve o TBODY inteiro
+# POST — reativa parcelamento completo → devolve o TBODY
 # ==========================================================
 @login_required
 def reativar_parcelamento_view(transacao_pai_id):
@@ -153,10 +162,8 @@ def reativar_parcelamento_view(transacao_pai_id):
 
     conexao, cursor = ini_conexao()
 
-    # Confirma que o pai existe e está inativo
     cursor.execute("""
-        SELECT id
-        FROM transacoes
+        SELECT id FROM transacoes
         WHERE id = %s AND user_id = %s AND ativo = 0
     """, (transacao_pai_id, user_id))
 
@@ -165,7 +172,6 @@ def reativar_parcelamento_view(transacao_pai_id):
         conexao.close()
         return '', 404
 
-    # Reativa pai + todas as filhas
     cursor.execute("""
         UPDATE transacoes
         SET ativo = 1,
@@ -176,15 +182,24 @@ def reativar_parcelamento_view(transacao_pai_id):
         AND user_id = %s
         AND ativo = 0
     """, (transacao_pai_id, transacao_pai_id, user_id))
+
+    # 🔥 Auditoria (usa o id do PAI)
+    AuditoriaFinanceiraService.registrar(
+        transacao_id=transacao_pai_id,
+        acao='reativada_parcelada',
+        campo_alterado='ativo',
+        valor_antigo='0',
+        valor_novo='1',
+        conexao=conexao,
+    )
+
     conexao.commit()
 
-    # 🔥 Busca as transações com filtros aplicados (mesma lógica da listagem)
     transacoes_formatadas = _buscar_transacoes_com_filtros(cursor, user_id)
     conexao.close()
 
-    # 🔥 Devolve o TBODY inteiro (todas as linhas com filtros aplicados)
     html = render_template(
-        'pasta_financas/partials/_tbody_transacoes.html.jinja',   # 🔥 PARTIAL
+        'pasta_financas/partials/_tbody_transacoes.html.jinja',
         transacoes=transacoes_formatadas,
         mostrar_inativas=session.get('financas_mostrar_inativas', '0'),
         data_inicio='', data_fim='', tipo_data='emissao'

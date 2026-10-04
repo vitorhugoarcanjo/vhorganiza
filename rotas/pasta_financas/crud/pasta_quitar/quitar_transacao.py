@@ -15,7 +15,7 @@ def quitar_transacao_view(sequencia):
     conexao, cursor = ini_conexao()
 
     cursor.execute("""
-        SELECT descricao, status, tipo
+        SELECT id, descricao, status, tipo
         FROM transacoes
         WHERE sequencia_transacoes = %s AND user_id = %s
     """, (sequencia, user_id))
@@ -24,7 +24,10 @@ def quitar_transacao_view(sequencia):
     if not transacao:
         return '', 404
 
-    if transacao[2] == 'receita':
+    id_interno = transacao[0]   # 🆕 id interno
+    status_antes = transacao[2]
+
+    if transacao[3] == 'receita':
         novo_status = 'recebido'
         acao = 'recebida'
     else:
@@ -34,17 +37,20 @@ def quitar_transacao_view(sequencia):
     cursor.execute("""
         UPDATE transacoes
         SET status = %s, data_quitamento = %s
-        WHERE sequencia_transacoes = %s AND user_id = %s
-    """, (novo_status, hoje, sequencia, user_id))
-    conexao.commit()
+        WHERE id = %s AND user_id = %s
+    """, (novo_status, hoje, id_interno, user_id))
 
+    # 🔥 Auditoria com ID INTERNO (na MESMA conexão)
     AuditoriaFinanceiraService.registrar(
-        transacao_id=sequencia,
+        transacao_id=id_interno,   # 🆕 id interno
         acao=acao,
         campo_alterado='status',
-        valor_antigo=transacao[1],
-        valor_novo=novo_status
+        valor_antigo=status_antes,
+        valor_novo=novo_status,
+        conexao=conexao,           # 🆕 transacional
     )
+
+    conexao.commit()
 
     # Busca atualizada
     cursor.execute("""

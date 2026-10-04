@@ -1,0 +1,77 @@
+<!-- templates/pasta_tarefas/partials/form_tarefa.html.jinja -->
+<!-- ========================================================== -->
+<!-- PARTIAL: CAMPOS DA TAREFA (NOVO / EDIT)                     -->
+<!-- Sem IDs globais. Tudo via .js-* para o TarefaForm achar.    -->
+<!-- ========================================================== -->
+
+<div class="form-body">
+
+    <!-- LINHA 1: TÍTULO -->
+    <div class="form-grid">
+        <div class="form-group descricao-full">
+            <label class="label-form"><i class="bi bi-type"></i> Título</label>
+            <input type="text"
+                   name="titulo"
+                   class="form-input js-titulo"
+                   placeholder="Título da tarefa..."
+                   maxlength="200"
+                   >
+        </div>
+    </div>
+
+    <!-- LINHA 2: DESCRIÇÃO -->
+    <div class="form-grid">
+        <div class="form-group descricao-full">
+            <label class="label-form"><i class="bi bi-file-text"></i> Descrição</label>
+            <textarea name="descricao"
+                      class="form-input js-descricao"
+                      rows="3"
+                      placeholder="O que deve ser feito?"></textarea>
+        </div>
+    </div>
+
+    <!-- LINHA 3: STATUS + PRIORIDADE -->
+    <div class="form-grid">
+        <div class="form-group">
+            <label class="label-form"><i class="bi bi-check-circle"></i> Status</label>
+            <select name="status" class="form-select js-status">
+                <option value="pendente">⏳ Pendente</option>
+                <option value="em andamento">⚡ Em andamento</option>
+                <option value="concluido">✅ Concluído</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="label-form"><i class="bi bi-flag"></i> Prioridade</label>
+            <select name="prioridade" class="form-select js-prioridade">
+                <option value="baixa">🟢 Baixa</option>
+                <option value="media">🟡 Média</option>
+                <option value="alta">🔴 Alta</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- LINHA 4: INÍCIO + PRAZO + CATEGORIA -->
+    <div class="form-grid">
+        <div class="form-group">
+            <label class="label-form"><i class="bi bi-calendar-plus"></i> Início</label>
+            <input type="date" name="data_inicio" class="form-input js-data-inicio">
+        </div>
+        <div class="form-group">
+            <label class="label-form"><i class="bi bi-calendar-check"></i> Prazo</label>
+            <input type="date" name="data_final" class="form-input js-data-final">
+        </div>
+        <div class="form-group">
+            <label class="label-form"><i class="bi bi-tags"></i> Categoria</label>
+            <select name="categoria_id" class="form-select js-categoria">
+                <option value="">⚠️ Sem categoria</option>
+                {% for cat in categorias %}
+                    <option value="{{ cat[0] }}"
+                            style="background-color: {{ cat[2] }}; color: white;">
+                        {{ cat[1] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+</div>

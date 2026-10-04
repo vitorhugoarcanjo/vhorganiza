@@ -1,7 +1,9 @@
-/* COMBINADO - 04/10/2026 09:31 */
+/* COMBINADO - 04/10/2026 16:03 */
 
 /* ===== reset.css ===== */
-/* ==========================================================================
+/*
+static\css\core\reset.css
+   ==========================================================================
    1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
    ========================================================================== */
 :root {
@@ -67,7 +69,9 @@
 
 
 /* ===== responsive.css ===== */
-/* ==========================================================================
+/* 
+static\css\core\responsive.css
+   ==========================================================================
    6. RESPONSIVIDADE - CORRIGIDA
    ========================================================================== */
 
@@ -148,7 +152,9 @@
 }
 
 /* ===== buttons.css ===== */
-/* ==========================================================
+/*
+static\css\components\buttons.css
+==========================================================
    BOTÃO - NOVO/SALVAR (AZUL)
    ========================================================== */
 .btn-footer-primary {
@@ -478,7 +484,9 @@
 }
 
 /* ===== filters.css ===== */
-/* ==========================================================================
+/*
+static\css\components\filters.css
+   ==========================================================================
    2. FILTROS
    ========================================================================== */
 .painel-topo-fixo {
@@ -589,7 +597,9 @@
 }
 
 /* ===== footer.css ===== */
-/* ==========================================================
+/*
+static\css\components\footer.css
+   ==========================================================
    FOOTER - CSS REORGANIZADO
    ========================================================== */
 
@@ -826,7 +836,9 @@ h2 {
 }
 
 /* ===== tables.css ===== */
-/* ==========================================================================
+/*
+static\css\components\tables.css
+   ==========================================================================
    3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
    ========================================================================== */
 .custom-table {
@@ -996,14 +1008,13 @@ h2 {
     max-width: 300px;
 }
 
-/* ===== modal_transacao.css ===== */
-/* ========================================================== */
-/* MODAL TRANSAÇÃO - FINANÇAS (100% PURO)                   */
-/* ========================================================== */
+/* ===== modal.css ===== */
+/* static/css/components/modal.css
+   ==========================================================
+   MODAL FULL-SCREEN (criar/editar)
+   Compartilhado por TODOS os módulos.
+   ========================================================== */
 
-/* ========================================================== */
-/* 1. OVERLAY                                                 */
-/* ========================================================== */
 .fin-modal-overlay {
     position: fixed;
     top: 0;
@@ -1023,9 +1034,6 @@ h2 {
     display: flex;
 }
 
-/* ========================================================== */
-/* 2. BOX - 100% DA TELA (SEM BORDA, SEM PADDING)            */
-/* ========================================================== */
 .fin-modal-box {
     background: var(--bg-card);
     width: 100%;
@@ -1038,19 +1046,10 @@ h2 {
 }
 
 @keyframes finModalSlideIn {
-    from {
-        opacity: 0;
-        transform: scale(0.96) translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+    from { opacity: 0; transform: scale(0.96) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* ========================================================== */
-/* 3. HEADER                                                  */
-/* ========================================================== */
 .fin-modal-header {
     display: flex;
     justify-content: space-between;
@@ -1082,27 +1081,6 @@ h2 {
     margin-right: 8px;
 }
 
-.fin-tipo-badge {
-    font-size: 0.65rem;
-    padding: 2px 12px;
-    border-radius: 20px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    background: var(--bg-principal);
-    color: var(--texto-mutado);
-}
-
-.fin-tipo-badge.receita {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-}
-
-.fin-tipo-badge.despesa {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-}
-
 .fin-btn-close-modal {
     width: 34px;
     height: 34px;
@@ -1123,9 +1101,6 @@ h2 {
     color: #ef4444;
 }
 
-/* ========================================================== */
-/* 4. FORM - OCUPA TODO O ESPAÇO                             */
-/* ========================================================== */
 .fin-modal-form {
     display: flex;
     flex-direction: column;
@@ -1133,63 +1108,42 @@ h2 {
     min-height: 0;
 }
 
-/* 🔥 BODY - SCROLL NA LATERAL */
 .fin-modal-body {
     flex: 1;
     overflow-y: auto;
     padding: 16px 24px 90px 24px;
 }
 
-/* SCROLL BONITO */
-.fin-modal-body::-webkit-scrollbar {
-    width: 5px;
-}
-
-.fin-modal-body::-webkit-scrollbar-track {
-    background: transparent;
-}
-
+.fin-modal-body::-webkit-scrollbar { width: 5px; }
+.fin-modal-body::-webkit-scrollbar-track { background: transparent; }
 .fin-modal-body::-webkit-scrollbar-thumb {
     background: var(--scrollbar-thumb);
     border-radius: 10px;
 }
+.fin-modal-body::-webkit-scrollbar-thumb:hover { background: var(--texto-mutado); }
 
-.fin-modal-body::-webkit-scrollbar-thumb:hover {
-    background: var(--texto-mutado);
-}
-
-/* ========================================================== */
-/* 5. FOOTER - 100% DA LARGURA                               */
-/* ========================================================== */
 .fin-modal-overlay.active .footer-fixo-padrao {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
 }
 
-/* ========================================================== */
-/* 6. RESPONSIVO                                              */
-/* ========================================================== */
 @media (max-width: 768px) {
-    .fin-modal-header {
-        padding: 12px 16px;
-    }
-    .fin-modal-body {
-        padding: 12px 16px 80px 16px;
-    }
-    .fin-modal-header-left h3 {
-        font-size: 1rem;
-    }
+    .fin-modal-header { padding: 12px 16px; }
+    .fin-modal-body   { padding: 12px 16px 80px 16px; }
+    .fin-modal-header-left h3 { font-size: 1rem; }
 }
 
-/* ===== modal_excluir.css ===== */
-/* 🔥 MODAL DE EXCLUIR - CSS EXCLUSIVO */
-.modal-overlay-excluir {
+/* ===== modal_confirmacao.css ===== */
+/* static/css/components/modal_confirmacao.css
+   ==========================================================
+   MODAL DE CONFIRMAÇÃO (pequeno)
+   Cor configurável via classe modificadora no .modal-confirmacao-box.
+   ========================================================== */
+
+.modal-confirmacao-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
@@ -1200,198 +1154,138 @@ h2 {
     transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
-.modal-overlay-excluir.active {
+.modal-confirmacao-overlay.active {
     opacity: 1;
     visibility: visible;
 }
 
-.modal-box-excluir {
+.modal-confirmacao-box {
     background: #1e1e1e;
     padding: 20px;
     border-radius: 10px;
     width: 350px;
+    max-width: 90vw;
     color: white;
     text-align: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: modalConfirmacaoIn 0.2s ease-out;
 }
 
-.modal-box-excluir h3 {
+@keyframes modalConfirmacaoIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-confirmacao-box h3 {
     margin: 0 0 10px 0;
     color: white;
 }
 
-.modal-box-excluir p {
+.modal-confirmacao-box p {
     margin: 15px 0;
     color: #ddd;
+    white-space: pre-line;
+    line-height: 1.5;
 }
 
-.modal-actions-excluir {
+.modal-confirmacao-actions {
     display: flex;
     justify-content: space-between;
     gap: 10px;
     margin-top: 20px;
 }
 
-.btn-cancelar-excluir {
+.btn-confirmacao-cancelar {
     background: #444;
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 10px 24px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 8px;
     flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
 }
 
-.btn-cancelar-excluir:hover {
+.btn-confirmacao-cancelar:hover {
     background: #555;
 }
 
-.btn-confirmar-excluir {
+.btn-confirmacao-confirmar {
     background: #e74c3c;
     color: white;
     border: none;
-    padding: 8px 12px;
+    padding: 10px 24px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 8px;
     flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
 }
 
-.btn-confirmar-excluir:hover {
+.btn-confirmacao-confirmar:hover {
     background: #c0392b;
 }
 
-/* ===== modal_estornar.css ===== */
-/* ========================================== */
-/* 🔥 MODAL DE ESTORNAR - CSS EXCLUSIVO */
-/* ========================================== */
-
-.modal-overlay-estornar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
-}
-
-.modal-overlay-estornar.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.modal-box-estornar {
-    background: linear-gradient(135deg, #1e1e2f 0%, #2a2a3f 100%);
-    border-radius: 16px;
-    padding: 28px;
-    min-width: 450px;
-    max-width: 550px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    /* ✅ CORRIGIDO: Nome da keyframe único */
-    animation: modalEstornarFadeIn 0.2s ease-out;
-}
-
-/* ✅ CORRIGIDO: Nome único */
-@keyframes modalEstornarFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.modal-box-estornar h3 {
-    margin: 0 0 16px 0;
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #ff9f43;
-}
-
-.modal-box-estornar p {
-    margin: 0 0 24px 0;
-    color: #e0e0e0;
-    font-size: 1rem;
-    line-height: 1.5;
-    white-space: pre-line;
-}
-
-.modal-actions-estornar {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-}
-
-.btn-cancelar-estornar {
-    padding: 10px 24px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #2d2d3f;
-    color: #e0e0e0;
-    border: 1px solid #3d3d4f;
-}
-
-.btn-cancelar-estornar:hover {
-    background-color: #3d3d4f;
-}
-
-.btn-confirmar-estornar {
-    padding: 10px 24px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #fd7e14;
-    color: white;
-}
-
-.btn-confirmar-estornar:hover {
-    background-color: #e66700;
-}
-
-.btn-confirmar-estornar:disabled {
+.btn-confirmacao-confirmar:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-/* ===== detalhes_completo.css ===== */
-/* MODAL DETALHES GLOBAL - Reutilizado por Tarefas e Finanças */
+/* ========================================================== */
+/* MODIFICADORES DE COR                                       */
+/* ========================================================== */
+
+/* 🟠 Estornar */
+.modal-confirmacao-box.confirmar-estornar h3 {
+    color: #ff9f43;
+}
+.modal-confirmacao-box.confirmar-estornar .btn-confirmacao-confirmar {
+    background: #fd7e14;
+}
+.modal-confirmacao-box.confirmar-estornar .btn-confirmacao-confirmar:hover {
+    background: #e66700;
+}
+
+/* ✅ Concluir */
+.modal-confirmacao-box.confirmar-concluir .btn-confirmacao-confirmar {
+    background: #22c55e;
+}
+.modal-confirmacao-box.confirmar-concluir .btn-confirmacao-confirmar:hover {
+    background: #16a34a;
+}
+
+/* 🔵 Primário */
+.modal-confirmacao-box.confirmar-primario .btn-confirmacao-confirmar {
+    background: var(--cor-ativa);
+}
+.modal-confirmacao-box.confirmar-primario .btn-confirmacao-confirmar:hover {
+    background: #1d4ed8;
+}
+
+/* ===== modal_detalhes.css ===== */
+/* static/css/components/modal_detalhes.css
+   ==========================================================
+   MODAL DE DETALHES (visualização)
+   Reutilizado por Tarefas, Finanças, etc.
+   ========================================================== */
+
 .modal-detalhes-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-
     background-color: rgba(0, 0, 0, 0.6);
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 10px;
-
     z-index: 9999;
-
     opacity: 0;
     pointer-events: none;
-
     transition: opacity 0.15s ease;
 }
 
@@ -1404,17 +1298,12 @@ h2 {
     background-color: var(--bg-card);
     border: 1px solid var(--border-sutil);
     border-radius: 6px;
-
     width: 90%;
     max-width: 440px;
-
     max-height: 90vh;
-
     display: flex;
     flex-direction: column;
-
     overflow: hidden;
-
     transform: translateY(-15px);
     transition: transform 0.15s ease;
 }
@@ -1426,13 +1315,10 @@ h2 {
 .modal-detalhes-header {
     background-color: var(--bg-principal);
     padding: 10px 14px;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     border-bottom: 1px solid var(--border-sutil);
-
     flex-shrink: 0;
 }
 
@@ -1452,13 +1338,10 @@ h2 {
 
 .modal-detalhes-body {
     padding: 14px;
-
     display: flex;
     flex-direction: column;
     gap: 8px;
-
     overflow-y: auto;
-
     flex: 1;
 }
 
@@ -1471,10 +1354,8 @@ h2 {
 .modal-detalhes-field {
     background-color: var(--bg-principal);
     border: 1px solid var(--border-sutil);
-
     padding: 6px;
     border-radius: 4px;
-
     min-width: 0;
 }
 
@@ -1485,28 +1366,22 @@ h2 {
 .field-detalhes-label {
     font-size: 0.58rem;
     color: var(--cor-ativa);
-
     text-transform: uppercase;
     font-weight: bold;
-
     margin-bottom: 2px;
 }
 
 .field-detalhes-value {
     font-size: var(--fs-pequeno);
     color: var(--texto-principal);
-
     word-break: break-word;
 }
 
 .field-detalhes-value-scroll {
     max-height: 220px;
-
     overflow-y: auto;
-
     white-space: pre-wrap;
     word-break: break-word;
-
     padding-right: 4px;
 }
 
@@ -1524,211 +1399,15 @@ h2 {
     to { transform: rotate(360deg); }
 }
 
-/* ===== click_direito.css ===== */
-/* ==========================================================
-   MENU DE CONTEXTO GLOBAL
+/* ===== form.css ===== */
+/* static/css/components/form.css
+   ==========================================================
+   FORMULÁRIOS - COMPARTILHADO
+   form-grid, form-group, form-input, input-com-prefixo, tipo-btn
    ========================================================== */
-.context-menu {
-    position: fixed;
-    background: var(--bg-card);
-    border: 1px solid var(--border-sutil);
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    z-index: 9999;
-    min-width: 180px;
-    overflow: hidden;
-    animation: menuFadeIn 0.15s ease-out;
-}
-
-@keyframes menuFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.context-menu-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    color: var(--texto-principal);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.8rem;
-}
-
-.context-menu-item i {
-    width: 18px;
-    font-size: 0.9rem;
-    color: var(--texto-mutado);
-}
-
-.context-menu-item:hover {
-    background-color: var(--hover-fino);
-}
-
-.context-menu-item:hover i {
-    color: var(--cor-ativa);
-}
-
-.context-menu-divider {
-    height: 1px;
-    background-color: var(--border-sutil);
-    margin: 4px 0;
-}
-
-/* MODAL VÍNCULOS */
-.modal-vinculos {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-vinculos-content {
-    background-color: var(--bg-card);
-    border-radius: 16px;
-    width: 450px;
-    max-width: 90%;
-    border: 1px solid var(--border-sutil);
-}
-
-.modal-vinculos-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-sutil);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.modal-vinculos-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: var(--texto-principal);
-}
-
-.modal-vinculos-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--texto-mutado);
-}
-
-.modal-vinculos-body {
-    padding: 20px;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.modal-descricao {
-    background: var(--bg-principal);
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    border-left: 3px solid var(--cor-ativa);
-}
-
-.lista-vinculos {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.item-vinculo {
-    background: var(--bg-principal);
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border-sutil);
-}
-
-.parcela-num {
-    font-weight: bold;
-    color: var(--cor-ativa);
-    font-size: 0.75rem;
-}
-
-.parcela-valor {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: bold;
-    margin: 5px 0;
-}
-
-.parcela-data {
-    font-size: 0.7rem;
-    color: var(--texto-mutado);
-}
-
-.sem-vinculo {
-    text-align: center;
-    padding: 20px;
-    color: var(--texto-mutado);
-}
-
-.modal-vinculos-footer {
-    padding: 12px 20px;
-    border-top: 1px solid var(--border-sutil);
-    text-align: right;
-}
-
-.btn-modal-fechar {
-    background: var(--cor-ativa);
-    color: #fff;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* Status dos vínculos */
-.status-aberto {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 0.65rem;
-    font-weight: 600;
-}
-
-.status-quitado {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 0.65rem;
-    font-weight: 600;
-}
-
-.status-recebido {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 0.65rem;
-    font-weight: 600;
-}
-
-/* ===== form_transacao.css ===== */
-/* static\css\modules\pasta_financas\components\form_transacao.css */
 
 /* ========================================================== */
-/* FORM TRANSAÇÃO - PROFISSIONAL                             */
-/* ========================================================== */
-
-/* ========================================================== */
-/* 1. GRID - 3 COLUNAS (LINHA 1)                             */
+/* 1. GRID 3 COLUNAS                                          */
 /* ========================================================== */
 .form-grid {
     display: grid;
@@ -1742,7 +1421,7 @@ h2 {
 }
 
 /* ========================================================== */
-/* 2. GRID - 4 COLUNAS (LINHA 2)                             */
+/* 2. GRID 4 COLUNAS                                          */
 /* ========================================================== */
 .form-grid-4 {
     display: grid;
@@ -1752,7 +1431,7 @@ h2 {
 }
 
 /* ========================================================== */
-/* 3. FORM GROUPS                                             */
+/* 3. FORM GROUP                                              */
 /* ========================================================== */
 .form-group {
     display: flex;
@@ -1773,8 +1452,12 @@ h2 {
     color: var(--cor-ativa);
 }
 
+/* ========================================================== */
+/* 4. INPUT / SELECT / TEXTAREA                               */
+/* ========================================================== */
 .form-input,
-.form-select {
+.form-select,
+textarea.form-input {
     padding: 8px 12px;
     border: 1.5px solid var(--border-sutil);
     border-radius: 8px;
@@ -1785,6 +1468,14 @@ h2 {
     font-family: inherit;
     width: 100%;
     height: 40px;
+}
+
+textarea.form-input {
+    height: auto;
+    min-height: 80px;
+    resize: vertical;
+    padding: 10px 12px;
+    line-height: 1.4;
 }
 
 .form-input:focus,
@@ -1800,7 +1491,7 @@ h2 {
 }
 
 /* ========================================================== */
-/* 4. TIPO BOTÕES                                             */
+/* 5. TIPO BOTÕES (receita/despesa)                           */
 /* ========================================================== */
 .tipo-container {
     display: flex;
@@ -1825,27 +1516,18 @@ h2 {
     height: 40px;
 }
 
-.tipo-btn i {
-    font-size: 1.1rem;
-}
-
-.tipo-btn:hover {
-    border-color: var(--texto-mutado);
-    color: var(--texto-principal);
-}
-
+.tipo-btn i { font-size: 1.1rem; }
+.tipo-btn:hover { border-color: var(--texto-mutado); color: var(--texto-principal); }
 .tipo-btn.active {
     border-color: var(--cor-ativa);
     background: rgba(37, 99, 235, 0.08);
     color: var(--cor-ativa);
 }
-
 .tipo-btn.receita.active {
     border-color: #22c55e;
     background: rgba(34, 197, 94, 0.08);
     color: #22c55e;
 }
-
 .tipo-btn.despesa.active {
     border-color: #ef4444;
     background: rgba(239, 68, 68, 0.08);
@@ -1853,8 +1535,343 @@ h2 {
 }
 
 /* ========================================================== */
-/* 5. PARCELAS                                                */
+/* 6. INPUT COM PREFIXO (R$, %)                               */
 /* ========================================================== */
+.input-com-prefixo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-principal);
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    padding: 0 12px;
+    height: 40px;
+    transition: all 0.2s ease;
+}
+
+.input-com-prefixo:focus-within {
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-com-prefixo .prefixo-moeda {
+    color: var(--texto-mutado);
+    font-weight: 600;
+    font-size: 0.9rem;
+    user-select: none;
+    pointer-events: none;
+}
+
+.input-com-prefixo input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--texto-principal);
+    font-size: 0.9rem;
+    font-family: inherit;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.input-com-prefixo input::placeholder {
+    color: var(--texto-discreto);
+    font-size: 0.8rem;
+}
+
+/* ========================================================== */
+/* 7. RESPONSIVO                                              */
+/* ========================================================== */
+@media (max-width: 1024px) {
+    .form-grid      { grid-template-columns: 1fr 1fr; }
+    .form-grid-4    { grid-template-columns: 1fr 1fr; }
+    .descricao-full { grid-column: 1 / 3; }
+}
+
+@media (max-width: 768px) {
+    .form-grid      { grid-template-columns: 1fr; }
+    .form-grid-4    { grid-template-columns: 1fr; }
+    .descricao-full { grid-column: 1 / 2; }
+}
+
+/* ===== modal_auditoria.css ===== */
+/* static/css/components/modal_auditoria.css
+   ==========================================================
+   MODAL DE AUDITORIA - COMPARTILHADO
+   Layout accordion (cada registro abre/fecha)
+   ========================================================== */
+
+.audit-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ========================================================== */
+/* ENTRY (registro)                                           */
+/* ========================================================== */
+.audit-entry {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.audit-entry:hover {
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+.audit-entry.open {
+    border-color: rgba(37, 99, 235, 0.5);
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+}
+
+/* ========================================================== */
+/* HEADER (clicável)                                          */
+/* ========================================================== */
+.audit-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.audit-entry-header:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.audit-entry-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.audit-entry-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Chevron */
+.audit-chevron {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    transition: transform 0.2s ease;
+}
+
+.audit-entry.open .audit-chevron {
+    transform: rotate(90deg);
+}
+
+/* Badge (ação) */
+.audit-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Cores por tipo de ação */
+.audit-badge-criada,
+.audit-badge-criada_parcelada {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.audit-badge-editada {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+}
+
+.audit-badge-excluida,
+.audit-badge-excluida_parcelada {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.audit-badge-reativada,
+.audit-badge-reativada_parcelada {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+}
+
+.audit-badge-quitada,
+.audit-badge-recebida {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.audit-badge-estornada {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+/* Data/hora */
+.audit-data-hora {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+}
+
+/* Usuário */
+.audit-usuario {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+}
+
+/* ========================================================== */
+/* BODY (colapsável)                                          */
+/* ========================================================== */
+.audit-entry-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+    border-top: 0 solid transparent;
+}
+
+.audit-entry.open .audit-entry-body {
+    max-height: 2000px;
+    border-top: 1px solid var(--border-sutil);
+}
+
+/* ========================================================== */
+/* FIELDS (campos alterados)                                  */
+/* ========================================================== */
+.audit-fields {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.audit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 12px;
+    background: var(--bg-principal);
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+}
+
+.audit-field-label {
+    font-size: 0.62rem;
+    color: var(--cor-ativa);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.audit-field-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+}
+
+.audit-old {
+    color: #f87171;
+    text-decoration: line-through;
+    background: rgba(248, 113, 113, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.audit-arrow {
+    color: var(--texto-discreto);
+    font-size: 0.7rem;
+}
+
+.audit-new {
+    color: #4ade80;
+    font-weight: 600;
+    background: rgba(74, 222, 128, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+/* Sem alterações */
+.audit-empty {
+    text-align: center;
+    color: var(--texto-mutado);
+    font-size: 0.8rem;
+    padding: 16px;
+    margin: 0;
+}
+
+/* ========================================================== */
+/* FOOTER do registro (IP)                                    */
+/* ========================================================== */
+.audit-footer {
+    padding: 8px 16px;
+    font-size: 0.65rem;
+    color: var(--texto-discreto);
+    border-top: 1px solid var(--border-sutil);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ========================================================== */
+/* Empty state (sem registros)                                */
+/* ========================================================== */
+.audit-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--texto-mutado);
+}
+
+.audit-empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.3;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.audit-empty-state p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* ========================================================== */
+/* Responsivo                                                 */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .audit-entry-header {
+        padding: 10px 12px;
+    }
+    .audit-field {
+        padding: 6px 10px;
+    }
+    .audit-fields {
+        padding: 10px 12px;
+    }
+}
+
+/* ===== parcelas.css ===== */
+/* static/css/modules/pasta_financas/components/parcelas.css
+   ==========================================================
+   PARCELAS - EXCLUSIVO DE FINANÇAS
+   ========================================================== */
+
 .parcelas-config-area {
     margin: 8px 0;
     padding: 16px 20px;
@@ -1906,9 +1923,6 @@ h2 {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
-/* ========================================================== */
-/* 6. TABELA PARCELAS                                         */
-/* ========================================================== */
 .parcelas-wrapper {
     margin-top: 12px;
     overflow-x: auto;
@@ -1954,80 +1968,13 @@ h2 {
     font-size: 0.8rem;
 }
 
-/* ========================================================== */
-/* 7. INPUT COM PREFIXO (R$, %, etc.)                         */
-/* ========================================================== */
-.input-com-prefixo {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--bg-principal);
-    border: 1.5px solid var(--border-sutil);
-    border-radius: 8px;
-    padding: 0 12px;
-    height: 40px;
-    transition: all 0.2s ease;
-}
-
-.input-com-prefixo:focus-within {
-    border-color: var(--cor-ativa);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.input-com-prefixo .prefixo-moeda {
-    color: var(--texto-mutado);
-    font-weight: 600;
-    font-size: 0.9rem;
-    user-select: none;
-    pointer-events: none;
-}
-
-.input-com-prefixo input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--texto-principal);
-    font-size: 0.9rem;
-    font-family: inherit;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-}
-
-.input-com-prefixo input::placeholder {
-    color: var(--texto-discreto);
-    font-size: 0.8rem;
-}
-
-/* ========================================================== */
-/* 8. RESPONSIVO                                              */
-/* ========================================================== */
 @media (max-width: 1024px) {
-    .form-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .form-grid-4 {
-        grid-template-columns: 1fr 1fr;
-    }
-    .descricao-full {
-        grid-column: 1 / 3;
-    }
     .parcelas-config-row {
         grid-template-columns: 1fr 1fr;
     }
 }
 
 @media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-    .form-grid-4 {
-        grid-template-columns: 1fr;
-    }
-    .descricao-full {
-        grid-column: 1 / 2;
-    }
     .parcelas-config-row {
         grid-template-columns: 1fr;
     }

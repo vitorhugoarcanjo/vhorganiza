@@ -1,26 +1,24 @@
-# rotas\pasta_financas\crud\pasta_insert\services.py
+# rotas/pasta_financas/crud/pasta_insert/services.py
 # ==========================================================
 # INSERIR TRANSAÇÃO - SERVICES (PostgreSQL)
 # ==========================================================
 
-from datetime import datetime, date, timedelta
-import json
+from datetime import datetime, timedelta
 import logging
 
-# Importação da função centralizada que utiliza ZoneInfo + tzdata
 from utils.fomatacoes.data_reutilizavel import obter_hoje_cuiaba
 
 logger = logging.getLogger(__name__)
 
 
 class InserirTransacaoService:
-    
+
     @staticmethod
     def get_proxima_sequencia(cursor, user_id):
-        """Retorna a próxima sequência de transações para o usuário especificado."""
+        """Retorna a próxima sequência de transações para o usuário."""
         cursor.execute("""
-            SELECT COALESCE(MAX(sequencia_transacoes), 0) + 1 
-            FROM transacoes 
+            SELECT COALESCE(MAX(sequencia_transacoes), 0) + 1
+            FROM transacoes
             WHERE user_id = %s
         """, (user_id,))
         res = cursor.fetchone()
@@ -28,10 +26,9 @@ class InserirTransacaoService:
 
     @staticmethod
     def buscar_categorias(cursor, user_id):
-        """Retorna as categorias cadastradas do usuário."""
         try:
             cursor.execute("""
-                SELECT id, nome 
+                SELECT id, nome
                 FROM categorias_financas
                 WHERE user_id = %s
                 ORDER BY nome ASC
@@ -43,15 +40,11 @@ class InserirTransacaoService:
 
     @staticmethod
     def criar_transacao_simples(cursor, user_id, dados):
-        """
-        Cria uma transação única/à vista (1/1 parcela).
-        Retorna uma tupla (sucesso: bool, resultado: dict ou str).
-        """
+        """Cria uma transação única/à vista (1/1 parcela)."""
         try:
             sequencia = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
             valor_total = float(dados['valor_total'])
 
-            # Se a data vier vazia/ausente no dict, garante a data atual de Cuiabá via utilitário
             hoje_cuiaba = obter_hoje_cuiaba()
             data_emissao = dados.get('data_emissao') or hoje_cuiaba
             data_vencimento = dados.get('data_vencimento') or data_emissao
@@ -66,14 +59,14 @@ class InserirTransacaoService:
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 1, 1, NULL, 'aberto', 1)
                 RETURNING id
             """, (
-                user_id, 
-                sequencia, 
+                user_id,
+                sequencia,
                 dados['tipo'],
-                valor_total, 
                 valor_total,
-                dados['descricao'], 
+                valor_total,
+                dados['descricao'],
                 dados['categoria_id'],
-                data_emissao, 
+                data_emissao,
                 data_vencimento
             ))
 
@@ -97,10 +90,7 @@ class InserirTransacaoService:
 
     @staticmethod
     def criar_transacao_parcelada(cursor, user_id, dados):
-        """
-        Cria uma transação PAI (registro agrupador sem sequência) e N transações FILHAS.
-        🔥 As datas e valores das filhas vêm do front (respeitam edição manual).
-        """
+        """Cria uma transação PAI + N FILHAS."""
         try:
             total_parcelas = int(dados['total_parcelas'])
             if total_parcelas < 1:
@@ -112,10 +102,8 @@ class InserirTransacaoService:
             data_emissao = dados.get('data_emissao') or hoje_cuiaba
             valor_total = float(dados['valor_total'])
 
-            # 🔥 FONTE DA VERDADE: parcelas que vieram do front
             parcelas_input = dados.get('parcelas') or []
 
-            # Fallback: se o front não mandou, gera com intervalo
             if not parcelas_input or len(parcelas_input) != total_parcelas:
                 primeiro_vencimento = (
                     dados.get('primeiro_vencimento')
@@ -143,7 +131,7 @@ class InserirTransacaoService:
                         'vencimento': data_venc,
                     })
 
-            # 💡 1. Cria a Transação PAI (sequencia_transacoes = NULL)
+            # 1. PAI
             cursor.execute("""
                 INSERT INTO transacoes (
                     user_id, sequencia_transacoes, tipo,
@@ -160,14 +148,14 @@ class InserirTransacaoService:
                 dados['descricao'],
                 dados['categoria_id'],
                 data_emissao,
-                parcelas_input[0]['vencimento'],   # 1º venc = data da parcela 1
+                parcelas_input[0]['vencimento'],
                 total_parcelas,
                 intervalo_dias
             ))
 
             pai_id = cursor.fetchone()[0]
 
-            # 2. Cria as FILHAS usando EXATAMENTE o que veio do front
+            # 2. FILHAS
             for i, p in enumerate(parcelas_input, start=1):
                 sequencia_parcela = InserirTransacaoService.get_proxima_sequencia(cursor, user_id)
                 valor_parcela = float(p['valor'])
@@ -208,31 +196,3 @@ class InserirTransacaoService:
             msg = f"Erro inesperado ao criar parcelas: {str(e)}"
             logger.error(msg)
             return False, msg
-
-    @staticmethod
-    def registrar_auditoria(transacao_id, descricao, total_parcelas=None):
-        """Registra log de auditoria da criação da transação."""
-        try:
-            from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
-
-            if total_parcelas and total_parcelas > 1:
-                acao = 'criada_parcelada'
-                valor_novo = json.dumps({
-                    'descricao': descricao,
-                    'total_parcelas': total_parcelas
-                }, ensure_ascii=False)
-            else:
-                acao = 'criada'
-                valor_novo = json.dumps([
-                    {'campo': 'transação', 'depois': descricao}
-                ], ensure_ascii=False)
-
-            AuditoriaFinanceiraService.registrar(
-                transacao_id=transacao_id,
-                acao=acao,
-                campo_alterado='multiplos',
-                valor_antigo=None,
-                valor_novo=valor_novo
-            )
-        except Exception as e:
-            logger.warning(f"Falha ao gravar auditoria para transação {transacao_id}: {str(e)}")

@@ -1,0 +1,132 @@
+{# templates/pasta_tarefas/partials/_linha_tarefa.html.jinja #}
+{# Partial: 1 linha da tabela de tarefas #}
+<tr data-id="{{ tarefa.sequencia }}"
+    id="linha-tarefa-{{ tarefa.sequencia }}">
+
+    <!-- SEQ -->
+    <td class="td-id">{{ tarefa.sequencia }}</td>
+
+    <!-- TÍTULO -->
+    <td class="td-titulo" title="{{ tarefa.titulo }}">{{ tarefa.titulo }}</td>
+
+    <!-- STATUS -->
+    <td>
+        {% if tarefa.status == 'concluido' %}
+            <span class="badge-pure bg-success">✅ Concluída</span>
+        {% elif tarefa.status == 'em andamento' %}
+            <span class="badge-pure bg-warning text-dark">⏳ Andamento</span>
+        {% else %}
+            <span class="badge-pure bg-danger">⏰ Pendente</span>
+        {% endif %}
+    </td>
+
+    <!-- DATA INICIO -->
+    <td>{{ tarefa.data_inicio or '-' }}</td>
+
+    <!-- DATA FINAL -->
+    <td>{{ tarefa.data_final or '-' }}</td>
+
+    <!-- DATA FINALIZAÇÃO -->
+    <td>
+        {% if tarefa.data_finalizacao and tarefa.data_finalizacao != '-' %}
+            <span class="badge-pure bg-success">{{ tarefa.data_finalizacao }}</span>
+        {% else %}
+            <span class="text-vazio">-</span>
+        {% endif %}
+    </td>
+
+    <!-- CATEGORIA -->
+    <td>
+        {% if tarefa.categoria_nome %}
+            <span class="badge-pure tag-categoria"
+                  style="background-color: {{ tarefa.categoria_cor or '#6c757d' }}; color: white; border: none;">
+                {{ tarefa.categoria_nome }}
+            </span>
+        {% else %}
+            <span class="text-vazio">-</span>
+        {% endif %}
+    </td>
+
+    <!-- PRIORIDADE -->
+    <td>
+        {% if tarefa.prioridade %}
+            {% set prio_class = 'bg-danger' if tarefa.prioridade == 'alta'
+                                else 'bg-warning text-dark' if tarefa.prioridade == 'media'
+                                else 'bg-success' %}
+            <span class="badge-pure {{ prio_class }}">{{ tarefa.prioridade|title }}</span>
+        {% else %}
+            <span class="text-vazio">-</span>
+        {% endif %}
+    </td>
+
+    <!-- AÇÕES -->
+    <td class="td-acoes text-center">
+
+        <!-- DETALHES (sempre) -->
+        <button type="button" class="btn-acao view" title="Ver detalhes"
+                onclick="verDetalhesTarefa({{ tarefa.sequencia }})">
+            <i class="bi bi-eye"></i>
+        </button>
+
+        <!-- AUDITORIA (sempre) -->
+        <button type="button"
+                class="btn-acao audit"
+                hx-get="{{ url_for('auditoria.historico_tarefa', tarefa_seq=tarefa.sequencia) }}"
+                hx-target="#modal-auditoria-container"
+                hx-swap="innerHTML"
+                title="Ver histórico de alterações">
+            <i class="bi bi-clock-history"></i>
+        </button>
+
+        {% if tarefa.ativo == 1 %}
+            {% if tarefa.status != 'concluido' %}
+                <!-- CONCLUIR -->
+                <button type="button"
+                        class="btn-acao check btn-concluir"
+                        data-sequencia="{{ tarefa.sequencia }}"
+                        data-titulo="{{ tarefa.titulo }}"
+                        title="Concluir tarefa">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+
+                <!-- EDITAR -->
+                <button type="button"
+                        class="btn-acao edit"
+                        hx-get="{{ url_for('tarefas.edit_tarefas.editar_modal', sequencia=tarefa.sequencia) }}"
+                        hx-target="#modal-editar-container"
+                        hx-swap="innerHTML"
+                        title="Editar">
+                    <i class="bi bi-pencil"></i>
+                </button>
+
+                <!-- EXCLUIR -->
+                <button type="button"
+                        class="btn-acao delete btn-excluir"
+                        data-sequencia="{{ tarefa.sequencia }}"
+                        data-titulo="{{ tarefa.titulo }}"
+                        title="Inativar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            {% else %}
+                <!-- REABRIR (estornar conclusão) -->
+                <button type="button"
+                        class="btn-acao undo btn-reabrir"
+                        data-sequencia="{{ tarefa.sequencia }}"
+                        data-titulo="{{ tarefa.titulo }}"
+                        title="Reabrir tarefa">
+                    <i class="bi bi-arrow-return-left"></i>
+                </button>
+            {% endif %}
+        {% else %}
+            <!-- REATIVAR -->
+            <button type="button"
+                    class="btn-acao reativar btn-reativar"
+                    data-sequencia="{{ tarefa.sequencia }}"
+                    data-titulo="{{ tarefa.titulo }}"
+                    title="Reativar">
+                <i class="bi bi-arrow-repeat"></i>
+            </button>
+        {% endif %}
+
+    </td>
+</tr>

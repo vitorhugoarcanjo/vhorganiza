@@ -1,0 +1,126 @@
+<!-- templates/pasta_auditoria/pasta_tarefas/modal_auditoria.html.jinja -->
+<div class="fin-modal-overlay active" id="modalAuditoria">
+    <div class="fin-modal-box">
+
+        <div class="fin-modal-header">
+            <div class="fin-modal-header-left">
+                <h3>
+                    <i class="bi bi-clock-history"></i>
+                    Auditoria — Tarefa #{{ tarefa_seq }}
+                </h3>
+                {% if tarefa %}
+                    <span style="font-size: 0.75rem; color: var(--texto-mutado); margin-left: 12px;">
+                        {{ tarefa[1] }}
+                    </span>
+                {% endif %}
+            </div>
+            <div class="fin-modal-header-right">
+                <button type="button"
+                        class="fin-btn-close-modal"
+                        onclick="fecharModalAuditoria()"
+                        title="Fechar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="fin-modal-body">
+            <div class="audit-wrapper">
+
+                {% if historico %}
+                    {% for item in historico %}
+                    <div class="audit-entry" data-audit-id="{{ loop.index }}">
+
+                        <div class="audit-entry-header" onclick="toggleAuditEntry(this)">
+                            <div class="audit-entry-header-left">
+                                <i class="bi bi-chevron-right audit-chevron"></i>
+                                <span class="audit-badge audit-badge-{{ item.acao }}">
+                                    {% if item.acao == 'criada' %}✨ Criada
+                                    {% elif item.acao == 'editada' %}✏️ Editada
+                                    {% elif item.acao == 'inativacao' %}🗑️ Inativada
+                                    {% elif item.acao == 'reativacao' %}🔄 Reativada
+                                    {% elif item.acao == 'concluir_tarefa' %}✅ Concluída
+                                    {% elif item.acao == 'reabrir_tarefa' %}↩️ Reaberta
+                                    {% else %}{{ item.acao }}
+                                    {% endif %}
+                                </span>
+                                <span class="audit-data-hora">{{ item.data_hora }}</span>
+                            </div>
+                            <div class="audit-entry-header-right">
+                                <span class="audit-usuario">
+                                    <i class="bi bi-person-circle"></i> {{ item.usuario_nome or 'Sistema' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="audit-entry-body">
+                            {% if item.alteracoes %}
+                                <div class="audit-fields">
+                                    {% for alt in item.alteracoes %}
+                                    <div class="audit-field">
+                                        <div class="audit-field-label">{{ alt.campo }}</div>
+                                        <div class="audit-field-value">
+                                            {% if alt.antes is defined and alt.antes is not none %}
+                                                <span class="audit-old">{{ alt.antes }}</span>
+                                                <i class="bi bi-arrow-right audit-arrow"></i>
+                                            {% endif %}
+                                            <span class="audit-new">{{ alt.depois or '(vazio)' }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% elif item.campo_alterado %}
+                                <div class="audit-fields">
+                                    <div class="audit-field">
+                                        <div class="audit-field-label">{{ item.campo_alterado }}</div>
+                                        <div class="audit-field-value">
+                                            {% if item.valor_antigo %}
+                                                <span class="audit-old">{{ item.valor_antigo }}</span>
+                                                <i class="bi bi-arrow-right audit-arrow"></i>
+                                            {% endif %}
+                                            <span class="audit-new">{{ item.valor_novo or '(vazio)' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p class="audit-empty">Nenhuma alteração detalhada.</p>
+                            {% endif %}
+
+                            <div class="audit-footer">
+                                <i class="bi bi-globe"></i> IP: {{ item.ip or '-' }}
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="audit-empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>Nenhum histórico registrado para esta tarefa.</p>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div class="footer-fixo-padrao">
+            <div class="botoes-footer-padrao">
+                <button type="button"
+                        class="btn-footer-cancelar"
+                        onclick="fecharModalAuditoria()">
+                    <i class="bi bi-x-circle"></i> FECHAR
+                </button>
+            </div>
+
+            <h2>AUDITORIA</h2>
+
+            <div class="totalizador-footer-padrao">
+                <div class="contador-footer">
+                    <i class="bi bi-list-ul"></i>
+                    <span>{{ historico|length }} registros</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

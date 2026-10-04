@@ -1,0 +1,129 @@
+/* static/css/components/modal_confirmacao.css
+   ==========================================================
+   MODAL DE CONFIRMAÇÃO (pequeno)
+   Cor configurável via classe modificadora no .modal-confirmacao-box.
+   ========================================================== */
+
+.modal-confirmacao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-confirmacao-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-confirmacao-box {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    max-width: 90vw;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: modalConfirmacaoIn 0.2s ease-out;
+}
+
+@keyframes modalConfirmacaoIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-confirmacao-box h3 {
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.modal-confirmacao-box p {
+    margin: 15px 0;
+    color: #ddd;
+    white-space: pre-line;
+    line-height: 1.5;
+}
+
+.modal-confirmacao-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-confirmacao-cancelar {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    border-radius: 8px;
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-confirmacao-cancelar:hover {
+    background: #555;
+}
+
+.btn-confirmacao-confirmar {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    border-radius: 8px;
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-confirmacao-confirmar:hover {
+    background: #c0392b;
+}
+
+.btn-confirmacao-confirmar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========================================================== */
+/* MODIFICADORES DE COR                                       */
+/* ========================================================== */
+
+/* 🟠 Estornar */
+.modal-confirmacao-box.confirmar-estornar h3 {
+    color: #ff9f43;
+}
+.modal-confirmacao-box.confirmar-estornar .btn-confirmacao-confirmar {
+    background: #fd7e14;
+}
+.modal-confirmacao-box.confirmar-estornar .btn-confirmacao-confirmar:hover {
+    background: #e66700;
+}
+
+/* ✅ Concluir */
+.modal-confirmacao-box.confirmar-concluir .btn-confirmacao-confirmar {
+    background: #22c55e;
+}
+.modal-confirmacao-box.confirmar-concluir .btn-confirmacao-confirmar:hover {
+    background: #16a34a;
+}
+
+/* 🔵 Primário */
+.modal-confirmacao-box.confirmar-primario .btn-confirmacao-confirmar {
+    background: var(--cor-ativa);
+}
+.modal-confirmacao-box.confirmar-primario .btn-confirmacao-confirmar:hover {
+    background: #1d4ed8;
+}
