@@ -1,7 +1,9 @@
-/* COMBINADO - 07/09/2026 12:43 */
+/* COMBINADO - 05/10/2026 13:32 */
 
 /* ===== buttons.css ===== */
-/* ==========================================================
+/*
+static\css\components\buttons.css
+==========================================================
    BOTÃO - NOVO/SALVAR (AZUL)
    ========================================================== */
 .btn-footer-primary {
@@ -331,7 +333,9 @@
 }
 
 /* ===== filters.css ===== */
-/* ==========================================================================
+/*
+static\css\components\filters.css
+   ==========================================================================
    2. FILTROS
    ========================================================================== */
 .painel-topo-fixo {
@@ -442,7 +446,9 @@
 }
 
 /* ===== footer.css ===== */
-/* ==========================================================
+/*
+static\css\components\footer.css
+   ==========================================================
    FOOTER - CSS REORGANIZADO
    ========================================================== */
 
@@ -679,7 +685,9 @@ h2 {
 }
 
 /* ===== tables.css ===== */
-/* ==========================================================================
+/*
+static\css\components\tables.css
+   ==========================================================================
    3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
    ========================================================================== */
 .custom-table {
@@ -849,8 +857,672 @@ h2 {
     max-width: 300px;
 }
 
+/* ===== modal_auditoria.css ===== */
+/* static/css/components/modal_auditoria.css
+   ==========================================================
+   MODAL DE AUDITORIA - COMPARTILHADO
+   Layout accordion (cada registro abre/fecha)
+   ========================================================== */
+
+.audit-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ========================================================== */
+/* ENTRY (registro)                                           */
+/* ========================================================== */
+.audit-entry {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.audit-entry:hover {
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+.audit-entry.open {
+    border-color: rgba(37, 99, 235, 0.5);
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+}
+
+/* ========================================================== */
+/* HEADER (clicável)                                          */
+/* ========================================================== */
+.audit-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.audit-entry-header:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.audit-entry-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.audit-entry-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Chevron */
+.audit-chevron {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    transition: transform 0.2s ease;
+}
+
+.audit-entry.open .audit-chevron {
+    transform: rotate(90deg);
+}
+
+/* Badge (ação) */
+.audit-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Cores por tipo de ação */
+.audit-badge-criada,
+.audit-badge-criada_parcelada {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.audit-badge-editada {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+}
+
+.audit-badge-excluida,
+.audit-badge-excluida_parcelada {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.audit-badge-reativada,
+.audit-badge-reativada_parcelada {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+}
+
+.audit-badge-quitada,
+.audit-badge-recebida {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.audit-badge-estornada {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+/* Data/hora */
+.audit-data-hora {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+}
+
+/* Usuário */
+.audit-usuario {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+}
+
+/* ========================================================== */
+/* BODY (colapsável)                                          */
+/* ========================================================== */
+.audit-entry-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+    border-top: 0 solid transparent;
+}
+
+.audit-entry.open .audit-entry-body {
+    max-height: 2000px;
+    border-top: 1px solid var(--border-sutil);
+}
+
+/* ========================================================== */
+/* FIELDS (campos alterados)                                  */
+/* ========================================================== */
+.audit-fields {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.audit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 12px;
+    background: var(--bg-principal);
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+}
+
+.audit-field-label {
+    font-size: 0.62rem;
+    color: var(--cor-ativa);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.audit-field-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+}
+
+.audit-old {
+    color: #f87171;
+    text-decoration: line-through;
+    background: rgba(248, 113, 113, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.audit-arrow {
+    color: var(--texto-discreto);
+    font-size: 0.7rem;
+}
+
+.audit-new {
+    color: #4ade80;
+    font-weight: 600;
+    background: rgba(74, 222, 128, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+/* Sem alterações */
+.audit-empty {
+    text-align: center;
+    color: var(--texto-mutado);
+    font-size: 0.8rem;
+    padding: 16px;
+    margin: 0;
+}
+
+/* ========================================================== */
+/* FOOTER do registro (IP)                                    */
+/* ========================================================== */
+.audit-footer {
+    padding: 8px 16px;
+    font-size: 0.65rem;
+    color: var(--texto-discreto);
+    border-top: 1px solid var(--border-sutil);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ========================================================== */
+/* Empty state (sem registros)                                */
+/* ========================================================== */
+.audit-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--texto-mutado);
+}
+
+.audit-empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.3;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.audit-empty-state p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* ========================================================== */
+/* Responsivo                                                 */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .audit-entry-header {
+        padding: 10px 12px;
+    }
+    .audit-field {
+        padding: 6px 10px;
+    }
+    .audit-fields {
+        padding: 10px 12px;
+    }
+}
+
+/* ===== modal.css ===== */
+/* static/css/components/modal.css
+   ==========================================================
+   MODAL FULL-SCREEN (criar/editar)
+   Compartilhado por TODOS os módulos.
+   ========================================================== */
+
+.fin-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.fin-modal-overlay.active {
+    display: flex;
+}
+
+.fin-modal-box {
+    background: var(--bg-card);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    animation: finModalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+@keyframes finModalSlideIn {
+    from { opacity: 0; transform: scale(0.96) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.fin-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 2px solid var(--border-sutil);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: var(--bg-card);
+}
+
+.fin-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.fin-modal-header-left h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+}
+
+.fin-modal-header-left h3 i {
+    color: var(--cor-ativa);
+    margin-right: 8px;
+}
+
+.fin-btn-close-modal {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fin-btn-close-modal:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.fin-modal-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.fin-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px 90px 24px;
+}
+
+.fin-modal-body::-webkit-scrollbar { width: 5px; }
+.fin-modal-body::-webkit-scrollbar-track { background: transparent; }
+.fin-modal-body::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+.fin-modal-body::-webkit-scrollbar-thumb:hover { background: var(--texto-mutado); }
+
+.fin-modal-overlay.active .footer-fixo-padrao {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+}
+
+@media (max-width: 768px) {
+    .fin-modal-header { padding: 12px 16px; }
+    .fin-modal-body   { padding: 12px 16px 80px 16px; }
+    .fin-modal-header-left h3 { font-size: 1rem; }
+}
+
+/* ===== modal_confirmacao.css ===== */
+/* static/css/components/modal_confirmacao.css
+   ==========================================================
+   MODAL DE CONFIRMAÇÃO (pequeno)
+   Cor configurável via classe modificadora no .modal-confirmacao-box.
+   ========================================================== */
+
+.modal-confirmacao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-confirmacao-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-confirmacao-box {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    max-width: 90vw;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: modalConfirmacaoIn 0.2s ease-out;
+}
+
+@keyframes modalConfirmacaoIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-confirmacao-box h3 {
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.modal-confirmacao-box p {
+    margin: 15px 0;
+    color: #ddd;
+    white-space: pre-line;
+    line-height: 1.5;
+}
+
+.modal-confirmacao-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-confirmacao-cancelar {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    border-radius: 8px;
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-confirmacao-cancelar:hover {
+    background: #555;
+}
+
+.btn-confirmacao-confirmar {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    border-radius: 8px;
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-confirmacao-confirmar:hover {
+    background: #c0392b;
+}
+
+.btn-confirmacao-confirmar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========================================================== */
+/* MODIFICADORES DE COR                                       */
+/* ========================================================== */
+
+/* 🟠 Estornar */
+.modal-confirmacao-box.confirmar-estornar h3 {
+    color: #ff9f43;
+}
+.modal-confirmacao-box.confirmar-estornar .btn-confirmacao-confirmar {
+    background: #fd7e14;
+}
+.modal-confirmacao-box.confirmar-estornar .btn-confirmacao-confirmar:hover {
+    background: #e66700;
+}
+
+/* ✅ Concluir */
+.modal-confirmacao-box.confirmar-concluir .btn-confirmacao-confirmar {
+    background: #22c55e;
+}
+.modal-confirmacao-box.confirmar-concluir .btn-confirmacao-confirmar:hover {
+    background: #16a34a;
+}
+
+/* 🔵 Primário */
+.modal-confirmacao-box.confirmar-primario .btn-confirmacao-confirmar {
+    background: var(--cor-ativa);
+}
+.modal-confirmacao-box.confirmar-primario .btn-confirmacao-confirmar:hover {
+    background: #1d4ed8;
+}
+
+/* ===== modal_detalhes.css ===== */
+/* static/css/components/modal_detalhes.css
+   ==========================================================
+   MODAL DE DETALHES (visualização)
+   Reutilizado por Tarefas, Finanças, etc.
+   ========================================================== */
+
+.modal-detalhes-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+
+.modal-detalhes-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-detalhes-container {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    width: 90%;
+    max-width: 440px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(-15px);
+    transition: transform 0.15s ease;
+}
+
+.modal-detalhes-overlay.active .modal-detalhes-container {
+    transform: translateY(0);
+}
+
+.modal-detalhes-header {
+    background-color: var(--bg-principal);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.modal-detalhes-title {
+    font-size: var(--fs-normal);
+    font-weight: 600;
+    color: var(--texto-principal);
+}
+
+.modal-detalhes-close {
+    background: transparent;
+    border: none;
+    color: var(--texto-mutado);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.modal-detalhes-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-detalhes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.modal-detalhes-field {
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    padding: 6px;
+    border-radius: 4px;
+    min-width: 0;
+}
+
+.modal-detalhes-field.full-width {
+    grid-column: span 2;
+}
+
+.field-detalhes-label {
+    font-size: 0.58rem;
+    color: var(--cor-ativa);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.field-detalhes-value {
+    font-size: var(--fs-pequeno);
+    color: var(--texto-principal);
+    word-break: break-word;
+}
+
+.field-detalhes-value-scroll {
+    max-height: 220px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-right: 4px;
+}
+
+.spinner-detalhes-pure {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--border-sutil);
+    border-top-color: var(--cor-ativa);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 /* ===== reset.css ===== */
-/* ==========================================================================
+/*
+static\css\core\reset.css
+   ==========================================================================
    1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
    ========================================================================== */
 :root {
@@ -916,7 +1588,9 @@ h2 {
 
 
 /* ===== responsive.css ===== */
-/* ==========================================================================
+/* 
+static\css\core\responsive.css
+   ==========================================================================
    6. RESPONSIVIDADE - CORRIGIDA
    ========================================================================== */
 

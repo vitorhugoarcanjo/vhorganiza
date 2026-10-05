@@ -80,15 +80,6 @@
 
         {% if tarefa.ativo == 1 %}
             {% if tarefa.status != 'concluido' %}
-                <!-- CONCLUIR -->
-                <button type="button"
-                        class="btn-acao check btn-concluir"
-                        data-sequencia="{{ tarefa.sequencia }}"
-                        data-titulo="{{ tarefa.titulo }}"
-                        title="Concluir tarefa">
-                    <i class="bi bi-check-lg"></i>
-                </button>
-
                 <!-- EDITAR -->
                 <button type="button"
                         class="btn-acao edit"
@@ -107,6 +98,16 @@
                         title="Inativar">
                     <i class="bi bi-trash"></i>
                 </button>
+
+                <!-- CONCLUIR -->
+                <button type="button"
+                        class="btn-acao check btn-concluir"
+                        data-sequencia="{{ tarefa.sequencia }}"
+                        data-titulo="{{ tarefa.titulo }}"
+                        title="Concluir tarefa">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+                
             {% else %}
                 <!-- REABRIR (estornar conclusão) -->
                 <button type="button"

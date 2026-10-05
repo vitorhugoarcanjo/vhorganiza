@@ -102,24 +102,31 @@
                     <div style="margin-top: 4px;">
                         <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Tarefa:</label>
                         <div class="flex-row gap-1" id="botoes-transacao">
+                        
                             <button type="button"
                                     class="btn-filter flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}"
                                     hx-post="{{ url_for('tarefas.ini_tarefas') }}"
                                     hx-vals='{"mostrar_inativas": "0"}'
                                     hx-target="#tabela-container"
-                                    hx-swap="outerHTML">Ativas</button>
+                                    hx-swap="outerHTML">Ativas
+                            </button>
+
                             <button type="button"
                                     class="btn-filter flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}"
                                     hx-post="{{ url_for('tarefas.ini_tarefas') }}"
                                     hx-vals='{"mostrar_inativas": "1"}'
                                     hx-target="#tabela-container"
-                                    hx-swap="outerHTML">Inativas</button>
+                                    hx-swap="outerHTML">Inativas
+                            </button>
+                            
                             <button type="button"
                                     class="btn-filter flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}"
                                     hx-post="{{ url_for('tarefas.ini_tarefas') }}"
                                     hx-vals='{"mostrar_inativas": "2"}'
                                     hx-target="#tabela-container"
-                                    hx-swap="outerHTML">Todas</button>
+                                    hx-swap="outerHTML">Todas
+                            </button>
+
                         </div>
                     </div>
                 </div>

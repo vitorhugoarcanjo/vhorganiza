@@ -8,6 +8,7 @@ import logging
 from flask import request, jsonify, session
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
+from rotas.auditoria_geral.pasta_orcamentos.services_auditoria import AuditoriaOrcamentosService
 
 from rotas.pasta_orcamentos.queries import OrcamentosQueries
 
@@ -35,27 +36,49 @@ def salvar_estrutura(id):
         conexao, cursor = ini_conexao()
 
         # Verifica permissão
-        cursor.execute("SELECT usuario_id FROM orcamentos WHERE id = %s", (id,))
+        cursor.execute("""
+            SELECT usuario_id, titulo, cliente, status
+            FROM orcamentos WHERE id = %s
+        """, (id,))
         resultado = cursor.fetchone()
 
         if not resultado:
-            return jsonify({
-                'success': False,
-                'message': 'Orçamento não encontrado!',
-                'type': 'erro'
-            }), 404
+            return jsonify({'success': False, 'message': 'Orçamento não encontrado!'}), 404
 
         if resultado[0] != session['user_id'] and session.get('is_master', 0) != 1:
-            return jsonify({
-                'success': False,
-                'message': 'Sem permissão para editar!',
-                'type': 'erro'
-            }), 403
+            return jsonify({'success': False, 'message': 'Sem permissão!'}), 403
+
+        # 🔥 Dados ANTES
+        dados_antes = {
+            'titulo':  resultado[1],
+            'cliente': resultado[2] or '',
+            'status':  resultado[3] or 'rascunho',
+        }
 
         cursor.execute(
             OrcamentosQueries.atualizar_orcamento(),
             (titulo, cliente, status, json.dumps(estrutura), id)
         )
+
+        # 🔥 Auditoria com DIFF
+        alteracoes = []
+        if dados_antes['titulo'] != titulo:
+            alteracoes.append({'campo': 'Título',  'antes': dados_antes['titulo'],   'depois': titulo})
+        if (dados_antes['cliente'] or '') != (cliente or ''):
+            alteracoes.append({'campo': 'Cliente', 'antes': dados_antes['cliente'] or '(vazio)', 'depois': cliente or '(vazio)'})
+        if dados_antes['status'] != status:
+            alteracoes.append({'campo': 'Status',  'antes': dados_antes['status'],  'depois': status})
+
+        if alteracoes:
+            AuditoriaOrcamentosService.registrar(
+                orcamento_id=id,
+                acao='editada',
+                campo_alterado='multiplos',
+                valor_antigo=None,
+                valor_novo=json.dumps(alteracoes, ensure_ascii=False),
+                conexao=conexao,
+            )
+
         conexao.commit()
 
         return jsonify({

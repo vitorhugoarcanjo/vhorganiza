@@ -31,6 +31,11 @@ JS_FILES = [
     'static/js/modules/pasta_orcamentos/modals/modal_novo_orcamento.js',
     'static/js/modules/pasta_orcamentos/modals/modal_editar_orcamento.js',
     'static/js/modules/pasta_orcamentos/modals/modal_excluir_orcamento.js',
+
+    # ========================================= #
+    # ACOES E MODAIS
+    # ========================================= #
+    'static/js/modules/pasta_orcamentos/acoes_e_modais/pasta_auditoria/auditoria_orcamento.js',
     
     # ========================================= #
     # MAIN
@@ -47,6 +52,10 @@ CSS_FILES = [
     'static/css/components/filters.css',
     'static/css/components/footer.css',
     'static/css/components/tables.css',
+    'static/css/components/modal_auditoria.css',
+    'static/css/components/modal.css',
+    'static/css/components/modal_confirmacao.css',
+    'static/css/components/modal_detalhes.css',
 
     # ========================================= #
     # CORE - GLOBAL

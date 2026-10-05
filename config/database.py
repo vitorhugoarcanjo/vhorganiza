@@ -21,6 +21,8 @@ from rotas.logs.logs_ataques.tabela import tabela_ataque
 # TABELAS AUDITORIA
 from rotas.auditoria_geral.pasta_tarefas.tabela import tabela_auditoria_tarefas
 from rotas.auditoria_geral.pasta_financas.tabela import tabela_auditoria_financas
+from rotas.auditoria_geral.pasta_orcamentos.tabela import tabela_auditoria_orcamentos
+
 
 # TABELA ORCAMENTO
 from rotas.pasta_orcamentos.tabelas.criar_tabela_orcamentos import tabela_orcamento
@@ -49,6 +51,7 @@ def criar_todas_tabelas():
     # AUDITORIA
     tabela_auditoria_tarefas(cursor)
     tabela_auditoria_financas(cursor)
+    tabela_auditoria_orcamentos(cursor)
 
     # ORCAMENTOS
     tabela_orcamento(cursor)

@@ -38,27 +38,41 @@
                         <td>{{ orc.created_at.strftime('%d/%m/%Y') }}</td>
                         <td>
                             <div class="td-acoes">
-                                <button class="btn-acao edit"
-                                        onclick="abrirModalEditar({{ orc.id }})"
-                                        title="Editar">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
+                            
                                 <button class="btn-acao view"
                                         onclick="visualizarOrcamentoModal({{ orc.id }})"
                                         title="Visualizar orçamento">
                                     <i class="bi bi-eye"></i>
                                 </button>
+                                
+                                <button type="button"
+                                    class="btn-acao audit"
+                                    hx-get="{{ url_for('auditoria.historico_orcamento', orcamento_id=orc.id) }}"
+                                    hx-target="#modal-auditoria-container"
+                                    hx-swap="innerHTML"
+                                    title="Ver histórico de alterações">
+                                    <i class="bi bi-clock-history"></i>
+                                </button>
+
+                                <button class="btn-acao edit"
+                                        onclick="abrirModalEditar({{ orc.id }})"
+                                        title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+
+                                <button class="btn-acao delete"
+                                        onclick="abrirModalExcluir({{ orc.id }}, '{{ orc.titulo }}')"
+                                        title="Excluir">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
                                 <a href="{{ url_for('orcamentos.pdf_orcamentos.gerar_pdf', id=orc.id) }}"
                                    class="btn-acao check"
                                    target="_blank"
                                    title="Gerar PDF">
                                     <i class="bi bi-file-pdf"></i>
                                 </a>
-                                <button class="btn-acao delete"
-                                        onclick="abrirModalExcluir({{ orc.id }}, '{{ orc.titulo }}')"
-                                        title="Excluir">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+
                             </div>
                         </td>
                     </tr>

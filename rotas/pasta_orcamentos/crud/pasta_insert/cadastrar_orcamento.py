@@ -8,6 +8,7 @@ import logging
 from flask import request, jsonify, session
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
+from rotas.auditoria_geral.pasta_orcamentos.services_auditoria import AuditoriaOrcamentosService
 
 from rotas.pasta_orcamentos.queries import OrcamentosQueries
 
@@ -40,6 +41,21 @@ def criar_orcamento():
         )
 
         orcamento_id = cursor.fetchone()[0]
+
+        # 🔥 Auditoria
+        AuditoriaOrcamentosService.registrar(
+            orcamento_id=orcamento_id,
+            acao='criada',
+            campo_alterado='multiplos',
+            valor_antigo=None,
+            valor_novo=json.dumps([
+                {'campo': 'Título',    'depois': titulo},
+                {'campo': 'Cliente',   'depois': cliente or '(vazio)'},
+                {'campo': 'Status',    'depois': status.title()},
+            ], ensure_ascii=False),
+            conexao=conexao,
+        )
+    
         conexao.commit()
 
         return jsonify({
