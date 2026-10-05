@@ -1,3 +1,4 @@
+# rotas\pasta_orcamentos\tabelas\criar_tabela_orcamentos.py
 def tabela_orcamento(cursor, tipo_banco='postgresql'):
     # VERIFICA SE A TABELA EXISTE
     cursor.execute("SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'orcamentos')")

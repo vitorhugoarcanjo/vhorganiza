@@ -1,3 +1,5 @@
+// static\js\componentes\data_global\click_data.js
+
 // ==========================================================================
 // CLICK DATA - EFEITO RIPPLE PARA BOTÕES DE FILTRO DE DATA
 // ==========================================================================

@@ -1,3 +1,4 @@
+// static\js\modules\pasta_financas\menu_click\vinculos.js
 // Ver Vínculos - Toda a lógica aqui
 (function() {
     'use strict';

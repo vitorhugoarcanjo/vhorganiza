@@ -1,0 +1,69 @@
+/* static/css/components/loading.css
+   ==========================================================
+   LOADING / SPINNER / INDICATORS
+   ========================================================== */
+
+/* ==========================================================
+   1. SPINNER MINI (roda pequenininho)
+   ========================================================== */
+.spinner-mini {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-sutil);
+    border-top-color: var(--cor-ativa);
+    border-radius: 50%;
+    animation: spinLoading 0.6s linear infinite;
+}
+
+@keyframes spinLoading {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================
+   2. CONTAINER DO SPINNER (canto do form)
+   ========================================================== */
+#fin-loading,
+#tar-loading {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 6px;
+    background: var(--bg-card);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================
+   3. HTMX INDICATOR (esconde/mostra durante request)
+   ========================================================== */
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ==========================================================
+   4. TABELA ESMAECE ENQUANTO CARREGA
+   ========================================================== */
+body.htmx-request #tabela-container,
+body.htmx-request #fin-loading,
+body.htmx-request #tar-loading {
+    /* Já tratado acima */
+}
+
+#tabela-container.htmx-request,
+#tabela-container:has(.htmx-request) {
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+}

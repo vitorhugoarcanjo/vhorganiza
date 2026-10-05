@@ -67,11 +67,13 @@ CSS_FILES = [
     'static/css/components/modal_detalhes.css',
     'static/css/components/form.css',
     'static/css/components/modal_auditoria.css',
+    'static/css/components/loading.css',
 
     # ========================================= #
     # ESPECÍFICO DO FINANÇAS
     # ========================================= #
     'static/css/modules/pasta_financas/components/parcelas.css',
+    'static/css/modules/pasta_financas/menu_click/click_direito.css',
 ]
 
 # ==========================

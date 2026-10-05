@@ -83,7 +83,8 @@ class FinancasFilters:
             conditions = []
             for cat in filtros['categorias']:
                 if cat == 'null':
-                    conditions.append("(t.categoria_id IS NULL OR t.categoria_id = '')")
+                    # 🔥 categoria_id é INTEGER — só IS NULL
+                    conditions.append("t.categoria_id IS NULL")
 
                 else:
                     conditions.append("t.categoria_id = %s")

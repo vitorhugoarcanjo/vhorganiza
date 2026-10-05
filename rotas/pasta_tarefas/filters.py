@@ -11,7 +11,7 @@ from utils.filtros_reutilizaveis.data import filtro_datas
 class TarefasFilters:
 
     # ------------------------------------------------------
-    # FILTROS DE SESSÃO (o que já existe hoje, organizado)
+    # FILTROS DE SESSÃO
     # ------------------------------------------------------
     @staticmethod
     def filtro_categorias(user_id, cursor):
@@ -71,13 +71,13 @@ class TarefasFilters:
         return mostrar
 
     # ------------------------------------------------------
-    # APLICAÇÃO DOS FILTROS NA QUERY (igual Finanças)
+    # APLICAÇÃO DOS FILTROS NA QUERY
     # ------------------------------------------------------
     @staticmethod
     def aplicar_filtros_query(query, params, filtros):
         """Monta os AND/OR na query base"""
 
-        # DATA
+        # DATA (🔥 SEM DATE() — usa BETWEEN direto, aproveita índice)
         if filtros.get('data_inicio') and filtros.get('data_fim'):
             tipo_data = filtros.get('tipo_data', 'inicio')
             if tipo_data == 'inicio':
@@ -85,16 +85,16 @@ class TarefasFilters:
             elif tipo_data == 'final':
                 query += " AND t.data_final BETWEEN %s AND %s"
             else:  # finalizacao
-                query += " AND DATE(t.data_finalizacao) BETWEEN %s AND %s"
+                query += " AND t.data_finalizacao BETWEEN %s AND %s"
             params.extend([filtros['data_inicio'], filtros['data_fim']])
 
-        # CATEGORIAS
+        # CATEGORIAS (🔥 categoria_id é INTEGER — só IS NULL)
         categorias = filtros.get('categorias') or []
         if categorias:
             conds = []
             for cat in categorias:
                 if cat == 'null':
-                    conds.append("(t.categoria_id IS NULL OR t.categoria_id = '')")
+                    conds.append("t.categoria_id IS NULL")
                 else:
                     conds.append("t.categoria_id = %s")
                     params.append(cat)
@@ -119,10 +119,10 @@ class TarefasFilters:
             query += " AND t.prioridade = %s"
             params.append(prioridade)
 
-        # DESCRIÇÃO
+        # DESCRIÇÃO (🔥 ILIKE — case-insensitive)
         descricao = filtros.get('descricao') or ''
         if descricao:
-            query += " AND t.descricao LIKE %s"
+            query += " AND t.descricao ILIKE %s"
             params.append(f"%{descricao}%")
 
         # ATIVO / INATIVO

@@ -1,3 +1,4 @@
+# rotas\pasta_financas\menus\pasta_vinculos\vinculos_routes.py
 from flask import Blueprint, jsonify, session
 from rotas.middleware.autenticacao import login_required
 from utils.fomatacoes.data_reutilizavel import formatar_data_br
