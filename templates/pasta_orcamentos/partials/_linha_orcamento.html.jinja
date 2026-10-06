@@ -1,0 +1,99 @@
+{# templates/pasta_orcamentos/partials/_linha_orcamento.html.jinja #}
+{# Partial: 1 linha da tabela de orçamentos #}
+<tr class="linha-orcamento {% if orc.ativo == 0 %}orcamento-inativo opacity-50{% endif %}"
+    id="linha-orcamento-{{ orc.sequencia_orcamentos }}"
+    data-sequencia="{{ orc.sequencia_orcamentos }}">
+
+    <!-- SEQUÊNCIA -->
+    <td class="td-id">{{ orc.sequencia_orcamentos }}</td>
+
+    <!-- TÍTULO -->
+    <td class="td-titulo" title="{{ orc.titulo }}">{{ orc.titulo }}</td>
+
+    <!-- CLIENTE -->
+    <td>
+        {% if orc.cliente %}
+            {{ orc.cliente }}
+        {% else %}
+            <span class="text-vazio">—</span>
+        {% endif %}
+    </td>
+
+    <!-- STATUS -->
+    <td>
+        <span class="badge-pure status-{{ orc.status }}">
+            {% if orc.status == 'rascunho' %}📝 Rascunho
+            {% elif orc.status == 'enviado' %}📤 Enviado
+            {% elif orc.status == 'aprovado' %}✅ Aprovado
+            {% elif orc.status == 'rejeitado' %}❌ Rejeitado
+            {% else %}{{ orc.status }}
+            {% endif %}
+        </span>
+    </td>
+
+    <!-- DATA -->
+    <td>{{ orc.created_at.strftime('%d/%m/%Y') }}</td>
+
+    <!-- AÇÕES -->
+    <td class="td-acoes text-center">
+
+        <!-- VISUALIZAR -->
+        <button type="button"
+                class="btn-acao view"
+                onclick="visualizarOrcamentoModal({{ orc.sequencia_orcamentos }})"
+                title="Visualizar orçamento">
+            <i class="bi bi-eye"></i>
+        </button>
+
+        <!-- AUDITORIA -->
+        <button type="button"
+                class="btn-acao audit"
+                hx-get="{{ url_for('auditoria.historico_orcamento', orcamento_seq=orc.sequencia_orcamentos) }}"
+                hx-target="#modal-auditoria-container"
+                hx-swap="innerHTML"
+                title="Ver histórico de alterações">
+            <i class="bi bi-clock-history"></i>
+        </button>
+
+        {% if orc.ativo == 1 %}
+
+            <!-- EDITAR -->
+            <button type="button"
+                    class="btn-acao edit"
+                    onclick="abrirModalEditar({{ orc.sequencia_orcamentos }})"
+                    title="Editar">
+                <i class="bi bi-pencil"></i>
+            </button>
+
+            <!-- EXCLUIR (inativar) -->
+            <button type="button"
+                    class="btn-acao delete btn-excluir"
+                    data-sequencia="{{ orc.sequencia_orcamentos }}"
+                    data-desc="{{ orc.titulo }}"
+                    title="Inativar">
+                <i class="bi bi-trash"></i>
+            </button>
+
+            <!-- PDF -->
+            <a href="{{ url_for('orcamentos.pdf_orcamentos.gerar_pdf', id=orc.sequencia_orcamentos) }}"
+               class="btn-acao check"
+               target="_blank"
+               title="Gerar PDF">
+                <i class="bi bi-file-pdf"></i>
+            </a>
+
+        {% else %}
+
+            <!-- REATIVAR -->
+            <button type="button"
+                    class="btn-acao reativar btn-reativar"
+                    data-sequencia="{{ orc.sequencia_orcamentos }}"
+                    data-desc="{{ orc.titulo }}"
+                    title="Reativar">
+                <i class="bi bi-arrow-repeat"></i>
+            </button>
+
+        {% endif %}
+
+    </td>
+</tr>

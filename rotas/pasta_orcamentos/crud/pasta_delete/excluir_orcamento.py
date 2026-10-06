@@ -1,57 +1,103 @@
 # rotas/pasta_orcamentos/crud/pasta_delete/excluir_orcamento.py
-from flask import jsonify, session
+# ==========================================================
+# EXCLUIR (INATIVAR) ORÇAMENTO — SOFT DELETE
+# ==========================================================
+
+from flask import session, make_response, render_template
+import json
+import logging
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.pasta_orcamentos.services_auditoria import AuditoriaOrcamentosService
 from utils.database.conexao_global import ini_conexao
+from rotas.pasta_orcamentos.services.services_orcamento import OrcamentosServices
+from rotas.pasta_orcamentos.filters import OrcamentosFilters
+from rotas.pasta_orcamentos.formatters import OrcamentosFormatters
+from rotas.pasta_orcamentos.queries import OrcamentosQueries
+
+logger = logging.getLogger(__name__)
 
 
+# ==========================================================
+# HELPER — busca orçamentos com filtros da sessão
+# ==========================================================
+def _buscar_orcamentos_com_filtros(cursor, user_id):
+    data_inicio, data_fim, tipo_data = OrcamentosFilters.processar_filtros_data()
+    filtros = OrcamentosFilters.recuperar_filtros(session)
+    filtros.update({
+        'data_inicio': data_inicio,
+        'data_fim': data_fim,
+        'tipo_data': tipo_data,
+    })
+    service = OrcamentosServices(conexao=None, cursor=cursor)
+    orcamentos_raw = service.buscar_orcamentos(user_id, filtros)
+    return OrcamentosFormatters.formatar_lista(orcamentos_raw)
+
+
+def _render_tbody(user_id, cursor):
+    orcamentos = _buscar_orcamentos_com_filtros(cursor, user_id)
+    return render_template(
+        'pasta_orcamentos/partials/_tbody_orcamentos.html.jinja',
+        orcamentos=orcamentos,
+        mostrar_inativas=session.get('orcamentos_mostrar_inativas', '0'),
+    )
+
+
+# ==========================================================
+# POST — INATIVA 1 ORÇAMENTO (soft delete)
+# ==========================================================
 @login_required
-def excluir_orcamento(id):
-    """EXCLUI UM ORÇAMENTO"""
+def excluir_orcamento(sequencia):
+    """Inativa um orçamento (soft delete). Recebe SEQUÊNCIA visual."""
+    user_id = session['user_id']
+    conexao, cursor = ini_conexao()
+
     try:
-        conexao, cursor = ini_conexao()
+        # 1. Busca id_interno + título ANTES de inativar
+        cursor.execute("""
+            SELECT id, titulo FROM orcamentos
+            WHERE sequencia_orcamentos = %s AND usuario_id = %s AND ativo = 1
+        """, (sequencia, user_id))
 
-        cursor.execute("SELECT usuario_id, titulo FROM orcamentos WHERE id = %s", (id,))
         resultado = cursor.fetchone()
-
         if not resultado:
-            return jsonify({
-                'success': False,
-                'message': 'Orçamento não encontrado!',
-                'type': 'erro'
-            }), 404
+            conexao.close()
+            return '', 404
 
-        if resultado[0] != session['user_id'] and session.get('is_master', 0) != 1:
-            return jsonify({
-                'success': False,
-                'message': 'Sem permissão para excluir!',
-                'type': 'erro'
-            }), 403
-
+        id_interno = resultado[0]
         titulo = resultado[1]
 
-        # 🔥 Auditoria
+        # 2. Inativa (soft delete)
+        cursor.execute(
+            OrcamentosQueries.inativar_orcamento(),
+            (user_id, sequencia, user_id)
+        )
+
+        # 3. 🔥 Auditoria transacional (usa id_interno)
         AuditoriaOrcamentosService.registrar(
-            orcamento_id=id,
-            acao='excluida',
+            orcamento_id=id_interno,
+            acao='inativada',
             campo_alterado='ativo',
             valor_antigo='1',
             valor_novo='0',
             conexao=conexao,
         )
 
-        cursor.execute("DELETE FROM orcamentos WHERE id = %s", (id,))
         conexao.commit()
 
-        return jsonify({
-            'success': True,
-            'message': f'Orçamento "{titulo}" excluído com sucesso!',
-            'type': 'sucesso'
+        # 4. Renderiza tbody atualizado
+        html = _render_tbody(user_id, cursor)
+        conexao.close()
+
+        # 5. Retorna HTML + HX-Trigger
+        resp = make_response(html)
+        resp.headers['HX-Trigger'] = json.dumps({
+            'orcamentoInativado': {'message': f'Orçamento "{titulo}" inativado!'}
         })
+        return resp
 
     except Exception as e:
-        return jsonify({
-            'success': False,
-            'message': f'Erro ao excluir orçamento: {str(e)}',
-            'type': 'erro'
-        }), 500
+        if conexao:
+            conexao.rollback()
+            conexao.close()
+        logger.exception(f"Erro ao inativar orçamento sequencia={sequencia}")
+        return '', 500

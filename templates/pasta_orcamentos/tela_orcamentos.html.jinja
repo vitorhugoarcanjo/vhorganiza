@@ -121,6 +121,39 @@
                         hx-trigger="input changed delay:300ms, search">
                 </div>
 
+                <!-- FILTRO ATIVAS/INATIVAS/TODAS -->
+                <div class="bloco-filtro">
+                    <div class="bloco-titulo">📋 ORÇAMENTO</div>
+                    <div class="flex-row gap-1" id="botoes-orcamento">
+                        <button type="button"
+                                class="btn-filter flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}"
+                                hx-post="{{ url_for('orcamentos.ini_orcamento') }}"
+                                hx-vals='{"mostrar_inativas": "0"}'
+                                hx-include="#form-filtros-orcamentos"
+                                hx-target="#tabela-container"
+                                hx-swap="outerHTML"
+                                hx-sync="this:replace">Ativos</button>
+
+                        <button type="button"
+                                class="btn-filter flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}"
+                                hx-post="{{ url_for('orcamentos.ini_orcamento') }}"
+                                hx-vals='{"mostrar_inativas": "1"}'
+                                hx-include="#form-filtros-orcamentos"
+                                hx-target="#tabela-container"
+                                hx-swap="outerHTML"
+                                hx-sync="this:replace">Inativos</button>
+
+                        <button type="button"
+                                class="btn-filter flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}"
+                                hx-post="{{ url_for('orcamentos.ini_orcamento') }}"
+                                hx-vals='{"mostrar_inativas": "2"}'
+                                hx-include="#form-filtros-orcamentos"
+                                hx-target="#tabela-container"
+                                hx-swap="outerHTML"
+                                hx-sync="this:replace">Todos</button>
+                    </div>
+                </div>
+
                 <!-- BUSCA -->
                 <div class="bloco-filtro bloco-pesquisa-fim">
                     <div>
@@ -148,6 +181,8 @@
             <div id="orc-loading" class="htmx-indicator">
                 <div class="spinner-mini"></div>
             </div>
+
+            <input type="hidden" name="mostrar_inativas" id="mostrar_inativas_input" value="{{ mostrar_inativas }}">
         </form>
     </div>
 

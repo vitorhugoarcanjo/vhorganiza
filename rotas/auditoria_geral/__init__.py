@@ -30,7 +30,7 @@ bp_auditoria.add_url_rule(
 )
 
 bp_auditoria.add_url_rule(
-    '/orcamento/<int:orcamento_id>',
+    '/orcamento/<int:orcamento_seq>',
     view_func=historico_orcamento,
     endpoint='historico_orcamento'
 )

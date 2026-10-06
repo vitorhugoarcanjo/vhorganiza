@@ -1,0 +1,18 @@
+{# templates/pasta_orcamentos/partials/_tbody_orcamentos.html.jinja #}
+{# Partial: <tbody> com todas as linhas da tabela #}
+<tbody id="tbody-orcamentos">
+    {% if orcamentos %}
+        {% for orc in orcamentos %}
+            {% include 'pasta_orcamentos/partials/_linha_orcamento.html.jinja' %}
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="6" class="td-vazio">
+                <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                Nenhum orçamento encontrado.
+                <br>
+                <small class="text-muted">Clique em "NOVO" para criar o primeiro.</small>
+            </td>
+        </tr>
+    {% endif %}
+</tbody>

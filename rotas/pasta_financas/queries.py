@@ -1,3 +1,4 @@
+# rotas\pasta_financas\queries.py
 class FinancasQueries:
     """ TODAS AS QUERIES SQL DO MÓDULO DE FINANÇAS """
     

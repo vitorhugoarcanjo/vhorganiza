@@ -6,10 +6,21 @@
 class OrcamentosQueries:
 
     @staticmethod
+    def get_proxima_sequencia():
+        """Retorna a próxima sequência visual pro usuário."""
+        return """
+            SELECT COALESCE(MAX(sequencia_orcamentos), 0) + 1
+            FROM orcamentos
+            WHERE usuario_id = %s
+        """
+
+    @staticmethod
     def get_orcamentos_base():
         """Query base — filtros aplicados em cima"""
         return """
-            SELECT o.id, o.titulo, o.cliente, o.status, o.created_at
+            SELECT o.sequencia_orcamentos, o.id, o.numero, o.titulo, o.cliente,
+                   o.status, o.valor_total, o.data_emissao, o.data_validade,
+                   o.created_at, o.ativo
             FROM orcamentos o
             WHERE o.usuario_id = %s
         """
@@ -17,17 +28,24 @@ class OrcamentosQueries:
     @staticmethod
     def get_orcamento_detalhes():
         return """
-            SELECT id, titulo, cliente, status, estrutura, created_at
+            SELECT id, sequencia_orcamentos, numero, titulo, cliente, status,
+                   estrutura, valor_total, data_emissao, data_validade,
+                   data_entrega, descricao, observacoes, created_at, ativo
             FROM orcamentos
-            WHERE id = %s AND usuario_id = %s
+            WHERE sequencia_orcamentos = %s AND usuario_id = %s
         """
 
     @staticmethod
     def criar_orcamento():
         return """
-            INSERT INTO orcamentos (usuario_id, titulo, cliente, status, estrutura)
-            VALUES (%s, %s, %s, %s, %s)
-            RETURNING id
+            INSERT INTO orcamentos (
+                usuario_id, sequencia_orcamentos, numero,
+                titulo, cliente, status, estrutura, valor_total,
+                data_emissao, data_validade, data_entrega,
+                descricao, observacoes
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id, sequencia_orcamentos, numero
         """
 
     @staticmethod
@@ -35,13 +53,39 @@ class OrcamentosQueries:
         return """
             UPDATE orcamentos
             SET titulo = %s, cliente = %s, status = %s, estrutura = %s,
+                valor_total = %s,
+                data_emissao = %s, data_validade = %s, data_entrega = %s,
+                descricao = %s, observacoes = %s,
                 updated_at = CURRENT_TIMESTAMP
-            WHERE id = %s
+            WHERE sequencia_orcamentos = %s AND usuario_id = %s
         """
 
     @staticmethod
-    def excluir_orcamento():
+    def inativar_orcamento():
         return """
-            DELETE FROM orcamentos
-            WHERE id = %s AND usuario_id = %s
+            UPDATE orcamentos
+            SET ativo = 0,
+                excluido_em = CURRENT_TIMESTAMP,
+                excluido_por = %s,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE sequencia_orcamentos = %s AND usuario_id = %s AND ativo = 1
+        """
+
+    @staticmethod
+    def reativar_orcamento():
+        return """
+            UPDATE orcamentos
+            SET ativo = 1,
+                excluido_em = NULL,
+                excluido_por = NULL,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE sequencia_orcamentos = %s AND usuario_id = %s AND ativo = 0
+        """
+
+    @staticmethod
+    def buscar_id_interno_por_sequencia():
+        """Traduz sequência visual → id interno."""
+        return """
+            SELECT id FROM orcamentos
+            WHERE sequencia_orcamentos = %s AND usuario_id = %s
         """

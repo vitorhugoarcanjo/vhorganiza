@@ -4,7 +4,6 @@
 # ==========================================================
 
 from flask import render_template, session, request, redirect, url_for
-from datetime import date
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
 
@@ -26,29 +25,30 @@ def ini_orcamento():
     data_inicio, data_fim, tipo_data = OrcamentosFilters.processar_filtros_data()
     session['orcamentos_tipo_data'] = tipo_data
 
+    mostrar_inativas = OrcamentosFilters.processar_mostrar_inativas()
+
     filtros = OrcamentosFilters.recuperar_filtros(session)
     filtros.update({
-        'data_inicio': data_inicio,
-        'data_fim': data_fim,
-        'tipo_data': tipo_data
+        'data_inicio':      data_inicio,
+        'data_fim':         data_fim,
+        'tipo_data':        tipo_data,
+        'mostrar_inativas': mostrar_inativas,
     })
 
-    # 2. BUSCA DADOS NO BANCO DE DADOS
+    # 2. BUSCA DADOS
     conexao, cursor = ini_conexao()
     service = OrcamentosServices(conexao, cursor)
 
-    # BUSCA E FORMATAR ORÇAMENTOS
     orcamentos_raw = service.buscar_orcamentos(user_id, filtros)
     orcamentos = OrcamentosFormatters.formatar_lista(orcamentos_raw)
 
-    # 🔥 CALCULA CONTADORES
     contadores = OrcamentosFormatters.calcular_contadores(orcamentos)
 
-    # 3. RENDERIZAÇÃO PARA HTMX
+    # 3. HTMX
     if is_htmx:
-        return _renderizar_htmx(orcamentos, contadores, data_inicio, data_fim)
+        return _renderizar_htmx(orcamentos, contadores, data_inicio, data_fim, mostrar_inativas)
 
-    # 4. RENDERIZAÇÃO COMPLETA DA PÁGINA (Padrão/F5)
+    # 4. RENDER COMPLETO
     return render_template(
         'pasta_orcamentos/tela_orcamentos.html.jinja',
         data_inicio=data_inicio,
@@ -57,28 +57,30 @@ def ini_orcamento():
         status=filtros['status'],
         cliente=filtros['cliente'],
         busca=filtros['busca'],
+        mostrar_inativas=mostrar_inativas,
         orcamentos=orcamentos,
         contadores=contadores,
     )
 
 
-def _renderizar_htmx(orcamentos, contadores, data_inicio, data_fim):
+def _renderizar_htmx(orcamentos, contadores, data_inicio, data_fim, mostrar_inativas):
     """ RENDERIZA APENAS A TABELA E ATUALIZA INPUTS/CONTADORES VIA HTMX (OOB) """
 
-    # 1. Renderiza o trecho da tabela
     tabela_html = render_template(
         'pasta_orcamentos/_tabela_orcamentos.html.jinja',
         orcamentos=orcamentos,
     )
 
-    # 2. Fragmentos Out-Of-Band (OOB)
-    inputs_e_contadores_oob_html = f"""
+    oob_html = f"""
         <input type="date" name="data_inicio" id="data_inicio_input_orc"
                class="form-control filter-auto" value="{data_inicio or ''}"
                hx-swap-oob="outerHTML:#data_inicio_input_orc">
         <input type="date" name="data_fim" id="data_fim_input_orc"
                class="form-control filter-auto" value="{data_fim or ''}"
                hx-swap-oob="outerHTML:#data_fim_input_orc">
+        <input type="hidden" name="mostrar_inativas" id="mostrar_inativas_input"
+               value="{mostrar_inativas}"
+               hx-swap-oob="outerHTML:#mostrar_inativas_input">
 
         <span id="totalOrcamentos" hx-swap-oob="innerHTML">{contadores['total']}</span>
         <span id="totalRascunho"   hx-swap-oob="innerHTML">{contadores['rascunho']}</span>
@@ -87,7 +89,7 @@ def _renderizar_htmx(orcamentos, contadores, data_inicio, data_fim):
         <span id="totalRejeitado"  hx-swap-oob="innerHTML">{contadores['rejeitado']}</span>
     """
 
-    return tabela_html + inputs_e_contadores_oob_html
+    return tabela_html + oob_html
 
 
 # ==========================================================
@@ -95,6 +97,5 @@ def _renderizar_htmx(orcamentos, contadores, data_inicio, data_fim):
 # ==========================================================
 @login_required
 def limpar_filtros():
-    """ Limpa todos os filtros """
     OrcamentosFilters.limpar_filtros(session)
     return redirect(url_for('orcamentos.ini_orcamento'))

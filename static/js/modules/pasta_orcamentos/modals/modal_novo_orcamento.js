@@ -1,51 +1,6 @@
+// static/js/modules/pasta_orcamentos/modals/modal_novo_orcamento.js
 // ==========================================================
-// ORÇAMENTOS - MODAL NOVO (SÓ CONFIGURA O NOVO)
-// ==========================================================
-// 
-// 📌 FUNÇÃO: Gerencia o modal NOVO ORÇAMENTO
-// 
-// 🔧 O QUE FAZ:
-//   - Abre/fecha o modal de novo orçamento
-//   - Inicializa o gerenciador de seções com configurações do NOVO
-//   - Gerencia o status badge
-//   - Preview do orçamento completo
-//   - Salva o orçamento via AJAX
-// 
-// 🎯 DIFERENÇA PARA O EDITAR:
-//   - Usa IDs específicos do NOVO (com sufixo "Novo")
-//   - Carrega seções vazias
-//   - Não busca dados do banco
-// 
-// 📍 IDs UTILIZADOS (passados para o gerenciador):
-//   - containerId: 'novo-secoes-container'
-//   - previewContainerId: 'secaoPreviewContainer'
-//   - contadorId: 'novoSecoesCount'
-//   - modalSecaoId: 'modalNovaSecaoNovo'
-//   - formSecaoId: 'formNovaSecaoNovo'
-//   - tituloId: 'novaSecaoTituloNovo'
-//   - conteudoId: 'novaSecaoConteudoNovo'
-//   - camposEspecificosId: 'camposEspecificosNovo'
-//   - tipoBtnsSelector: '#modalNovaSecaoNovo .orc-tipo-btn'
-//   - modalTituloId: 'modalSecaoTituloNovo'
-//   - btnTextoId: 'btnAdicionarTextoNovo'
-// 
-// 🌐 FUNÇÕES GLOBAIS EXPORTADAS:
-//   - window.abrirModalNovoOrcamento
-//   - window.fecharModalNovoOrcamento
-//   - window.abrirModalNovaSecaoNovo
-//   - window.fecharModalNovaSecaoNovo
-//   - window.selecionarTipoNovo
-//   - window.previewNovoOrcamento
-//   - window.fecharPreview
-// 
-// ⚠️ ATENÇÃO: O gerenciador é inicializado apenas uma vez (singleton)
-// ==========================================================
-// ==========================================================
-// ORÇAMENTOS - MODAL NOVO
-// ==========================================================
-
-// ==========================================================
-// ORÇAMENTOS - MODAL NOVO (APENAS CONFIGURAÇÃO)
+// ORÇAMENTOS - MODAL NOVO (padrão 2099)
 // ==========================================================
 
 (function() {
@@ -57,26 +12,26 @@
     function aplicarTemplate() {
         var select = document.getElementById('templateSelector');
         var templateId = select.value;
-        
+
         if (!templateId) {
             window.Notificacao.aviso('Selecione um modelo primeiro!');
             return;
         }
-        
+
         if (!window.OrcamentoTemplates) {
             window.Notificacao.erro('Sistema de templates não disponível!');
             return;
         }
-        
+
         var template = window.OrcamentoTemplates.getTemplate(templateId);
         if (!template) {
             window.Notificacao.erro('Template não encontrado!');
             return;
         }
-        
+
         var vars = window.OrcamentoTemplates.getTemplateVariaveisPadrao(templateId);
         var estrutura = window.OrcamentoTemplates.aplicarTemplate(templateId, vars);
-        
+
         if (estrutura && estrutura.length > 0 && window._gerenciadorNovo) {
             window._gerenciadorNovo.carregarSecoes(estrutura);
             window.Notificacao.sucesso('Template "' + template.nome + '" aplicado!');
@@ -92,42 +47,52 @@
         console.log('🔓 Abrindo modal NOVO');
         var modal = document.getElementById('modalNovoOrcamento');
         if (!modal) return;
-        
+
+        // Datas default
+        var hoje = new Date();
+        var hojeStr = hoje.toISOString().split('T')[0];
+
+        var validade = new Date(hoje);
+        validade.setDate(validade.getDate() + 30);
+        var validadeStr = validade.toISOString().split('T')[0];
+
         // Limpar campos
         document.getElementById('novoTitulo').value = '';
         document.getElementById('novoCliente').value = '';
-        document.getElementById('novoData').value = new Date().toISOString().split('T')[0];
+        document.getElementById('novoDataEmissao').value = hojeStr;
+        document.getElementById('novoDataValidade').value = validadeStr;
+        document.getElementById('novoDataEntrega').value = '';
         document.getElementById('novoStatus').value = 'rascunho';
-        
+
         // Resetar template
         var select = document.getElementById('templateSelector');
         if (select) select.value = '';
-        
-        // 🔥 INICIALIZA O GERENCIADOR (USANDO O COMPARTILHADO)
+
+        // 🔥 INICIALIZA O GERENCIADOR
         if (!window._gerenciadorNovo) {
             window._gerenciadorNovo = window.criarGerenciadorSecoes({
                 containerId: 'novo-secoes-container',
                 previewContainerId: 'secaoPreviewContainer',
                 contadorId: 'novoSecoesCount',
-                modalSecaoId: 'modalNovaSecao',  // ← MUDOU! USA O COMPARTILHADO
-                formSecaoId: 'formNovaSecao',     // ← MUDOU! USA O COMPARTILHADO
-                tituloId: 'novaSecaoTitulo',      // ← MUDOU! USA O COMPARTILHADO
-                conteudoId: 'novaSecaoConteudo',  // ← MUDOU! USA O COMPARTILHADO
-                camposEspecificosId: 'camposEspecificos', // ← MUDOU!
-                tipoBtnsSelector: '#modalNovaSecao .orc-tipo-btn', // ← MUDOU!
-                modalTituloId: 'modalSecaoTitulo', // ← MUDOU!
-                btnTextoId: 'btnAdicionarTexto',   // ← MUDOU!
-                contexto: 'novo'  // ← NOVO! IDENTIFICA O CONTEXTO
+                modalSecaoId: 'modalNovaSecao',
+                formSecaoId: 'formNovaSecao',
+                tituloId: 'novaSecaoTitulo',
+                conteudoId: 'novaSecaoConteudo',
+                camposEspecificosId: 'camposEspecificos',
+                tipoBtnsSelector: '#modalNovaSecao .orc-tipo-btn',
+                modalTituloId: 'modalSecaoTitulo',
+                btnTextoId: 'btnAdicionarTexto',
+                contexto: 'novo'
             });
             window._gerenciadorNovo.configurarFormSubmit();
         }
-        
+
         // Carrega vazio
         window._gerenciadorNovo.carregarSecoes([]);
-        
+
         // Atualiza status
         atualizarStatusPreview();
-        
+
         // Abre modal
         modal.classList.add('active');
         setTimeout(function() { document.getElementById('novoTitulo').focus(); }, 100);
@@ -147,14 +112,19 @@
         var badge = document.getElementById('novoStatusBadge');
         if (select && badge) {
             var status = select.value;
-            var labels = { 'rascunho': '📝 Rascunho', 'enviado': '📤 Enviado', 'aprovado': '✅ Aprovado', 'rejeitado': '❌ Rejeitado' };
+            var labels = {
+                'rascunho':  '📝 Rascunho',
+                'enviado':   '📤 Enviado',
+                'aprovado':  '✅ Aprovado',
+                'rejeitado': '❌ Rejeitado'
+            };
             badge.textContent = labels[status] || status;
             badge.className = 'orc-status-badge ' + status;
         }
     }
 
     // ==========================================================
-    // FUNÇÕES GLOBAIS (CHAMADAS PELO HTML)
+    // EXPORTA GLOBAIS
     // ==========================================================
     window.abrirModalNovoOrcamento = abrirModalNovoOrcamento;
     window.fecharModalNovoOrcamento = fecharModalNovoOrcamento;
@@ -168,14 +138,17 @@
             window.OrcamentoPreview.novo();
         } else {
             var orcamento = {
-                titulo: document.getElementById('novoTitulo').value || 'Sem título',
-                cliente: document.getElementById('novoCliente').value || 'Não informado',
-                data: document.getElementById('novoData').value ? new Date(document.getElementById('novoData').value).toLocaleDateString('pt-BR') : 'Não informada',
-                status: document.getElementById('novoStatus').value
+                titulo:        document.getElementById('novoTitulo').value || 'Sem título',
+                cliente:       document.getElementById('novoCliente').value || 'Não informado',
+                data_emissao:  document.getElementById('novoDataEmissao').value,
+                data_validade: document.getElementById('novoDataValidade').value,
+                data_entrega:  document.getElementById('novoDataEntrega').value,
+                status:        document.getElementById('novoStatus').value
             };
             var estrutura = window._gerenciadorNovo ? window._gerenciadorNovo.getEstrutura() : [];
             if (window.SecoesPreview) {
-                document.getElementById('previewContent').innerHTML = window.SecoesPreview.previewOrcamento(orcamento, estrutura);
+                document.getElementById('previewContent').innerHTML =
+                    window.SecoesPreview.previewOrcamento(orcamento, estrutura);
             }
             document.getElementById('modalPreview').classList.add('active');
         }
@@ -190,58 +163,66 @@
     };
 
     // ==========================================================
-    // CRIAR ORÇAMENTO
+    // SUBMIT — CRIAR ORÇAMENTO
     // ==========================================================
     document.getElementById('formNovoOrcamento')?.addEventListener('submit', async function(e) {
         e.preventDefault();
+
         var btn = document.getElementById('btnCriarOrcamento');
         btn.disabled = true;
         btn.innerHTML = '<i class="bi bi-spinner bi-spin"></i> Criando...';
-        
+
         try {
             var estrutura = window._gerenciadorNovo ? window._gerenciadorNovo.getEstrutura() : [];
+
+            var payload = {
+                titulo:        document.getElementById('novoTitulo').value,
+                cliente:       document.getElementById('novoCliente').value,
+                status:        document.getElementById('novoStatus').value,
+                data_emissao:  document.getElementById('novoDataEmissao').value || null,
+                data_validade: document.getElementById('novoDataValidade').value || null,
+                data_entrega:  document.getElementById('novoDataEntrega').value || null,
+                estrutura:     estrutura
+            };
+
             var response = await fetch('/orcamentos/criar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    titulo: document.getElementById('novoTitulo').value,
-                    cliente: document.getElementById('novoCliente').value,
-                    status: document.getElementById('novoStatus').value,
-                    estrutura: estrutura
-                })
+                body: JSON.stringify(payload)
             });
+
             var data = await response.json();
+
             if (data.success) {
                 window.Notificacao.sucesso(data.message);
                 fecharModalNovoOrcamento();
-                setTimeout(function() { window.location.reload(); }, 500);
+
+                // 🔥 Padrão 2099 — recarrega SÓ a tabela via HTMX
+                if (window.htmx) {
+                    window.htmx.ajax('GET', '/orcamentos/', {
+                        target: '#tabela-container',
+                        swap: 'outerHTML'
+                    });
+                } else {
+                    window.location.reload();
+                }
             } else {
-                window.Notificacao.erro(data.message);
+                // Validação backend campo-a-campo
+                if (data.errors && data.errors.length) {
+                    var msgs = data.errors.map(function(er) { return '• ' + er.mensagem; }).join('\n');
+                    window.Notificacao.erro(msgs);
+                } else {
+                    window.Notificacao.erro(data.message || 'Erro ao criar orçamento');
+                }
             }
         } catch (error) {
             console.error('❌ Erro:', error);
             window.Notificacao.erro('Erro ao criar orçamento');
         } finally {
             btn.disabled = false;
-            btn.innerHTML = 'Criar Orçamento';
+            btn.innerHTML = '<i class="bi bi-check-circle"></i> Criar Orçamento';
         }
     });
-
-    // ==========================================================
-    // GERAR PDF
-    // ==========================================================
-    window.gerarPDFNovo = function() {
-        if (window.gerarPDF) {
-            var id = document.getElementById('novoId')?.value;
-            if (id) {
-                window.gerarPDF(id);
-            } else {
-                window.Notificacao.erro('Salve o orçamento primeiro para gerar o PDF');
-            }
-        } else {
-            window.Notificacao.erro('Função de PDF não disponível');
-        }
-    };
 
     console.log('✅ MODAL NOVO carregado!');
 

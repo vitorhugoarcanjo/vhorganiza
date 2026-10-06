@@ -1,5 +1,5 @@
 <!-- templates/pasta_orcamentos/_tabela_orcamentos.html.jinja -->
-<div id="tabela-container">
+<div id="tabela-container" data-url-refresh="{{ url_for('orcamentos.ini_orcamento') }}">
     <div class="table-responsive">
         <table class="custom-table">
             <thead>
@@ -9,85 +9,10 @@
                     <th style="width: 20%;">Cliente</th>
                     <th style="width: 15%;">Status</th>
                     <th style="width: 15%;">Data</th>
-                    <th style="width: 25%;">Ações</th>
+                    <th style="width: 25%; text-align: center;">Ações</th>
                 </tr>
             </thead>
-            <tbody id="tbody-orcamentos">
-                {% if orcamentos %}
-                    {% for orc in orcamentos %}
-                    <tr data-id="{{ orc.id }}" class="linha-orcamento">
-                        <td class="td-id">{{ orc.id }}</td>
-                        <td class="td-titulo">{{ orc.titulo }}</td>
-                        <td>
-                            {% if orc.cliente %}
-                                {{ orc.cliente }}
-                            {% else %}
-                                <span class="text-vazio">—</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="badge-pure status-{{ orc.status }}">
-                                {% if orc.status == 'rascunho' %}📝 Rascunho
-                                {% elif orc.status == 'enviado' %}📤 Enviado
-                                {% elif orc.status == 'aprovado' %}✅ Aprovado
-                                {% elif orc.status == 'rejeitado' %}❌ Rejeitado
-                                {% else %}{{ orc.status }}
-                                {% endif %}
-                            </span>
-                        </td>
-                        <td>{{ orc.created_at.strftime('%d/%m/%Y') }}</td>
-                        <td>
-                            <div class="td-acoes">
-                            
-                                <button class="btn-acao view"
-                                        onclick="visualizarOrcamentoModal({{ orc.id }})"
-                                        title="Visualizar orçamento">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                
-                                <button type="button"
-                                    class="btn-acao audit"
-                                    hx-get="{{ url_for('auditoria.historico_orcamento', orcamento_id=orc.id) }}"
-                                    hx-target="#modal-auditoria-container"
-                                    hx-swap="innerHTML"
-                                    title="Ver histórico de alterações">
-                                    <i class="bi bi-clock-history"></i>
-                                </button>
-
-                                <button class="btn-acao edit"
-                                        onclick="abrirModalEditar({{ orc.id }})"
-                                        title="Editar">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-
-                                <button class="btn-acao delete"
-                                        onclick="abrirModalExcluir({{ orc.id }}, '{{ orc.titulo }}')"
-                                        title="Excluir">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-
-                                <a href="{{ url_for('orcamentos.pdf_orcamentos.gerar_pdf', id=orc.id) }}"
-                                   class="btn-acao check"
-                                   target="_blank"
-                                   title="Gerar PDF">
-                                    <i class="bi bi-file-pdf"></i>
-                                </a>
-
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="6" class="td-vazio">
-                            <i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
-                            Nenhum orçamento encontrado.
-                            <br>
-                            <small class="text-muted">Clique em "NOVO" para criar o primeiro.</small>
-                        </td>
-                    </tr>
-                {% endif %}
-            </tbody>
+            {% include 'pasta_orcamentos/partials/_tbody_orcamentos.html.jinja' %}
         </table>
     </div>
 </div>

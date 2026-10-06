@@ -1,31 +1,31 @@
+<!-- templates/pasta_orcamentos/modals/modal_excluir_orcamento.html.jinja -->
 <!-- ========================================================== -->
-<!-- MODAL EXCLUIR ORÇAMENTO (PREFIXO orc-)                    -->
+<!-- MODAL INATIVAR ORÇAMENTO                                   -->
 <!-- ========================================================== -->
 <div class="orc-modal-overlay-excluir" id="modalExcluirOrcamento">
     <div class="orc-modal-box-excluir">
-        
-        <!-- ÍCONE -->
+
         <span class="orc-modal-excluir-icon">
             <i class="bi bi-exclamation-triangle"></i>
         </span>
 
-        <!-- TÍTULO -->
-        <h3 class="orc-modal-excluir-title">Confirmar exclusão</h3>
+        <h3 class="orc-modal-excluir-title" id="modalExcluirTitulo">Inativar orçamento</h3>
 
-        <!-- MENSAGEM -->
-        <p class="orc-modal-excluir-message">
-            Tem certeza que deseja excluir o orçamento 
-            <strong id="nomeOrcamentoExcluir"></strong>?
+        <p class="orc-modal-excluir-message" id="modalExcluirTexto">
+            Tem certeza que deseja inativar o orçamento <strong id="nomeOrcamentoExcluir"></strong>?
         </p>
-        <p class="orc-modal-excluir-aviso">Esta ação não pode ser desfeita.</p>
+        <p class="orc-modal-excluir-aviso">Você poderá reativá-lo depois.</p>
 
-        <!-- BOTÕES -->
         <div class="orc-modal-excluir-footer">
-            <button class="orc-btn-excluir-cancelar" onclick="fecharModalExcluir()">
+            <button type="button"
+                    class="orc-btn-excluir-cancelar"
+                    id="btnCancelarExcluirOrcamento">
                 Cancelar
             </button>
-            <button class="orc-btn-excluir-confirmar" id="btnConfirmarExcluir">
-                <i class="bi bi-trash"></i> Excluir
+            <button type="button"
+                    class="orc-btn-excluir-confirmar"
+                    id="btnConfirmarExcluirOrcamento">
+                <i class="bi bi-trash"></i> Inativar
             </button>
         </div>
 

@@ -30,12 +30,12 @@ JS_FILES = [
     # ========================================= #
     'static/js/modules/pasta_orcamentos/modals/modal_novo_orcamento.js',
     'static/js/modules/pasta_orcamentos/modals/modal_editar_orcamento.js',
-    'static/js/modules/pasta_orcamentos/modals/modal_excluir_orcamento.js',
 
     # ========================================= #
     # ACOES E MODAIS
     # ========================================= #
     'static/js/modules/pasta_orcamentos/acoes_e_modais/pasta_auditoria/auditoria_orcamento.js',
+    'static/js/modules/pasta_orcamentos/acoes_e_modais/pasta_excluir/excluir_orcamento.js',
     
     # ========================================= #
     # MAIN

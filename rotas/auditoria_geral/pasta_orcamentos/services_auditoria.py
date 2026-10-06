@@ -26,10 +26,10 @@ class AuditoriaOrcamentosService:
             else:
                 cursor = conexao.cursor()
 
-            if valor_antigo and len(str(valor_antigo)) > 500:
-                valor_antigo = str(valor_antigo)[:500] + "..."
-            if valor_novo and len(str(valor_novo)) > 500:
-                valor_novo = str(valor_novo)[:500] + "..."
+            if valor_antigo and len(str(valor_antigo)) > 2000:
+                valor_antigo = str(valor_antigo)[:2000] + "..."
+            if valor_novo and len(str(valor_novo)) > 2000:
+                valor_novo = str(valor_novo)[:2000] + "..."
 
             cursor.execute("""
                 INSERT INTO orcamentos_auditoria

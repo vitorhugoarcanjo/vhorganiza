@@ -11,29 +11,34 @@ from .services_auditoria import AuditoriaOrcamentosService
 
 
 @login_required
-def historico_orcamento(orcamento_id):
-    """Retorna o HTML do MODAL de auditoria de orçamentos"""
+def historico_orcamento(orcamento_seq):
+    """
+    Recebe a SEQUÊNCIA (URL: /auditoria/orcamento/<seq>).
+    Traduz pra ID interno e busca auditoria.
+    """
     user_id = session['user_id']
     conexao, cursor = ini_conexao()
 
-    # Busca orçamento (pro header)
+    # 🔥 Busca por SEQUÊNCIA (não id)
     cursor.execute("""
-        SELECT id, titulo, cliente, status
+        SELECT id, sequencia_orcamentos, titulo, cliente, status
         FROM orcamentos
-        WHERE id = %s AND usuario_id = %s
-    """, (orcamento_id, user_id))
-    row = cursor.fetchone()
+        WHERE sequencia_orcamentos = %s AND usuario_id = %s
+    """, (orcamento_seq, user_id))
 
+    row = cursor.fetchone()
     if not row:
         return '', 404
 
-    orcamento = (row[0], row[1], row[2], row[3])
+    id_interno = row[0]
+    orcamento = (row[1], row[2], row[3], row[4])  # (seq, titulo, cliente, status)
 
-    historico = AuditoriaOrcamentosService.listar_por_orcamento_formatado(orcamento_id)
+    # 🔥 Busca auditoria por ID INTERNO
+    historico = AuditoriaOrcamentosService.listar_por_orcamento_formatado(id_interno)
 
     return render_template(
         'pasta_auditoria/pasta_orcamentos/modal_auditoria.html.jinja',
         historico=historico,
         orcamento=orcamento,
-        orcamento_id=orcamento_id,
+        orcamento_id=orcamento_seq,   # ← passa a SEQUÊNCIA pro header
     )
