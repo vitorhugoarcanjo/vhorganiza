@@ -55,7 +55,6 @@ class OrcamentosQueries:
             SET titulo = %s, cliente = %s, status = %s, estrutura = %s,
                 valor_total = %s,
                 data_emissao = %s, data_validade = %s, data_entrega = %s,
-                descricao = %s, observacoes = %s,
                 updated_at = CURRENT_TIMESTAMP
             WHERE sequencia_orcamentos = %s AND usuario_id = %s
         """

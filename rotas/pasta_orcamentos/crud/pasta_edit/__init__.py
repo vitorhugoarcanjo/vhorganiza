@@ -7,6 +7,6 @@ from flask import Blueprint
 
 bp_edit = Blueprint('edit_orcamentos', __name__)
 
-from .editar_orcamento import salvar_estrutura
+from .editar_orcamento import editar_orcamento
 
-bp_edit.add_url_rule('/<int:id>/salvar-estrutura', view_func=salvar_estrutura, methods=['POST'])
+bp_edit.add_url_rule('/<int:sequencia>/editar', view_func=editar_orcamento, methods=['POST'])

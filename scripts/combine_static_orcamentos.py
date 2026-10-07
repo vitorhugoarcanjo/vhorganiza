@@ -36,6 +36,7 @@ JS_FILES = [
     # ========================================= #
     'static/js/modules/pasta_orcamentos/acoes_e_modais/pasta_auditoria/auditoria_orcamento.js',
     'static/js/modules/pasta_orcamentos/acoes_e_modais/pasta_excluir/excluir_orcamento.js',
+    'static/js/modules/pasta_orcamentos/acoes_e_modais/pasta_reativar/reativar_orcamento.js',  # 🆕
     
     # ========================================= #
     # MAIN
@@ -76,6 +77,7 @@ CSS_FILES = [
     'static/css/modules/pasta_orcamentos/modals/modal_excluir_orcamento.css',
     'static/css/modules/pasta_orcamentos/modals/modal_secao.css',
     'static/css/modules/pasta_orcamentos/modals/modal_preview.css',
+    'static/css/modules/pasta_orcamentos/modals/modal_reativar_orcamento.css',
 
     # ========================================= #
     # COMPONENTS - ORCAMENTOS

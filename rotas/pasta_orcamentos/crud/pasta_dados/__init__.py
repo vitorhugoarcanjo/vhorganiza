@@ -9,4 +9,5 @@ bp_dados = Blueprint('dados_orcamentos', __name__)
 
 from .dados import get_dados_orcamento
 
-bp_dados.add_url_rule('/<int:id>/dados', view_func=get_dados_orcamento, methods=['GET'])
+# 🔥 Padrão 2099: recebe SEQUÊNCIA
+bp_dados.add_url_rule('/<int:sequencia>/dados', view_func=get_dados_orcamento, methods=['GET'])

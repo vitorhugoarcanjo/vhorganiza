@@ -1,6 +1,6 @@
 # rotas/pasta_orcamentos/crud/pasta_edit/editar_orcamento.py
 # ==========================================================
-# SALVAR ESTRUTURA DO ORÇAMENTO
+# EDITAR ORÇAMENTO — VIEW (padrão 2099)
 # ==========================================================
 
 import json
@@ -10,68 +10,70 @@ from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
 from rotas.auditoria_geral.pasta_orcamentos.services_auditoria import AuditoriaOrcamentosService
 
-from rotas.pasta_orcamentos.queries import OrcamentosQueries
+from .services import EditarOrcamentoService
+from .validacoes import validar_dados_edicao
+from rotas.pasta_orcamentos.crud.pasta_insert.validacoes import (
+    limpar_texto,
+    calcular_valor_total,
+)
 
 logger = logging.getLogger(__name__)
 
 
 @login_required
-def salvar_estrutura(id):
-    """SALVA A ESTRUTURA COMPLETA DO ORÇAMENTO"""
+def editar_orcamento(sequencia):
+    """Edita orçamento pela sequência."""
+    user_id = session['user_id']
+    conexao = None
+
     try:
-        dados = request.get_json() or {}
+        payload = request.get_json() or {}
 
-        titulo = (dados.get('titulo') or '').strip()
-        cliente = (dados.get('cliente') or '').strip() or None
-        status = dados.get('status') or 'rascunho'
-        estrutura = dados.get('estrutura') or []
+        # 1. Sanitiza
+        estrutura = payload.get('estrutura') or []
+        dados = {
+            'titulo':        limpar_texto(payload.get('titulo'), max_len=200),
+            'cliente':       limpar_texto(payload.get('cliente'), max_len=200),
+            'status':        (payload.get('status') or 'rascunho').strip().lower(),
+            'estrutura':     estrutura,
+            'valor_total':   calcular_valor_total(estrutura),
+            'data_emissao':  payload.get('data_emissao') or None,
+            'data_validade': payload.get('data_validade') or None,
+            'data_entrega':  payload.get('data_entrega') or None,
+        }
 
-        if not titulo:
+        # 2. Valida
+        erros = validar_dados_edicao(dados)
+        if erros:
             return jsonify({
                 'success': False,
-                'message': 'Título é obrigatório!',
+                'errors': erros,
+                'message': 'Dados inválidos.'
+            }), 400
+
+        # 3. Atualiza
+        conexao, cursor = ini_conexao()
+
+        sucesso, resultado = EditarOrcamentoService.atualizar_orcamento(
+            cursor, sequencia, user_id, dados
+        )
+        if not sucesso:
+            conexao.rollback()
+            return jsonify({
+                'success': False,
+                'message': resultado,
                 'type': 'erro'
             }), 400
 
-        conexao, cursor = ini_conexao()
-
-        # Verifica permissão
-        cursor.execute("""
-            SELECT usuario_id, titulo, cliente, status
-            FROM orcamentos WHERE id = %s
-        """, (id,))
-        resultado = cursor.fetchone()
-
-        if not resultado:
-            return jsonify({'success': False, 'message': 'Orçamento não encontrado!'}), 404
-
-        if resultado[0] != session['user_id'] and session.get('is_master', 0) != 1:
-            return jsonify({'success': False, 'message': 'Sem permissão!'}), 403
-
-        # 🔥 Dados ANTES
-        dados_antes = {
-            'titulo':  resultado[1],
-            'cliente': resultado[2] or '',
-            'status':  resultado[3] or 'rascunho',
-        }
-
-        cursor.execute(
-            OrcamentosQueries.atualizar_orcamento(),
-            (titulo, cliente, status, json.dumps(estrutura), id)
+        # 4. Auditoria (só se mudou algo)
+        alteracoes = EditarOrcamentoService.montar_alteracoes_auditoria(
+            resultado.get('dados_antes', {}),
+            resultado.get('dados_depois', {}),
         )
-
-        # 🔥 Auditoria com DIFF
-        alteracoes = []
-        if dados_antes['titulo'] != titulo:
-            alteracoes.append({'campo': 'Título',  'antes': dados_antes['titulo'],   'depois': titulo})
-        if (dados_antes['cliente'] or '') != (cliente or ''):
-            alteracoes.append({'campo': 'Cliente', 'antes': dados_antes['cliente'] or '(vazio)', 'depois': cliente or '(vazio)'})
-        if dados_antes['status'] != status:
-            alteracoes.append({'campo': 'Status',  'antes': dados_antes['status'],  'depois': status})
 
         if alteracoes:
             AuditoriaOrcamentosService.registrar(
-                orcamento_id=id,
+                orcamento_id=resultado['id_interno'],
                 acao='editada',
                 campo_alterado='multiplos',
                 valor_antigo=None,
@@ -83,14 +85,17 @@ def salvar_estrutura(id):
 
         return jsonify({
             'success': True,
-            'message': 'Orçamento salvo com sucesso!',
-            'type': 'sucesso'
-        })
+            'message': f'Orçamento "{dados["titulo"]}" atualizado com sucesso!',
+            'type': 'sucesso',
+            'sequencia': sequencia,
+        }), 200
 
     except Exception as e:
-        logger.exception("Erro ao salvar orçamento")
+        if conexao:
+            conexao.rollback()
+        logger.exception(f"Erro ao editar orçamento seq={sequencia} user_id={user_id}")
         return jsonify({
             'success': False,
-            'message': f'Erro ao salvar: {str(e)}',
+            'message': f'Erro ao editar orçamento: {str(e)}',
             'type': 'erro'
         }), 500

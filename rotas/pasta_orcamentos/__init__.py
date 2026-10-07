@@ -23,9 +23,11 @@ from .crud.pasta_edit   import bp_edit
 from .crud.pasta_delete import bp_delete
 from .crud.pasta_dados  import bp_dados
 from .crud.pasta_pdf    import bp_pdf
+from .crud.pasta_reativar  import bp_reativar
 
 bp_orcamentos.register_blueprint(bp_insert, url_prefix='')
 bp_orcamentos.register_blueprint(bp_edit,   url_prefix='')
 bp_orcamentos.register_blueprint(bp_delete, url_prefix='')
 bp_orcamentos.register_blueprint(bp_dados,  url_prefix='')
 bp_orcamentos.register_blueprint(bp_pdf,    url_prefix='')
+bp_orcamentos.register_blueprint(bp_reativar, url_prefix='')

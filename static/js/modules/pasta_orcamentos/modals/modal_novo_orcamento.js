@@ -48,13 +48,20 @@
         var modal = document.getElementById('modalNovoOrcamento');
         if (!modal) return;
 
-        // Datas default
+        // Datas default (LOCAL — não UTC)
+        function _dataLocalStr(date) {
+            var ano = date.getFullYear();
+            var mes = String(date.getMonth() + 1).padStart(2, '0');
+            var dia = String(date.getDate()).padStart(2, '0');
+            return ano + '-' + mes + '-' + dia;
+        }
+
         var hoje = new Date();
-        var hojeStr = hoje.toISOString().split('T')[0];
+        var hojeStr = _dataLocalStr(hoje);
 
         var validade = new Date(hoje);
         validade.setDate(validade.getDate() + 30);
-        var validadeStr = validade.toISOString().split('T')[0];
+        var validadeStr = _dataLocalStr(validade);
 
         // Limpar campos
         document.getElementById('novoTitulo').value = '';

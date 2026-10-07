@@ -1,6 +1,6 @@
-# rotas/pasta_orcamentos/crud/pasta_delete/excluir_orcamento.py
+# rotas/pasta_orcamentos/crud/pasta_reativar/reativar_orcamento.py
 # ==========================================================
-# EXCLUIR (INATIVAR) ORÇAMENTO — SOFT DELETE
+# REATIVAR ORÇAMENTO — VIEW (padrão 2099)
 # ==========================================================
 
 from flask import session, make_response, render_template
@@ -12,7 +12,8 @@ from utils.database.conexao_global import ini_conexao
 from rotas.pasta_orcamentos.services.services_orcamento import OrcamentosServices
 from rotas.pasta_orcamentos.filters import OrcamentosFilters
 from rotas.pasta_orcamentos.formatters import OrcamentosFormatters
-from rotas.pasta_orcamentos.queries import OrcamentosQueries
+
+from .services import ReativarOrcamentoService
 
 logger = logging.getLogger(__name__)
 
@@ -43,57 +44,48 @@ def _render_tbody(user_id, cursor):
 
 
 # ==========================================================
-# POST — INATIVA 1 ORÇAMENTO (soft delete)
+# POST — REATIVA 1 ORÇAMENTO
 # ==========================================================
 @login_required
-def excluir_orcamento(sequencia):
-    """Inativa um orçamento (soft delete). Recebe SEQUÊNCIA visual."""
+def reativar_orcamento(sequencia):
+    """Reativa um orçamento (soft undelete). Recebe SEQUÊNCIA visual."""
     user_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
-        # 1. Busca id_interno + título ANTES de inativar
-        cursor.execute("""
-            SELECT id, titulo FROM orcamentos
-            WHERE sequencia_orcamentos = %s AND usuario_id = %s AND ativo = 1
-        """, (sequencia, user_id))
-
-        resultado = cursor.fetchone()
-        if not resultado:
+        # 1. Reativa (service)
+        sucesso, resultado = ReativarOrcamentoService.reativar_orcamento(
+            cursor, sequencia, user_id
+        )
+        if not sucesso:
             return '', 404
 
-        id_interno = resultado[0]
-        titulo = resultado[1]
+        id_interno = resultado['id_interno']
+        titulo = resultado['titulo']
 
-        # 2. Inativa (soft delete)
-        cursor.execute(
-            OrcamentosQueries.inativar_orcamento(),
-            (user_id, sequencia, user_id)
-        )
-
-        # 3. Auditoria transacional
+        # 2. Auditoria transacional
         AuditoriaOrcamentosService.registrar(
             orcamento_id=id_interno,
-            acao='inativada',
+            acao='reativada',
             campo_alterado='ativo',
-            valor_antigo='1',
-            valor_novo='0',
+            valor_antigo='0',
+            valor_novo='1',
             conexao=conexao,
         )
 
         conexao.commit()
 
-        # 4. Renderiza tbody atualizado
+        # 3. Renderiza tbody atualizado
         html = _render_tbody(user_id, cursor)
 
-        # 5. Retorna HTML + HX-Trigger
+        # 4. Retorna HTML + HX-Trigger
         resp = make_response(html)
         resp.headers['HX-Trigger'] = json.dumps({
-            'orcamentoInativado': {'message': f'Orçamento "{titulo}" inativado!'}
+            'orcamentoReativado': {'message': f'Orçamento "{titulo}" reativado!'}
         })
         return resp
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao inativar orçamento sequencia={sequencia}")
+        logger.exception(f"Erro ao reativar orçamento sequencia={sequencia}")
         return '', 500
