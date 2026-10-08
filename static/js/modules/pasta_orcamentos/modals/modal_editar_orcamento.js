@@ -172,38 +172,6 @@
     window.atualizarStatusBadge = atualizarStatusBadge;
 
     // ==========================================================
-    // PREVIEW
-    // ==========================================================
-    window.visualizarOrcamentoModal = function() {
-        if (window.OrcamentoPreview) {
-            window.OrcamentoPreview.editar();
-        } else {
-            var orcamento = {
-                titulo:  document.getElementById('editOrcamentoTitulo').value || 'Sem título',
-                cliente: document.getElementById('editOrcamentoCliente').value || 'Não informado',
-                data:    document.getElementById('editOrcamentoDataEmissao').value || '',
-                status:  document.getElementById('editOrcamentoStatus').value
-            };
-            var estrutura = window._gerenciadorEditar ? window._gerenciadorEditar.getEstrutura() : [];
-            if (window.SecoesPreview) {
-                document.getElementById('previewContent').innerHTML = window.SecoesPreview.previewOrcamento(orcamento, estrutura);
-            }
-            document.getElementById('modalPreview').classList.add('active');
-        }
-    };
-
-    // ==========================================================
-    // GERAR PDF
-    // ==========================================================
-    window.gerarPDFModal = function() {
-        if (orcamentoId && window.gerarPDF) {
-            window.gerarPDF(orcamentoId);
-        } else {
-            window.Notificacao.erro('ID do orçamento não encontrado!');
-        }
-    };
-
-    // ==========================================================
     // SALVAR ORÇAMENTO
     // ==========================================================
     document.getElementById('formEditarOrcamento')?.addEventListener('submit', async function(e) {

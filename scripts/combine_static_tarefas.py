@@ -8,6 +8,11 @@ from datetime import datetime
 
 JS_FILES = [
     # ========================================= #
+    # CORE - GLOBAL
+    # ========================================= #
+    'static/js/componentes/botoes_filtros.js',
+
+    # ========================================= #
     # CORE (classe base compartilhada)
     # ========================================= #
     'static/js/modules/pasta_tarefas/core/TarefaForm.js',
@@ -16,7 +21,6 @@ JS_FILES = [
     # COMPONENTS (sincronização HTMX)
     # ========================================= #
     'static/js/modules/pasta_tarefas/components/totalizadores.js',
-    'static/js/modules/pasta_tarefas/components/botoes_filtros.js',
     'static/js/modules/pasta_tarefas/components/ordenacao.js',
 
     # ========================================= #

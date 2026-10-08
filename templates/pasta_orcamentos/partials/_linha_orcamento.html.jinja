@@ -36,15 +36,6 @@
 
     <!-- AÇÕES -->
     <td class="td-acoes text-center">
-
-        <!-- VISUALIZAR -->
-        <button type="button"
-                class="btn-acao view"
-                onclick="visualizarOrcamentoModal({{ orc.sequencia_orcamentos }})"
-                title="Visualizar orçamento">
-            <i class="bi bi-eye"></i>
-        </button>
-
         <!-- AUDITORIA -->
         <button type="button"
                 class="btn-acao audit"
@@ -75,10 +66,10 @@
             </button>
 
             <!-- PDF -->
-            <a href="{{ url_for('orcamentos.pdf_orcamentos.gerar_pdf', id=orc.sequencia_orcamentos) }}"
-               class="btn-acao check"
-               target="_blank"
-               title="Gerar PDF">
+            <a href="{{ url_for('orcamentos.pdf_orcamentos.gerar_pdf', sequencia=orc.sequencia_orcamentos) }}"
+            class="btn-acao check"
+            target="_blank"
+            title="Gerar PDF">
                 <i class="bi bi-file-pdf"></i>
             </a>
 

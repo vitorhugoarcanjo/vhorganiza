@@ -9,4 +9,5 @@ bp_pdf = Blueprint('pdf_orcamentos', __name__)
 
 from .pdf_orcamento import gerar_pdf
 
-bp_pdf.add_url_rule('/<int:id>/pdf', view_func=gerar_pdf, methods=['GET'])
+# 🔥 Padrão 2099: recebe SEQUÊNCIA
+bp_pdf.add_url_rule('/<int:sequencia>/pdf', view_func=gerar_pdf, methods=['GET'])

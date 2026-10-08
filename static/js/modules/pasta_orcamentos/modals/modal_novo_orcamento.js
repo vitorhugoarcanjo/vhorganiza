@@ -138,38 +138,6 @@
     window.aplicarTemplate = aplicarTemplate;
 
     // ==========================================================
-    // PREVIEW
-    // ==========================================================
-    window.previewNovoOrcamento = function() {
-        if (window.OrcamentoPreview) {
-            window.OrcamentoPreview.novo();
-        } else {
-            var orcamento = {
-                titulo:        document.getElementById('novoTitulo').value || 'Sem título',
-                cliente:       document.getElementById('novoCliente').value || 'Não informado',
-                data_emissao:  document.getElementById('novoDataEmissao').value,
-                data_validade: document.getElementById('novoDataValidade').value,
-                data_entrega:  document.getElementById('novoDataEntrega').value,
-                status:        document.getElementById('novoStatus').value
-            };
-            var estrutura = window._gerenciadorNovo ? window._gerenciadorNovo.getEstrutura() : [];
-            if (window.SecoesPreview) {
-                document.getElementById('previewContent').innerHTML =
-                    window.SecoesPreview.previewOrcamento(orcamento, estrutura);
-            }
-            document.getElementById('modalPreview').classList.add('active');
-        }
-    };
-
-    window.fecharPreview = function() {
-        if (window.OrcamentoPreview) {
-            window.OrcamentoPreview.fechar();
-        } else {
-            document.getElementById('modalPreview').classList.remove('active');
-        }
-    };
-
-    // ==========================================================
     // SUBMIT — CRIAR ORÇAMENTO
     // ==========================================================
     document.getElementById('formNovoOrcamento')?.addEventListener('submit', async function(e) {

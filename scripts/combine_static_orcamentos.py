@@ -8,6 +8,11 @@ from datetime import datetime
 
 JS_FILES = [
     # ========================================= #
+    # CORE - GLOBAL
+    # ========================================= #
+    'static/js/componentes/botoes_filtros.js',
+
+    # ========================================= #
     # CORE - VARIÁVEIS, TEMAS, TEMPLATES
     # ========================================= #
     'static/js/modules/pasta_orcamentos/core/variaveis.js',

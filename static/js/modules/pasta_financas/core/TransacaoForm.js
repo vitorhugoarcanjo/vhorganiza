@@ -46,6 +46,63 @@
     }
 
     // ==========================================================
+    // VALIDAÇÃO CAMPO-A-CAMPO
+    // ==========================================================
+    TransacaoForm.prototype._MAPA_IDS = {
+        'tipo':              '.js-tipo-hidden',
+        'categoria_id':      '.js-categoria',
+        'descricao':         '.js-descricao',
+        'valor_total':       '.js-valor-total',
+        'total_parcelas':    '.js-total-parcelas',
+        'data_emissao':      '.js-data-emissao',
+        'data_vencimento':   '.js-data-vencimento',
+        'primeiro_vencimento': '.js-data-vencimento',   // fallback
+    };
+
+    TransacaoForm.prototype._limparErrosForm = function() {
+        this.form.querySelectorAll('.campo-erro').forEach(function(el) {
+            el.classList.remove('campo-erro');
+        });
+        this.form.querySelectorAll('.msg-erro-campo').forEach(function(el) {
+            el.remove();
+        });
+    };
+
+    TransacaoForm.prototype._mostrarErrosForm = function(errors) {
+        this._limparErrosForm();
+
+        var self = this;
+        errors.forEach(function(er) {
+            var selector = self._MAPA_IDS[er.campo];
+            if (!selector) return;
+
+            var input = self.form.querySelector(selector);
+            if (!input) return;
+
+            // 🔥 Pra valor_total, o "campo visual" é o wrapper .input-com-prefixo
+            var alvo = input;
+            if (input.classList.contains('js-valor-total')) {
+                var wrapper = input.closest('.input-com-prefixo');
+                if (wrapper) alvo = wrapper;
+            }
+
+            // 🔥 Pra tipo, o "campo visual" é o .tipo-container
+            if (input.classList.contains('js-tipo-hidden')) {
+                var tipoContainer = input.parentNode.querySelector('.tipo-container');
+                if (tipoContainer) alvo = tipoContainer;
+            }
+
+            alvo.classList.add('campo-erro');
+
+            // Mensagem — coloca abaixo do campo
+            var msg = document.createElement('span');
+            msg.className = 'msg-erro-campo';
+            msg.textContent = er.mensagem;
+            alvo.parentNode.appendChild(msg);
+        });
+    };
+
+    // ==========================================================
     // EVENTOS
     // ==========================================================
     TransacaoForm.prototype._bind = function() {
@@ -195,6 +252,7 @@
     // ==========================================================
     TransacaoForm.prototype.setData = function(data) {
         if (!data) return;
+        this._limparErrosForm();
 
         var self = this;
 
@@ -303,6 +361,7 @@
     // API PÚBLICA: reset
     // ==========================================================
     TransacaoForm.prototype.reset = function() {
+        this._limparErrosForm();
         this.form.reset();
         this._parcelasCarregadas = null;
         this._datasEditadasManualmente = false;
@@ -390,7 +449,9 @@
             if (!res.ok || res.data.success === false) {
                 var msg;
                 if (res.data.errors && res.data.errors.length > 0) {
-                    msg = res.data.errors[0].mensagem;
+                    // 🔥 CAMPO-A-CAMPO
+                    self._mostrarErrosForm(res.data.errors);
+                    msg = 'Corrija os campos em vermelho.';   // mensagem geral
                 } else {
                     msg = res.data.error || res.data.message || 'Erro ao salvar.';
                 }

@@ -7,6 +7,11 @@ from datetime import datetime
 # ==========================
 
 JS_FILES = [
+    # ========================================= #
+    # CORE GLOBAL
+    # ========================================= #
+    'static/js/componentes/botoes_filtros.js',
+
     # ========================
     # FINANCAS
     # ========================
@@ -23,7 +28,6 @@ JS_FILES = [
     # COMPONENTS
     # ========================================= #
     'static/js/modules/pasta_financas/components/totalizadores.js',
-    'static/js/modules/pasta_financas/components/botoes_outros_filtros.js',
     'static/js/modules/pasta_financas/components/ordenacao.js',
 
     # ========================================= #

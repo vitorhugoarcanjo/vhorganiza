@@ -1,4 +1,4 @@
-/* COMBINADO - 04/10/2026 17:04 */
+/* COMBINADO - 07/10/2026 21:10 */
 
 /* ===== reset.css ===== */
 /*
@@ -1581,7 +1581,39 @@ textarea.form-input {
 }
 
 /* ========================================================== */
-/* 7. RESPONSIVO                                              */
+/* 7. VALIDAÇÃO CAMPO-A-CAMPO                                 */
+/* ========================================================== */
+.campo-erro {
+    border: 2px solid #ef4444 !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+    border-radius: 8px;
+}
+
+.msg-erro-campo {
+    display: block;
+    color: #ef4444;
+    font-size: 0.7rem;
+    margin-top: 4px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* Casos especiais */
+.input-com-prefixo.campo-erro {
+    border: 2px solid #ef4444 !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.tipo-container.campo-erro {
+    border: 2px solid #ef4444 !important;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+/* ========================================================== */
+/* 8. RESPONSIVO                                              */
 /* ========================================================== */
 @media (max-width: 1024px) {
     .form-grid      { grid-template-columns: 1fr 1fr; }

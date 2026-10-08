@@ -62,7 +62,6 @@ def ini_orcamento():
         contadores=contadores,
     )
 
-
 def _renderizar_htmx(orcamentos, contadores, data_inicio, data_fim, mostrar_inativas):
     """ RENDERIZA APENAS A TABELA E ATUALIZA INPUTS/CONTADORES VIA HTMX (OOB) """
 
@@ -90,7 +89,6 @@ def _renderizar_htmx(orcamentos, contadores, data_inicio, data_fim, mostrar_inat
     """
 
     return tabela_html + oob_html
-
 
 # ==========================================================
 # LIMPA FILTROS
