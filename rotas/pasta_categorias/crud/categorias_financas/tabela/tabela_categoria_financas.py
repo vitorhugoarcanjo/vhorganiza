@@ -1,3 +1,4 @@
+# rotas\pasta_categorias\crud\categorias_financas\tabela\tabela_categoria_financas.py
 def tabela_categorias_financas(cursor):
     cursor.execute("""
         SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='categorias_financas')

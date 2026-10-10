@@ -1,3 +1,4 @@
+# rotas\pasta_categorias\logica_insert_categorias.py
 import os
 import sqlite3
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash

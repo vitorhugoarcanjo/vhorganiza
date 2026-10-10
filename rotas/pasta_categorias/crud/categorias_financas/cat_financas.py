@@ -1,3 +1,4 @@
+# rotas\pasta_categorias\crud\categorias_financas\cat_financas.py
 def insert_cat_fin(nome, cor, user_id, cursor):
     cursor.execute('SELECT 1 FROM categorias_financas WHERE user_id = %s AND nome = %s', (user_id, nome))
     resultado = cursor.fetchone()

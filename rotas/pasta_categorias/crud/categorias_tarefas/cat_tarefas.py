@@ -1,3 +1,4 @@
+# rotas\pasta_categorias\crud\categorias_tarefas\cat_tarefas.py
 def insert_cat_tarefa(nome, cor, user_id, cursor):
     cursor.execute('SELECT 1 FROM categorias_tarefas WHERE user_id = %s AND nome = %s', (user_id, nome))
     resultado = cursor.fetchone()

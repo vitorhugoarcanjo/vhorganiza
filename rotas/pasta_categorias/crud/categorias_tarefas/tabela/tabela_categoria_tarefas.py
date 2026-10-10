@@ -1,3 +1,4 @@
+# rotas\pasta_categorias\crud\categorias_tarefas\tabela\tabela_categoria_tarefas.py
 def tabela_categorias_tarefas(cursor):
     cursor.execute("""
             SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='categorias_tarefas')

@@ -1,3 +1,4 @@
+# rotas\pasta_categorias\tela_categorias.py
 from flask import render_template, session
 from utils.database.conexao_global import ini_conexao
 
