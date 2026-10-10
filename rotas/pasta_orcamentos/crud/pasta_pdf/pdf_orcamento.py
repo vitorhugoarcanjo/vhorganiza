@@ -1,6 +1,6 @@
 # rotas/pasta_orcamentos/crud/pasta_pdf/pdf_orcamento.py
 # ==========================================================
-# GERAR PDF DO ORÇAMENTO (padrão 2099)
+# GERAR PDF DO ORÇAMENTO (WeasyPrint — padrão 2099)
 # ==========================================================
 
 import json
@@ -8,7 +8,7 @@ import logging
 from datetime import datetime
 
 from flask import session, render_template, make_response, jsonify
-import pdfkit
+from weasyprint import HTML, CSS
 
 from rotas.middleware.autenticacao import login_required
 from utils.database.conexao_global import ini_conexao
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def gerar_pdf(sequencia):
-    """GERA PDF DO ORÇAMENTO pela SEQUÊNCIA visual."""
+    """GERA PDF DO ORÇAMENTO pela SEQUÊNCIA visual (WeasyPrint)."""
     try:
         conexao, cursor = ini_conexao()
 
@@ -51,7 +51,7 @@ def gerar_pdf(sequencia):
         if not isinstance(estrutura, list):
             estrutura = []
 
-        # 🔥 DICT (padrão 2099 — mais legível)
+        # DICT (padrão 2099)
         orcamento = {
             'id':            row[0],
             'sequencia':     row[1],
@@ -67,7 +67,7 @@ def gerar_pdf(sequencia):
             'created_at':    row[11],
         }
 
-        # Variáveis padrão (futuro: buscar do user)
+        # Variáveis padrão
         variaveis = {
             'cor_primaria':    '#2563eb',
             'cor_secundaria':  '#8b5cf6',
@@ -90,25 +90,18 @@ def gerar_pdf(sequencia):
             vars=variaveis,
         )
 
-        options = {
-            'page-size':                'A4',
-            'margin-top':               '20mm',
-            'margin-right':             '20mm',
-            'margin-bottom':            '20mm',
-            'margin-left':              '20mm',
-            'encoding':                 'UTF-8',
-            'enable-local-file-access': None,
-        }
+        # 🔥 WEASYPRINT (em vez de pdfkit)
+        # CSS extra pra configurar página (A4 + margens)
+        css_page = CSS(string="""
+            @page {
+                size: A4;
+                margin: 20mm;
+            }
+        """)
 
-        try:
-            pdf = pdfkit.from_string(html, False, options=options)
-        except Exception:
-            config = pdfkit.configuration(
-                wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-            )
-            pdf = pdfkit.from_string(html, False, options=options, configuration=config)
+        pdf_bytes = HTML(string=html).write_pdf(stylesheets=[css_page])
 
-        response = make_response(pdf)
+        response = make_response(pdf_bytes)
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Disposition'] = f'inline; filename=orcamento_{sequencia}.pdf'
 
