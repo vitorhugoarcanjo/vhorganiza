@@ -34,7 +34,18 @@ def criar_indices(cursor):
         ("idx_transacoes_sequencia_usuario", "transacoes", "sequencia_transacoes, usuario_id"),
         ("idx_transacoes_categoria_id", "transacoes", "categoria_id"),
 
-        # CATEGORIAS
+        # CATEGORIAS (unificada)
+        ("idx_categorias_usuario_id", "categorias", "usuario_id"),
+        ("idx_categorias_modulo", "categorias", "modulo"),
+        ("idx_categorias_nome", "categorias", "nome"),
+        ("idx_categorias_ativo", "categorias", "ativo"),
+        ("idx_categorias_usuario_modulo", "categorias", "usuario_id, modulo"),
+        ("idx_categorias_usuario_ativo", "categorias", "usuario_id, ativo"),
+        ("idx_categorias_usuario_modulo_ativo", "categorias", "usuario_id, modulo, ativo"),
+        ("idx_categorias_usuario_sequencia", "categorias", "usuario_id, sequencia_categorias"),
+        ("idx_categorias_usuario_modulo_nome", "categorias", "usuario_id, modulo, nome"),
+
+        # CATEGORIAS (legado — manter até dropar)
         ("idx_categorias_tarefas_usuario_id", "categorias_tarefas", "usuario_id"),
         ("idx_categorias_financas_usuario_id", "categorias_financas", "usuario_id"),
 

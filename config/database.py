@@ -3,13 +3,17 @@ from utils.database.conexao_global import get_conexao_direct
 # CRIAR INDICES
 from .indices_automatico import criar_indices
 
-from rotas.pasta_login.tabelas.cadastre_se import tabela_cadastre_se # TABELA DE CADASTRO DE USUÁRIO
+# TABELA DE CADASTRO DE USUÁRIO
+from rotas.pasta_login.tabelas.cadastre_se import tabela_cadastre_se 
 
-from rotas.pasta_financas.tabelas.tabelas_gerais import tabela_transacoes # TABELA TRANSAÇÕES E CATEGORIAS
-from rotas.pasta_categorias.crud.categorias_financas.tabela.tabela_categoria_financas import tabela_categorias_financas # TABELA CATEGORIA FINANCAS
+# TABELA TRANSAÇÕES
+from rotas.pasta_financas.tabelas.tabelas_gerais import tabela_transacoes 
 
-from rotas.pasta_tarefas.tabelas.tabela_tarefas import criar_tabela_tarefas # TABELA TAREFAS
-from rotas.pasta_categorias.crud.categorias_tarefas.tabela.tabela_categoria_tarefas import tabela_categorias_tarefas # TABELA CATEGORIA_TAREFAS
+# TABELA TAREFAS
+from rotas.pasta_tarefas.tabelas.tabela_tarefas import criar_tabela_tarefas 
+
+# TABELA CATEGORIAS
+from rotas.pasta_categorias.tabela.tabela_categorias import tabela_categorias
 
 # TABELAS DOS LOGS
 from rotas.logs.logs_services.tabela_services import tabela_services
@@ -34,12 +38,13 @@ def criar_todas_tabelas():
     tabela_cadastre_se(cursor)
 
     # FINANÇAS
-    tabela_categorias_financas(cursor)
     tabela_transacoes(cursor)
 
     # TAREFAS
-    tabela_categorias_tarefas(cursor)
     criar_tabela_tarefas(cursor)
+
+    # CATEGORIAS
+    tabela_categorias(cursor)
 
     # LOGS
     tabela_services(cursor)
