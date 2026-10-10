@@ -108,7 +108,7 @@ def salvar_nova_tarefa():
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao salvar nova tarefa usuario_id={user_id}")
+        logger.exception(f"Erro ao salvar nova tarefa usuario_id={usuario_id}")
         return jsonify({
             'success': False,
             'error': 'Erro interno no servidor ao salvar a tarefa.',

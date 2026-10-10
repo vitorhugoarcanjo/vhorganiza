@@ -86,6 +86,6 @@ def reativar_tarefa(sequencia):
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao reativar tarefa sequencia={sequencia} usuario_id={user_id}")
+        logger.exception(f"Erro ao reativar tarefa sequencia={sequencia} usuario_id={usuario_id}")
         conexao.close()
         return '', 500

@@ -87,7 +87,7 @@ def reativar_view(transacao_seq):
     conexao, cursor = ini_conexao()
 
     cursor.execute("""
-        SELECT id, descricao
+        SELECT id, descricao, transacao_pai_id
         FROM transacoes
         WHERE sequencia_transacoes = %s AND usuario_id = %s AND ativo = 0
     """, (transacao_seq, usuario_id))
@@ -97,7 +97,11 @@ def reativar_view(transacao_seq):
         conexao.close()
         return '', 404
 
-    id_interno = transacao[0]   # 🆕
+    id_interno = transacao[0]
+    transacao_pai_id = transacao[2]
+
+    # 🔥 Se for FILHA, usa ID do PAI
+    auditoria_id = transacao_pai_id if transacao_pai_id else id_interno
 
     cursor.execute("""
         UPDATE transacoes
@@ -110,7 +114,7 @@ def reativar_view(transacao_seq):
 
     # 🔥 Auditoria
     AuditoriaFinanceiraService.registrar(
-        transacao_id=id_interno,
+        transacao_id=auditoria_id,
         acao='reativada',
         campo_alterado='ativo',
         valor_antigo='0',

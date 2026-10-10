@@ -30,7 +30,7 @@ class TarefasServices:
         from rotas.pasta_tarefas.filters import TarefasFilters
 
         query = TarefasQueries.get_tarefas_base()
-        params = [user_id]
+        params = [usuario_id]
         query, params = TarefasFilters.aplicar_filtros_query(query, params, filtros)
         query += " ORDER BY t.tarefa_sequencia ASC"
 

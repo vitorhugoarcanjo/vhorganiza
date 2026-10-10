@@ -266,7 +266,7 @@ def salvar_edicao(sequencia):
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao salvar edição sequencia={sequencia} usuario_id={user_id}")
+        logger.exception(f"Erro ao salvar edição sequencia={sequencia} usuario_id={usuario_id}")
         return jsonify({'success': False, 'error': str(e)}), 500
     finally:
         conexao.close()

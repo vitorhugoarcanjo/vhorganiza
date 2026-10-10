@@ -1,6 +1,7 @@
 # rotas/pasta_financas/crud/pasta_quitar/quitar_transacao.py
 from flask import session, make_response, render_template
 from datetime import date
+
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 from utils.database.conexao_global import ini_conexao
@@ -14,18 +15,27 @@ def quitar_transacao_view(sequencia):
 
     conexao, cursor = ini_conexao()
 
+    # 🔥 Busca a transação + o pai (se for filha)
     cursor.execute("""
-        SELECT id, descricao, status, tipo
+        SELECT id, descricao, status, tipo, transacao_pai_id
         FROM transacoes
         WHERE sequencia_transacoes = %s AND usuario_id = %s
     """, (sequencia, usuario_id))
 
     transacao = cursor.fetchone()
     if not transacao:
+        conexao.close()
         return '', 404
 
-    id_interno = transacao[0]   # 🆕 id interno
+    id_interno = transacao[0]
     status_antes = transacao[2]
+    transacao_pai_id = transacao[4]
+
+    # 🔥 Se for FILHA, usa o ID do PAI pra auditoria
+    if transacao_pai_id:
+        auditoria_id = transacao_pai_id
+    else:
+        auditoria_id = id_interno
 
     if transacao[3] == 'receita':
         novo_status = 'recebido'
@@ -40,14 +50,14 @@ def quitar_transacao_view(sequencia):
         WHERE id = %s AND usuario_id = %s
     """, (novo_status, hoje, id_interno, usuario_id))
 
-    # 🔥 Auditoria com ID INTERNO (na MESMA conexão)
+    # 🔥 Auditoria com ID do PAI (se for parcelada) ou da própria (se simples)
     AuditoriaFinanceiraService.registrar(
-        transacao_id=id_interno,   # 🆕 id interno
+        transacao_id=auditoria_id,
         acao=acao,
         campo_alterado='status',
         valor_antigo=status_antes,
         valor_novo=novo_status,
-        conexao=conexao,           # 🆕 transacional
+        conexao=conexao,
     )
 
     conexao.commit()

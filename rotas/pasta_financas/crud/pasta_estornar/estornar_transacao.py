@@ -15,8 +15,9 @@ def estornar_transacao_view(sequencia):
 
     conexao, cursor = ini_conexao()
 
+    # 🔥 Busca + pai (se for filha)
     cursor.execute("""
-        SELECT id, descricao, status, tipo, data_quitamento
+        SELECT id, descricao, status, tipo, data_quitamento, transacao_pai_id
         FROM transacoes
         WHERE sequencia_transacoes = %s AND usuario_id = %s
     """, (sequencia, usuario_id))
@@ -29,6 +30,10 @@ def estornar_transacao_view(sequencia):
     id_interno = transacao[0]
     status_anterior = transacao[2]
     data_quitamento_anterior = transacao[4]
+    transacao_pai_id = transacao[5]
+
+    # 🔥 Se for FILHA, usa o ID do PAI
+    auditoria_id = transacao_pai_id if transacao_pai_id else id_interno
 
     if status_anterior not in ['quitado', 'recebido']:
         conexao.close()
@@ -42,7 +47,7 @@ def estornar_transacao_view(sequencia):
         WHERE id = %s AND usuario_id = %s
     """, (id_interno, usuario_id))
 
-    # 🔥 Auditoria CONSOLIDADA (1 registro, 2 campos)
+    # 🔥 Auditoria CONSOLIDADA
     alteracoes = [
         {
             'campo': 'Status',
@@ -57,9 +62,9 @@ def estornar_transacao_view(sequencia):
     ]
 
     AuditoriaFinanceiraService.registrar(
-        transacao_id=id_interno,
+        transacao_id=auditoria_id,   # 🔥 ID do PAI (se filha) ou próprio
         acao='estornada',
-        campo_alterado='multiplos',   # 🔥 vira "multiplos" pra renderizar como lista
+        campo_alterado='multiplos',
         valor_antigo=None,
         valor_novo=json.dumps(alteracoes, ensure_ascii=False),
         conexao=conexao,

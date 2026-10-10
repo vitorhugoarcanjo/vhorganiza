@@ -59,7 +59,7 @@ def inativar_financa(transacao_id):
             conexao.close()
             return '', 404
 
-        id_interno = transacao[0]                # 🆕
+        id_interno = transacao[0]
         descricao = transacao[1]
         total_parcelas = transacao[2]
         transacao_pai_id = transacao[4]
@@ -76,12 +76,7 @@ def inativar_financa(transacao_id):
             if transacao_pai_id is not None:
                 pai_real_id = transacao_pai_id
             else:
-                cursor.execute("""
-                    SELECT id FROM transacoes
-                    WHERE sequencia_transacoes = %s AND usuario_id = %s
-                """, (transacao_id, usuario_id))
-                pai_real = cursor.fetchone()
-                pai_real_id = pai_real[0] if pai_real else None
+                pai_real_id = id_interno
 
             html = _render_tbody(usuario_id, cursor)
             conexao.close()
