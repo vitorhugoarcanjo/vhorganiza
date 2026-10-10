@@ -20,8 +20,8 @@ class EditarTransacaoService:
         try:
             cursor.execute("""
                 SELECT id, nome
-                FROM categorias_financas
-                WHERE usuario_id = %s
+                FROM categorias
+                WHERE usuario_id = %s AND modulo = 'financas'
                 ORDER BY nome ASC
             """, (usuario_id,))
             return cursor.fetchall()

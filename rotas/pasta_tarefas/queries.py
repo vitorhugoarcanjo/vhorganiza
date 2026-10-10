@@ -10,8 +10,8 @@ class TarefasQueries:
     def get_categorias_usuario():
         return """
             SELECT id, nome, cor
-            FROM categorias_tarefas
-            WHERE usuario_id = %s
+            FROM categorias
+            WHERE usuario_id = %s AND modulo = 'tarefas'
             ORDER BY nome
         """
 
@@ -32,7 +32,7 @@ class TarefasQueries:
                    c.cor  AS categoria_cor,
                    t.ativo
             FROM tarefas t
-            LEFT JOIN categorias_tarefas c ON c.id = t.categoria_id
+            LEFT JOIN categorias c ON c.id = t.categoria_id AND c.modulo = 'tarefas'
             WHERE t.usuario_id = %s
         """
 
@@ -51,6 +51,6 @@ class TarefasQueries:
                    c.nome AS categoria_nome,
                    c.cor  AS categoria_cor
             FROM tarefas t
-            LEFT JOIN categorias_tarefas c ON c.id = t.categoria_id
+            LEFT JOIN categorias c ON c.id = t.categoria_id AND c.modulo = 'tarefas'
             WHERE t.tarefa_sequencia = %s AND t.usuario_id = %s
         """

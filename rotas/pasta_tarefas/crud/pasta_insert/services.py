@@ -25,8 +25,8 @@ class InserirTarefaService:
     def buscar_categorias(cursor, usuario_id):
         try:
             cursor.execute("""
-                SELECT id, nome, cor FROM categorias_tarefas
-                WHERE usuario_id = %s ORDER BY nome ASC
+                SELECT id, nome, cor FROM categorias
+                WHERE usuario_id = %s AND modulo = 'tarefas' ORDER BY nome ASC
             """, (usuario_id,))
             return cursor.fetchall()
         except Exception as e:
@@ -39,7 +39,7 @@ class InserirTarefaService:
         if not categoria_id:
             return '(vazio)'
         try:
-            cursor.execute("SELECT nome FROM categorias_tarefas WHERE id = %s", (categoria_id,))
+            cursor.execute("SELECT nome FROM categorias WHERE id = %s AND modulo = 'tarefas'", (categoria_id,))
             c = cursor.fetchone()
             return c[0] if c else '(vazio)'
         except Exception:

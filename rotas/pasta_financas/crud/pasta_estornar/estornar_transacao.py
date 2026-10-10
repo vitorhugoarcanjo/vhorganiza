@@ -79,7 +79,7 @@ def estornar_transacao_view(sequencia):
                t.status, t.data_vencimento, t.ativo,
                t.numero_parcela, t.total_parcelas, t.transacao_pai_id, t.valor_parcela
         FROM transacoes t
-        LEFT JOIN categorias_financas c ON c.id = t.categoria_id
+        LEFT JOIN categorias c ON c.id = t.categoria_id AND c.modulo = 'financas'
         WHERE t.sequencia_transacoes = %s AND t.usuario_id = %s
     """, (sequencia, usuario_id))
 

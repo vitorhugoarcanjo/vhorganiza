@@ -16,8 +16,7 @@ class TarefasServices:
 
     def buscar_categorias(self, usuario_id):
         self.cursor.execute("""
-            SELECT id, nome, cor FROM categorias_tarefas
-            WHERE usuario_id = %s ORDER BY nome
+            SELECT id, nome, cor FROM categorias WHERE usuario_id = %s AND modulo = 'tarefas' ORDER BY nome
         """, (usuario_id,))
         return self.cursor.fetchall()
 

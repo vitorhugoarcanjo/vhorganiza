@@ -17,8 +17,7 @@ class TarefasFilters:
     def filtro_categorias(usuario_id, cursor):
         """Retorna (categorias_filtro, categorias_usuario)"""
         cursor.execute("""
-            SELECT id, nome, cor FROM categorias_tarefas
-            WHERE usuario_id = %s ORDER BY nome
+            SELECT id, nome, cor FROM categorias WHERE usuario_id = %s AND modulo = 'tarefas' ORDER BY nome
         """, (usuario_id,))
         categorias_usuario = cursor.fetchall()
 

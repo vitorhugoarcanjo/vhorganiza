@@ -6,8 +6,8 @@ class FinancasQueries:
     def get_categorias_usuario():
         return """
             SELECT id, nome, cor
-            FROM categorias_financas
-            WHERE usuario_id = %s
+            FROM categorias
+            WHERE usuario_id = %s AND modulo = 'financas'
             ORDER BY nome
 """
 
@@ -19,7 +19,7 @@ class FinancasQueries:
                     t.status, t.data_vencimento, t.ativo,
                     t.numero_parcela, t.total_parcelas, t.transacao_pai_id, t.valor_parcela
             FROM transacoes t
-            LEFT JOIN categorias_financas c ON c.id = t.categoria_id
+            LEFT JOIN categorias c ON c.id = t.categoria_id AND c.modulo = 'financas'
             WHERE t.usuario_id = %s
             AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
 """
@@ -32,6 +32,6 @@ class FinancasQueries:
                     t.status, t.numero_parcela, t.total_parcelas,
                     c.nome as categoria_nome, c.cor as categoria_cor
             FROM transacoes t
-            LEFT JOIN categorias_financas c ON t.categoria_id = c.id
+            LEFT JOIN categorias c ON t.categoria_id = c.id AND c.modulo = 'financas'
             WHERE t.sequencia_transacoes = %s AND t.usuario_id = %s
 """

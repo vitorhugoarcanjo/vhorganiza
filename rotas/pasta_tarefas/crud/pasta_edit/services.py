@@ -17,8 +17,8 @@ class EditarTarefaService:
     def buscar_categorias(cursor, usuario_id):
         try:
             cursor.execute("""
-                SELECT id, nome, cor FROM categorias_tarefas
-                WHERE usuario_id = %s ORDER BY nome ASC
+                SELECT id, nome, cor FROM categorias
+                WHERE usuario_id = %s AND modulo = 'tarefas' ORDER BY nome ASC
             """, (usuario_id,))
             return cursor.fetchall()
         except Exception as e:
@@ -79,7 +79,7 @@ class EditarTarefaService:
         categoria_antes_nome = '(vazio)'
         categoria_id_antes = tarefa_atual[7]
         if categoria_id_antes:
-            cursor.execute("SELECT nome FROM categorias_tarefas WHERE id = %s", (categoria_id_antes,))
+            cursor.execute("SELECT nome FROM categorias WHERE id = %s AND modulo = 'tarefas'", (categoria_id_antes,))
             c = cursor.fetchone()
             if c:
                 categoria_antes_nome = c[0]
@@ -88,7 +88,7 @@ class EditarTarefaService:
         categoria_depois_nome = '(vazio)'
         categoria_id_depois = dados.get('categoria_id')
         if categoria_id_depois:
-            cursor.execute("SELECT nome FROM categorias_tarefas WHERE id = %s", (categoria_id_depois,))
+            cursor.execute("SELECT nome FROM categorias WHERE id = %s AND modulo = 'tarefas'", (categoria_id_depois,))
             c = cursor.fetchone()
             if c:
                 categoria_depois_nome = c[0]
