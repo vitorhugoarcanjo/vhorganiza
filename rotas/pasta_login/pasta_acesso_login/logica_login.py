@@ -1,3 +1,4 @@
+# rotas\pasta_login\pasta_acesso_login\logica_login.py
 """ LÓGICA DO LOGIN  - INICIO """
 from flask import Blueprint, render_template, request, url_for, session, jsonify
 from utils.database.conexao_global import ini_conexao

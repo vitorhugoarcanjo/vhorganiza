@@ -14,12 +14,12 @@ class TarefasFilters:
     # FILTROS DE SESSÃO
     # ------------------------------------------------------
     @staticmethod
-    def filtro_categorias(user_id, cursor):
+    def filtro_categorias(usuario_id, cursor):
         """Retorna (categorias_filtro, categorias_usuario)"""
         cursor.execute("""
             SELECT id, nome, cor FROM categorias_tarefas
-            WHERE user_id = %s ORDER BY nome
-        """, (user_id,))
+            WHERE usuario_id = %s ORDER BY nome
+        """, (usuario_id,))
         categorias_usuario = cursor.fetchall()
 
         categorias_selecionadas = request.form.getlist('categorias')

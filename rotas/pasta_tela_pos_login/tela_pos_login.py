@@ -1,3 +1,4 @@
+# rotas\pasta_tela_pos_login\tela_pos_login.py
 from flask import Blueprint, render_template, session, flash, redirect, url_for, jsonify, request
 from rotas.middleware.autenticacao import login_required
 

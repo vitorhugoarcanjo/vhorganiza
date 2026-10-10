@@ -16,15 +16,15 @@ def historico_transacao(transacao_id):
     Recebe a SEQUÊNCIA (URL: /auditoria/transacao/<seq>).
     Traduz pra ID interno + resolve o PAI (se for filha).
     """
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     # 1. Busca a transação clicada
     cursor.execute("""
         SELECT id, sequencia_transacoes, descricao, tipo, valor_total, transacao_pai_id
         FROM transacoes
-        WHERE sequencia_transacoes = %s AND user_id = %s
-    """, (transacao_id, user_id))
+        WHERE sequencia_transacoes = %s AND usuario_id = %s
+    """, (transacao_id, usuario_id))
     row = cursor.fetchone()
 
     if not row:
@@ -38,8 +38,8 @@ def historico_transacao(transacao_id):
         cursor.execute("""
             SELECT id, sequencia_transacoes, descricao, tipo, valor_total
             FROM transacoes
-            WHERE id = %s AND user_id = %s
-        """, (transacao_pai_id, user_id))
+            WHERE id = %s AND usuario_id = %s
+        """, (transacao_pai_id, usuario_id))
         pai_row = cursor.fetchone()
 
         if pai_row:

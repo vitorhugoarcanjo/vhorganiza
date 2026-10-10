@@ -27,11 +27,11 @@ def _fmt_moeda(v):
 
 @login_required
 def nova_transacao_modal():
-    user_id = session.get('user_id')
+    usuario_id = session.get('user_id')
     hoje = obter_hoje_cuiaba()
 
     conexao, cursor = ini_conexao()
-    categorias = InserirTransacaoService.buscar_categorias(cursor, user_id)
+    categorias = InserirTransacaoService.buscar_categorias(cursor, usuario_id)
 
     return render_template(
         'pasta_financas/modais/modal_nova_transacao.html.jinja',
@@ -42,7 +42,7 @@ def nova_transacao_modal():
 
 @login_required
 def salvar_nova_transacao():
-    user_id = session.get('user_id')
+    usuario_id = session.get('user_id')
     hoje = obter_hoje_cuiaba()
 
     conexao, cursor = ini_conexao()
@@ -80,7 +80,7 @@ def salvar_nova_transacao():
         # SIMPLES
         # ==========================================================
         if dados['total_parcelas'] <= 1:
-            sucesso, resultado = InserirTransacaoService.criar_transacao_simples(cursor, user_id, dados)
+            sucesso, resultado = InserirTransacaoService.criar_transacao_simples(cursor, usuario_id, dados)
 
             if not sucesso:
                 conexao.rollback()
@@ -120,7 +120,7 @@ def salvar_nova_transacao():
         # PARCELADA
         # ==========================================================
         else:
-            sucesso, resultado = InserirTransacaoService.criar_transacao_parcelada(cursor, user_id, dados)
+            sucesso, resultado = InserirTransacaoService.criar_transacao_parcelada(cursor, usuario_id, dados)
 
             if not sucesso:
                 conexao.rollback()
@@ -160,7 +160,7 @@ def salvar_nova_transacao():
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao salvar nova transação user_id={user_id}")
+        logger.exception(f"Erro ao salvar nova transação usuario_id={user_id}")
         return jsonify({
             'success': False,
             'error': 'Erro interno no servidor ao salvar a transação.',

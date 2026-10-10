@@ -16,14 +16,14 @@ class EditarTransacaoService:
     # CATEGORIAS (pro <select> do modal)
     # ==========================================================
     @staticmethod
-    def buscar_categorias(cursor, user_id):
+    def buscar_categorias(cursor, usuario_id):
         try:
             cursor.execute("""
                 SELECT id, nome
                 FROM categorias_financas
-                WHERE user_id = %s
+                WHERE usuario_id = %s
                 ORDER BY nome ASC
-            """, (user_id,))
+            """, (usuario_id,))
             return cursor.fetchall()
         except Exception as e:
             logger.error(f"Erro ao buscar categorias: {e}")
@@ -33,42 +33,42 @@ class EditarTransacaoService:
     # BUSCAS BÁSICAS
     # ==========================================================
     @staticmethod
-    def buscar_transacao_por_sequencia(cursor, sequencia, user_id):
+    def buscar_transacao_por_sequencia(cursor, sequencia, usuario_id):
         cursor.execute("""
             SELECT id, sequencia_transacoes, tipo, descricao, valor_total,
                    data_vencimento, categoria_id, status,
                    numero_parcela, total_parcelas, transacao_pai_id, data_emissao
             FROM transacoes
-            WHERE sequencia_transacoes = %s AND user_id = %s
-        """, (sequencia, user_id))
+            WHERE sequencia_transacoes = %s AND usuario_id = %s
+        """, (sequencia, usuario_id))
         return cursor.fetchone()
 
     @staticmethod
-    def buscar_transacao_por_id(cursor, transacao_id, user_id):
+    def buscar_transacao_por_id(cursor, transacao_id, usuario_id):
         cursor.execute("""
             SELECT id, sequencia_transacoes, tipo, descricao, valor_total,
                    data_vencimento, categoria_id, status,
                    numero_parcela, total_parcelas, transacao_pai_id, data_emissao
             FROM transacoes
-            WHERE id = %s AND user_id = %s
-        """, (transacao_id, user_id))
+            WHERE id = %s AND usuario_id = %s
+        """, (transacao_id, usuario_id))
         return cursor.fetchone()
 
     @staticmethod
-    def get_pai_da_parcela(cursor, sequencia, user_id):
+    def get_pai_da_parcela(cursor, sequencia, usuario_id):
         """
         Recebe uma sequência (visual). Retorna:
           - se for filha: (transação_pai, id_do_pai)
           - se for simples/sem pai: (a própria transação, id_dela)
         """
-        transacao = EditarTransacaoService.buscar_transacao_por_sequencia(cursor, sequencia, user_id)
+        transacao = EditarTransacaoService.buscar_transacao_por_sequencia(cursor, sequencia, usuario_id)
         if not transacao:
             return None, None
 
         transacao_pai_id = transacao[10]
 
         if transacao_pai_id:
-            pai = EditarTransacaoService.buscar_transacao_por_id(cursor, transacao_pai_id, user_id)
+            pai = EditarTransacaoService.buscar_transacao_por_id(cursor, transacao_pai_id, usuario_id)
             return pai, transacao_pai_id
 
         return transacao, transacao[0]
@@ -108,9 +108,9 @@ class EditarTransacaoService:
     # 🔥 Retorna dados_antes/dados_depois + parcelas_antes/parcelas_depois
     # ==========================================================
     @staticmethod
-    def atualizar_transacao(cursor, conexao, sequencia_ou_id, user_id, dados):
+    def atualizar_transacao(cursor, conexao, sequencia_ou_id, usuario_id, dados):
         transacao_atual, pai_id_real = EditarTransacaoService.get_pai_da_parcela(
-            cursor, sequencia_ou_id, user_id
+            cursor, sequencia_ou_id, usuario_id
         )
         if not transacao_atual:
             return {'success': False, 'error': 'Transação não encontrada'}
@@ -181,9 +181,9 @@ class EditarTransacaoService:
                 data_vencimento = %s,
                 categoria_id = %s,
                 data_alteracao = CURRENT_TIMESTAMP
-            WHERE id = %s AND user_id = %s
+            WHERE id = %s AND usuario_id = %s
         """, (descricao, valor, data_emissao, data_vencimento, categoria_id,
-              pai_id_real, user_id))
+              pai_id_real, usuario_id))
 
         # Se era parcelada, atualiza as filhas
         if total_parcelas_antes > 1:

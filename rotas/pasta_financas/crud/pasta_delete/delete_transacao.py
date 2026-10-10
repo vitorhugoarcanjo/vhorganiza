@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # ==========================================================
 # HELPER — busca transações com filtros da sessão
 # ==========================================================
-def _buscar_transacoes_com_filtros(cursor, user_id):
+def _buscar_transacoes_com_filtros(cursor, usuario_id):
     data_inicio, data_fim, tipo_data = FinancasFilters.processar_filtros_data()
     filtros = FinancasFilters.recuperar_filtros(session)
     filtros.update({
@@ -24,12 +24,12 @@ def _buscar_transacoes_com_filtros(cursor, user_id):
         'tipo_data': tipo_data,
     })
     service = FinancasServices(conexao=None, cursor=cursor)
-    transacoes_raw = service.buscar_transacoes(user_id, filtros)
+    transacoes_raw = service.buscar_transacoes(usuario_id, filtros)
     return FinancasFormatters.formatar_transacoes(transacoes_raw)
 
 
-def _render_tbody(user_id, cursor):
-    transacoes = _buscar_transacoes_com_filtros(cursor, user_id)
+def _render_tbody(usuario_id, cursor):
+    transacoes = _buscar_transacoes_com_filtros(cursor, usuario_id)
     return render_template(
         'pasta_financas/partials/_tbody_transacoes.html.jinja',
         transacoes=transacoes,
@@ -44,15 +44,15 @@ def _render_tbody(user_id, cursor):
 @login_required
 def inativar_financa(transacao_id):
     """transacao_id aqui é a SEQUÊNCIA visual"""
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
         cursor.execute("""
             SELECT id, descricao, total_parcelas, numero_parcela, transacao_pai_id
             FROM transacoes
-            WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
-        """, (transacao_id, user_id))
+            WHERE sequencia_transacoes = %s AND usuario_id = %s AND ativo = 1
+        """, (transacao_id, usuario_id))
 
         transacao = cursor.fetchone()
         if not transacao:
@@ -78,12 +78,12 @@ def inativar_financa(transacao_id):
             else:
                 cursor.execute("""
                     SELECT id FROM transacoes
-                    WHERE sequencia_transacoes = %s AND user_id = %s
-                """, (transacao_id, user_id))
+                    WHERE sequencia_transacoes = %s AND usuario_id = %s
+                """, (transacao_id, usuario_id))
                 pai_real = cursor.fetchone()
                 pai_real_id = pai_real[0] if pai_real else None
 
-            html = _render_tbody(user_id, cursor)
+            html = _render_tbody(usuario_id, cursor)
             conexao.close()
 
             resp = make_response(html)
@@ -104,8 +104,8 @@ def inativar_financa(transacao_id):
                 excluido_em = CURRENT_TIMESTAMP,
                 excluido_por = %s,
                 data_alteracao = CURRENT_TIMESTAMP
-            WHERE id = %s AND user_id = %s AND ativo = 1
-        """, (user_id, id_interno, user_id))
+            WHERE id = %s AND usuario_id = %s AND ativo = 1
+        """, (usuario_id, id_interno, usuario_id))
 
         # 🔥 Auditoria transacional
         AuditoriaFinanceiraService.registrar(
@@ -119,7 +119,7 @@ def inativar_financa(transacao_id):
 
         conexao.commit()
 
-        html = _render_tbody(user_id, cursor)
+        html = _render_tbody(usuario_id, cursor)
         conexao.close()
 
         resp = make_response(html)
@@ -138,14 +138,14 @@ def inativar_financa(transacao_id):
 # ==========================================================
 @login_required
 def excluir_parcelamento_completo(pai_id):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
         cursor.execute("""
             SELECT id, descricao FROM transacoes
-            WHERE id = %s AND user_id = %s AND ativo = 1
-        """, (pai_id, user_id))
+            WHERE id = %s AND usuario_id = %s AND ativo = 1
+        """, (pai_id, usuario_id))
 
         pai = cursor.fetchone()
         if not pai:
@@ -159,8 +159,8 @@ def excluir_parcelamento_completo(pai_id):
                 excluido_por = %s,
                 data_alteracao = CURRENT_TIMESTAMP
             WHERE (id = %s OR transacao_pai_id = %s)
-            AND user_id = %s AND ativo = 1
-        """, (user_id, pai_id, pai_id, user_id))
+            AND usuario_id = %s AND ativo = 1
+        """, (usuario_id, pai_id, pai_id, usuario_id))
 
         # 🔥 Auditoria (usa o id do PAI)
         AuditoriaFinanceiraService.registrar(
@@ -174,7 +174,7 @@ def excluir_parcelamento_completo(pai_id):
 
         conexao.commit()
 
-        html = _render_tbody(user_id, cursor)
+        html = _render_tbody(usuario_id, cursor)
         conexao.close()
 
         resp = make_response(html)

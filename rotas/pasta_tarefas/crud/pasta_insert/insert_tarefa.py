@@ -31,11 +31,11 @@ def _fmt_data_br(data_iso):
 # ==========================================================
 @login_required
 def nova_tarefa_modal():
-    user_id = session.get('user_id')
+    usuario_id = session.get('user_id')
 
     conexao, cursor = ini_conexao()
     try:
-        categorias = InserirTarefaService.buscar_categorias(cursor, user_id)
+        categorias = InserirTarefaService.buscar_categorias(cursor, usuario_id)
         return render_template(
             'pasta_tarefas/modais/modal_nova_tarefa.html.jinja',
             categorias=categorias
@@ -49,7 +49,7 @@ def nova_tarefa_modal():
 # ==========================================================
 @login_required
 def salvar_nova_tarefa():
-    user_id = session.get('user_id')
+    usuario_id = session.get('user_id')
     conexao, cursor = ini_conexao()
 
     try:
@@ -72,7 +72,7 @@ def salvar_nova_tarefa():
         # 🔥 Busca o NOME da categoria ANTES de criar
         categoria_nome = InserirTarefaService.buscar_nome_categoria(cursor, dados['categoria_id'])
 
-        sucesso, resultado = InserirTarefaService.criar_tarefa(cursor, user_id, dados)
+        sucesso, resultado = InserirTarefaService.criar_tarefa(cursor, usuario_id, dados)
         if not sucesso:
             conexao.rollback()
             return jsonify({'success': False, 'error': resultado}), 400
@@ -108,7 +108,7 @@ def salvar_nova_tarefa():
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao salvar nova tarefa user_id={user_id}")
+        logger.exception(f"Erro ao salvar nova tarefa usuario_id={user_id}")
         return jsonify({
             'success': False,
             'error': 'Erro interno no servidor ao salvar a tarefa.',

@@ -1,3 +1,4 @@
+# rotas\pasta_login\pasta_acesso_login\validacoes\validar_usuario.py
 """ ARQUIVO DE VALIDAÇÃO - ENTRAR """
 from rotas.pasta_login.pasta_cadastre_se.validacoes.criptografia_snh import verificar_senha
 

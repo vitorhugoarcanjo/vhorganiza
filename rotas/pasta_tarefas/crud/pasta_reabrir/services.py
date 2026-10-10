@@ -11,13 +11,13 @@ logger = logging.getLogger(__name__)
 class ReabrirTarefaService:
 
     @staticmethod
-    def reabrir_tarefa(cursor, sequencia, user_id):
+    def reabrir_tarefa(cursor, sequencia, usuario_id):
         # 🔥 Busca dados antes + id interno + status/motivo/data_finalizacao
         cursor.execute("""
             SELECT id, titulo, status, data_finalizacao, motivo_conclusao
             FROM tarefas
-            WHERE tarefa_sequencia = %s AND user_id = %s AND ativo = 1
-        """, (sequencia, user_id))
+            WHERE tarefa_sequencia = %s AND usuario_id = %s AND ativo = 1
+        """, (sequencia, usuario_id))
         tarefa = cursor.fetchone()
 
         if not tarefa:
@@ -38,8 +38,8 @@ class ReabrirTarefaService:
                 data_finalizacao = NULL,
                 motivo_conclusao = NULL,
                 updated_at = CURRENT_TIMESTAMP
-            WHERE id = %s AND user_id = %s
-        """, (id_interno, user_id))
+            WHERE id = %s AND usuario_id = %s
+        """, (id_interno, usuario_id))
 
         return {
             'success': True,

@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 @login_required
 def ini_tarefas():
     """Página principal de Tarefas"""
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     is_htmx = request.headers.get('HX-Request') == 'true'
 
     # 1. FILTROS
@@ -32,7 +32,7 @@ def ini_tarefas():
 
     conexao, cursor = ini_conexao()
 
-    categorias_filtro, categorias_usuario = TarefasFilters.filtro_categorias(user_id, cursor)
+    categorias_filtro, categorias_usuario = TarefasFilters.filtro_categorias(usuario_id, cursor)
     status_filtro      = TarefasFilters.filtro_status()
     prioridade_filtro  = TarefasFilters.filtro_prioridade()
     descricao_filtro   = TarefasFilters.filtro_descricao()
@@ -51,7 +51,7 @@ def ini_tarefas():
 
     # 2. QUERY
     query = TarefasQueries.get_tarefas_base()
-    params = [user_id]
+    params = [usuario_id]
     query, params = TarefasFilters.aplicar_filtros_query(query, params, filtros)
     query += " ORDER BY t.tarefa_sequencia ASC"
 

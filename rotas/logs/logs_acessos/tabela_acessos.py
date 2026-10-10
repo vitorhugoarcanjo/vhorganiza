@@ -9,7 +9,7 @@ def tabela_logs_acessos(cursor):
         cursor.execute("""
             CREATE TABLE logs_acesso (
                 id SERIAL PRIMARY KEY,
-                user_id INTEGER,
+                usuario_id INTEGER,
                 ip VARCHAR(45),
                 user_agent TEXT,
                 rota VARCHAR(255),
@@ -17,7 +17,7 @@ def tabela_logs_acessos(cursor):
                 status_code INTEGER,
                 tempo_resposta INTEGER,
                 data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES cadastre_se(id) ON DELETE SET NULL
+                FOREIGN KEY (usuario_id) REFERENCES cadastre_se(id) ON DELETE SET NULL
             )
         """)
         print("✅ tabela logs_acesso criada com sucesso")

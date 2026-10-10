@@ -75,11 +75,11 @@ def _montar_diff(antes, depois):
 # ==========================================================
 @login_required
 def editar_modal(sequencia):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
 
     conexao, cursor = ini_conexao()
     try:
-        categorias = EditarTarefaService.buscar_categorias(cursor, user_id)
+        categorias = EditarTarefaService.buscar_categorias(cursor, usuario_id)
         return render_template(
             'pasta_tarefas/modais/modal_editar_tarefa.html.jinja',
             categorias=categorias,
@@ -94,11 +94,11 @@ def editar_modal(sequencia):
 # ==========================================================
 @login_required
 def dados_json(sequencia):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
-        t = EditarTarefaService.buscar_tarefa_por_sequencia(cursor, sequencia, user_id)
+        t = EditarTarefaService.buscar_tarefa_por_sequencia(cursor, sequencia, usuario_id)
         if not t:
             return jsonify({'success': False, 'error': 'Tarefa não encontrada'}), 404
 
@@ -127,7 +127,7 @@ def dados_json(sequencia):
 # ==========================================================
 @login_required
 def salvar_edicao(sequencia):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
@@ -148,7 +148,7 @@ def salvar_edicao(sequencia):
             return jsonify({'success': False, 'errors': erros}), 200
 
         resultado = EditarTarefaService.atualizar_tarefa(
-            cursor, sequencia, user_id, dados
+            cursor, sequencia, usuario_id, dados
         )
         if not resultado.get('success'):
             conexao.rollback()
@@ -180,7 +180,7 @@ def salvar_edicao(sequencia):
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao salvar edição sequencia={sequencia} user_id={user_id}")
+        logger.exception(f"Erro ao salvar edição sequencia={sequencia} usuario_id={user_id}")
         return jsonify({'success': False, 'error': str(e)}), 500
     finally:
         conexao.close()

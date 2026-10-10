@@ -133,12 +133,12 @@ def _montar_diff_filhas(parcelas_antes, parcelas_depois):
 # ==========================================================
 @login_required
 def editar_modal(sequencia):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     hoje = date.today().isoformat()
 
     conexao, cursor = ini_conexao()
     try:
-        categorias = EditarTransacaoService.buscar_categorias(cursor, user_id) \
+        categorias = EditarTransacaoService.buscar_categorias(cursor, usuario_id) \
                      if hasattr(EditarTransacaoService, 'buscar_categorias') else []
 
         return render_template(
@@ -156,11 +156,11 @@ def editar_modal(sequencia):
 # ==========================================================
 @login_required
 def dados_json(sequencia):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
-        transacao, pai_id = EditarTransacaoService.get_pai_da_parcela(cursor, sequencia, user_id)
+        transacao, pai_id = EditarTransacaoService.get_pai_da_parcela(cursor, sequencia, usuario_id)
         if not transacao:
             return jsonify({'success': False, 'error': 'Transação não encontrada'}), 404
 
@@ -203,7 +203,7 @@ def dados_json(sequencia):
 # ==========================================================
 @login_required
 def salvar_edicao(sequencia):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
@@ -222,7 +222,7 @@ def salvar_edicao(sequencia):
             return jsonify({'success': False, 'errors': erros}), 400
 
         resultado = EditarTransacaoService.atualizar_transacao(
-            cursor, conexao, sequencia, user_id, dados
+            cursor, conexao, sequencia, usuario_id, dados
         )
 
         if not resultado.get('success'):
@@ -266,7 +266,7 @@ def salvar_edicao(sequencia):
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao salvar edição sequencia={sequencia} user_id={user_id}")
+        logger.exception(f"Erro ao salvar edição sequencia={sequencia} usuario_id={user_id}")
         return jsonify({'success': False, 'error': str(e)}), 500
     finally:
         conexao.close()

@@ -14,14 +14,14 @@ class TarefasServices:
         self.conexao = conexao
         self.cursor = cursor
 
-    def buscar_categorias(self, user_id):
+    def buscar_categorias(self, usuario_id):
         self.cursor.execute("""
             SELECT id, nome, cor FROM categorias_tarefas
-            WHERE user_id = %s ORDER BY nome
-        """, (user_id,))
+            WHERE usuario_id = %s ORDER BY nome
+        """, (usuario_id,))
         return self.cursor.fetchall()
 
-    def buscar_tarefas(self, user_id, filtros):
+    def buscar_tarefas(self, usuario_id, filtros):
         """
         Busca tarefas com filtros aplicados.
         Reaproveitado por todos os CRUDs (padrão 2099).

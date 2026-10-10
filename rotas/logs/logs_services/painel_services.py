@@ -1,3 +1,4 @@
+# rotas\logs\logs_services\painel_services.py
 import time
 import traceback
 from datetime import datetime
@@ -20,19 +21,19 @@ class LogService:
         try:
             conexao, cursor = LogService.get_db_connection()
 
-            user_id = session.get('user_id') if session else None
+            usuario_id = session.get('user_id') if session else None
             rota = request.path if request else None
             metodo = request.method if request else None
 
             
             cursor.execute("""
-                INSERT INTO logs_erros (mensagem, arquivo, linha, user_id, rota, metodo, stack_trace)
+                INSERT INTO logs_erros (mensagem, arquivo, linha, usuario_id, rota, metodo, stack_trace)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (
                 mensagem[:500],
                 arquivo,
                 linha,
-                user_id,  # ← mudou para user_id
+                usuario_id,  # ← mudou para usuario_id
                 rota,
                 metodo,
                 stack_trace[:1000] if stack_trace else None
@@ -45,7 +46,7 @@ class LogService:
             return False
     
     @staticmethod
-    def registrar_acesso(user_id, ip, user_agent, rota, metodo, status_code, tempo_resposta):
+    def registrar_acesso(usuario_id, ip, user_agent, rota, metodo, status_code, tempo_resposta):
         """Registra um acesso no banco"""
         try:
             # ROTAS IGNORADAS 
@@ -69,10 +70,10 @@ class LogService:
             
             
             cursor.execute("""
-                INSERT INTO logs_acesso (user_id, ip, user_agent, rota, metodo, status_code, tempo_resposta)
+                INSERT INTO logs_acesso (usuario_id, ip, user_agent, rota, metodo, status_code, tempo_resposta)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (
-                user_id,
+                usuario_id,
                 ip[:45],
                 user_agent[:500] if user_agent else None,
                 rota[:255],
@@ -88,7 +89,7 @@ class LogService:
             return False
     
     @staticmethod
-    def registrar_acao(user_id, acao, tabela_afetada, registro_id, dados_antes=None, dados_depois=None):
+    def registrar_acao(usuario_id, acao, tabela_afetada, registro_id, dados_antes=None, dados_depois=None):
         """Registra uma ação do usuário"""
         try:
             conexao, cursor = LogService.get_db_connection()
@@ -98,10 +99,10 @@ class LogService:
             dados_depois_json = json.dumps(dados_depois) if dados_depois else None
             
             cursor.execute("""
-                INSERT INTO logs_acao (user_id, acao, tabela_afetada, registro_id, dados_antes, dados_depois, ip)
+                INSERT INTO logs_acao (usuario_id, acao, tabela_afetada, registro_id, dados_antes, dados_depois, ip)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (
-                user_id,
+                usuario_id,
                 acao[:100],
                 tabela_afetada[:50],
                 registro_id,
@@ -128,7 +129,7 @@ class LogService:
             query = """
                 SELECT le.*, u.nome as usuario_nome 
                 FROM logs_erros le
-                LEFT JOIN cadastre_se u ON le.user_id = u.id
+                LEFT JOIN cadastre_se u ON le.usuario_id = u.id
             """
             params = []
             
@@ -162,7 +163,7 @@ class LogService:
             cursor.execute("""
                 SELECT le.*, u.nome as usuario_nome 
                 FROM logs_erros le
-                LEFT JOIN cadastre_se u ON le.user_id = u.id
+                LEFT JOIN cadastre_se u ON le.usuario_id = u.id
                 WHERE le.id = %s
             """, (erro_id,))
             erro = cursor.fetchone()
@@ -190,13 +191,13 @@ class LogService:
             total_acessos = cursor.fetchone()[0]
             
             # Total de usuários únicos (que já acessaram)
-            cursor.execute("SELECT COUNT(DISTINCT user_id) as total FROM logs_acesso WHERE user_id IS NOT NULL")
+            cursor.execute("SELECT COUNT(DISTINCT usuario_id) as total FROM logs_acesso WHERE usuario_id IS NOT NULL")
             total_usuarios = cursor.fetchone()[0]
             
             # Usuários ativos nos últimos 7 dias (acessaram)
             cursor.execute("""
-                SELECT COUNT(DISTINCT user_id) as total FROM logs_acesso 
-                WHERE data_hora >= CURRENT_DATE - INTERVAL '7 days' AND user_id IS NOT NULL
+                SELECT COUNT(DISTINCT usuario_id) as total FROM logs_acesso 
+                WHERE data_hora >= CURRENT_DATE - INTERVAL '7 days' AND usuario_id IS NOT NULL
             """)
             usuarios_ativos = cursor.fetchone()[0]
             
@@ -263,8 +264,8 @@ class LogService:
             
             # Usuários únicos
             cursor.execute("""
-                SELECT COUNT(DISTINCT user_id) FROM logs_acesso 
-                WHERE data_hora >= %s AND data_hora < %s AND user_id IS NOT NULL
+                SELECT COUNT(DISTINCT usuario_id) FROM logs_acesso 
+                WHERE data_hora >= %s AND data_hora < %s AND usuario_id IS NOT NULL
             """, (data_inicio, data_fim))
             usuarios_unicos = cursor.fetchone()[0]
             
@@ -446,7 +447,7 @@ class LogService:
                     u.email as usuario_email, 
                     u.telefone as usuario_telefone
                 FROM logs_acesso la
-                LEFT JOIN cadastre_se u ON la.user_id = u.id
+                LEFT JOIN cadastre_se u ON la.usuario_id = u.id
             """
             params = []
             
@@ -486,7 +487,7 @@ class LogService:
                     u.email as usuario_email, 
                     u.telefone as usuario_telefone
                 FROM logs_acesso la
-                LEFT JOIN cadastre_se u ON la.user_id = u.id
+                LEFT JOIN cadastre_se u ON la.usuario_id = u.id
                 WHERE la.id = %s
             """, (acesso_id,))
             acesso = cursor.fetchone()
@@ -497,7 +498,7 @@ class LogService:
             return None
 
     @staticmethod
-    def obter_acessos_por_usuario(user_id, limite=100):
+    def obter_acessos_por_usuario(usuario_id, limite=100):
         """Retorna acessos de um usuário específico"""
         try:
             conexao, cursor = LogService.get_db_connection()
@@ -513,11 +514,11 @@ class LogService:
                     u.email as usuario_email, 
                     u.telefone as usuario_telefone
                 FROM logs_acesso la
-                LEFT JOIN cadastre_se u ON la.user_id = u.id
-                WHERE la.user_id = %s
+                LEFT JOIN cadastre_se u ON la.usuario_id = u.id
+                WHERE la.usuario_id = %s
                 ORDER BY la.data_hora DESC
                 LIMIT %s
-            """, (user_id, limite))
+            """, (usuario_id, limite))
             acessos = cursor.fetchall()
             return acessos
         
@@ -526,13 +527,13 @@ class LogService:
             return []
 
     @staticmethod
-    def obter_nome_usuario(user_id):
+    def obter_nome_usuario(usuario_id):
         """Retorna apenas o nome do usuário pelo ID"""
         try:
             conexao, cursor = LogService.get_db_connection()
             
             
-            cursor.execute("SELECT nome FROM cadastre_se WHERE id = %s", (user_id,))
+            cursor.execute("SELECT nome FROM cadastre_se WHERE id = %s", (usuario_id,))
             resultado = cursor.fetchone()
             return resultado[0] if resultado else None
         
@@ -541,13 +542,13 @@ class LogService:
             return None
 
     @staticmethod
-    def obter_dados_usuario(user_id):
+    def obter_dados_usuario(usuario_id):
         """Retorna todos os dados do usuário (nome, email, telefone)"""
         try:
             conexao, cursor = LogService.get_db_connection()
             
             
-            cursor.execute("SELECT nome, email, telefone FROM cadastre_se WHERE id = %s", (user_id,))
+            cursor.execute("SELECT nome, email, telefone FROM cadastre_se WHERE id = %s", (usuario_id,))
             resultado = cursor.fetchone()
             return {
                 'nome': resultado[0] if resultado else None,

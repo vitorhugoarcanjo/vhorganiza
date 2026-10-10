@@ -9,8 +9,8 @@ from rotas.pasta_financas.formatters import FinancasFormatters
 
 @login_required
 def estornar_transacao_view(sequencia):
-    user_id = session.get('user_id')
-    if not user_id:
+    usuario_id = session.get('user_id')
+    if not usuario_id:
         return '', 401
 
     conexao, cursor = ini_conexao()
@@ -18,8 +18,8 @@ def estornar_transacao_view(sequencia):
     cursor.execute("""
         SELECT id, descricao, status, tipo, data_quitamento
         FROM transacoes
-        WHERE sequencia_transacoes = %s AND user_id = %s
-    """, (sequencia, user_id))
+        WHERE sequencia_transacoes = %s AND usuario_id = %s
+    """, (sequencia, usuario_id))
 
     transacao = cursor.fetchone()
     if not transacao:
@@ -39,8 +39,8 @@ def estornar_transacao_view(sequencia):
         SET status = 'aberto',
             data_quitamento = NULL,
             data_alteracao = CURRENT_TIMESTAMP
-        WHERE id = %s AND user_id = %s
-    """, (id_interno, user_id))
+        WHERE id = %s AND usuario_id = %s
+    """, (id_interno, usuario_id))
 
     # 🔥 Auditoria CONSOLIDADA (1 registro, 2 campos)
     alteracoes = [
@@ -75,8 +75,8 @@ def estornar_transacao_view(sequencia):
                t.numero_parcela, t.total_parcelas, t.transacao_pai_id, t.valor_parcela
         FROM transacoes t
         LEFT JOIN categorias_financas c ON c.id = t.categoria_id
-        WHERE t.sequencia_transacoes = %s AND t.user_id = %s
-    """, (sequencia, user_id))
+        WHERE t.sequencia_transacoes = %s AND t.usuario_id = %s
+    """, (sequencia, usuario_id))
 
     transacao_atualizada = cursor.fetchone()
     conexao.close()

@@ -1,4 +1,4 @@
-# email_utils.py
+# rotas\pasta_login\pasta_cadastre_se\autenticador_email\email_utils.py
 import smtplib
 import random
 import string

@@ -16,7 +16,7 @@ def historico_orcamento(orcamento_seq):
     Recebe a SEQUÊNCIA (URL: /auditoria/orcamento/<seq>).
     Traduz pra ID interno e busca auditoria.
     """
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     # 🔥 Busca por SEQUÊNCIA (não id)
@@ -24,7 +24,7 @@ def historico_orcamento(orcamento_seq):
         SELECT id, sequencia_orcamentos, titulo, cliente, status
         FROM orcamentos
         WHERE sequencia_orcamentos = %s AND usuario_id = %s
-    """, (orcamento_seq, user_id))
+    """, (orcamento_seq, usuario_id))
 
     row = cursor.fetchone()
     if not row:

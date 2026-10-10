@@ -7,7 +7,7 @@ class FinancasQueries:
         return """
             SELECT id, nome, cor
             FROM categorias_financas
-            WHERE user_id = %s
+            WHERE usuario_id = %s
             ORDER BY nome
 """
 
@@ -20,7 +20,7 @@ class FinancasQueries:
                     t.numero_parcela, t.total_parcelas, t.transacao_pai_id, t.valor_parcela
             FROM transacoes t
             LEFT JOIN categorias_financas c ON c.id = t.categoria_id
-            WHERE t.user_id = %s
+            WHERE t.usuario_id = %s
             AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
 """
 
@@ -33,5 +33,5 @@ class FinancasQueries:
                     c.nome as categoria_nome, c.cor as categoria_cor
             FROM transacoes t
             LEFT JOIN categorias_financas c ON t.categoria_id = c.id
-            WHERE t.sequencia_transacoes = %s AND t.user_id = %s
+            WHERE t.sequencia_transacoes = %s AND t.usuario_id = %s
 """

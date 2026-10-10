@@ -1,3 +1,4 @@
+# rotas\pasta_login\pasta_cadastre_se\tela_cadastre_se.py
 from flask import Blueprint, request, redirect, render_template, url_for, flash
 from utils.database.conexao_global import ini_conexao
 from .autenticador_email.email_utils import gerar_codigo, enviar_email_confirmacao, salvar_codigo_verificacao, verificar_codigo

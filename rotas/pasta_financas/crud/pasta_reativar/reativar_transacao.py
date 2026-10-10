@@ -11,7 +11,7 @@ from rotas.pasta_financas.filters import FinancasFilters
 # ==========================================================
 # HELPER — busca as transações da listagem COM FILTROS
 # ==========================================================
-def _buscar_transacoes_com_filtros(cursor, user_id):
+def _buscar_transacoes_com_filtros(cursor, usuario_id):
     data_inicio, data_fim, tipo_data = FinancasFilters.processar_filtros_data()
     filtros = FinancasFilters.recuperar_filtros(session)
     filtros.update({
@@ -21,7 +21,7 @@ def _buscar_transacoes_com_filtros(cursor, user_id):
     })
 
     service = FinancasServices(conexao=None, cursor=cursor)
-    transacoes_raw = service.buscar_transacoes(user_id, filtros)
+    transacoes_raw = service.buscar_transacoes(usuario_id, filtros)
     return FinancasFormatters.formatar_transacoes(transacoes_raw)
 
 
@@ -30,8 +30,8 @@ def _buscar_transacoes_com_filtros(cursor, user_id):
 # ==========================================================
 @login_required
 def verificar_reativacao_view(transacao_seq):
-    user_id = session.get('user_id')
-    if not user_id:
+    usuario_id = session.get('user_id')
+    if not usuario_id:
         return jsonify({'success': False, 'error': 'Usuário não encontrado'}), 401
 
     conexao, cursor = ini_conexao()
@@ -39,8 +39,8 @@ def verificar_reativacao_view(transacao_seq):
     cursor.execute("""
         SELECT descricao, status, tipo, ativo, transacao_pai_id, total_parcelas
         FROM transacoes
-        WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 0
-    """, (transacao_seq, user_id))
+        WHERE sequencia_transacoes = %s AND usuario_id = %s AND ativo = 0
+    """, (transacao_seq, usuario_id))
 
     transacao = cursor.fetchone()
     conexao.close()
@@ -80,8 +80,8 @@ def verificar_reativacao_view(transacao_seq):
 # ==========================================================
 @login_required
 def reativar_view(transacao_seq):
-    user_id = session.get('user_id')
-    if not user_id:
+    usuario_id = session.get('user_id')
+    if not usuario_id:
         return '', 401
 
     conexao, cursor = ini_conexao()
@@ -89,8 +89,8 @@ def reativar_view(transacao_seq):
     cursor.execute("""
         SELECT id, descricao
         FROM transacoes
-        WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 0
-    """, (transacao_seq, user_id))
+        WHERE sequencia_transacoes = %s AND usuario_id = %s AND ativo = 0
+    """, (transacao_seq, usuario_id))
 
     transacao = cursor.fetchone()
     if not transacao:
@@ -105,8 +105,8 @@ def reativar_view(transacao_seq):
             excluido_em = NULL,
             excluido_por = NULL,
             data_alteracao = CURRENT_TIMESTAMP
-        WHERE id = %s AND user_id = %s AND ativo = 0
-    """, (id_interno, user_id))
+        WHERE id = %s AND usuario_id = %s AND ativo = 0
+    """, (id_interno, usuario_id))
 
     # 🔥 Auditoria
     AuditoriaFinanceiraService.registrar(
@@ -128,8 +128,8 @@ def reativar_view(transacao_seq):
                t.numero_parcela, t.total_parcelas, t.transacao_pai_id, t.valor_parcela
         FROM transacoes t
         LEFT JOIN categorias_financas c ON c.id = t.categoria_id
-        WHERE t.id = %s AND t.user_id = %s
-    """, (id_interno, user_id))
+        WHERE t.id = %s AND t.usuario_id = %s
+    """, (id_interno, usuario_id))
 
     transacao_atualizada = cursor.fetchone()
     conexao.close()
@@ -156,16 +156,16 @@ def reativar_view(transacao_seq):
 # ==========================================================
 @login_required
 def reativar_parcelamento_view(transacao_pai_id):
-    user_id = session.get('user_id')
-    if not user_id:
+    usuario_id = session.get('user_id')
+    if not usuario_id:
         return '', 401
 
     conexao, cursor = ini_conexao()
 
     cursor.execute("""
         SELECT id FROM transacoes
-        WHERE id = %s AND user_id = %s AND ativo = 0
-    """, (transacao_pai_id, user_id))
+        WHERE id = %s AND usuario_id = %s AND ativo = 0
+    """, (transacao_pai_id, usuario_id))
 
     pai = cursor.fetchone()
     if not pai:
@@ -179,9 +179,9 @@ def reativar_parcelamento_view(transacao_pai_id):
             excluido_por = NULL,
             data_alteracao = CURRENT_TIMESTAMP
         WHERE (id = %s OR transacao_pai_id = %s)
-        AND user_id = %s
+        AND usuario_id = %s
         AND ativo = 0
-    """, (transacao_pai_id, transacao_pai_id, user_id))
+    """, (transacao_pai_id, transacao_pai_id, usuario_id))
 
     # 🔥 Auditoria (usa o id do PAI)
     AuditoriaFinanceiraService.registrar(
@@ -195,7 +195,7 @@ def reativar_parcelamento_view(transacao_pai_id):
 
     conexao.commit()
 
-    transacoes_formatadas = _buscar_transacoes_com_filtros(cursor, user_id)
+    transacoes_formatadas = _buscar_transacoes_com_filtros(cursor, usuario_id)
     conexao.close()
 
     html = render_template(

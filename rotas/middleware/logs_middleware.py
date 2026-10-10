@@ -162,7 +162,7 @@ def log_acesso_middleware(app):
         else:
             # Registra como acesso normal
             LogService.registrar_acesso(
-                user_id=user_id,
+                usuario_id=user_id,
                 ip=ip,
                 user_agent=user_agent,
                 rota=request.path[:255],

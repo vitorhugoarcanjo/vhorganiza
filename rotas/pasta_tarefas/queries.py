@@ -11,7 +11,7 @@ class TarefasQueries:
         return """
             SELECT id, nome, cor
             FROM categorias_tarefas
-            WHERE user_id = %s
+            WHERE usuario_id = %s
             ORDER BY nome
         """
 
@@ -33,7 +33,7 @@ class TarefasQueries:
                    t.ativo
             FROM tarefas t
             LEFT JOIN categorias_tarefas c ON c.id = t.categoria_id
-            WHERE t.user_id = %s
+            WHERE t.usuario_id = %s
         """
 
     @staticmethod
@@ -52,5 +52,5 @@ class TarefasQueries:
                    c.cor  AS categoria_cor
             FROM tarefas t
             LEFT JOIN categorias_tarefas c ON c.id = t.categoria_id
-            WHERE t.tarefa_sequencia = %s AND t.user_id = %s
+            WHERE t.tarefa_sequencia = %s AND t.usuario_id = %s
         """

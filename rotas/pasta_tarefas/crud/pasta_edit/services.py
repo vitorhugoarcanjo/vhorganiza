@@ -14,12 +14,12 @@ class EditarTarefaService:
     # CATEGORIAS (pro <select> do modal)
     # ------------------------------------------------------
     @staticmethod
-    def buscar_categorias(cursor, user_id):
+    def buscar_categorias(cursor, usuario_id):
         try:
             cursor.execute("""
                 SELECT id, nome, cor FROM categorias_tarefas
-                WHERE user_id = %s ORDER BY nome ASC
-            """, (user_id,))
+                WHERE usuario_id = %s ORDER BY nome ASC
+            """, (usuario_id,))
             return cursor.fetchall()
         except Exception as e:
             logger.error(f"Erro ao buscar categorias: {e}")
@@ -29,7 +29,7 @@ class EditarTarefaService:
     # BUSCA BÁSICA POR SEQUÊNCIA
     # ------------------------------------------------------
     @staticmethod
-    def buscar_tarefa_por_sequencia(cursor, sequencia, user_id):
+    def buscar_tarefa_por_sequencia(cursor, sequencia, usuario_id):
         """
         Retorna tupla:
           0  tarefa_sequencia
@@ -49,17 +49,17 @@ class EditarTarefaService:
                    data_inicio, data_final, data_finalizacao,
                    categoria_id, prioridade, motivo_conclusao, ativo
             FROM tarefas
-            WHERE tarefa_sequencia = %s AND user_id = %s
-        """, (sequencia, user_id))
+            WHERE tarefa_sequencia = %s AND usuario_id = %s
+        """, (sequencia, usuario_id))
         return cursor.fetchone()
 
     # ------------------------------------------------------
     # ATUALIZAR
     # ------------------------------------------------------
     @staticmethod
-    def atualizar_tarefa(cursor, sequencia, user_id, dados):
+    def atualizar_tarefa(cursor, sequencia, usuario_id, dados):
         tarefa_atual = EditarTarefaService.buscar_tarefa_por_sequencia(
-            cursor, sequencia, user_id
+            cursor, sequencia, usuario_id
         )
         if not tarefa_atual:
             return {'success': False, 'error': 'Tarefa não encontrada'}
@@ -67,8 +67,8 @@ class EditarTarefaService:
         # Busca o ID interno
         cursor.execute("""
             SELECT id FROM tarefas
-            WHERE tarefa_sequencia = %s AND user_id = %s
-        """, (sequencia, user_id))
+            WHERE tarefa_sequencia = %s AND usuario_id = %s
+        """, (sequencia, usuario_id))
         row = cursor.fetchone()
         if not row:
             return {'success': False, 'error': 'Tarefa não encontrada'}
@@ -125,7 +125,7 @@ class EditarTarefaService:
                 data_final    = %s,
                 categoria_id  = %s,
                 updated_at    = CURRENT_TIMESTAMP
-            WHERE id = %s AND user_id = %s
+            WHERE id = %s AND usuario_id = %s
         """, (
             dados['titulo'],
             dados['descricao'],
@@ -135,7 +135,7 @@ class EditarTarefaService:
             dados['data_final'],
             dados['categoria_id'],
             id_interno,
-            user_id,
+            usuario_id,
         ))
 
         return {

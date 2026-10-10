@@ -16,15 +16,15 @@ def historico_tarefa(tarefa_seq):
     Recebe a SEQUÊNCIA (URL: /auditoria/tarefa/<seq>).
     Traduz pra ID interno e busca auditoria.
     """
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     # 🆕 Busca tarefa pelo ID interno + dados pro header
     cursor.execute("""
         SELECT id, tarefa_sequencia, titulo
         FROM tarefas
-        WHERE tarefa_sequencia = %s AND user_id = %s
-    """, (tarefa_seq, user_id))
+        WHERE tarefa_sequencia = %s AND usuario_id = %s
+    """, (tarefa_seq, usuario_id))
     row = cursor.fetchone()
 
     if not row:

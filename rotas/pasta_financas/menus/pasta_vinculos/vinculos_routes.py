@@ -9,7 +9,7 @@ bp_vinculos = Blueprint('api_vinculos', __name__)
 @bp_vinculos.route('/vinculos/<int:sequencia>', methods=['GET'])
 @login_required
 def buscar_vinculos(sequencia):
-    user_id = session.get('user_id')
+    usuario_id = session.get('user_id')
     
     conexao, cursor = ini_conexao()
         
@@ -18,8 +18,8 @@ def buscar_vinculos(sequencia):
         SELECT sequencia_transacoes, transacao_pai_id, total_parcelas, 
                 numero_parcela, tipo, descricao
         FROM transacoes 
-        WHERE sequencia_transacoes = %s AND user_id = %s AND ativo = 1
-    """, (sequencia, user_id))
+        WHERE sequencia_transacoes = %s AND usuario_id = %s AND ativo = 1
+    """, (sequencia, usuario_id))
     
     transacao = cursor.fetchone()
     
@@ -36,9 +36,9 @@ def buscar_vinculos(sequencia):
             SELECT sequencia_transacoes, numero_parcela, total_parcelas, 
                     valor_parcela, data_vencimento, status
             FROM transacoes
-            WHERE transacao_pai_id = %s AND user_id = %s AND ativo = 1
+            WHERE transacao_pai_id = %s AND usuario_id = %s AND ativo = 1
             ORDER BY numero_parcela
-        """, (transacao_pai_id, user_id))
+        """, (transacao_pai_id, usuario_id))
         
         for row in cursor.fetchall():
             vinculos.append({
@@ -56,9 +56,9 @@ def buscar_vinculos(sequencia):
             SELECT sequencia_transacoes, numero_parcela, total_parcelas, 
                     valor_parcela, data_vencimento, status
             FROM transacoes
-            WHERE transacao_pai_id = %s AND user_id = %s AND ativo = 1
+            WHERE transacao_pai_id = %s AND usuario_id = %s AND ativo = 1
             ORDER BY numero_parcela
-        """, (sequencia, user_id))
+        """, (sequencia, usuario_id))
         
         for row in cursor.fetchall():
             vinculos.append({

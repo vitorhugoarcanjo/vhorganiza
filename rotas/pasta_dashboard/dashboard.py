@@ -11,7 +11,7 @@ bp_dashboard = Blueprint('dashboard', __name__)
 @login_required
 def inidashboard():
     data_hoje = date.today()
-    user_id = session['user_id']
+    usuario_id = session['user_id']
 
     # ===== FILTRO DE DATA (MESMA FUNÇÃO DO FINANÇAS) =====
     data_inicio, data_fim, tipo_data = filtro_datas(data_hoje, prefixo='dashboard')
@@ -32,10 +32,10 @@ def inidashboard():
     conexao, cursor = ini_conexao()
 
     # Query base
-    query_receitas = 'SELECT SUM(valor_total) FROM transacoes WHERE user_id = %s AND tipo = %s'
-    query_despesas = 'SELECT SUM(valor_total) FROM transacoes WHERE user_id = %s AND tipo = %s'
-    params_receitas = [user_id, 'receita']
-    params_despesas = [user_id, 'despesa']
+    query_receitas = 'SELECT SUM(valor_total) FROM transacoes WHERE usuario_id = %s AND tipo = %s'
+    query_despesas = 'SELECT SUM(valor_total) FROM transacoes WHERE usuario_id = %s AND tipo = %s'
+    params_receitas = [usuario_id, 'receita']
+    params_despesas = [usuario_id, 'despesa']
 
     # 🔥 FILTRO DE DATA (mesma lógica do finanças)
     if data_inicio and data_fim:

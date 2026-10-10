@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 # ==========================================================
 # HELPER — busca tarefas com filtros da sessão
 # ==========================================================
-def _buscar_tarefas_com_filtros(cursor, user_id):
+def _buscar_tarefas_com_filtros(cursor, usuario_id):
     data_inicio, data_fim, tipo_data = TarefasFilters.processar_filtros_data()
     filtros = {
         'data_inicio': data_inicio,
         'data_fim': data_fim,
         'tipo_data': tipo_data,
-        'categorias': TarefasFilters.filtro_categorias(user_id, cursor)[0],
+        'categorias': TarefasFilters.filtro_categorias(usuario_id, cursor)[0],
         'status': TarefasFilters.filtro_status(),
         'prioridade': TarefasFilters.filtro_prioridade(),
         'descricao': TarefasFilters.filtro_descricao(),
@@ -36,12 +36,12 @@ def _buscar_tarefas_com_filtros(cursor, user_id):
     }
 
     service = TarefasServices(conexao=None, cursor=cursor)
-    tarefas_raw = service.buscar_tarefas(user_id, filtros)
+    tarefas_raw = service.buscar_tarefas(usuario_id, filtros)
     return TarefasFormatters.formatar_tarefas(tarefas_raw)
 
 
-def _render_tbody(user_id, cursor):
-    tarefas = _buscar_tarefas_com_filtros(cursor, user_id)
+def _render_tbody(usuario_id, cursor):
+    tarefas = _buscar_tarefas_com_filtros(cursor, usuario_id)
     return render_template(
         'pasta_tarefas/partials/_tbody_tarefas.html.jinja',
         tarefas=tarefas,
@@ -54,11 +54,11 @@ def _render_tbody(user_id, cursor):
 # ==========================================================
 @login_required
 def reativar_tarefa(sequencia):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     conexao, cursor = ini_conexao()
 
     try:
-        resultado = ReativarTarefaService.reativar_tarefa(cursor, sequencia, user_id)
+        resultado = ReativarTarefaService.reativar_tarefa(cursor, sequencia, usuario_id)
         if not resultado.get('success'):
             conexao.close()
             return '', 404
@@ -75,7 +75,7 @@ def reativar_tarefa(sequencia):
 
         conexao.commit()
 
-        html = _render_tbody(user_id, cursor)
+        html = _render_tbody(usuario_id, cursor)
         conexao.close()
 
         resp = make_response(html)
@@ -86,6 +86,6 @@ def reativar_tarefa(sequencia):
 
     except Exception as e:
         conexao.rollback()
-        logger.exception(f"Erro ao reativar tarefa sequencia={sequencia} user_id={user_id}")
+        logger.exception(f"Erro ao reativar tarefa sequencia={sequencia} usuario_id={user_id}")
         conexao.close()
         return '', 500

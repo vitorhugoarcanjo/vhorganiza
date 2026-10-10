@@ -9,7 +9,7 @@ from rotas.pasta_financas.formatters import FinancasFormatters
 
 @login_required
 def quitar_transacao_view(sequencia):
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     hoje = date.today().isoformat()
 
     conexao, cursor = ini_conexao()
@@ -17,8 +17,8 @@ def quitar_transacao_view(sequencia):
     cursor.execute("""
         SELECT id, descricao, status, tipo
         FROM transacoes
-        WHERE sequencia_transacoes = %s AND user_id = %s
-    """, (sequencia, user_id))
+        WHERE sequencia_transacoes = %s AND usuario_id = %s
+    """, (sequencia, usuario_id))
 
     transacao = cursor.fetchone()
     if not transacao:
@@ -37,8 +37,8 @@ def quitar_transacao_view(sequencia):
     cursor.execute("""
         UPDATE transacoes
         SET status = %s, data_quitamento = %s
-        WHERE id = %s AND user_id = %s
-    """, (novo_status, hoje, id_interno, user_id))
+        WHERE id = %s AND usuario_id = %s
+    """, (novo_status, hoje, id_interno, usuario_id))
 
     # 🔥 Auditoria com ID INTERNO (na MESMA conexão)
     AuditoriaFinanceiraService.registrar(
@@ -60,8 +60,8 @@ def quitar_transacao_view(sequencia):
                t.numero_parcela, t.total_parcelas, t.transacao_pai_id, t.valor_parcela
         FROM transacoes t
         LEFT JOIN categorias_financas c ON c.id = t.categoria_id
-        WHERE t.sequencia_transacoes = %s AND t.user_id = %s
-    """, (sequencia, user_id))
+        WHERE t.sequencia_transacoes = %s AND t.usuario_id = %s
+    """, (sequencia, usuario_id))
 
     transacao_atualizada = cursor.fetchone()
     conexao.close()

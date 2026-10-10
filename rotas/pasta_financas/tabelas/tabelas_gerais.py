@@ -6,7 +6,7 @@ def tabela_transacoes(cursor, tipo_banco='postgresql'):
         cursor.execute("""
         CREATE TABLE transacoes (
             id SERIAL PRIMARY KEY,
-            user_id INTEGER,
+            usuario_id INTEGER,
             sequencia_transacoes INTEGER,
             
             -- dados básicos da transação
@@ -40,7 +40,7 @@ def tabela_transacoes(cursor, tipo_banco='postgresql'):
             excluido_em TIMESTAMP,
             ativo INTEGER DEFAULT 1,
             
-            FOREIGN KEY (user_id) REFERENCES cadastre_se(id) ON DELETE CASCADE,
+            FOREIGN KEY (usuario_id) REFERENCES cadastre_se(id) ON DELETE CASCADE,
             FOREIGN KEY (categoria_id) REFERENCES categorias_financas(id) ON DELETE SET NULL
         )
     """)

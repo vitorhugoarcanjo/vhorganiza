@@ -18,12 +18,12 @@ class ConcluirTarefaService:
         return datetime.now(fuso).strftime("%Y-%m-%d %H:%M:%S")
 
     @staticmethod
-    def concluir_tarefa(cursor, sequencia, user_id, motivo):
+    def concluir_tarefa(cursor, sequencia, usuario_id, motivo):
         # 🔥 Busca dados antes + id interno
         cursor.execute("""
             SELECT id, titulo, status FROM tarefas
-            WHERE tarefa_sequencia = %s AND user_id = %s AND ativo = 1
-        """, (sequencia, user_id))
+            WHERE tarefa_sequencia = %s AND usuario_id = %s AND ativo = 1
+        """, (sequencia, usuario_id))
         tarefa = cursor.fetchone()
 
         if not tarefa:
@@ -44,13 +44,13 @@ class ConcluirTarefaService:
                 data_finalizacao = %s,
                 updated_at = %s,
                 motivo_conclusao = %s
-            WHERE id = %s AND user_id = %s
+            WHERE id = %s AND usuario_id = %s
         """, (
             agora,
             agora,
             motivo if motivo else None,
             id_interno,
-            user_id,
+            usuario_id,
         ))
 
         return {

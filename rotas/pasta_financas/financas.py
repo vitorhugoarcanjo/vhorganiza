@@ -12,7 +12,7 @@ from .formatters import FinancasFormatters
 @login_required
 def ini_financas():
     """ Página principal de finanças """
-    user_id = session['user_id']
+    usuario_id = session['user_id']
     is_htmx = request.headers.get('HX-Request') == 'true'
 
     # 1. PROCESSA FILTROS
@@ -36,13 +36,13 @@ def ini_financas():
     # Busca categorias (só se não for HTMX)
     categorias_usuario = []
     if not is_htmx:
-        categorias_usuario = service.buscar_categorias(user_id)
+        categorias_usuario = service.buscar_categorias(usuario_id)
 
     categorias_modal = [(cat[0], cat[1]) for cat in categorias_usuario]
     hoje = date.today().isoformat()
 
     # BUSCA E FORMATAR TRANSAÇÕES (retorna lista de Dicionários)
-    transacoes_raw = service.buscar_transacoes(user_id, filtros)
+    transacoes_raw = service.buscar_transacoes(usuario_id, filtros)
     transacoes = FinancasFormatters.formatar_transacoes(transacoes_raw)
 
     # 🔥 CALCULA TOTAIS USANDO O 'valor_raw' (FLOAT BRUTO) E FORMATA
