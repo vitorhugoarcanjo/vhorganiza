@@ -1,0 +1,68 @@
+{# templates/pasta_categorias/partials/_linha_categoria.html.jinja #}
+{# Partial: 1 linha da tabela de categorias #}
+<tr class="cat-linha {% if categoria.ativo == 0 %}cat-linha-inativa{% endif %}"
+    id="linha-categoria-{{ categoria.id }}"
+    data-id="{{ categoria.id }}">
+
+    <!-- Nº -->
+    <td class="cat-td-id">{{ categoria.sequencia or '—' }}</td>
+
+    <!-- NOME -->
+    <td class="cat-td-nome" title="{{ categoria.nome }}">
+        {{ categoria.nome }}
+    </td>
+
+    <!-- COR -->
+    <td class="cat-td-cor">
+        <span class="cat-cor-dot" style="background: {{ categoria.cor }};"></span>
+    </td>
+
+    <!-- AÇÕES -->
+    <td class="cat-td-acoes">
+
+        <!-- AUDITORIA -->
+        <button type="button"
+                class="cat-btn-acao cat-btn-audit"
+                hx-get="{{ url_for('auditoria.historico_categoria', categoria_id=categoria.id) }}"
+                hx-target="#modal-auditoria-container"
+                hx-swap="innerHTML"
+                title="Ver histórico">
+            <i class="bi bi-clock-history"></i>
+        </button>
+
+        {% if categoria.ativo == 1 %}
+
+            <!-- EDITAR -->
+            <button type="button"
+                    class="cat-btn-acao cat-btn-edit"
+                    hx-get="{{ url_for('categorias.edit_categorias.editar_categoria_modal', categoria_id=categoria.id) }}"
+                    hx-target="#modal-editar-container"
+                    hx-swap="innerHTML"
+                    title="Editar">
+                <i class="bi bi-pencil"></i>
+            </button>
+
+            <!-- EXCLUIR (inativar) -->
+            <button type="button"
+                    class="cat-btn-acao cat-btn-delete btn-excluir"
+                    data-id="{{ categoria.id }}"
+                    data-nome="{{ categoria.nome }}"
+                    title="Inativar">
+                <i class="bi bi-trash"></i>
+            </button>
+
+        {% else %}
+
+            <!-- REATIVAR -->
+            <button type="button"
+                    class="cat-btn-acao cat-btn-reativar btn-reativar"
+                    data-id="{{ categoria.id }}"
+                    data-nome="{{ categoria.nome }}"
+                    title="Reativar">
+                <i class="bi bi-arrow-repeat"></i>
+            </button>
+
+        {% endif %}
+
+    </td>
+</tr>

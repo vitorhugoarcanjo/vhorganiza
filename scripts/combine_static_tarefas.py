@@ -8,9 +8,11 @@ from datetime import datetime
 
 JS_FILES = [
     # ========================================= #
-    # CORE - GLOBAL
+    # COMPONENTS - GLOBAL
     # ========================================= #
     'static/js/componentes/botoes_filtros.js',
+    'static/js/componentes/criar_categoria_inline.js',
+
 
     # ========================================= #
     # CORE (classe base compartilhada)
@@ -51,6 +53,12 @@ CSS_FILES = [
     # ========================================= #
     'static/css/core/reset.css',
     'static/css/core/responsive.css',
+
+    # ========================================= #
+    # COMPONENTS
+    # ========================================= #
+    'static/css/components/categoria_inline.css',
+
 
     # ========================================= #
     # COMPONENTS (MESMA LISTA DO FINANÇAS)

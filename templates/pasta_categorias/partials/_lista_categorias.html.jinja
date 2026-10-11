@@ -1,0 +1,19 @@
+{# templates/pasta_categorias/partials/_lista_categorias.html.jinja #}
+{# Partial: lista de categorias (usado pelo modal inline) #}
+<div class="modal-cat-lista">
+    {% if categorias %}
+        {% for cat in categorias %}
+            <div class="modal-cat-item">
+                <span class="modal-cat-cor" style="background: {{ cat[2] or '#CCCCCC' }};"></span>
+                <span class="modal-cat-nome">{{ cat[1] }}</span>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div style="text-align: center; padding: 40px 20px; color: var(--texto-discreto);">
+            <i class="bi bi-tags" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+            Nenhuma categoria de {{ modulo }} ainda.
+            <br>
+            <small>Clique em "Nova Categoria" pra começar.</small>
+        </div>
+    {% endif %}
+</div>

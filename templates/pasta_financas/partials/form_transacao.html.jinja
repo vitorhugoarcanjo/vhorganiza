@@ -26,12 +26,23 @@
 
         <div class="form-group">
             <label>Categoria</label>
-            <select name="categoria_id" class="form-select js-categoria">
-                <option value="">Selecione...</option>
-                {% for cat in categorias %}
-                    <option value="{{ cat[0] }}">{{ cat[1] }}</option>
-                {% endfor %}
-            </select>
+            <div class="categoria-wrapper">
+                <select name="categoria_id" class="form-select js-categoria">
+                    <option value="">Selecione...</option>
+                    {% for cat in categorias %}
+                        <option value="{{ cat[0] }}"
+                                data-cor="{{ cat[2] or '#6c757d' }}">
+                            {{ cat[1] }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="button"
+                        class="btn-add-categoria"
+                        onclick="abrirModalNovaCategoriaInline('financas')"
+                        title="Nova categoria">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+            </div>
         </div>
 
         <div class="form-group descricao-full">

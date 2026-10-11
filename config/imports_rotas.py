@@ -20,7 +20,7 @@ from rotas.pasta_config.config import bp_config
 from rotas.pasta_tarefas import bp_tarefas
 
 # PASTA CATEGORIAS
-from rotas.pasta_categorias.logica_insert_categorias import bp_categorias
+from rotas.pasta_categorias import bp_categorias
 
 # PASTA PAINEL DE LOGS
 from rotas.logs import importar_logs

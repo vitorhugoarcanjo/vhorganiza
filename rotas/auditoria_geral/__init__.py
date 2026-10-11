@@ -13,6 +13,7 @@ bp_auditoria = Blueprint('auditoria', __name__)
 from .pasta_tarefas.logica_auditoria   import historico_tarefa
 from .pasta_financas.logica_auditoria  import historico_transacao
 from .pasta_orcamentos.logica_auditoria import historico_orcamento
+from .pasta_categorias.logica_auditoria import historico_categoria
 
 # ==========================================================
 # ROTAS
@@ -33,4 +34,10 @@ bp_auditoria.add_url_rule(
     '/orcamento/<int:orcamento_seq>',
     view_func=historico_orcamento,
     endpoint='historico_orcamento'
+)
+
+bp_auditoria.add_url_rule(
+    '/categoria/<int:categoria_id>',
+    view_func=historico_categoria,
+    endpoint='historico_categoria'
 )

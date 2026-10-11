@@ -1,0 +1,18 @@
+{# templates/pasta_categorias/partials/_tbody_categorias.html.jinja #}
+{# Partial: <tbody> com todas as linhas de categorias de UM módulo #}
+<tbody id="tbody-categorias-{{ modulo }}">
+    {% if categorias %}
+        {% for categoria in categorias %}
+            {% include 'pasta_categorias/partials/_linha_categoria.html.jinja' %}
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="4" class="cat-vazio">
+                <i class="bi bi-tags" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+                Nenhuma categoria de {{ modulo }} encontrada.
+                <br>
+                <small>Clique em "NOVO" para criar a primeira.</small>
+            </td>
+        </tr>
+    {% endif %}
+</tbody>

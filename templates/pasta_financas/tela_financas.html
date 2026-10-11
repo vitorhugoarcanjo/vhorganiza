@@ -288,8 +288,10 @@
             <i class="bi bi-plus-lg"></i>NOVO
         </button>
 
-        <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn-footer btn-footer-secondary">
-            <i class="bi bi-tags"></i>CATEGORIAS
+        <a href="{{ url_for('categorias.ini_categorias') }}"
+        class="btn-footer btn-footer-secondary">
+            <i class="bi bi-tags"></i>
+            <span>CATEGORIAS</span>
         </a>
     </div>
 
@@ -324,6 +326,7 @@
 {% include 'pasta_financas/modais/modal_menu_click.html' %}
 {% include 'pasta_financas/modais/modal_estornar_finan.html' %}
 {% include 'pasta_financas/modais/modal_reativar_inativo.html' %}
+{% include 'pasta_categorias/modais/modal_nova_categoria_inline.html.jinja' %}
 
 <!-- Container dinâmico para carregar o Modal de Edição via HTMX -->
 <div id="modal-editar-container"></div>

@@ -168,7 +168,9 @@
             <i class="bi bi-plus-lg"></i>
             <span>NOVO</span>
         </button>
-        <a href="{{ url_for('categorias.insert_categorias_global') }}" class="btn-footer btn-footer-secondary" title="Categorias">
+        
+        <a href="{{ url_for('categorias.ini_categorias') }}"
+        class="btn-footer btn-footer-secondary">
             <i class="bi bi-tags"></i>
             <span>CATEGORIAS</span>
         </a>
@@ -212,6 +214,7 @@
 {% include 'pasta_tarefas/modais/excluir_tarefa.html' %}
 {% include 'pasta_tarefas/modais/reabrir_tarefa.html' %}
 {% include 'pasta_tarefas/modais/reativar_tarefa.html' %} 
+{% include 'pasta_categorias/modais/modal_nova_categoria_inline.html.jinja' %}
 
 {% endblock %}
 

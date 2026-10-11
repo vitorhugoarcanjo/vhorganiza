@@ -1,0 +1,271 @@
+/* static/css/modules/pasta_categorias/categorias.css */
+/* ========================================================== */
+/* CSS ESPECÍFICO DO MÓDULO CATEGORIAS (PREFIXO cat-)           */
+/* ========================================================== */
+
+/* ==========================================================
+   GRID DE 2 BOXES
+   ========================================================== */
+.cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 12px;
+    height: calc(100vh - 260px);
+    overflow: hidden;
+}
+
+@media (max-width: 968px) {
+    .cat-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow: visible;
+    }
+}
+
+/* ==========================================================
+   BOX INDIVIDUAL
+   ========================================================== */
+.cat-box {
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-sutil);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.cat-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border-sutil);
+    background: rgba(37, 99, 235, 0.05);
+    flex-shrink: 0;
+}
+
+.cat-box-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--texto-principal);
+}
+
+/* ==========================================================
+   SCROLL INTERNO
+   ========================================================== */
+.cat-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+.cat-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cat-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cat-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.cat-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ==========================================================
+   TABELA
+   ========================================================== */
+.cat-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.8rem;
+}
+
+.cat-table th {
+    font-size: 0.65rem;
+    color: var(--texto-discreto);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-sutil);
+    background: var(--bg-card);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cat-table td {
+    padding: 8px 10px;
+    color: var(--texto-principal);
+    border-bottom: 1px solid var(--border-sutil);
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cat-table tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* ==========================================================
+   COLUNAS
+   ========================================================== */
+.cat-td-id {
+    text-align: center;
+    color: var(--texto-discreto);
+    font-weight: 600;
+}
+
+.cat-td-nome {
+    color: var(--texto-principal);
+    font-weight: 500;
+}
+
+.cat-td-cor {
+    text-align: center;
+}
+
+.cat-td-acoes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ==========================================================
+   BOLINHA DE COR
+   ========================================================== */
+.cat-cor-dot {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+    vertical-align: middle;
+}
+
+/* ==========================================================
+   LINHA INATIVA
+   ========================================================== */
+.cat-linha.cat-linha-inativa {
+    opacity: 0.45;
+}
+
+/* ==========================================================
+   BOTÕES DE AÇÃO
+   ========================================================== */
+.cat-btn-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+    background: transparent;
+    color: var(--texto-discreto);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 0.8rem;
+}
+
+.cat-btn-acao:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cat-btn-audit:hover {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.cat-btn-edit:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.cat-btn-delete:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.cat-btn-reativar:hover {
+    border-color: #22c55e;
+    color: #22c55e;
+}
+
+/* ==========================================================
+   MODAL LISTA DE CATEGORIAS
+   ========================================================== */
+.modal-cat-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.modal-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid var(--border-sutil);
+}
+
+.modal-cat-cor {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.modal-cat-nome {
+    color: var(--texto-principal);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ==========================================================
+   VAZIO
+   ========================================================== */
+.cat-vazio {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--texto-discreto);
+}
+
+/* ==========================================================
+   RESPONSIVO
+   ========================================================== */
+@media (max-width: 600px) {
+    .cat-grid {
+        padding: 8px;
+        gap: 12px;
+    }
+
+    .cat-box-header {
+        padding: 10px 12px;
+    }
+
+    .cat-scroll {
+        max-height: 400px;
+    }
+
+    .cat-table th,
+    .cat-table td {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+}

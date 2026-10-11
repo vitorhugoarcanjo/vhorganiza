@@ -1,0 +1,60 @@
+<!-- templates/pasta_categorias/_tabela_categorias.html.jinja -->
+<div id="tabela-container" data-url-refresh="{{ url_for('categorias.ini_categorias') }}">
+
+    <div class="cat-grid">
+
+        <!-- ===================== TAREFAS ===================== -->
+        <div class="cat-box">
+            <div class="cat-box-header">
+                <div class="cat-box-title">🏷️ Categorias - Tarefas</div>
+                <span class="badge-pure bg-primary">
+                    {{ categorias_tarefas|length }} Categorias
+                </span>
+            </div>
+
+            <div class="cat-scroll">
+                <table class="cat-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">Nº</th>
+                            <th>Nome</th>
+                            <th style="width: 70px; text-align: center;">Cor</th>
+                            <th style="width: 130px; text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    {% with categorias=categorias_tarefas, modulo='tarefas' %}
+                        {% include 'pasta_categorias/partials/_tbody_categorias.html.jinja' with context %}
+                    {% endwith %}
+                </table>
+            </div>
+        </div>
+
+        <!-- ===================== FINANÇAS ===================== -->
+        <div class="cat-box">
+            <div class="cat-box-header">
+                <div class="cat-box-title">💰 Categorias - Finanças</div>
+                <span class="badge-pure bg-primary">
+                    {{ categorias_financas|length }} Categorias
+                </span>
+            </div>
+
+            <div class="cat-scroll">
+                <table class="cat-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">Nº</th>
+                            <th>Nome</th>
+                            <th style="width: 70px; text-align: center;">Cor</th>
+                            <th style="width: 130px; text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    {% with categorias=categorias_financas, modulo='financas' %}
+                        {% include 'pasta_categorias/partials/_tbody_categorias.html.jinja' with context %}
+                    {% endwith %}
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>

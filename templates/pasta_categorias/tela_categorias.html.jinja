@@ -1,206 +1,134 @@
-<!-- templates\pasta_categorias\tela_categorias.html.jinja -->
+<!-- templates/pasta_categorias/tela_categorias.html.jinja -->
 {% extends "tela_base_pos_login/base.html" %}
 
+{% block title %}Categorias - Gestão{% endblock %}
+
 {% block styles %}
-<link rel="stylesheet" href="{{ static_v('pasta_categorias/categorias.css') }}">
+    <link rel="stylesheet" href="{{ static_v('css/modules/pasta_categorias/categorias.min.css') }}">
 {% endblock %}
 
 {% block content %}
-
 <div class="painel-container">
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    <!-- ========================================================== -->
+    <!-- FILTROS                                                     -->
+    <!-- ========================================================== -->
     <div class="painel-topo-fixo">
+        <form id="form-filtros-categorias"
+              hx-post="{{ url_for('categorias.ini_categorias') }}"
+              hx-target="#tabela-container"
+              hx-swap="outerHTML"
+              class="form-filtros-total">
 
-        <div class="tarefas-controle-header">
+            <div class="filtros-container">
 
-            <div class="botoes-esquerda">
+                <div class="bloco-filtro bloco-pesquisa-fim">
+                    <div>
+                        <div class="bloco-titulo">🔍 BUSCAR</div>
+                        <input type="text" name="descricao" class="form-control" placeholder="buscar categoria..."
+                               value="{{ descricao_filtro or '' }}">
+                    </div>
 
-                <!-- TAREFAS -->
-                <a href="{{ url_for('tarefas.ini_tarefas') }}"
-                class="btn-nav btn-destaque">
-                    ← Tarefas
-                </a>
+                    <div style="margin-top: 4px;">
+                        <label class="text-white-50" style="font-size: var(--fs-micro); display:block; margin-bottom:1px;">Mostrar:</label>
+                        <div class="flex-row gap-1" id="botoes-categorias">
+                            <button type="button"
+                                    class="btn-filter flex-fill {% if mostrar_inativas == '0' %}btn-active-toggle{% endif %}"
+                                    hx-post="{{ url_for('categorias.ini_categorias') }}"
+                                    hx-vals='{"mostrar_inativas": "0"}'
+                                    hx-target="#tabela-container"
+                                    hx-swap="outerHTML">Ativas
+                            </button>
 
-                <!-- FINANÇAS -->
-                <a href="{{ url_for('financas.ini_financas') }}"
-                class="btn-nav btn-destaque">
-                    ← Finanças
-                </a>
+                            <button type="button"
+                                    class="btn-filter flex-fill {% if mostrar_inativas == '1' %}btn-active-toggle{% endif %}"
+                                    hx-post="{{ url_for('categorias.ini_categorias') }}"
+                                    hx-vals='{"mostrar_inativas": "1"}'
+                                    hx-target="#tabela-container"
+                                    hx-swap="outerHTML">Inativas
+                            </button>
 
-                <!-- NOVA CATEGORIA -->
-                <a href="{{ url_for('categorias.insert_categorias_global') }}"
-                   class="btn-pure btn-success-pure btn-destaque">
-                    + Nova Categoria
-                </a>
+                            <button type="button"
+                                    class="btn-filter flex-fill {% if mostrar_inativas == '2' %}btn-active-toggle{% endif %}"
+                                    hx-post="{{ url_for('categorias.ini_categorias') }}"
+                                    hx-vals='{"mostrar_inativas": "2"}'
+                                    hx-target="#tabela-container"
+                                    hx-swap="outerHTML">Todas
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex-row gap-1" style="margin-top: 6px;">
+                        <a href="{{ url_for('categorias.limpar_filtros') }}" class="btn-pure flex-fill" style="text-align: center;">Limpar</a>
+                        <button type="submit" class="btn-pure btn-primary-pure flex-fill">Consultar</button>
+                    </div>
+
+                    <input type="hidden" name="mostrar_inativas" id="mostrar_inativas_input" value="{{ mostrar_inativas }}">
+                </div>
 
             </div>
-
-        </div>
-
+        </form>
     </div>
 
-    <!-- =====================================================
-         GRID PRINCIPAL (TAREFAS / FINANÇAS)
-    ====================================================== -->
-    <div class="categorias-grid">
-
-        <!-- ===================== TAREFAS ===================== -->
-        <div class="categoria-box">
-
-            <div class="box-header">
-                <div class="box-title">🏷️ Categorias - Tarefas</div>
-
-                <span class="badge-pure bg-primary">
-                    {{ categoria_tarefas|length }} Categorias
-                </span>
-            </div>
-
-            <div class="status-direita">
-
-            </div>
-
-            <table class="custom-table">
-
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th style="width: 80px;">Cor</th>
-                        <th style="width: 90px; text-align:center;">Ações</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                {% if categoria_tarefas %}
-
-                    {% for row in categoria_tarefas %}
-                    <tr>
-
-                        <td class="td-titulo">
-                            {{ row[1] }}
-                        </td>
-
-                        <td>
-                            <span class="cor-dot"
-                                  style="background: {{ row[2] }};"></span>
-                        </td>
-
-                        <td class="td-acoes">
-
-                            <a href="{{ url_for('categorias.editar_categoria_form', id=row[0], tipo='tarefas') }}"
-                            class="btn-acao edit"
-                            title="Editar">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-
-                            <a href="{{ url_for('categorias.excluir_categoria', modulo='tarefas', id=row[0]) }}"
-                               class="btn-acao delete"
-                               title="Excluir"
-                               onclick="return confirm('Excluir categoria?')">
-                                <i class="bi bi-trash"></i>
-                            </a>
-
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-
-                {% else %}
-
-                    <tr>
-                        <td colspan="3" class="td-vazio">
-                            <i class="bi bi-tags" style="font-size: 2rem; opacity: 0.5;"></i>
-                            <p>Nenhuma categoria de tarefas</p>
-                        </td>
-                    </tr>
-
-                {% endif %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <!-- ===================== FINANÇAS ===================== -->
-        <div class="categoria-box">
-
-            <div class="box-header">
-                <div class="box-title">💰 Categorias - Finanças</div>
-
-                <span class="badge-pure bg-primary">
-                    {{ categoria_financas|length }} Categorias
-                </span>
-            </div>
-
-            <table class="custom-table">
-
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th style="width: 80px;">Cor</th>
-                        <th style="width: 90px; text-align:center;">Ações</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                {% if categoria_financas %}
-
-                    {% for row in categoria_financas %}
-                    <tr>
-
-                        <td class="td-titulo">
-                            {{ row[1] }}
-                        </td>
-
-                        <td>
-                            <span class="cor-dot"
-                                  style="background: {{ row[2] }};"></span>
-                        </td>
-
-                        <td class="td-acoes">
-
-                            <a href="{{ url_for('categorias.editar_categoria_form', id=row[0], tipo='financas') }}"
-                            class="btn-acao edit"
-                            title="Editar">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-
-                            <a href="{{ url_for('categorias.excluir_categoria', modulo='financas', id=row[0]) }}"
-                               class="btn-acao delete"
-                               title="Excluir"
-                               onclick="return confirm('Excluir categoria?')">
-                                <i class="bi bi-trash"></i>
-                            </a>
-
-                        </td>
-
-                    </tr>
-                    {% endfor %}
-
-                {% else %}
-
-                    <tr>
-                        <td colspan="3" class="td-vazio">
-                            <i class="bi bi-tags" style="font-size: 2rem; opacity: 0.5;"></i>
-                            <p>Nenhuma categoria de Finanças</p>
-                        </td>
-                    </tr>
-
-                {% endif %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
+    <!-- ========================================================== -->
+    <!-- TABELA (partial) - 2 BOXES                                 -->
+    <!-- ========================================================== -->
+    {% include 'pasta_categorias/_tabela_categorias.html.jinja' %}
 
 </div>
 
+
+<!-- ========================================================== -->
+<!-- FOOTER FIXO                                                 -->
+<!-- ========================================================== -->
+<div class="footer-fixo-padrao">
+    <div class="botoes-footer-padrao">
+        <button type="button"
+                class="btn-footer btn-footer-primary"
+                hx-get="{{ url_for('categorias.insert_categorias.nova_categoria_modal', modulo='tarefas') }}"
+                hx-target="#modal-nova-container"
+                hx-swap="innerHTML"
+                title="Nova Categoria">
+            <i class="bi bi-plus-lg"></i>
+            <span>NOVO</span>
+        </button>
+    </div>
+
+    <div>
+        <h2>CATEGORIAS</h2>
+    </div>
+
+    <div class="totalizador-footer-padrao">
+        <div class="total-item-footer">
+            <label>🏷️ TAREFAS</label>
+            <span>{{ contadores.tarefas }}</span>
+        </div>
+        <div class="total-item-footer">
+            <label>💰 FINANÇAS</label>
+            <span>{{ contadores.financas }}</span>
+        </div>
+        <div class="contador-footer">
+            <i class="bi bi-list-ul"></i>
+            <span>{{ categorias_tarefas|length + categorias_financas|length }} categorias</span>
+        </div>
+    </div>
+</div>
+
+
+<!-- ========================================================== -->
+<!-- CONTAINERS DOS MODAIS                                       -->
+<!-- ========================================================== -->
+<div id="modal-nova-container"></div>
+<div id="modal-editar-container"></div>
+<div id="modal-auditoria-container"></div>
+
+<!-- Modais fixos (excluir / reativar) -->
+{% include 'pasta_categorias/modais/modal_excluir_categoria.html.jinja' %}
+{% include 'pasta_categorias/modais/modal_reativar_categoria.html.jinja' %}
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{ static_v('js/modules/pasta_categorias/categorias.min.js') }}"></script>
 {% endblock %}

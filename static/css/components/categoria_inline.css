@@ -1,0 +1,83 @@
+/* static/css/components/categoria_inline.css */
+/* ========================================================== */
+/* WRAPPER DE CATEGORIA (SELECT + BOTÃO +) — COMPARTILHADO     */
+/* ========================================================== */
+
+.categoria-wrapper {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.categoria-wrapper .form-select {
+    flex: 1;
+    min-width: 0;
+}
+
+.btn-add-categoria {
+    width: 38px;
+    min-height: 38px;
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cor-ativa);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+    font-size: 1rem;
+}
+
+.btn-add-categoria:hover {
+    border-color: var(--cor-ativa);
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.btn-add-categoria:active {
+    transform: scale(0.95);
+}
+
+/* ==========================================================
+   MODAL INLINE — 2 BLOCOS
+   ========================================================== */
+#modalNovaCategoriaInline .fin-modal-box-small {
+    height: auto;
+    max-height: 80vh;
+    width: 90%;
+    max-width: 520px;
+    margin: auto;
+    border-radius: 12px;
+}
+
+#modalNovaCategoriaInline .fin-modal-body {
+    padding: 20px 24px;
+    max-height: calc(80vh - 180px);
+    overflow-y: auto;
+}
+
+.cat-inline-bloco {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-sutil);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.cat-inline-bloco-titulo {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cat-inline-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+}

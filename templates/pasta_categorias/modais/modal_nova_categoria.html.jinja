@@ -1,0 +1,54 @@
+<!-- templates/pasta_categorias/modais/modal_nova_categoria.html.jinja -->
+<div class="fin-modal-overlay active" id="modalNovaCategoria">
+    <div class="fin-modal-box">
+        <div class="fin-modal-header">
+            <h3><i class="bi bi-tag"></i> Nova Categoria</h3>
+            <button class="fin-btn-close-modal" onclick="fecharModalNovaCategoria()">✕</button>
+        </div>
+
+        <form id="formNovaCategoria" class="fin-modal-form">
+            <div class="fin-modal-body">
+
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text"
+                           id="novaCategoriaNome"
+                           name="nome"
+                           class="form-input"
+                           placeholder="Ex: Trabalho, Pessoal, Alimentação..."
+                           maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Cor</label>
+                    <input type="color"
+                           id="novaCategoriaCor"
+                           name="cor"
+                           class="form-input"
+                           value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label>Módulo *</label>
+                    <select id="novaCategoriaModulo" name="modulo" class="form-select">
+                        <option value="tarefas" {% if modulo == 'tarefas' %}selected{% endif %}>📋 Tarefas</option>
+                        <option value="financas" {% if modulo == 'financas' %}selected{% endif %}>💰 Finanças</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="footer-fixo-padrao">
+                <div class="botoes-footer-padrao">
+                    <button type="submit" class="btn-footer btn-footer-primary">
+                        <i class="bi bi-check-lg"></i> SALVAR
+                    </button>
+                    <button type="button" class="btn-footer-cancelar" onclick="fecharModalNovaCategoria()">
+                        <i class="bi bi-x-circle"></i> CANCELAR
+                    </button>
+                </div>
+                <h2>NOVA - CATEGORIA</h2>
+            </div>
+        </form>
+    </div>
+</div>

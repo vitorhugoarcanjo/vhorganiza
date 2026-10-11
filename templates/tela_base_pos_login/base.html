@@ -58,21 +58,24 @@
                             <i class="bi bi-check2-square"></i> Tarefas
                         </a>
                     </li>
+
+                    <li>
+                        <a href="{{ url_for('orcamentos.ini_orcamento') }}" class="{% if request.endpoint == 'orcamentos.ini_orcamento' %}active{% endif %}">
+                            <i class="bi bi-box2"></i> Orçamentos
+                        </a>
+                    </li>
+
                     <li>
                         <a href="{{ url_for('dashboard.inidashboard') }}" class="{% if request.endpoint == 'dashboard.inidashboard' %}active{% endif %}">
                             <i class="bi bi-graph-up"></i> Dashboard
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url_for('categorias.listar_categorias') }}" class="{% if request.endpoint == 'categorias.listar_categorias' %}active{% endif %}">
+                        <a href="{{ url_for('categorias.ini_categorias') }}" class="{% if request.endpoint == 'categorias.ini_categorias' %}active{% endif %}">
                             <i class="bi bi-calendar2-plus-fill"></i> Categorias
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ url_for('orcamentos.ini_orcamento') }}" class="{% if request.endpoint == 'orcamentos.ini_orcamento' %}active{% endif %}">
-                            <i class="bi bi-box2"></i> Orçamentos
-                        </a>
-                    </li>
+
 
                     
                     <li style="margin-top: 1.5rem;">

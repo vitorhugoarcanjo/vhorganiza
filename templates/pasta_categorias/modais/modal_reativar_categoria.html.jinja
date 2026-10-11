@@ -1,0 +1,32 @@
+<!-- templates/pasta_categorias/modais/modal_reativar_categoria.html.jinja -->
+<div class="fin-modal-overlay" id="modalReativarCategoria">
+    <div class="fin-modal-box fin-modal-box-small">
+        <div class="fin-modal-header">
+            <h3><i class="bi bi-arrow-repeat"></i> Reativar Categoria</h3>
+            <button class="fin-btn-close-modal" onclick="fecharModalReativarCategoria()">✕</button>
+        </div>
+
+        <div class="fin-modal-body">
+            <p style="margin-bottom: 8px;">
+                Deseja reativar a categoria <strong id="nomeCategoriaReativar"></strong>?
+            </p>
+        </div>
+
+        <div class="footer-fixo-padrao">
+            <div class="botoes-footer-padrao">
+                <button type="button"
+                        class="btn-footer btn-footer-primary"
+                        id="btnConfirmarReativarCategoria">
+                    <i class="bi bi-arrow-repeat"></i> REATIVAR
+                </button>
+                <button type="button"
+                        class="btn-footer-cancelar"
+                        id="btnCancelarReativarCategoria"
+                        onclick="fecharModalReativarCategoria()">
+                    <i class="bi bi-x-circle"></i> CANCELAR
+                </button>
+            </div>
+            <h2>REATIVAR - CATEGORIA</h2>
+        </div>
+    </div>
+</div>

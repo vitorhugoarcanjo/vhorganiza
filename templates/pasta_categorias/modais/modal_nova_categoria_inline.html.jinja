@@ -1,0 +1,77 @@
+<!-- templates/pasta_categorias/modais/modal_nova_categoria_inline.html.jinja -->
+<!-- ========================================================== -->
+<!-- MODAL NOVA CATEGORIA INLINE (2 blocos)                     -->
+<!-- ========================================================== -->
+<div class="fin-modal-overlay modal-empilhado" id="modalNovaCategoriaInline">
+    <div class="fin-modal-box fin-modal-box-small">
+        <div class="fin-modal-header">
+            <h3>
+                <div class="cat-inline-bloco-titulo"><i class="bi bi-tag"></i>Criar nova categoria</div>
+            </h3>
+
+            <button class="fin-btn-close-modal" onclick="fecharModalNovaCategoriaInline()">✕</button>
+        </div>
+
+        <div class="fin-modal-body">
+
+            <!-- ================================================ -->
+            <!-- BLOCO 1 — INSERIR                                  -->
+            <!-- ================================================ -->
+            <div class="cat-inline-bloco">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text"
+                           id="catInlineNome"
+                           name="nome"
+                           class="form-input"
+                           placeholder="Ex: Trabalho, Pessoal..."
+                           maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Cor</label>
+                    <input type="color"
+                           id="catInlineCor"
+                           name="cor"
+                           class="form-input"
+                           value="#2563eb">
+                </div>
+
+                <div class="form-group">
+                    <label>Módulo</label>
+                    <input type="text"
+                           id="catInlineModulo"
+                           class="form-input"
+                           value=""
+                           disabled>
+                    <input type="hidden" id="catInlineModuloHidden" value="">
+                </div>
+
+                <div class="flex-row gap-1" style="margin-top: 10px;">
+                    <button type="button"
+                            class="btn-pure btn-success-pure flex-fill"
+                            onclick="salvarCategoriaInline()">
+                        <i class="bi bi-check-lg"></i> Criar
+                    </button>
+                    <button type="button"
+                            class="btn-pure flex-fill"
+                            onclick="fecharModalNovaCategoriaInline()">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================================================ -->
+            <!-- BLOCO 2 — CATEGORIAS EXISTENTES                    -->
+            <!-- ================================================ -->
+            <div class="cat-inline-bloco" style="margin-top: 16px;">
+                <div class="cat-inline-bloco-titulo">📋 Categorias existentes</div>
+
+                <div id="catInlineLista" class="cat-inline-lista">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

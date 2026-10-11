@@ -1,0 +1,35 @@
+<!-- templates/pasta_categorias/modais/modal_excluir_categoria.html.jinja -->
+<div class="fin-modal-overlay" id="modalExcluirCategoria">
+    <div class="fin-modal-box fin-modal-box-small">
+        <div class="fin-modal-header">
+            <h3><i class="bi bi-exclamation-triangle"></i> Inativar Categoria</h3>
+            <button class="fin-btn-close-modal" onclick="fecharModalExcluirCategoria()">✕</button>
+        </div>
+
+        <div class="fin-modal-body">
+            <p style="margin-bottom: 8px;">
+                Tem certeza que deseja inativar a categoria <strong id="nomeCategoriaExcluir"></strong>?
+            </p>
+            <p style="color: var(--texto-discreto); font-size: 0.85rem;">
+                Você poderá reativá-la depois.
+            </p>
+        </div>
+
+        <div class="footer-fixo-padrao">
+            <div class="botoes-footer-padrao">
+                <button type="button"
+                        class="btn-footer btn-footer-primary"
+                        id="btnConfirmarExcluirCategoria">
+                    <i class="bi bi-trash"></i> INATIVAR
+                </button>
+                <button type="button"
+                        class="btn-footer-cancelar"
+                        id="btnCancelarExcluirCategoria"
+                        onclick="fecharModalExcluirCategoria()">
+                    <i class="bi bi-x-circle"></i> CANCELAR
+                </button>
+            </div>
+            <h2>INATIVAR - CATEGORIA</h2>
+        </div>
+    </div>
+</div>

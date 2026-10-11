@@ -1,0 +1,2139 @@
+/* COMBINADO - 11/10/2026 10:26 */
+
+/* ===== reset.css ===== */
+/*
+static\css\core\reset.css
+   ==========================================================================
+   1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
+   ========================================================================== */
+:root {
+    --fs-micro: 0.62rem;
+    --fs-pequeno: 0.72rem;
+    --fs-normal: 0.8rem;
+}
+
+.content {
+    padding: 0 !important; 
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.painel-container {
+    display: flex;
+    flex-direction: column;
+    width: 98% !important;
+    max-width: 98% !important;
+    height: 100%;
+    margin: 0 auto !important;
+    padding: 10px 0;
+    gap: 8px;
+    background-color: var(--bg-principal);
+    font-size: var(--fs-normal);
+}
+
+.scroll-fino::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scroll-fino::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-fino::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.35);
+    border-radius: 10px;
+}
+
+.scroll-fino::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 120, 120, 0.6);
+}
+
+.scroll-fino {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120,120,120,0.5) transparent;
+    overflow-y: auto;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+}
+
+.painel-tabela-conteudo {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+
+/* ===== responsive.css ===== */
+/* 
+static\css\core\responsive.css
+   ==========================================================================
+   6. RESPONSIVIDADE - CORRIGIDA
+   ========================================================================== */
+
+/* Força scroll horizontal quando tabela não couber */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tablet e mobile - tabela rola horizontal */
+@media (max-width: 1096px) {
+    .custom-table {
+        min-width: 900px;
+    }
+    
+    .td-acoes {
+        flex-wrap: nowrap !important;
+    }
+    
+    .custom-table td:last-child,
+    .custom-table th:last-child {
+        position: sticky;
+        right: 0;
+        background-color: inherit;
+    }
+}
+
+/* Remove a regra específica da descrição */
+/* Deixa a tabela toda rolar se precisar */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.custom-table {
+    min-width: 1000px; /* Força largura mínima */
+}
+
+/* DESCRIÇÃO PADRÃO */
+.custom-table td:nth-child(4) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
+/* Mobile - empilha filtros */
+@media (max-width: 768px) {
+    .filtros-container {
+        flex-direction: column !important;
+    }
+    
+    .bloco-filtro {
+        width: 100% !important;
+    }
+    
+    .custom-table {
+        min-width: 800px;
+    }
+}
+
+/* Footer nunca some - só ajusta posição */
+@media (max-width: 768px) {
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
+    }
+    
+    .botoes-footer-padrao,
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .totalizador-footer-padrao {
+        margin-left: 0;
+    }
+}
+
+/* ===== buttons.css ===== */
+/*
+static\css\components\buttons.css
+==========================================================
+   BOTÃO - NOVO/SALVAR (AZUL)
+   ========================================================== */
+.btn-footer-primary {
+    background: var(--btn-primary-bg);
+    color: #ffffff;
+}
+
+.btn-footer-primary i,
+.btn-footer-primary span {
+    color: #ffffff;
+}
+
+.btn-footer-primary:hover {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.btn-footer-primary:hover i,
+.btn-footer-primary:hover span {
+    color: #ffffff;
+}
+
+/* ==========================================================
+   BOTÃO - CATEGORIAS (FUNDO ESCURO COM BORDA) - CATEGORIAS
+   ========================================================== */
+.btn-footer-secondary {
+    background: #0f172a;
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-footer-secondary i {
+    color: #94a3b8;
+}
+
+.btn-footer-secondary span {
+    color: #94a3b8;
+}
+
+.btn-footer-secondary:hover {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #2563eb;
+}
+
+.btn-footer-secondary:hover i {
+    color: #f8fafc;
+}
+
+.btn-footer-secondary:hover span {
+    color: #f8fafc;
+}
+
+/* ==========================================================
+    BOTÃO CANCELAR (VERMELHO NO HOVER)
+   ========================================================== */
+.btn-footer-cancelar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 60px;
+    height: 60px;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    position: relative;
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-footer-cancelar i {
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+    color: #e82525;
+}
+
+.btn-footer-cancelar span {
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+    color: #94a3b8;
+}
+
+.btn-footer-cancelar:hover {
+    transform: scale(1.08);
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+}
+
+.btn-footer-cancelar:hover i {
+    color: #ef4444;
+}
+
+.btn-footer-cancelar:hover span {
+    color: #ef4444;
+}
+
+
+/* ==========================================================
+   BOTÕES DE FILTRO (Ativas/Inativas/Todas)
+   ========================================================== */
+
+.btn-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-filter:hover {
+    background-color: #1d42d8;
+    border-color: var(--texto-mutado);
+    color: #ffffff;
+
+}
+
+.btn-filter.active {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #ffffff;
+}
+
+.btn-filter.active:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   4. BOTÕES DE AÇÃO
+   ========================================================================== */
+.td-acoes {
+    text-align: center;
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: var(--fs-pequeno);
+    padding: 0;
+}
+
+.btn-acao:hover {
+    color: var(--texto-principal);
+}
+
+.btn-acao.view:hover {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-acao.check:hover {
+    background-color: rgba(34, 197, 94, 0.1);
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
+}
+
+.btn-acao.edit:hover {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-acao.delete:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.btn-pure {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    font-size: var(--fs-pequeno) !important;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-pure:hover {
+    background: var(--hover-fino);
+}
+
+/* ==========================================================
+   EFEITO RIPPLE (ONDE CLICOU)
+   ========================================================== */
+
+.btn-pure {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s ease;
+}
+
+/* Elemento da onda */
+.btn-pure .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 0.5s ease-out;
+    pointer-events: none;
+}
+
+/* Cor da onda no modo escuro (padrão) */
+.btn-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Cor da onda no modo claro */
+.light-mode .btn-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Ondas para botões específicos no modo escuro */
+.btn-success-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-info-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-primary-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Ondas para botões específicos no modo claro */
+.light-mode .btn-success-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .btn-info-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .btn-primary-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Animação da onda */
+@keyframes ripple-animation {
+    0% {
+        transform: scale(0);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Efeito de clique (aperta o botão) */
+.btn-pure:active {
+    transform: scale(0.97);
+    transition: transform 0.05s ease;
+}
+
+/* Remove outline feio no clique (mantém acessibilidade) */
+.btn-pure:focus-visible {
+    outline: 2px solid var(--cor-ativa);
+    outline-offset: 2px;
+}
+
+/* ==========================================================
+   FIM DO EFEITO RIPPLE
+   ========================================================== */
+
+.btn-success-pure {
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
+}
+
+.btn-info-pure {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-primary-pure {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #fff;
+}
+
+.btn-active-toggle {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #fff;
+}
+
+.btn-destaque {
+    font-weight: 600;
+}
+
+/* ===== filters.css ===== */
+/*
+static\css\components\filters.css
+   ==========================================================================
+   2. FILTROS
+   ========================================================================== */
+.painel-topo-fixo {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.form-filtros-total {
+    width: 100%;
+}
+
+.filtros-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.bloco-filtro {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px;
+    flex: 1;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.bloco-filtro:first-child {
+    flex: 1.8;
+    min-width: 210px;
+}
+
+.bloco-filtro .form-select,
+.bloco-filtro .form-control:not(.flex-row .form-control),
+.bloco-filtro .lista-categorias {
+    margin-top: auto;
+}
+
+.bloco-pesquisa-fim {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bloco-titulo {
+    font-size: var(--fs-micro) !important;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    margin-bottom: 4px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flex-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.flex-row:last-child { margin-bottom: 0; }
+.flex-fill { flex: 1; }
+
+.form-control, .form-select {
+    width: 100%;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    border-radius: 4px;
+    font-size: var(--fs-pequeno) !important;
+    outline: none;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label-categoria {
+    font-size: var(--fs-pequeno);
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.span_categorias {
+    font-size: var(--fs-pequeno);
+}
+
+.tarefas-controle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px;
+}
+
+.botoes-esquerda {
+    display: flex;
+    gap: 6px;
+}
+
+/* ===== footer.css ===== */
+/*
+static\css\components\footer.css
+   ==========================================================
+   FOOTER - CSS REORGANIZADO
+   ========================================================== */
+
+/* ==========================================================
+   1. BASE DO FOOTER
+   ========================================================== */
+.footer-fixo-padrao {
+    position: fixed;
+    bottom: 0;
+    left: 60px;
+    right: 0;
+    background: #1e293b;  /* ← FUNDO ESCURO FIXO */
+    border-top: 2px solid #2563eb;  /* ← BORDA AZUL FIXA */
+    padding: 6px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    min-height: 70px;
+    transition: left 0.3s ease;
+}
+
+.sidebar:hover ~ .footer-fixo-padrao {
+    left: 220px;
+}
+
+h2 {
+    color: white;
+}
+
+/* ==========================================================
+   2. CONTAINER DE BOTÕES
+   ========================================================== */
+.botoes-footer-padrao {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ==========================================================
+   3. BOTÃO PADRÃO (BASE PARA TODOS)
+   ========================================================== */
+.botoes-footer-padrao .btn-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 60px;
+    height: 60px;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    position: relative;
+}
+
+.botoes-footer-padrao .btn-footer i {
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.botoes-footer-padrao .btn-footer span {
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+/* HOVER PADRÃO */
+.botoes-footer-padrao .btn-footer:hover {
+    transform: scale(1.08);
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+
+/* ==========================================================
+   7. TOTALIZADORES
+   ========================================================== */
+.totalizador-footer-padrao {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.total-item-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+}
+
+.total-item-footer label {
+    font-size: 0.5rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.total-item-footer span {
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* ==========================================================
+   8. CORES DOS TOTALIZADORES
+   ========================================================== */
+.total-receita span { color: #22c55e; }
+.total-despesa span { color: #ef4444; }
+.total-saldo span { color: #2563eb; }
+.total-pendente span { color: #ef4444; }
+.total-andamento span { color: #f59e0b; }
+.total-concluidas span { color: #22c55e; }
+
+/* ==========================================================
+   9. CONTADOR
+   ========================================================== */
+.contador-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #0f172a;
+    border-radius: 4px;
+    padding: 4px 12px;
+    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.contador-footer i {
+    font-size: 0.85rem;
+    color: #2563eb;
+}
+
+.contador-footer span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+/* ==========================================================
+   10. MOBILE (TUDO JUNTO)
+   ========================================================== */
+@media (max-width: 768px) {
+    /* BASE */
+    .footer-fixo-padrao {
+        left: 0 !important;
+        flex-wrap: wrap;
+        padding: 6px 12px;
+        min-height: auto;
+        gap: 6px;
+    }
+
+    /* BOTÕES */
+    .botoes-footer-padrao {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .botoes-footer-padrao .btn-footer {
+        width: 48px;
+        height: 48px;
+        padding: 4px;
+        border-radius: 6px;
+    }
+
+    .botoes-footer-padrao .btn-footer i {
+        font-size: 1.2rem;
+    }
+
+    .botoes-footer-padrao .btn-footer span {
+        font-size: 0.5rem;
+    }
+
+    .botoes-footer-padrao .btn-footer:hover {
+        transform: none;
+    }
+
+    /* BOTÃO CANCELAR MOBILE */
+    .btn-footer-cancelar {
+        width: 48px;
+        height: 48px;
+        padding: 4px;
+        border-radius: 6px;
+    }
+
+    .btn-footer-cancelar i {
+        font-size: 1.2rem;
+    }
+
+    .btn-footer-cancelar span {
+        font-size: 0.5rem;
+    }
+
+    .btn-footer-cancelar:hover {
+        transform: none;
+    }
+
+    /* TOTALIZADORES */
+    .totalizador-footer-padrao {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+        gap: 12px;
+    }
+
+    .total-item-footer span {
+        font-size: 0.75rem;
+    }
+
+    /* CONTADOR */
+    .contador-footer {
+        height: 28px;
+        padding: 2px 10px;
+    }
+
+    .contador-footer span {
+        font-size: 0.65rem;
+    }
+}
+
+/* ===== tables.css ===== */
+/*
+static\css\components\tables.css
+   ==========================================================================
+   3. TABELA PROFISSIONAL COM ZEBRADO E HOVER
+   ========================================================================== */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-normal);
+    table-layout: fixed;
+}
+
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
+    color: var(--texto-mutado);
+    font-weight: 600;
+    padding: 4px 6px !important;
+    border-bottom: 2px solid var(--border-sutil);
+    z-index: 10;
+    text-align: left;
+    font-size: var(--fs-micro) !important;
+}
+
+.custom-table td {
+    padding: 4px 6px !important;
+    border-bottom: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--fs-pequeno) !important;
+    transition: all 0.2s ease;
+}
+
+/* ZEBRADO - UM SIM, OUTRO NÃO */
+.custom-table tbody tr:nth-child(odd) {
+    background-color: var(--bg-principal);
+}
+
+.custom-table tbody tr:nth-child(even) {
+    background-color: var(--hover-fino);
+}
+
+/* HOVER FORTE */
+.custom-table tbody tr:hover {
+    background-color: rgba(37, 99, 235, 0.15) !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* LINHA SELECIONADA (CLIQUE DIREITO) */
+.custom-table tbody tr.selecionado {
+    background-color: rgba(37, 99, 235, 0.25) !important;
+    border-left: 3px solid var(--cor-ativa);
+    box-shadow: inset 0 0 0 1px var(--cor-ativa);
+}
+
+.custom-table tbody tr.selecionado td:first-child {
+    border-left: 3px solid var(--cor-ativa);
+    padding-left: 3px;
+}
+
+/* BORDAS ARREDONDADAS NO HOVER */
+.custom-table tbody tr:hover td:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.custom-table tbody tr:hover td:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.td-id {
+    color: var(--texto-discreto);
+    font-weight: bold;
+}
+
+.td-titulo {
+    font-weight: 500;
+}
+
+.text-vazio {
+    color: var(--texto-discreto);
+}
+
+.td-vazio {
+    text-align: center;
+    padding: 30px;
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   BADGES
+   ========================================================== */
+.badge-pure {
+    padding: 1px 4px !important;
+    border-radius: 4px;
+    font-size: var(--fs-micro) !important;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* ==========================================================
+   ORDENAÇÃO DE COLUNAS
+   ========================================================== */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 20px !important;
+}
+
+.sortable:hover {
+    background-color: var(--hover-fino);
+}
+
+.sortable::after {
+    content: "↕️";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    opacity: 0.5;
+}
+
+.sortable.asc::after {
+    content: "↑";
+    opacity: 1;
+}
+
+.sortable.desc::after {
+    content: "↓";
+    opacity: 1;
+}
+
+/* ==========================================================
+   REDIMENSIONAMENTO DE COLUNAS
+   ========================================================== */
+.custom-table th {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-card);
+    color: var(--texto-mutado);
+    font-weight: 600;
+    padding: 4px 6px !important;
+    border-bottom: 2px solid var(--border-sutil);
+    z-index: 10;
+    text-align: left;
+    font-size: var(--fs-micro) !important;
+    position: relative;
+}
+
+/* Largura mínima para texto não quebrar */
+.custom-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Para descrição, permitir quebra de linha se necessário */
+.custom-table td:nth-child(4) {
+    white-space: normal;
+    word-break: break-word;
+    min-width: 150px;
+    max-width: 300px;
+}
+
+/* ===== modal.css ===== */
+/* static/css/components/modal.css
+   ==========================================================
+   MODAL FULL-SCREEN (criar/editar)
+   Compartilhado por TODOS os módulos.
+   ========================================================== */
+
+.fin-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.fin-modal-overlay.active {
+    display: flex;
+}
+
+.fin-modal-box {
+    background: var(--bg-card);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    animation: finModalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+@keyframes finModalSlideIn {
+    from { opacity: 0; transform: scale(0.96) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.fin-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 2px solid var(--border-sutil);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: var(--bg-card);
+}
+
+.fin-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.fin-modal-header-left h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+}
+
+.fin-modal-header-left h3 i {
+    color: var(--cor-ativa);
+    margin-right: 8px;
+}
+
+.fin-btn-close-modal {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fin-btn-close-modal:hover {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.fin-modal-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.fin-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px 90px 24px;
+}
+
+.fin-modal-body::-webkit-scrollbar { width: 5px; }
+.fin-modal-body::-webkit-scrollbar-track { background: transparent; }
+.fin-modal-body::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+}
+.fin-modal-body::-webkit-scrollbar-thumb:hover { background: var(--texto-mutado); }
+
+.fin-modal-overlay.active .footer-fixo-padrao {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+}
+
+@media (max-width: 768px) {
+    .fin-modal-header { padding: 12px 16px; }
+    .fin-modal-body   { padding: 12px 16px 80px 16px; }
+    .fin-modal-header-left h3 { font-size: 1rem; }
+}
+
+/* ===== modal_confirmacao.css ===== */
+/* static/css/components/modal_confirmacao.css
+   ==========================================================
+   MODAL DE CONFIRMAÇÃO (pequeno)
+   Cor configurável via classe modificadora no .modal-confirmacao-box.
+   ========================================================== */
+
+.modal-confirmacao-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-confirmacao-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-confirmacao-box {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    max-width: 90vw;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: modalConfirmacaoIn 0.2s ease-out;
+}
+
+@keyframes modalConfirmacaoIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-confirmacao-box h3 {
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.modal-confirmacao-box p {
+    margin: 15px 0;
+    color: #ddd;
+    white-space: pre-line;
+    line-height: 1.5;
+}
+
+.modal-confirmacao-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-confirmacao-cancelar {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    border-radius: 8px;
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-confirmacao-cancelar:hover {
+    background: #555;
+}
+
+.btn-confirmacao-confirmar {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    border-radius: 8px;
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.btn-confirmacao-confirmar:hover {
+    background: #c0392b;
+}
+
+.btn-confirmacao-confirmar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========================================================== */
+/* MODIFICADORES DE COR                                       */
+/* ========================================================== */
+
+/* 🟠 Estornar */
+.modal-confirmacao-box.confirmar-estornar h3 {
+    color: #ff9f43;
+}
+.modal-confirmacao-box.confirmar-estornar .btn-confirmacao-confirmar {
+    background: #fd7e14;
+}
+.modal-confirmacao-box.confirmar-estornar .btn-confirmacao-confirmar:hover {
+    background: #e66700;
+}
+
+/* ✅ Concluir */
+.modal-confirmacao-box.confirmar-concluir .btn-confirmacao-confirmar {
+    background: #22c55e;
+}
+.modal-confirmacao-box.confirmar-concluir .btn-confirmacao-confirmar:hover {
+    background: #16a34a;
+}
+
+/* 🔵 Primário */
+.modal-confirmacao-box.confirmar-primario .btn-confirmacao-confirmar {
+    background: var(--cor-ativa);
+}
+.modal-confirmacao-box.confirmar-primario .btn-confirmacao-confirmar:hover {
+    background: #1d4ed8;
+}
+
+/* ===== modal_auditoria.css ===== */
+/* static/css/components/modal_auditoria.css
+   ==========================================================
+   MODAL DE AUDITORIA - COMPARTILHADO
+   Layout accordion (cada registro abre/fecha)
+   ========================================================== */
+
+.audit-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ========================================================== */
+/* ENTRY (registro)                                           */
+/* ========================================================== */
+.audit-entry {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.audit-entry:hover {
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+.audit-entry.open {
+    border-color: rgba(37, 99, 235, 0.5);
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+}
+
+/* ========================================================== */
+/* HEADER (clicável)                                          */
+/* ========================================================== */
+.audit-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.audit-entry-header:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.audit-entry-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.audit-entry-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Chevron */
+.audit-chevron {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+    transition: transform 0.2s ease;
+}
+
+.audit-entry.open .audit-chevron {
+    transform: rotate(90deg);
+}
+
+/* Badge (ação) */
+.audit-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Cores por tipo de ação */
+.audit-badge-criada,
+.audit-badge-criada_parcelada {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.audit-badge-editada {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+}
+
+.audit-badge-excluida,
+.audit-badge-excluida_parcelada {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.audit-badge-reativada,
+.audit-badge-reativada_parcelada {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
+}
+
+.audit-badge-quitada,
+.audit-badge-recebida {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.audit-badge-estornada {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+/* Data/hora */
+.audit-data-hora {
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+}
+
+/* Usuário */
+.audit-usuario {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--texto-mutado);
+}
+
+/* ========================================================== */
+/* BODY (colapsável)                                          */
+/* ========================================================== */
+.audit-entry-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+    border-top: 0 solid transparent;
+}
+
+.audit-entry.open .audit-entry-body {
+    max-height: 2000px;
+    border-top: 1px solid var(--border-sutil);
+}
+
+/* ========================================================== */
+/* FIELDS (campos alterados)                                  */
+/* ========================================================== */
+.audit-fields {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.audit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 12px;
+    background: var(--bg-principal);
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+}
+
+.audit-field-label {
+    font-size: 0.62rem;
+    color: var(--cor-ativa);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.audit-field-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+}
+
+.audit-old {
+    color: #f87171;
+    text-decoration: line-through;
+    background: rgba(248, 113, 113, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.audit-arrow {
+    color: var(--texto-discreto);
+    font-size: 0.7rem;
+}
+
+.audit-new {
+    color: #4ade80;
+    font-weight: 600;
+    background: rgba(74, 222, 128, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+/* Sem alterações */
+.audit-empty {
+    text-align: center;
+    color: var(--texto-mutado);
+    font-size: 0.8rem;
+    padding: 16px;
+    margin: 0;
+}
+
+/* ========================================================== */
+/* FOOTER do registro (IP)                                    */
+/* ========================================================== */
+.audit-footer {
+    padding: 8px 16px;
+    font-size: 0.65rem;
+    color: var(--texto-discreto);
+    border-top: 1px solid var(--border-sutil);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ========================================================== */
+/* Empty state (sem registros)                                */
+/* ========================================================== */
+.audit-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--texto-mutado);
+}
+
+.audit-empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.3;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.audit-empty-state p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* ========================================================== */
+/* Responsivo                                                 */
+/* ========================================================== */
+@media (max-width: 768px) {
+    .audit-entry-header {
+        padding: 10px 12px;
+    }
+    .audit-field {
+        padding: 6px 10px;
+    }
+    .audit-fields {
+        padding: 10px 12px;
+    }
+}
+
+/* ===== form.css ===== */
+/* static/css/components/form.css
+   ==========================================================
+   FORMULÁRIOS - COMPARTILHADO
+   form-grid, form-group, form-input, input-com-prefixo, tipo-btn
+   ========================================================== */
+
+/* ========================================================== */
+/* 1. GRID 3 COLUNAS                                          */
+/* ========================================================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.descricao-full {
+    grid-column: 1 / 3;
+}
+
+/* ========================================================== */
+/* 2. GRID 4 COLUNAS                                          */
+/* ========================================================== */
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* ========================================================== */
+/* 3. FORM GROUP                                              */
+/* ========================================================== */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group label i {
+    margin-right: 4px;
+    color: var(--cor-ativa);
+}
+
+/* ========================================================== */
+/* 4. INPUT / SELECT / TEXTAREA                               */
+/* ========================================================== */
+.form-input,
+.form-select,
+textarea.form-input {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    background: var(--bg-principal);
+    color: var(--texto-principal);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    width: 100%;
+    height: 40px;
+}
+
+textarea.form-input {
+    height: auto;
+    min-height: 80px;
+    resize: vertical;
+    padding: 10px 12px;
+    line-height: 1.4;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--texto-discreto);
+    font-size: 0.8rem;
+}
+
+/* ========================================================== */
+/* 5. TIPO BOTÕES (receita/despesa)                           */
+/* ========================================================== */
+.tipo-container {
+    display: flex;
+    gap: 6px;
+}
+
+.tipo-btn {
+    padding: 8px 12px;
+    border: 2px solid var(--border-sutil);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--texto-mutado);
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+}
+
+.tipo-btn i { font-size: 1.1rem; }
+.tipo-btn:hover { border-color: var(--texto-mutado); color: var(--texto-principal); }
+.tipo-btn.active {
+    border-color: var(--cor-ativa);
+    background: rgba(37, 99, 235, 0.08);
+    color: var(--cor-ativa);
+}
+.tipo-btn.receita.active {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.08);
+    color: #22c55e;
+}
+.tipo-btn.despesa.active {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
+}
+
+/* ========================================================== */
+/* 6. INPUT COM PREFIXO (R$, %)                               */
+/* ========================================================== */
+.input-com-prefixo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-principal);
+    border: 1.5px solid var(--border-sutil);
+    border-radius: 8px;
+    padding: 0 12px;
+    height: 40px;
+    transition: all 0.2s ease;
+}
+
+.input-com-prefixo:focus-within {
+    border-color: var(--cor-ativa);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-com-prefixo .prefixo-moeda {
+    color: var(--texto-mutado);
+    font-weight: 600;
+    font-size: 0.9rem;
+    user-select: none;
+    pointer-events: none;
+}
+
+.input-com-prefixo input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--texto-principal);
+    font-size: 0.9rem;
+    font-family: inherit;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.input-com-prefixo input::placeholder {
+    color: var(--texto-discreto);
+    font-size: 0.8rem;
+}
+
+/* ========================================================== */
+/* 7. VALIDAÇÃO CAMPO-A-CAMPO                                 */
+/* ========================================================== */
+.campo-erro {
+    border: 2px solid #ef4444 !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+    border-radius: 8px;
+}
+
+.msg-erro-campo {
+    display: block;
+    color: #ef4444;
+    font-size: 0.7rem;
+    margin-top: 4px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* Casos especiais */
+.input-com-prefixo.campo-erro {
+    border: 2px solid #ef4444 !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.tipo-container.campo-erro {
+    border: 2px solid #ef4444 !important;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+/* ========================================================== */
+/* 8. RESPONSIVO                                              */
+/* ========================================================== */
+@media (max-width: 1024px) {
+    .form-grid      { grid-template-columns: 1fr 1fr; }
+    .form-grid-4    { grid-template-columns: 1fr 1fr; }
+    .descricao-full { grid-column: 1 / 3; }
+}
+
+@media (max-width: 768px) {
+    .form-grid      { grid-template-columns: 1fr; }
+    .form-grid-4    { grid-template-columns: 1fr; }
+    .descricao-full { grid-column: 1 / 2; }
+}
+
+/* ===== notificacoes_tela.css ===== */
+/*
+static\js\componentes\notificacoes_globais\notificacoes_tela.css
+============================================ */
+/* SISTEMA DE NOTIFICAÇÕES - GLOBAL             */
+/* ============================================ */
+
+.notificacao-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.notificacao-item {
+    background: #1e1e2d;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 300px;
+    max-width: 420px;
+    pointer-events: auto;
+    animation: notificacaoEntrada 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    border-left: 4px solid;
+}
+
+.notificacao-item.sucesso {
+    border-left-color: #28a745;
+    background: #1a2e1f;
+}
+
+.notificacao-item.erro {
+    border-left-color: #dc3545;
+    background: #2e1a1d;
+}
+
+.notificacao-item.aviso {
+    border-left-color: #ffc107;
+    background: #2e2a1a;
+}
+
+.notificacao-item.saindo {
+    animation: notificacaoSaida 0.3s ease forwards;
+}
+
+.notificacao-icone {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.notificacao-mensagem {
+    flex: 1;
+}
+
+.notificacao-fechar {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.notificacao-fechar:hover {
+    color: white;
+}
+
+@keyframes notificacaoEntrada {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes notificacaoSaida {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+}
+
+/* ===== categorias.css ===== */
+/* static/css/modules/pasta_categorias/categorias.css */
+/* ========================================================== */
+/* CSS ESPECÍFICO DO MÓDULO CATEGORIAS (PREFIXO cat-)           */
+/* ========================================================== */
+
+/* ==========================================================
+   GRID DE 2 BOXES
+   ========================================================== */
+.cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 12px;
+    height: calc(100vh - 260px);
+    overflow: hidden;
+}
+
+@media (max-width: 968px) {
+    .cat-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow: visible;
+    }
+}
+
+/* ==========================================================
+   BOX INDIVIDUAL
+   ========================================================== */
+.cat-box {
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-sutil);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.cat-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border-sutil);
+    background: rgba(37, 99, 235, 0.05);
+    flex-shrink: 0;
+}
+
+.cat-box-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--texto-principal);
+}
+
+/* ==========================================================
+   SCROLL INTERNO
+   ========================================================== */
+.cat-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+.cat-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cat-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cat-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.cat-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ==========================================================
+   TABELA
+   ========================================================== */
+.cat-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.8rem;
+}
+
+.cat-table th {
+    font-size: 0.65rem;
+    color: var(--texto-discreto);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-sutil);
+    background: var(--bg-card);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cat-table td {
+    padding: 8px 10px;
+    color: var(--texto-principal);
+    border-bottom: 1px solid var(--border-sutil);
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cat-table tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* ==========================================================
+   COLUNAS
+   ========================================================== */
+.cat-td-id {
+    text-align: center;
+    color: var(--texto-discreto);
+    font-weight: 600;
+}
+
+.cat-td-nome {
+    color: var(--texto-principal);
+    font-weight: 500;
+}
+
+.cat-td-cor {
+    text-align: center;
+}
+
+.cat-td-acoes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ==========================================================
+   BOLINHA DE COR
+   ========================================================== */
+.cat-cor-dot {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+    vertical-align: middle;
+}
+
+/* ==========================================================
+   LINHA INATIVA
+   ========================================================== */
+.cat-linha.cat-linha-inativa {
+    opacity: 0.45;
+}
+
+/* ==========================================================
+   BOTÕES DE AÇÃO
+   ========================================================== */
+.cat-btn-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--border-sutil);
+    background: transparent;
+    color: var(--texto-discreto);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 0.8rem;
+}
+
+.cat-btn-acao:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cat-btn-audit:hover {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.cat-btn-edit:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.cat-btn-delete:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.cat-btn-reativar:hover {
+    border-color: #22c55e;
+    color: #22c55e;
+}
+
+/* ==========================================================
+   MODAL LISTA DE CATEGORIAS
+   ========================================================== */
+.modal-cat-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.modal-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid var(--border-sutil);
+}
+
+.modal-cat-cor {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.modal-cat-nome {
+    color: var(--texto-principal);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ==========================================================
+   VAZIO
+   ========================================================== */
+.cat-vazio {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--texto-discreto);
+}
+
+/* ==========================================================
+   RESPONSIVO
+   ========================================================== */
+@media (max-width: 600px) {
+    .cat-grid {
+        padding: 8px;
+        gap: 12px;
+    }
+
+    .cat-box-header {
+        padding: 10px 12px;
+    }
+
+    .cat-scroll {
+        max-height: 400px;
+    }
+
+    .cat-table th,
+    .cat-table td {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+}
+

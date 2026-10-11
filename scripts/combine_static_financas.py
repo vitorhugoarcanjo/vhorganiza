@@ -11,6 +11,7 @@ JS_FILES = [
     # CORE GLOBAL
     # ========================================= #
     'static/js/componentes/botoes_filtros.js',
+    'static/js/componentes/criar_categoria_inline.js',
 
     # ========================
     # FINANCAS
@@ -72,6 +73,7 @@ CSS_FILES = [
     'static/css/components/form.css',
     'static/css/components/modal_auditoria.css',
     'static/css/components/loading.css',
+    'static/css/components/categoria_inline.css',
 
     # ========================================= #
     # ESPECÍFICO DO FINANÇAS
