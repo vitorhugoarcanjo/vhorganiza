@@ -1,0 +1,1029 @@
+/* COMBINADO - 12/10/2026 07:51 */
+
+/* ===== reset.css ===== */
+/*
+static\css\core\reset.css
+   ==========================================================================
+   1. RESET E OVERRIDE DA BASE (OCUPAR TELA QUASE CHEIA - 98%)
+   ========================================================================== */
+:root {
+    --fs-micro: 0.62rem;
+    --fs-pequeno: 0.72rem;
+    --fs-normal: 0.8rem;
+}
+
+.content {
+    padding: 0 !important; 
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.painel-container {
+    display: flex;
+    flex-direction: column;
+    width: 98% !important;
+    max-width: 98% !important;
+    height: 100%;
+    margin: 0 auto !important;
+    padding: 10px 0;
+    gap: 8px;
+    background-color: var(--bg-principal);
+    font-size: var(--fs-normal);
+}
+
+.scroll-fino::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scroll-fino::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-fino::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.35);
+    border-radius: 10px;
+}
+
+.scroll-fino::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 120, 120, 0.6);
+}
+
+.scroll-fino {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120,120,120,0.5) transparent;
+    overflow-y: auto;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+}
+
+.painel-tabela-conteudo {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+
+/* ===== buttons.css ===== */
+/*
+static\css\components\buttons.css
+   ========================================================== */
+
+/* ==========================================================
+   🔥 BOTÃO DE MÓDULO (todos os módulos principais - AZUL)
+   ========================================================== */
+.btn-footer-modulo {
+    background: var(--btn-primary-bg);
+    color: #ffffff;
+    border: 1px solid transparent;
+}
+
+.btn-footer-modulo i,
+.btn-footer-modulo span {
+    color: #ffffff;
+}
+
+.btn-footer-modulo:hover {
+    background: var(--btn-primary-hover);
+    color: #ffffff;
+    border-color: var(--btn-primary-hover);
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.btn-footer-modulo:hover i,
+.btn-footer-modulo:hover span {
+    color: #ffffff;
+}
+
+/* ==========================================================
+   BOTÃO - NOVO/SALVAR (AZUL)
+   ========================================================== */
+.btn-footer-primary {
+    background: var(--btn-primary-bg);
+    color: #ffffff;
+}
+
+.btn-footer-primary i,
+.btn-footer-primary span {
+    color: #ffffff;
+}
+
+.btn-footer-primary:hover {
+    background: var(--btn-primary-hover);
+    color: #ffffff;
+}
+
+.btn-footer-primary:hover i,
+.btn-footer-primary:hover span {
+    color: #ffffff;
+}
+
+/* ==========================================================
+   BOTÃO - SECUNDÁRIO (BORDA + FUNDO SUTIL)
+   ========================================================== */
+.btn-footer-secondary {
+    background: var(--bg-principal);
+    color: var(--texto-mutado);
+    border: 1px solid var(--border-sutil);
+}
+
+.btn-footer-secondary i {
+    color: var(--texto-mutado);
+}
+
+.btn-footer-secondary span {
+    color: var(--texto-mutado);
+}
+
+.btn-footer-secondary:hover {
+    background: var(--bg-card);
+    color: var(--texto-principal);
+    border-color: var(--cor-ativa);
+}
+
+.btn-footer-secondary:hover i {
+    color: var(--texto-principal);
+}
+
+.btn-footer-secondary:hover span {
+    color: var(--texto-principal);
+}
+
+/* ==========================================================
+   BOTÃO CANCELAR
+   ========================================================== */
+.btn-footer-cancelar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 60px;
+    height: 60px;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    color: var(--texto-mutado);
+    border: 1px solid var(--border-sutil);
+}
+
+.btn-footer-cancelar i {
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+    color: #e82525;
+}
+
+.btn-footer-cancelar span {
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    transition: all 0.2s ease;
+    color: var(--texto-mutado);
+}
+
+.btn-footer-cancelar:hover {
+    transform: scale(1.08);
+    z-index: 2;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+}
+
+.btn-footer-cancelar:hover i {
+    color: #ef4444;
+}
+
+.btn-footer-cancelar:hover span {
+    color: #ef4444;
+}
+
+/* ==========================================================
+   BOTÕES DE FILTRO (Ativas/Inativas/Todas)
+   ========================================================== */
+.btn-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-filter:hover {
+    background-color: #1d42d8;
+    border-color: var(--texto-mutado);
+    color: #ffffff;
+}
+
+.btn-filter.active {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #ffffff;
+}
+
+.btn-filter.active:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #ffffff;
+}
+
+/* ==========================================================
+   BOTÕES DE AÇÃO (tabelas)
+   ========================================================== */
+.td-acoes {
+    text-align: center;
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: var(--fs-pequeno);
+    padding: 0;
+}
+
+.btn-acao:hover {
+    color: var(--texto-principal);
+}
+
+.btn-acao.view:hover {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-acao.check:hover {
+    background-color: rgba(34, 197, 94, 0.1);
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
+}
+
+.btn-acao.edit:hover {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-acao.delete:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+/* ==========================================================
+   BOTÃO "PURE" (genérico)
+   ========================================================== */
+.btn-pure {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    font-size: var(--fs-pequeno) !important;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s ease;
+}
+
+.btn-pure:hover {
+    background: var(--hover-fino);
+}
+
+/* ==========================================================
+   EFEITO RIPPLE
+   ========================================================== */
+.btn-pure .ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 0.5s ease-out;
+    pointer-events: none;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.light-mode .btn-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.btn-success-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-info-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-primary-pure .ripple {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.light-mode .btn-success-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .btn-info-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .btn-primary-pure .ripple {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+@keyframes ripple-animation {
+    0% {
+        transform: scale(0);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.btn-pure:active {
+    transform: scale(0.97);
+    transition: transform 0.05s ease;
+}
+
+.btn-pure:focus-visible {
+    outline: 2px solid var(--cor-ativa);
+    outline-offset: 2px;
+}
+
+/* ==========================================================
+   VARIAÇÕES DE COR DO .btn-pure
+   ========================================================== */
+.btn-success-pure {
+    border-color: var(--cor-marca);
+    color: var(--cor-marca);
+}
+
+.btn-info-pure {
+    border-color: var(--cor-ativa);
+    color: var(--cor-ativa);
+}
+
+.btn-primary-pure {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #fff;
+}
+
+.btn-active-toggle {
+    background: var(--cor-ativa);
+    border-color: var(--cor-ativa);
+    color: #fff;
+}
+
+.btn-destaque {
+    font-weight: 600;
+}
+
+/* ===== filters.css ===== */
+/*
+static\css\components\filters.css
+   ==========================================================================
+   2. FILTROS
+   ========================================================================== */
+.painel-topo-fixo {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.form-filtros-total {
+    width: 100%;
+}
+
+.filtros-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.bloco-filtro {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 8px;
+    flex: 1;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.bloco-filtro:first-child {
+    flex: 1.8;
+    min-width: 210px;
+}
+
+.bloco-filtro .form-select,
+.bloco-filtro .form-control:not(.flex-row .form-control),
+.bloco-filtro .lista-categorias {
+    margin-top: auto;
+}
+
+.bloco-pesquisa-fim {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bloco-titulo {
+    font-size: var(--fs-micro) !important;
+    font-weight: 700;
+    color: var(--texto-mutado);
+    margin-bottom: 4px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.flex-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.flex-row:last-child { margin-bottom: 0; }
+.flex-fill { flex: 1; }
+
+.form-control, .form-select {
+    width: 100%;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-principal);
+    padding: 2px 4px !important;
+    border-radius: 4px;
+    font-size: var(--fs-pequeno) !important;
+    outline: none;
+}
+
+.lista-categorias {
+    max-height: 75px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label-categoria {
+    font-size: var(--fs-pequeno);
+    color: var(--texto-principal);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.span_categorias {
+    font-size: var(--fs-pequeno);
+}
+
+.tarefas-controle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 2px;
+}
+
+.botoes-esquerda {
+    display: flex;
+    gap: 6px;
+}
+
+/* ===== dashboard.css ===== */
+/* static/css/modules/pasta_dashboard/dashboard.css */
+/* ==========================================================
+   DASHBOARD
+   Prefixo: .dash-
+   ========================================================== */
+
+/* ==========================================================
+   0. FORÇA O LAYOUT A 100% (só nesta tela)
+   ========================================================== */
+body:has(.dash-scroll) .layout {
+    width: 100%;
+}
+
+body:has(.dash-scroll) .content {
+    width: calc(100% - var(--sidebar-fechada));
+    margin-left: var(--sidebar-fechada);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* ==========================================================
+   1. painel-container (98% width, altura 100vh)
+   ========================================================== */
+.painel-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0 !important;
+    gap: 8px;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 98% !important;
+    max-width: 98% !important;
+    margin: 0 auto !important;
+}
+
+/* ==========================================================
+   2. #tabela-container
+   ========================================================== */
+#tabela-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* ==========================================================
+   3. ÁREA DE CONTEÚDO (grid principal)
+   Linha 1: KPIs (auto)
+   Linha 2: Fluxo + Top (1fr - estica)
+   Linha 3: Últimas (400px fixo)
+   ========================================================== */
+.dash-scroll {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr 400px;
+    gap: 8px;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+/* ==========================================================
+   4. BLOCO (cada partial)
+   ========================================================== */
+.dash-bloco {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+}
+
+/* KPIs: full width (linha 1) */
+.dash-bloco:nth-of-type(1) {
+    grid-column: 1 / -1;
+}
+
+/* Fluxo mensal: coluna 1 (linha 2) */
+.dash-bloco:nth-of-type(2) {
+    grid-column: 1;
+}
+
+/* Top categorias: coluna 2 (linha 2) */
+.dash-bloco:nth-of-type(3) {
+    grid-column: 2;
+}
+
+/* Últimas transações: full width (linha 3, altura fixa de 400px) */
+.dash-bloco:nth-of-type(4) {
+    grid-column: 1 / -1;
+    height: 100%;
+}
+
+.dash-loading {
+    padding: 24px;
+    text-align: center;
+    color: var(--texto-mutado);
+    font-size: var(--fs-pequeno);
+}
+
+/* ==========================================================
+   5. SEÇÃO (dentro de cada bloco)
+   ========================================================== */
+.dash-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.dash-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-sutil);
+    background: var(--bg-principal);
+    flex-shrink: 0;
+}
+
+.dash-section-header h3 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dash-section-badge {
+    font-size: var(--fs-micro);
+    background: var(--bg-card);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    font-weight: 600;
+}
+
+.dash-section-link {
+    font-size: var(--fs-micro);
+    color: var(--cor-ativa);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.dash-section-link:hover { text-decoration: underline; }
+
+/* ==========================================================
+   6. KPIs
+   ========================================================== */
+.dash-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-sutil);
+    width: 100%;
+}
+
+.dash-kpi {
+    background: var(--bg-card);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 90px;
+    justify-content: center;
+}
+
+.dash-kpi-label {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dash-kpi-valor {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+    white-space: nowrap;
+}
+
+.dash-kpi-sub {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+}
+
+.dash-kpi-ok .dash-kpi-valor     { color: #22c55e; }
+.dash-kpi-ruim .dash-kpi-valor   { color: #ef4444; }
+.dash-kpi-alerta .dash-kpi-valor { color: #f59e0b; }
+
+.dash-trend {
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-size: var(--fs-micro);
+}
+
+.dash-trend-up   { color: #22c55e; background: rgba(34, 197, 94, 0.12); }
+.dash-trend-down { color: #ef4444; background: rgba(239, 68, 68, 0.12); }
+
+/* ==========================================================
+   7. GRÁFICO DE BARRAS (Fluxo Mensal)
+   ========================================================== */
+.dash-bars {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 20px 16px 8px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.dash-bar-grupo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.dash-bar-par {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
+
+.dash-bar {
+    width: 18px;
+    border-radius: 3px 3px 0 0;
+    transition: all 0.2s ease;
+    min-height: 2px;
+}
+
+.dash-bar:hover { opacity: 0.8; }
+.dash-bar-receita { background: #22c55e; }
+.dash-bar-despesa { background: #ef4444; }
+
+.dash-bar-label {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.dash-bar-valor {
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.dash-bar-valor.pos { color: #22c55e; }
+.dash-bar-valor.neg { color: #ef4444; }
+
+.dash-legenda {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    padding: 8px 16px 14px;
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    flex-shrink: 0;
+}
+
+.dash-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+/* ==========================================================
+   8. TOP CATEGORIAS (scroll interno se passar)
+   ========================================================== */
+.dash-cat-lista {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.dash-cat-lista::-webkit-scrollbar { width: 6px; }
+.dash-cat-lista::-webkit-scrollbar-track { background: transparent; }
+.dash-cat-lista::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+.dash-cat-lista::-webkit-scrollbar-thumb:hover {
+    background: var(--texto-mutado);
+}
+
+.dash-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.dash-cat-item:last-child { border-bottom: none; }
+
+.dash-cat-cor {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.dash-cat-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dash-cat-nome {
+    font-size: var(--fs-pequeno);
+    font-weight: 600;
+    color: var(--texto-principal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dash-cat-barra {
+    height: 4px;
+    background: var(--bg-principal);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.dash-cat-barra-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.dash-cat-valores {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.dash-cat-valor {
+    font-size: var(--fs-pequeno);
+    font-weight: 700;
+    color: var(--texto-principal);
+    white-space: nowrap;
+}
+
+.dash-cat-percentual {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   9. TABELA (Últimas Transações) — com scroll interno
+   ========================================================== */
+.dash-tabela-wrap {
+    overflow-y: auto;
+    overflow-x: auto;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.dash-tabela-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+.dash-tabela-wrap::-webkit-scrollbar-track { background: transparent; }
+.dash-tabela-wrap::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+.dash-tabela-wrap::-webkit-scrollbar-thumb:hover {
+    background: var(--texto-mutado);
+}
+
+.dash-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-pequeno);
+}
+
+.dash-tabela th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--bg-principal);
+    color: var(--texto-mutado);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-sutil);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.dash-tabela td {
+    padding: 8px 12px;
+    color: var(--texto-principal);
+    border-bottom: 1px solid var(--border-sutil);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dash-tabela tr:hover td { background: var(--hover-fino); }
+.dash-tabela tr:last-child td { border-bottom: none; }
+
+/* ==========================================================
+   10. VAZIO
+   ========================================================== */
+.dash-vazio {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--texto-mutado);
+    font-size: var(--fs-pequeno);
+}
+
+/* ==========================================================
+   11. RESPONSIVO
+   ========================================================== */
+@media (max-width: 968px) {
+    body:has(.dash-scroll) .content {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .painel-container {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+        padding: 10px 0 20px 0 !important;
+    }
+
+    #tabela-container {
+        flex: none;
+    }
+
+    /* Mobile: 1 coluna, alturas automáticas */
+    .dash-scroll {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        overflow: visible;
+        flex: none;
+    }
+
+    .dash-bloco:nth-of-type(1),
+    .dash-bloco:nth-of-type(2),
+    .dash-bloco:nth-of-type(3),
+    .dash-bloco:nth-of-type(4) {
+        grid-column: 1;
+        height: auto;
+        max-height: 400px;
+    }
+
+    .dash-kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .dash-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .dash-kpi-valor { font-size: 1.1rem; }
+    .dash-bar { width: 14px; }
+}
+

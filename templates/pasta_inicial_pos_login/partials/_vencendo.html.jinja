@@ -1,0 +1,62 @@
+{# templates/pasta_inicial_pos_login/partials/_vencendo.html.jinja #}
+<div class="posl-section">
+
+    <div class="posl-section-header posl-header-urgente">
+        <h3>🔴 Vencendo Hoje / Atrasado</h3>
+        <span class="posl-count">{{ itens|length }}</span>
+    </div>
+
+    {% if itens %}
+        <div class="posl-lista">
+            {% for item in itens %}
+                <div class="posl-item posl-item-urgente">
+                    <div class="posl-item-icone">{{ item.icone }}</div>
+
+                    <div class="posl-item-corpo">
+                        <div class="posl-item-titulo">{{ item.titulo }}</div>
+                        <div class="posl-item-meta">
+                            {% if item.urgente %}
+                                <span class="posl-badge posl-badge-atraso">
+                                    ⚠️ VENCIDA há {{ item.dias_atraso }} dia{{ 's' if item.dias_atraso != 1 else '' }}
+                                </span>
+                            {% else %}
+                                <span class="posl-badge posl-badge-hoje">📅 HOJE</span>
+                            {% endif %}
+
+                            {% if item.prioridade %}
+                                <span class="posl-badge posl-badge-prio-{{ item.prioridade }}">
+                                    {{ item.prioridade|title }}
+                                </span>
+                            {% endif %}
+
+                            {% if item.parcela and item.parcela != 'À vista' %}
+                                <span class="posl-badge">{{ item.parcela }}</span>
+                            {% endif %}
+
+                            {% if item.categoria %}
+                                <span class="posl-categoria"
+                                      style="background-color: {{ item.cor }};">
+                                    {{ item.categoria }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="posl-item-lado">
+                        {% if item.valor %}
+                            <div class="posl-item-valor">{{ item.valor }}</div>
+                        {% endif %}
+                        <a href="{{ url_for(item.url_modulo) }}"
+                           class="posl-item-acao"
+                           title="Abrir {{ item.modulo_nome }}">
+                            {{ item.modulo_nome }} →
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="posl-vazio">✅ Nada vencendo. Bom trabalho!</div>
+    {% endif %}
+
+</div>

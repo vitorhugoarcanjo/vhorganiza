@@ -1,4 +1,4 @@
-/* COMBINADO - 11/10/2026 08:28 */
+/* COMBINADO - 12/10/2026 07:51 */
 
 /* ===== reset.css ===== */
 /*
@@ -239,7 +239,37 @@ static\css\core\responsive.css
 /* ===== buttons.css ===== */
 /*
 static\css\components\buttons.css
-==========================================================
+   ========================================================== */
+
+/* ==========================================================
+   🔥 BOTÃO DE MÓDULO (todos os módulos principais - AZUL)
+   ========================================================== */
+.btn-footer-modulo {
+    background: var(--btn-primary-bg);
+    color: #ffffff;
+    border: 1px solid transparent;
+}
+
+.btn-footer-modulo i,
+.btn-footer-modulo span {
+    color: #ffffff;
+}
+
+.btn-footer-modulo:hover {
+    background: var(--btn-primary-hover);
+    color: #ffffff;
+    border-color: var(--btn-primary-hover);
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.btn-footer-modulo:hover i,
+.btn-footer-modulo:hover span {
+    color: #ffffff;
+}
+
+/* ==========================================================
    BOTÃO - NOVO/SALVAR (AZUL)
    ========================================================== */
 .btn-footer-primary {
@@ -253,7 +283,7 @@ static\css\components\buttons.css
 }
 
 .btn-footer-primary:hover {
-    background: #1d4ed8;
+    background: var(--btn-primary-hover);
     color: #ffffff;
 }
 
@@ -263,38 +293,38 @@ static\css\components\buttons.css
 }
 
 /* ==========================================================
-   BOTÃO - CATEGORIAS (FUNDO ESCURO COM BORDA) - CATEGORIAS
+   BOTÃO - SECUNDÁRIO (BORDA + FUNDO SUTIL)
    ========================================================== */
 .btn-footer-secondary {
-    background: #0f172a;
-    color: #94a3b8;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--bg-principal);
+    color: var(--texto-mutado);
+    border: 1px solid var(--border-sutil);
 }
 
 .btn-footer-secondary i {
-    color: #94a3b8;
+    color: var(--texto-mutado);
 }
 
 .btn-footer-secondary span {
-    color: #94a3b8;
+    color: var(--texto-mutado);
 }
 
 .btn-footer-secondary:hover {
-    background: #1e293b;
-    color: #f8fafc;
-    border-color: #2563eb;
+    background: var(--bg-card);
+    color: var(--texto-principal);
+    border-color: var(--cor-ativa);
 }
 
 .btn-footer-secondary:hover i {
-    color: #f8fafc;
+    color: var(--texto-principal);
 }
 
 .btn-footer-secondary:hover span {
-    color: #f8fafc;
+    color: var(--texto-principal);
 }
 
 /* ==========================================================
-    BOTÃO CANCELAR (VERMELHO NO HOVER)
+   BOTÃO CANCELAR
    ========================================================== */
 .btn-footer-cancelar {
     display: flex;
@@ -311,11 +341,10 @@ static\css\components\buttons.css
     text-decoration: none;
     transition: all 0.2s ease;
     cursor: pointer;
-    border: none;
     position: relative;
     background: transparent;
-    color: #94a3b8;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--texto-mutado);
+    border: 1px solid var(--border-sutil);
 }
 
 .btn-footer-cancelar i {
@@ -331,13 +360,13 @@ static\css\components\buttons.css
     text-align: center;
     line-height: 1;
     transition: all 0.2s ease;
-    color: #94a3b8;
+    color: var(--texto-mutado);
 }
 
 .btn-footer-cancelar:hover {
     transform: scale(1.08);
     z-index: 2;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     background: rgba(239, 68, 68, 0.1);
     border-color: #ef4444;
@@ -351,11 +380,9 @@ static\css\components\buttons.css
     color: #ef4444;
 }
 
-
 /* ==========================================================
    BOTÕES DE FILTRO (Ativas/Inativas/Todas)
    ========================================================== */
-
 .btn-filter {
     display: inline-flex;
     align-items: center;
@@ -373,7 +400,6 @@ static\css\components\buttons.css
     background-color: #1d42d8;
     border-color: var(--texto-mutado);
     color: #ffffff;
-
 }
 
 .btn-filter.active {
@@ -388,9 +414,9 @@ static\css\components\buttons.css
     color: #ffffff;
 }
 
-/* ==========================================================================
-   4. BOTÕES DE AÇÃO
-   ========================================================================== */
+/* ==========================================================
+   BOTÕES DE AÇÃO (tabelas)
+   ========================================================== */
 .td-acoes {
     text-align: center;
     display: flex;
@@ -441,6 +467,9 @@ static\css\components\buttons.css
     color: #ef4444;
 }
 
+/* ==========================================================
+   BOTÃO "PURE" (genérico)
+   ========================================================== */
 .btn-pure {
     display: inline-flex;
     align-items: center;
@@ -453,6 +482,9 @@ static\css\components\buttons.css
     border-radius: 4px;
     cursor: pointer;
     text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s ease;
 }
 
 .btn-pure:hover {
@@ -460,35 +492,21 @@ static\css\components\buttons.css
 }
 
 /* ==========================================================
-   EFEITO RIPPLE (ONDE CLICOU)
+   EFEITO RIPPLE
    ========================================================== */
-
-.btn-pure {
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.1s ease;
-}
-
-/* Elemento da onda */
 .btn-pure .ripple {
     position: absolute;
     border-radius: 50%;
     transform: scale(0);
     animation: ripple-animation 0.5s ease-out;
     pointer-events: none;
-}
-
-/* Cor da onda no modo escuro (padrão) */
-.btn-pure .ripple {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Cor da onda no modo claro */
 .light-mode .btn-pure .ripple {
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-/* Ondas para botões específicos no modo escuro */
 .btn-success-pure .ripple {
     background-color: rgba(255, 255, 255, 0.6);
 }
@@ -501,7 +519,6 @@ static\css\components\buttons.css
     background-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Ondas para botões específicos no modo claro */
 .light-mode .btn-success-pure .ripple {
     background-color: rgba(0, 0, 0, 0.2);
 }
@@ -514,7 +531,6 @@ static\css\components\buttons.css
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-/* Animação da onda */
 @keyframes ripple-animation {
     0% {
         transform: scale(0);
@@ -526,22 +542,19 @@ static\css\components\buttons.css
     }
 }
 
-/* Efeito de clique (aperta o botão) */
 .btn-pure:active {
     transform: scale(0.97);
     transition: transform 0.05s ease;
 }
 
-/* Remove outline feio no clique (mantém acessibilidade) */
 .btn-pure:focus-visible {
     outline: 2px solid var(--cor-ativa);
     outline-offset: 2px;
 }
 
 /* ==========================================================
-   FIM DO EFEITO RIPPLE
+   VARIAÇÕES DE COR DO .btn-pure
    ========================================================== */
-
 .btn-success-pure {
     border-color: var(--cor-marca);
     color: var(--cor-marca);
@@ -685,7 +698,7 @@ static\css\components\filters.css
 /*
 static\css\components\footer.css
    ==========================================================
-   FOOTER - CSS REORGANIZADO
+   FOOTER - CSS REORGANIZADO (ADAPTÁVEL AO TEMA)
    ========================================================== */
 
 /* ==========================================================
@@ -696,17 +709,17 @@ static\css\components\footer.css
     bottom: 0;
     left: 60px;
     right: 0;
-    background: #1e293b;  /* ← FUNDO ESCURO FIXO */
-    border-top: 2px solid #2563eb;  /* ← BORDA AZUL FIXA */
+    background: var(--footer-bg);
+    border-top: 2px solid var(--footer-border);
     padding: 6px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 16px;
     z-index: 100;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
     min-height: 70px;
-    transition: left 0.3s ease;
+    transition: left 0.3s ease, background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .sidebar:hover ~ .footer-fixo-padrao {
@@ -714,7 +727,7 @@ static\css\components\footer.css
 }
 
 h2 {
-    color: white;
+    color: var(--texto-principal);
 }
 
 /* ==========================================================
@@ -727,7 +740,7 @@ h2 {
 }
 
 /* ==========================================================
-   3. BOTÃO PADRÃO (BASE PARA TODOS)
+   3. BOTÃO PADRÃO
    ========================================================== */
 .botoes-footer-padrao .btn-footer {
     display: flex;
@@ -762,14 +775,12 @@ h2 {
     transition: all 0.2s ease;
 }
 
-/* HOVER PADRÃO */
 .botoes-footer-padrao .btn-footer:hover {
     transform: scale(1.08);
     z-index: 2;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
 }
-
 
 /* ==========================================================
    7. TOTALIZADORES
@@ -790,7 +801,7 @@ h2 {
 
 .total-item-footer label {
     font-size: 0.5rem;
-    color: #94a3b8;
+    color: var(--footer-label);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -800,6 +811,7 @@ h2 {
     font-size: 0.9rem;
     font-weight: 700;
     line-height: 1.2;
+    color: var(--texto-principal);
 }
 
 /* ==========================================================
@@ -820,29 +832,29 @@ h2 {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: #0f172a;
+    background: var(--footer-contador-bg);
     border-radius: 4px;
     padding: 4px 12px;
     height: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--footer-contador-border);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .contador-footer i {
     font-size: 0.85rem;
-    color: #2563eb;
+    color: var(--cor-ativa);
 }
 
 .contador-footer span {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #f8fafc;
+    color: var(--footer-contador-text);
 }
 
 /* ==========================================================
-   10. MOBILE (TUDO JUNTO)
+   10. MOBILE
    ========================================================== */
 @media (max-width: 768px) {
-    /* BASE */
     .footer-fixo-padrao {
         left: 0 !important;
         flex-wrap: wrap;
@@ -851,7 +863,6 @@ h2 {
         gap: 6px;
     }
 
-    /* BOTÕES */
     .botoes-footer-padrao {
         width: 100%;
         justify-content: center;
@@ -877,7 +888,6 @@ h2 {
         transform: none;
     }
 
-    /* BOTÃO CANCELAR MOBILE */
     .btn-footer-cancelar {
         width: 48px;
         height: 48px;
@@ -897,7 +907,6 @@ h2 {
         transform: none;
     }
 
-    /* TOTALIZADORES */
     .totalizador-footer-padrao {
         width: 100%;
         justify-content: center;
@@ -909,7 +918,6 @@ h2 {
         font-size: 0.75rem;
     }
 
-    /* CONTADOR */
     .contador-footer {
         height: 28px;
         padding: 2px 10px;

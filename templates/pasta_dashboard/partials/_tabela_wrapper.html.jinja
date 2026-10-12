@@ -1,0 +1,39 @@
+{# templates/pasta_dashboard/partials/_tabela_wrapper.html.jinja #}
+
+<div id="tabela-container">
+    <div class="dash-scroll">
+
+        <!-- KPIs (full width no topo) -->
+        <div class="dash-bloco dash-kpis-wrapper"
+             hx-get="{{ url_for('dashboard.dashboard_partials.partial_kpis') }}"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <div class="dash-loading">⏳ Carregando KPIs...</div>
+        </div>
+
+        <!-- Fluxo mensal (coluna 1, linha 2) -->
+        <div class="dash-bloco"
+             hx-get="{{ url_for('dashboard.dashboard_partials.partial_fluxo_mensal') }}"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <div class="dash-loading">⏳ Carregando fluxo mensal...</div>
+        </div>
+
+        <!-- Top categorias (coluna 2, linha 2) -->
+        <div class="dash-bloco"
+             hx-get="{{ url_for('dashboard.dashboard_partials.partial_top_categorias') }}"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <div class="dash-loading">⏳ Carregando top categorias...</div>
+        </div>
+
+        <!-- Últimas transações (full width, linha 3) -->
+        <div class="dash-bloco"
+             hx-get="{{ url_for('dashboard.dashboard_partials.partial_ultimas_transacoes') }}"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <div class="dash-loading">⏳ Carregando últimas transações...</div>
+        </div>
+
+    </div>
+</div>

@@ -1,88 +1,112 @@
+{# templates/pasta_inicial_pos_login/tela_inicial.html #}
 {% extends "tela_base_pos_login/base.html" %}
 
+{% block title %}Início - VHORGANIZA{% endblock %}
+
 {% block styles %}
-<link rel="stylesheet" href="{{ static_v('pasta_tela_pos_login/pos_login.css') }}">
+<link rel="stylesheet" href="{{ static_v('css/modules/pasta_pos_login/pos_login.min.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    
-    <header class="hero-card">
-        <div class="hero-welcome">
-            <h1>👋 Bem-vindo, {{ user_nome }}</h1>
-        </div>
-    </header>
+<div class="painel-container">
 
-    <!-- 🚀 O QUE FOI IMPLEMENTADO -->
-    <h3 class="section-title">🚀 Últimas Implementações</h3>
-    <div class="news-spotlight">
-        <div class="icon">💰</div>
-        <div>
-            <strong>Finanças - Sistema Completo</strong>
-            <p>✔️ Insert com parcelas (até 100x) e distribuição automática<br>
-            ✔️ Listagem com zebrado, hover e clique direito para ver vínculos<br>
-            ✔️ Edição segura (tipo bloqueado via backend)<br>
-            ✔️ Footer fixo padronizado com totalizadores (Receitas/Despesas/Saldo)<br>
-            ✔️ Ordenação por clique nas colunas (↑ ↓)<br>
-            ✔️ Menu contexto para "Ver vínculos" (modal com parcelas/status)<br>
-            ✔️ Soft delete (inativar) com auditoria</p>
+    <!-- TOPO -->
+    <div class="painel-topo-fixo">
+        <div class="posl-hero-bloco">
+            <h1>👋 Olá, {{ user_nome }}</h1>
+            <p id="poslDataHoje">—</p>
         </div>
     </div>
 
-    <div class="news-spotlight">
-        <div class="icon">📋</div>
-        <div>
-            <strong>Tarefas - Padronização Completa</strong>
-            <p>✔️ Footer fixo com totalizadores (Pendentes/Andamento/Concluídas)<br>
-            ✔️ Insert/Edit com mesmo padrão visual das finanças<br>
-            ✔️ Ordenação por clique nas colunas<br>
-            ✔️ Filtros persistentes e auditoria</p>
+    <!-- GRID 2 COLUNAS -->
+    <div id="tabela-container">
+        <div class="posl-grid">
+
+            <div class="posl-box posl-box-urgente"
+                 hx-get="{{ url_for('pos_login.pos_login_partials.partial_vencendo') }}"
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+                <div class="posl-bloco-loading">⏳ Carregando vencimentos...</div>
+            </div>
+
+            <div class="posl-box"
+                 hx-get="{{ url_for('pos_login.pos_login_partials.partial_proximos') }}"
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+                <div class="posl-bloco-loading">⏳ Carregando próximos...</div>
+            </div>
+
         </div>
     </div>
 
-    <div class="news-spotlight">
-        <div class="icon">🎨</div>
-        <div>
-            <strong>Padronização Visual</strong>
-            <p>✔️ Modo claro/escuro em todas as telas<br>
-            ✔️ Footer fixo compacto (50px altura) com botões quadrados<br>
-            ✔️ Tabelas com zebrado e hover profissional<br>
-            ✔️ Responsivo (mobile adaptado)<br>
-            ✔️ CSS unificado (import_css.css)</p>
-        </div>
+    <!-- RESUMO -->
+    <div class="posl-resumo-fixo"
+         hx-get="{{ url_for('pos_login.pos_login_partials.partial_resumo') }}"
+         hx-trigger="load"
+         hx-swap="innerHTML">
+        <div class="posl-bloco-loading">⏳ Carregando resumo...</div>
     </div>
 
-    <h3 class="section-title">⚙️ Status do Sistema</h3>
-    <div class="status-grid">
-        <div class="status-card">
-            <div class="card-header"><span>💰 Finanças</span><span class="badge-status bg-success">ESTÁVEL</span></div>
-            <p>Insert/Edit/Delete/Quitar. Parcelas, vínculos, auditoria, totalizadores.</p>
-        </div>
-        <div class="status-card">
-            <div class="card-header"><span>📋 Tarefas</span><span class="badge-status bg-success">ESTÁVEL</span></div>
-            <p>CRUD completo, filtros, auditoria, totalizadores, ordenação.</p>
-        </div>
-        <div class="status-card">
-            <div class="card-header"><span>🎨 UI/UX</span><span class="badge-status bg-success">PADRÃO</span></div>
-            <p>Footer fixo, botões quadrados, zebrado, hover, modo claro/escuro.</p>
-        </div>
+</div>
+
+
+<!-- FOOTER -->
+<div class="footer-fixo-padrao">
+    <div class="botoes-footer-padrao">
+        <a href="{{ url_for('financas.ini_financas') }}" class="btn-footer btn-footer-modulo">
+            <i class="bi bi-currency-dollar"></i>
+            <span>FINANÇAS</span>
+        </a>
+        <a href="{{ url_for('tarefas.ini_tarefas') }}" class="btn-footer btn-footer-modulo">
+            <i class="bi bi-check2-square"></i>
+            <span>TAREFAS</span>
+        </a>
+        <a href="{{ url_for('orcamentos.ini_orcamento') }}" class="btn-footer btn-footer-modulo">
+            <i class="bi bi-box2"></i>
+            <span>ORÇAM.</span>
+        </a>
     </div>
 
-    <!-- SEÇÃO AVISOS -->
-    <h3 class="section-title">📢 Dicas Rápidas</h3>
-    <div class="alerts-section">
-        <div class="alert-box">
-            <span>🖱️</span>
-            <div><strong>Clique direito</strong> na tabela de transações para ver vínculos das parcelas.</div>
+    <div>
+        <h2>MEU DIA</h2>
+    </div>
+
+    <div class="totalizador-footer-padrao">
+        <div class="total-item-footer total-pendente">
+            <label>🔴 VENCENDO</label>
+            <span id="poslTotalVencendo">—</span>
         </div>
-        <div class="alert-box">
-            <span>⬆️⬇️</span>
-            <div><strong>Clique no cabeçalho</strong> da tabela para ordenar as colunas.</div>
+        <div class="total-item-footer total-andamento">
+            <label>🟡 PRÓX. 7 DIAS</label>
+            <span id="poslTotalProximos">—</span>
         </div>
-        <div class="alert-box">
-            <span>📱</span>
-            <div><strong>Totalmente responsivo</strong> - Funciona no celular e desktop.</div>
+        <div class="total-item-footer total-saldo">
+            <label>💰 SALDO MÊS</label>
+            <span id="poslTotalSaldo">—</span>
+        </div>
+        <div class="contador-footer">
+            <i class="bi bi-calendar-check"></i>
+            <span id="poslDataFooter">Hoje</span>
         </div>
     </div>
 </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    (function() {
+        const dias  = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+        const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+        const d = new Date();
+        const txt = `${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+
+        const elHero = document.getElementById('poslDataHoje');
+        if (elHero) elHero.textContent = txt;
+
+        const elFooter = document.getElementById('poslDataFooter');
+        if (elFooter) elFooter.textContent = `${d.getDate()}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+    })();
+</script>
 {% endblock %}

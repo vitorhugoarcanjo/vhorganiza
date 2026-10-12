@@ -1,0 +1,37 @@
+{# templates/pasta_inicial_pos_login/partials/_resumo.html.jinja #}
+<div class="posl-section">
+
+    <div class="posl-section-header">
+        <h3>📊 Resumo do Mês</h3>
+        <span class="posl-count">{{ resumo.mes_nome }}</span>
+    </div>
+
+    <div class="posl-kpis">
+
+        <div class="posl-kpi {% if resumo.saldo_positivo %}posl-kpi-ok{% else %}posl-kpi-ruim{% endif %}">
+            <div class="posl-kpi-label">💰 Saldo</div>
+            <div class="posl-kpi-valor">{{ resumo.saldo_fmt }}</div>
+            <div class="posl-kpi-sub">receitas − despesas</div>
+        </div>
+
+        <div class="posl-kpi">
+            <div class="posl-kpi-label">📋 Tarefas</div>
+            <div class="posl-kpi-valor">{{ resumo.tarefas_pendentes }}</div>
+            <div class="posl-kpi-sub">pendentes/andamento</div>
+        </div>
+
+        <div class="posl-kpi">
+            <div class="posl-kpi-label">📄 Orçamentos</div>
+            <div class="posl-kpi-valor">{{ resumo.orcamentos_ativos }}</div>
+            <div class="posl-kpi-sub">ativos</div>
+        </div>
+
+        <div class="posl-kpi posl-kpi-alerta">
+            <div class="posl-kpi-label">💸 A Pagar</div>
+            <div class="posl-kpi-valor">{{ resumo.a_pagar_fmt }}</div>
+            <div class="posl-kpi-sub">em aberto no mês</div>
+        </div>
+
+    </div>
+
+</div>

@@ -1,7 +1,7 @@
 /*
 static\css\components\footer.css
    ==========================================================
-   FOOTER - CSS REORGANIZADO
+   FOOTER - CSS REORGANIZADO (ADAPTÁVEL AO TEMA)
    ========================================================== */
 
 /* ==========================================================
@@ -12,17 +12,17 @@ static\css\components\footer.css
     bottom: 0;
     left: 60px;
     right: 0;
-    background: #1e293b;  /* ← FUNDO ESCURO FIXO */
-    border-top: 2px solid #2563eb;  /* ← BORDA AZUL FIXA */
+    background: var(--footer-bg);
+    border-top: 2px solid var(--footer-border);
     padding: 6px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 16px;
     z-index: 100;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
     min-height: 70px;
-    transition: left 0.3s ease;
+    transition: left 0.3s ease, background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .sidebar:hover ~ .footer-fixo-padrao {
@@ -30,7 +30,7 @@ static\css\components\footer.css
 }
 
 h2 {
-    color: white;
+    color: var(--texto-principal);
 }
 
 /* ==========================================================
@@ -43,7 +43,7 @@ h2 {
 }
 
 /* ==========================================================
-   3. BOTÃO PADRÃO (BASE PARA TODOS)
+   3. BOTÃO PADRÃO
    ========================================================== */
 .botoes-footer-padrao .btn-footer {
     display: flex;
@@ -78,14 +78,12 @@ h2 {
     transition: all 0.2s ease;
 }
 
-/* HOVER PADRÃO */
 .botoes-footer-padrao .btn-footer:hover {
     transform: scale(1.08);
     z-index: 2;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
 }
-
 
 /* ==========================================================
    7. TOTALIZADORES
@@ -106,7 +104,7 @@ h2 {
 
 .total-item-footer label {
     font-size: 0.5rem;
-    color: #94a3b8;
+    color: var(--footer-label);
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -116,6 +114,7 @@ h2 {
     font-size: 0.9rem;
     font-weight: 700;
     line-height: 1.2;
+    color: var(--texto-principal);
 }
 
 /* ==========================================================
@@ -136,29 +135,29 @@ h2 {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: #0f172a;
+    background: var(--footer-contador-bg);
     border-radius: 4px;
     padding: 4px 12px;
     height: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--footer-contador-border);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .contador-footer i {
     font-size: 0.85rem;
-    color: #2563eb;
+    color: var(--cor-ativa);
 }
 
 .contador-footer span {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #f8fafc;
+    color: var(--footer-contador-text);
 }
 
 /* ==========================================================
-   10. MOBILE (TUDO JUNTO)
+   10. MOBILE
    ========================================================== */
 @media (max-width: 768px) {
-    /* BASE */
     .footer-fixo-padrao {
         left: 0 !important;
         flex-wrap: wrap;
@@ -167,7 +166,6 @@ h2 {
         gap: 6px;
     }
 
-    /* BOTÕES */
     .botoes-footer-padrao {
         width: 100%;
         justify-content: center;
@@ -193,7 +191,6 @@ h2 {
         transform: none;
     }
 
-    /* BOTÃO CANCELAR MOBILE */
     .btn-footer-cancelar {
         width: 48px;
         height: 48px;
@@ -213,7 +210,6 @@ h2 {
         transform: none;
     }
 
-    /* TOTALIZADORES */
     .totalizador-footer-padrao {
         width: 100%;
         justify-content: center;
@@ -225,7 +221,6 @@ h2 {
         font-size: 0.75rem;
     }
 
-    /* CONTADOR */
     .contador-footer {
         height: 28px;
         padding: 2px 10px;

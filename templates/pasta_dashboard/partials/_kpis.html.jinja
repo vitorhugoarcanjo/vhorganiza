@@ -1,0 +1,35 @@
+{# KPIs DO TOPO — 4 cards #}
+<div class="dash-kpis">
+
+    <div class="dash-kpi {% if kpis.saldo_positivo %}dash-kpi-ok{% else %}dash-kpi-ruim{% endif %}">
+        <div class="dash-kpi-label">💰 Saldo do Período</div>
+        <div class="dash-kpi-valor">{{ kpis.saldo_fmt }}</div>
+        <div class="dash-kpi-sub">
+            {% if kpis.tendencia_up %}
+                <span class="dash-trend dash-trend-up">▲ {{ kpis.tendencia_fmt }}</span>
+            {% else %}
+                <span class="dash-trend dash-trend-down">▼ {{ kpis.tendencia_fmt }}</span>
+            {% endif %}
+            vs período anterior
+        </div>
+    </div>
+
+    <div class="dash-kpi">
+        <div class="dash-kpi-label">📈 Receitas</div>
+        <div class="dash-kpi-valor" style="color:#22c55e">{{ kpis.receitas_fmt }}</div>
+        <div class="dash-kpi-sub">quitadas no período</div>
+    </div>
+
+    <div class="dash-kpi">
+        <div class="dash-kpi-label">📉 Despesas</div>
+        <div class="dash-kpi-valor" style="color:#ef4444">{{ kpis.despesas_fmt }}</div>
+        <div class="dash-kpi-sub">quitadas no período</div>
+    </div>
+
+    <div class="dash-kpi dash-kpi-alerta">
+        <div class="dash-kpi-label">💸 A Pagar</div>
+        <div class="dash-kpi-valor">{{ kpis.a_pagar_fmt }}</div>
+        <div class="dash-kpi-sub">em aberto (vencimento no período)</div>
+    </div>
+
+</div>

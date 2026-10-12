@@ -1,0 +1,404 @@
+/* static/css/modules/pasta_pos_login/pos_login.css */
+/* ==========================================================
+   ESPECÍFICO DA TELA PÓS-LOGIN ("Meu Dia")
+   Prefixo: .posl-
+   ========================================================== */
+
+/* ==========================================================
+   0. FORÇA O CONTENT A 100% (só nesta tela)
+   ==========================================================
+   O .layout do base não tem flex, então o .content fica com
+   largura natural. Forçamos largura via :has() (só aqui).
+   ========================================================== */
+body:has(.posl-hero-bloco) .layout {
+    width: 100%;
+}
+
+body:has(.posl-hero-bloco) .content {
+    width: calc(100% - var(--sidebar-fechada));
+    margin-left: var(--sidebar-fechada);
+    box-sizing: border-box;
+}
+
+/* ==========================================================
+   1. painel-container: altura 100%, coluna, reserva footer
+   ========================================================== */
+.painel-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px 78px 12px !important;
+    gap: 8px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* ==========================================================
+   2. HERO (topo, não cresce)
+   ========================================================== */
+.painel-topo-fixo {
+    flex-shrink: 0;
+}
+
+.posl-hero-bloco {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 6px;
+    padding: 12px 16px;
+}
+
+.posl-hero-bloco h1 {
+    margin: 0 0 2px 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+}
+
+.posl-hero-bloco p {
+    margin: 0;
+    font-size: var(--fs-pequeno);
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   3. #tabela-container: flex-1, base pra grid (padrão Finanças)
+   ========================================================== */
+#tabela-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* ==========================================================
+   4. GRID 2 COLUNAS (100% dinâmico)
+   ========================================================== */
+.posl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 8px;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ==========================================================
+   5. BOX (mesmo visual do cat-box)
+   ========================================================== */
+.posl-box {
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-sutil);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.posl-box-urgente {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.posl-bloco-loading {
+    padding: 24px;
+    text-align: center;
+    color: var(--texto-mutado);
+    font-size: var(--fs-pequeno);
+}
+
+/* ==========================================================
+   6. SEÇÃO
+   ========================================================== */
+.posl-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.posl-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border-sutil);
+    background: rgba(37, 99, 235, 0.05);
+    flex-shrink: 0;
+}
+
+.posl-section-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+}
+
+.posl-header-urgente h3 { color: #ef4444; }
+
+.posl-count {
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   7. LISTA (scroll interno, ocupa o resto)
+   ========================================================== */
+.posl-lista {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.posl-lista::-webkit-scrollbar { width: 8px; }
+.posl-lista::-webkit-scrollbar-track { background: transparent; }
+.posl-lista::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+.posl-lista::-webkit-scrollbar-thumb:hover {
+    background: var(--texto-mutado);
+}
+
+.posl-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.posl-item:last-child { border-bottom: none; }
+.posl-item:hover { background: var(--hover-fino); }
+.posl-item-urgente { border-left: 3px solid #ef4444; }
+
+.posl-item-icone {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+}
+
+.posl-item-corpo { flex: 1; min-width: 0; }
+
+.posl-item-titulo {
+    font-size: var(--fs-pequeno);
+    font-weight: 500;
+    color: var(--texto-principal);
+    margin-bottom: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.posl-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+.posl-item-lado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.posl-item-valor {
+    font-size: var(--fs-pequeno);
+    font-weight: 700;
+    color: var(--texto-principal);
+}
+
+.posl-item-acao {
+    font-size: var(--fs-micro);
+    color: var(--cor-ativa);
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.posl-item-acao:hover { text-decoration: underline; }
+
+/* ==========================================================
+   8. BADGES
+   ========================================================== */
+.posl-badge {
+    font-size: var(--fs-micro);
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: var(--bg-principal);
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    font-weight: 600;
+}
+
+.posl-badge-atraso {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+}
+
+.posl-badge-hoje {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #f59e0b;
+}
+
+.posl-badge-data {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+    color: var(--cor-ativa);
+}
+
+.posl-badge-prio-alta {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.posl-badge-prio-media {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.posl-badge-prio-baixa {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border-color: rgba(34, 197, 94, 0.4);
+}
+
+.posl-categoria {
+    font-size: var(--fs-micro);
+    padding: 1px 6px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+}
+
+/* ==========================================================
+   9. VAZIO
+   ========================================================== */
+.posl-vazio {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--texto-discreto);
+}
+
+/* ==========================================================
+   10. RESUMO (fixo no fundo, antes do footer)
+   ========================================================== */
+.posl-resumo-fixo {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.posl-resumo-fixo .posl-section {
+    height: auto;
+}
+
+/* ==========================================================
+   11. KPIs
+   ========================================================== */
+.posl-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-sutil);
+    width: 100%;
+}
+
+.posl-kpi {
+    background: var(--bg-card);
+    padding: 10px 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.posl-kpi-label {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.posl-kpi-valor {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+    white-space: nowrap;
+}
+
+.posl-kpi-sub {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    white-space: nowrap;
+}
+
+.posl-kpi-ok .posl-kpi-valor { color: #22c55e; }
+.posl-kpi-ruim .posl-kpi-valor { color: #ef4444; }
+.posl-kpi-alerta .posl-kpi-valor { color: #f59e0b; }
+
+/* ==========================================================
+   12. RESPONSIVO
+   ========================================================== */
+@media (max-width: 968px) {
+    /* Mobile/tablet: 1 coluna, tudo rola */
+    body:has(.posl-hero-bloco) .content {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .painel-container {
+        height: auto;
+        min-height: 100vh;
+        padding: 10px 12px 130px 12px !important;
+        overflow: visible;
+    }
+
+    #tabela-container {
+        flex: none;
+    }
+
+    .posl-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        flex: none;
+        gap: 12px;
+    }
+
+    .posl-lista {
+        max-height: 400px;
+    }
+
+    .posl-resumo-fixo {
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 640px) {
+    .posl-hero-bloco h1 { font-size: 0.95rem; }
+    .posl-item { padding: 8px 10px; gap: 8px; }
+    .posl-kpis { grid-template-columns: repeat(2, 1fr); }
+    .posl-lista { max-height: 300px; }
+}

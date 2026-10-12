@@ -1,0 +1,33 @@
+{# FLUXO MENSAL — barras entradas vs saídas #}
+<div class="dash-section">
+
+    <div class="dash-section-header">
+        <h3>📊 Fluxo Mensal</h3>
+        <span class="dash-section-badge">Últimos 6 meses</span>
+    </div>
+
+    <div class="dash-bars">
+        {% for mes in fluxo %}
+            <div class="dash-bar-grupo">
+                <div class="dash-bar-par">
+                    <div class="dash-bar dash-bar-receita"
+                         style="height: {{ mes.altura_receita_pct }}%"
+                         title="Receitas: {{ mes.receitas_fmt }}"></div>
+                    <div class="dash-bar dash-bar-despesa"
+                         style="height: {{ mes.altura_despesa_pct }}%"
+                         title="Despesas: {{ mes.despesas_fmt }}"></div>
+                </div>
+                <div class="dash-bar-label">{{ mes.mes_nome }}</div>
+                <div class="dash-bar-valor {% if mes.saldo_positivo %}pos{% else %}neg{% endif %}">
+                    {{ mes.saldo_fmt }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="dash-legenda">
+        <span><span class="dash-dot" style="background:#22c55e"></span> Receitas</span>
+        <span><span class="dash-dot" style="background:#ef4444"></span> Despesas</span>
+    </div>
+
+</div>

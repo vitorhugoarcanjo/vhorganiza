@@ -1,0 +1,81 @@
+{# templates/pasta_dashboard/partials/_ultimas_transacoes.html.jinja #}
+<div class="dash-section">
+
+    <div class="dash-section-header">
+        <h3>📋 Últimas Transações</h3>
+        <a href="{{ url_for('financas.ini_financas') }}" class="dash-section-link">Ver todas →</a>
+    </div>
+
+    {% if transacoes %}
+        <div class="dash-tabela-wrap">
+            <table class="dash-tabela">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th style="width: 100px;">Tipo</th>
+                        <th>Descrição</th>
+                        <th style="width: 120px; text-align: right;">Valor</th>
+                        <th style="width: 110px;">Status</th>
+                        <th style="width: 130px;">Categoria</th>
+                        <th style="width: 95px;">Emissão</th>
+                        <th style="width: 95px;">Vencimento</th>
+                        <th style="width: 95px;">Quitamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transacoes %}
+                        <tr>
+                            <td>{{ t.sequencia }}</td>
+                            <td>
+                                {% if t.tipo == 'receita' %}
+                                    <span class="badge-pure bg-success">{{ t.tipo_label }}</span>
+                                {% else %}
+                                    <span class="badge-pure bg-warning text-dark">{{ t.tipo_label }}</span>
+                                {% endif %}
+                            </td>
+                            <td title="{{ t.descricao }}">{{ t.descricao }}</td>
+                            <td style="text-align: right; font-weight: 600;">
+                                {% if t.tipo == 'receita' %}
+                                    <span style="color:#22c55e">+ {{ t.valor_fmt }}</span>
+                                {% else %}
+                                    <span style="color:#ef4444">- {{ t.valor_fmt }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if t.status == 'quitado' %}
+                                    <span class="badge-pure bg-success">{{ t.status_label }}</span>
+                                {% else %}
+                                    <span class="badge-pure bg-danger">{{ t.status_label }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if t.categoria_nome %}
+                                    <span class="badge-pure"
+                                          style="background:{{ t.categoria_cor }}; color:#fff;">
+                                        {{ t.categoria_nome }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-vazio">—</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ t.data_emissao }}</td>
+                            <td>{{ t.data_vencimento }}</td>
+                            <td>
+                                {% if t.data_quitamento and t.data_quitamento != 'Não quitado' %}
+                                    <span style="color:#22c55e; font-weight:600;">
+                                        {{ t.data_quitamento }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-vazio">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="dash-vazio">Nenhuma transação no período.</div>
+    {% endif %}
+
+</div>

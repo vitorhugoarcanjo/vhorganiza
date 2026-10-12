@@ -1,0 +1,499 @@
+/* static/css/modules/pasta_dashboard/dashboard.css */
+/* ==========================================================
+   DASHBOARD
+   Prefixo: .dash-
+   ========================================================== */
+
+/* ==========================================================
+   0. FORÇA O LAYOUT A 100% (só nesta tela)
+   ========================================================== */
+body:has(.dash-scroll) .layout {
+    width: 100%;
+}
+
+body:has(.dash-scroll) .content {
+    width: calc(100% - var(--sidebar-fechada));
+    margin-left: var(--sidebar-fechada);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* ==========================================================
+   1. painel-container (98% width, altura 100vh)
+   ========================================================== */
+.painel-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0 !important;
+    gap: 8px;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 98% !important;
+    max-width: 98% !important;
+    margin: 0 auto !important;
+}
+
+/* ==========================================================
+   2. #tabela-container
+   ========================================================== */
+#tabela-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* ==========================================================
+   3. ÁREA DE CONTEÚDO (grid principal)
+   Linha 1: KPIs (auto)
+   Linha 2: Fluxo + Top (1fr - estica)
+   Linha 3: Últimas (400px fixo)
+   ========================================================== */
+.dash-scroll {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr 400px;
+    gap: 8px;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+/* ==========================================================
+   4. BLOCO (cada partial)
+   ========================================================== */
+.dash-bloco {
+    background: var(--bg-card);
+    border: 1px solid var(--border-sutil);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+}
+
+/* KPIs: full width (linha 1) */
+.dash-bloco:nth-of-type(1) {
+    grid-column: 1 / -1;
+}
+
+/* Fluxo mensal: coluna 1 (linha 2) */
+.dash-bloco:nth-of-type(2) {
+    grid-column: 1;
+}
+
+/* Top categorias: coluna 2 (linha 2) */
+.dash-bloco:nth-of-type(3) {
+    grid-column: 2;
+}
+
+/* Últimas transações: full width (linha 3, altura fixa de 400px) */
+.dash-bloco:nth-of-type(4) {
+    grid-column: 1 / -1;
+    height: 100%;
+}
+
+.dash-loading {
+    padding: 24px;
+    text-align: center;
+    color: var(--texto-mutado);
+    font-size: var(--fs-pequeno);
+}
+
+/* ==========================================================
+   5. SEÇÃO (dentro de cada bloco)
+   ========================================================== */
+.dash-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.dash-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-sutil);
+    background: var(--bg-principal);
+    flex-shrink: 0;
+}
+
+.dash-section-header h3 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--texto-principal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dash-section-badge {
+    font-size: var(--fs-micro);
+    background: var(--bg-card);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border-sutil);
+    color: var(--texto-mutado);
+    font-weight: 600;
+}
+
+.dash-section-link {
+    font-size: var(--fs-micro);
+    color: var(--cor-ativa);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.dash-section-link:hover { text-decoration: underline; }
+
+/* ==========================================================
+   6. KPIs
+   ========================================================== */
+.dash-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-sutil);
+    width: 100%;
+}
+
+.dash-kpi {
+    background: var(--bg-card);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 90px;
+    justify-content: center;
+}
+
+.dash-kpi-label {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dash-kpi-valor {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--texto-principal);
+    white-space: nowrap;
+}
+
+.dash-kpi-sub {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+}
+
+.dash-kpi-ok .dash-kpi-valor     { color: #22c55e; }
+.dash-kpi-ruim .dash-kpi-valor   { color: #ef4444; }
+.dash-kpi-alerta .dash-kpi-valor { color: #f59e0b; }
+
+.dash-trend {
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-size: var(--fs-micro);
+}
+
+.dash-trend-up   { color: #22c55e; background: rgba(34, 197, 94, 0.12); }
+.dash-trend-down { color: #ef4444; background: rgba(239, 68, 68, 0.12); }
+
+/* ==========================================================
+   7. GRÁFICO DE BARRAS (Fluxo Mensal)
+   ========================================================== */
+.dash-bars {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 20px 16px 8px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.dash-bar-grupo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.dash-bar-par {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
+
+.dash-bar {
+    width: 18px;
+    border-radius: 3px 3px 0 0;
+    transition: all 0.2s ease;
+    min-height: 2px;
+}
+
+.dash-bar:hover { opacity: 0.8; }
+.dash-bar-receita { background: #22c55e; }
+.dash-bar-despesa { background: #ef4444; }
+
+.dash-bar-label {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.dash-bar-valor {
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.dash-bar-valor.pos { color: #22c55e; }
+.dash-bar-valor.neg { color: #ef4444; }
+
+.dash-legenda {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    padding: 8px 16px 14px;
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+    flex-shrink: 0;
+}
+
+.dash-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+/* ==========================================================
+   8. TOP CATEGORIAS (scroll interno se passar)
+   ========================================================== */
+.dash-cat-lista {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.dash-cat-lista::-webkit-scrollbar { width: 6px; }
+.dash-cat-lista::-webkit-scrollbar-track { background: transparent; }
+.dash-cat-lista::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+.dash-cat-lista::-webkit-scrollbar-thumb:hover {
+    background: var(--texto-mutado);
+}
+
+.dash-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-sutil);
+    flex-shrink: 0;
+}
+
+.dash-cat-item:last-child { border-bottom: none; }
+
+.dash-cat-cor {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.dash-cat-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dash-cat-nome {
+    font-size: var(--fs-pequeno);
+    font-weight: 600;
+    color: var(--texto-principal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dash-cat-barra {
+    height: 4px;
+    background: var(--bg-principal);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.dash-cat-barra-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.dash-cat-valores {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.dash-cat-valor {
+    font-size: var(--fs-pequeno);
+    font-weight: 700;
+    color: var(--texto-principal);
+    white-space: nowrap;
+}
+
+.dash-cat-percentual {
+    font-size: var(--fs-micro);
+    color: var(--texto-mutado);
+}
+
+/* ==========================================================
+   9. TABELA (Últimas Transações) — com scroll interno
+   ========================================================== */
+.dash-tabela-wrap {
+    overflow-y: auto;
+    overflow-x: auto;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.dash-tabela-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+.dash-tabela-wrap::-webkit-scrollbar-track { background: transparent; }
+.dash-tabela-wrap::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+.dash-tabela-wrap::-webkit-scrollbar-thumb:hover {
+    background: var(--texto-mutado);
+}
+
+.dash-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-pequeno);
+}
+
+.dash-tabela th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--bg-principal);
+    color: var(--texto-mutado);
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-sutil);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.dash-tabela td {
+    padding: 8px 12px;
+    color: var(--texto-principal);
+    border-bottom: 1px solid var(--border-sutil);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dash-tabela tr:hover td { background: var(--hover-fino); }
+.dash-tabela tr:last-child td { border-bottom: none; }
+
+/* ==========================================================
+   10. VAZIO
+   ========================================================== */
+.dash-vazio {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--texto-mutado);
+    font-size: var(--fs-pequeno);
+}
+
+/* ==========================================================
+   11. RESPONSIVO
+   ========================================================== */
+@media (max-width: 968px) {
+    body:has(.dash-scroll) .content {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .painel-container {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+        padding: 10px 0 20px 0 !important;
+    }
+
+    #tabela-container {
+        flex: none;
+    }
+
+    /* Mobile: 1 coluna, alturas automáticas */
+    .dash-scroll {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        overflow: visible;
+        flex: none;
+    }
+
+    .dash-bloco:nth-of-type(1),
+    .dash-bloco:nth-of-type(2),
+    .dash-bloco:nth-of-type(3),
+    .dash-bloco:nth-of-type(4) {
+        grid-column: 1;
+        height: auto;
+        max-height: 400px;
+    }
+
+    .dash-kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .dash-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .dash-kpi-valor { font-size: 1.1rem; }
+    .dash-bar { width: 14px; }
+}

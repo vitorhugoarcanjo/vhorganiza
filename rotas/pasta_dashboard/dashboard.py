@@ -1,92 +1,60 @@
-from flask import Blueprint, render_template, session, request, redirect, url_for
-from rotas.middleware.autenticacao import login_required
-from utils.filtros_reutilizaveis.data import filtro_datas
+# rotas/pasta_dashboard/dashboard.py
+# ==========================================================
+# DASHBOARD — VIEW MAGRA (padrão 2099 — igual Finanças)
+# ==========================================================
+
+from flask import render_template, session, request, redirect, url_for
 from datetime import date
-from utils.database.conexao_global import ini_conexao
 
-bp_dashboard = Blueprint('dashboard', __name__)
+from rotas.middleware.autenticacao import login_required
+from rotas.pasta_dashboard.filters import DashboardFilters
 
 
-@bp_dashboard.route('/', methods=['GET', 'POST'])
 @login_required
 def inidashboard():
-    data_hoje = date.today()
+    """ Página principal do dashboard """
     usuario_id = session['user_id']
+    is_htmx = request.headers.get('HX-Request') == 'true'
 
-    # ===== FILTRO DE DATA (MESMA FUNÇÃO DO FINANÇAS) =====
-    data_inicio, data_fim, tipo_data = filtro_datas(data_hoje, prefixo='dashboard')
-    
-    # 🔥 CORREÇÃO: Se tipo_data for 'inicio' (padrão do tarefas), muda para 'emissao'
-    if tipo_data == 'inicio':
-        tipo_data = 'emissao'
-        session['dashboard_tipo_data'] = 'emissao'
-    else:
-        session['dashboard_tipo_data'] = tipo_data
+    # 1. PROCESSA FILTROS (sessão, padrão Finanças)
+    data_inicio, data_fim, tipo_data = DashboardFilters.processar_filtros_data()
+    session['dashboard_tipo_data'] = tipo_data
 
-    # ===== PROCESSAMENTO DOS FILTROS (POST) =====
-    if request.method == 'POST':
-        # O filtro_datas já processou o tipo_filtro, só precisamos redirecionar
-        return redirect(url_for('dashboard.inidashboard'))
+    # 2. RENDERIZAÇÃO PARA HTMX (só o #tabela-container + OOB)
+    if is_htmx:
+        return _renderizar_htmx(data_inicio, data_fim, tipo_data)
 
-    # ===== CONSULTA AO BANCO =====
-    conexao, cursor = ini_conexao()
-
-    # Query base
-    query_receitas = 'SELECT SUM(valor_total) FROM transacoes WHERE usuario_id = %s AND tipo = %s'
-    query_despesas = 'SELECT SUM(valor_total) FROM transacoes WHERE usuario_id = %s AND tipo = %s'
-    params_receitas = [usuario_id, 'receita']
-    params_despesas = [usuario_id, 'despesa']
-
-    # 🔥 FILTRO DE DATA (mesma lógica do finanças)
-    if data_inicio and data_fim:
-        if tipo_data == 'emissao':
-            query_receitas += ' AND DATE(data_emissao) BETWEEN %s AND %s'
-            query_despesas += ' AND DATE(data_emissao) BETWEEN %s AND %s'
-            params_receitas.extend([data_inicio, data_fim])
-            params_despesas.extend([data_inicio, data_fim])
-        elif tipo_data == 'vencimento':
-            query_receitas += ' AND DATE(data_vencimento) BETWEEN %s AND %s'
-            query_despesas += ' AND DATE(data_vencimento) BETWEEN %s AND %s'
-            params_receitas.extend([data_inicio, data_fim])
-            params_despesas.extend([data_inicio, data_fim])
-
-    # Executa consultas
-    cursor.execute(query_receitas, params_receitas)
-    total_receitas = cursor.fetchone()[0] or 0
-
-    cursor.execute(query_despesas, params_despesas)
-    total_despesas = cursor.fetchone()[0] or 0
-
-    saldo = total_receitas - total_despesas
+    # 3. RENDERIZAÇÃO COMPLETA DA PÁGINA (padrão F5)
+    return render_template(
+        'pasta_dashboard/tela_dashboard.html.jinja',
+        data_inicio=data_inicio,
+        data_fim=data_fim,
+        tipo_data=tipo_data,
+    )
 
 
-    return render_template('pasta_dashboard/tela_dashboard.html',
-                          total_receitas=total_receitas,
-                          total_despesas=total_despesas,
-                          saldo=saldo,
-                          data_inicio=data_inicio,
-                          data_fim=data_fim,
-                          tipo_data=tipo_data)
+def _renderizar_htmx(data_inicio, data_fim, tipo_data):
+    """ RENDERIZA APENAS O WRAPPER + ATUALIZA INPUTS VIA HTMX (OOB) """
+
+    wrapper_html = render_template(
+        'pasta_dashboard/partials/_tabela_wrapper.html.jinja'
+    )
+
+    # 🔥 OOB: atualiza os inputs de data que estão FORA do #tabela-container
+    oob = f"""
+        <input type="date" name="data_inicio" id="data_inicio_input"
+               class="form-control flex-fill" value="{data_inicio or ''}"
+               hx-swap-oob="outerHTML:#data_inicio_input">
+        <input type="date" name="data_fim" id="data_fim_input"
+               class="form-control flex-fill" value="{data_fim or ''}"
+               hx-swap-oob="outerHTML:#data_fim_input">
+    """
+
+    return wrapper_html + oob
 
 
-# ===== LIMPAR FILTROS =====
-@bp_dashboard.route('/limpar_filtros')
 @login_required
 def limpar_filtros():
-    """ Limpa todos os filtros da sessão do dashboard """
-    
-    prefixo = 'dashboard'
-
-    # LIMPA FILTROS GERAIS
-    session.pop('dashboard_tipo_data', None)
-
-    # LIMPA FILTROS DE DATA (COM PREFIXO)
-    session.pop(f'{prefixo}_data_inicio_intervalo', None)
-    session.pop(f'{prefixo}_data_fim_intervalo', None)
-    session.pop(f'{prefixo}_modo', None)
-    session.pop(f'{prefixo}_mes_corrente', None)
-    session.pop(f'{prefixo}_dia_corrente', None)
-    session.pop(f'{prefixo}_dia_referencia', None)
-    session.pop(f'{prefixo}_tipo_data', None)
-
+    """ Limpa todos os filtros do dashboard """
+    DashboardFilters.limpar_filtros(session)
     return redirect(url_for('dashboard.inidashboard'))

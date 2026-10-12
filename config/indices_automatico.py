@@ -16,6 +16,7 @@ def criar_indices(cursor):
         ("idx_tarefas_data_inicio", "tarefas", "data_inicio"),
         ("idx_tarefas_data_final", "tarefas", "data_final"),
         ("idx_tarefas_usuario_status", "tarefas", "usuario_id, status"),
+        ("idx_tarefas_vencendo", "tarefas", "usuario_id, ativo, status, data_final"),
 
         # TRANSAÇÕES
         ("idx_transacoes_usuario_id", "transacoes", "usuario_id"),
@@ -33,6 +34,8 @@ def criar_indices(cursor):
         ("idx_transacoes_usuario_sequencia", "transacoes", "usuario_id, sequencia_transacoes"),
         ("idx_transacoes_sequencia_usuario", "transacoes", "sequencia_transacoes, usuario_id"),
         ("idx_transacoes_categoria_id", "transacoes", "categoria_id"),
+        ("idx_transacoes_vencendo_aberto", "transacoes", "usuario_id, ativo, status, tipo, data_vencimento"),
+        ("idx_transacoes_saldo_mes", "transacoes", "usuario_id, ativo, status, data_quitamento"),
 
         # CATEGORIAS (unificada)
         ("idx_categorias_usuario_id", "categorias", "usuario_id"),

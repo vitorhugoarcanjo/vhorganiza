@@ -1,0 +1,32 @@
+{# TOP CATEGORIAS #}
+<div class="dash-section">
+
+    <div class="dash-section-header">
+        <h3>🏷️ Top Categorias (Despesas)</h3>
+        <span class="dash-section-badge">Total: {{ dados.total_fmt }}</span>
+    </div>
+
+    {% if dados.categorias %}
+        <div class="dash-cat-lista">
+            {% for cat in dados.categorias %}
+                <div class="dash-cat-item">
+                    <div class="dash-cat-cor" style="background: {{ cat.cor }}"></div>
+                    <div class="dash-cat-info">
+                        <div class="dash-cat-nome">{{ cat.nome }}</div>
+                        <div class="dash-cat-barra">
+                            <div class="dash-cat-barra-fill"
+                                 style="width: {{ cat.percentual }}%; background: {{ cat.cor }}"></div>
+                        </div>
+                    </div>
+                    <div class="dash-cat-valores">
+                        <div class="dash-cat-valor">{{ cat.valor_fmt }}</div>
+                        <div class="dash-cat-percentual">{{ cat.percentual_fmt }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="dash-vazio">Nenhuma despesa quitada no período.</div>
+    {% endif %}
+
+</div>

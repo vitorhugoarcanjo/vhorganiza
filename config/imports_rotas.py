@@ -11,7 +11,7 @@ from rotas.pasta_financas.menus.pasta_vinculos.vinculos_routes import bp_vinculo
 
 
 # PASTA DASHBOARD
-from rotas.pasta_dashboard.dashboard import bp_dashboard
+from rotas.pasta_dashboard import bp_dashboard
 
 # PASTA CONFIGURACOES
 from rotas.pasta_config.config import bp_config

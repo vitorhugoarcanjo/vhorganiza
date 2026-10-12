@@ -1,0 +1,57 @@
+{# templates/pasta_inicial_pos_login/partials/_proximos.html.jinja #}
+<div class="posl-section">
+
+    <div class="posl-section-header">
+        <h3>🟡 Próximos 7 Dias</h3>
+        <span class="posl-count">{{ itens|length }}</span>
+    </div>
+
+    {% if itens %}
+        <div class="posl-lista">
+            {% for item in itens %}
+                <div class="posl-item">
+                    <div class="posl-item-icone">{{ item.icone }}</div>
+
+                    <div class="posl-item-corpo">
+                        <div class="posl-item-titulo">{{ item.titulo }}</div>
+                        <div class="posl-item-meta">
+                            <span class="posl-badge posl-badge-data">
+                                📅 {{ item.data_br }}
+                            </span>
+
+                            {% if item.prioridade %}
+                                <span class="posl-badge posl-badge-prio-{{ item.prioridade }}">
+                                    {{ item.prioridade|title }}
+                                </span>
+                            {% endif %}
+
+                            {% if item.parcela %}
+                                <span class="posl-badge">{{ item.parcela }}</span>
+                            {% endif %}
+
+                            {% if item.categoria %}
+                                <span class="posl-categoria"
+                                      style="background-color: {{ item.cor }};">
+                                    {{ item.categoria }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="posl-item-lado">
+                        {% if item.valor %}
+                            <div class="posl-item-valor">{{ item.valor }}</div>
+                        {% endif %}
+                        <a href="{{ url_for(item.url_modulo) if item.url_modulo is defined else '#' }}"
+                           class="posl-item-acao">
+                            {{ item.modulo_nome }} →
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="posl-vazio">🗓️ Sem nada nos próximos 7 dias.</div>
+    {% endif %}
+
+</div>

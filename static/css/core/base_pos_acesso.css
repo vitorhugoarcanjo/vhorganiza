@@ -37,6 +37,7 @@ body {
     --cor-marca: #22c55e;
     --texto-principal: #f8fafc;
     --texto-mutado: #94a3b8;
+    --texto-discreto: #64748b;
     --border-sutil: rgba(255, 255, 255, 0.06);
     --hover-fino: rgba(255, 255, 255, 0.05);
     --scrollbar-thumb: rgba(255, 255, 255, 0.1);
@@ -56,9 +57,17 @@ body {
     --btn-danger-text-hover: #ef4444;
     --btn-danger-border: #ef4444;
 
-    /* 🔥 NOVO: largura da sidebar */
+    /* largura da sidebar */
     --sidebar-fechada: 60px;
     --sidebar-aberta: 220px;
+
+    /* 🔥 FOOTER (tema escuro) */
+    --footer-bg: #1e293b;
+    --footer-border: #2563eb;
+    --footer-label: #94a3b8;
+    --footer-contador-bg: #0f172a;
+    --footer-contador-text: #f8fafc;
+    --footer-contador-border: rgba(255, 255, 255, 0.06);
 }
 
 body.light-mode {
@@ -72,6 +81,14 @@ body.light-mode {
     --cor-ativa: #1d4ed8;
     --hover-fino: rgba(0, 0, 0, 0.04);
     --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+
+    /* 🔥 FOOTER (tema claro) */
+    --footer-bg: #f1f5f9;
+    --footer-border: #1d4ed8;
+    --footer-label: #64748b;
+    --footer-contador-bg: #e2e8f0;
+    --footer-contador-text: #1e293b;
+    --footer-contador-border: rgba(15, 23, 42, 0.12);
 }
 
 /* ==========================================================
@@ -97,7 +114,7 @@ body.menu-active {
 }
 
 /* ==========================================================
-   5. SIDEBAR (MENU LATERAL) - DESKTOP OVERLAY
+   5. SIDEBAR
    ========================================================== */
 .sidebar {
     width: var(--sidebar-fechada);
@@ -118,7 +135,6 @@ body.menu-active {
     border-right: 1px solid var(--border-sutil);
 }
 
-/* 🔥 DESKTOP: sidebar flutua POR CIMA (não empurra conteúdo) */
 @media (min-width: 769px) {
     .sidebar:hover {
         width: var(--sidebar-aberta);
@@ -361,7 +377,6 @@ body.menu-active {
 
 /* ==========================================================
    11. CONTEÚDO PRINCIPAL
-   🔥 FIX: margin-left FIXO em 60px. Nunca muda com hover.
    ========================================================== */
 .content {
     flex: 1;
@@ -370,10 +385,8 @@ body.menu-active {
     background-color: var(--bg-principal);
     min-height: 100vh;
     overflow-y: auto;
-    /* 🔥 SEM transition — nunca mais reflow */
 }
 
-/* 🔥 MATA qualquer regra antiga que empurre o conteúdo */
 .sidebar:hover ~ .content,
 .sidebar.aberto ~ .content {
     margin-left: var(--sidebar-fechada);
@@ -394,7 +407,7 @@ body.menu-active {
 }
 
 /* ==========================================================
-   12. MOBILE (RESPONSIVO)
+   12. MOBILE
    ========================================================== */
 @media (max-width: 768px) {
     .sidebar {
