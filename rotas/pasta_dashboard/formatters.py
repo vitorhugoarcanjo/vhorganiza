@@ -6,20 +6,31 @@
 from utils.fomatacoes.data_reutilizavel import formatar_moeda_br, formatar_data_br
 
 
+# Mapa de meses em pt-BR (usado no fluxo mensal)
+MESES_PT = {
+    1: 'JAN', 2: 'FEV', 3: 'MAR', 4: 'ABR',
+    5: 'MAI', 6: 'JUN', 7: 'JUL', 8: 'AGO',
+    9: 'SET', 10: 'OUT', 11: 'NOV', 12: 'DEZ',
+}
+
+
 class DashboardFormatters:
     """ FORMATAÇÕES ESPECÍFICAS DO MÓDULO DASHBOARD """
 
+    # ==========================================================
+    # KPIs
+    # ==========================================================
     @staticmethod
     def formatar_kpis(receitas, despesas, a_pagar, a_receber, saldo_anterior):
         """ Formata os 4 KPIs + tendência """
-        receitas = float(receitas or 0)
-        despesas = float(despesas or 0)
-        a_pagar  = float(a_pagar or 0)
-        a_receber = float(a_receber or 0)
-        saldo = receitas - despesas
-
+        receitas     = float(receitas or 0)
+        despesas     = float(despesas or 0)
+        a_pagar      = float(a_pagar or 0)
+        a_receber    = float(a_receber or 0)
+        saldo        = receitas - despesas
         saldo_anterior = float(saldo_anterior or 0)
 
+        # Tendência (variação %)
         if saldo_anterior != 0:
             tendencia = ((saldo - saldo_anterior) / abs(saldo_anterior)) * 100
         else:
@@ -42,24 +53,28 @@ class DashboardFormatters:
             'tendencia_up':     tendencia >= 0,
         }
 
+    # ==========================================================
+    # FLUXO MENSAL
+    # ==========================================================
     @staticmethod
-    def formatar_fluxo_mensal(rows):
-        """ Formata o fluxo mensal com alturas percentuais pro gráfico """
-        from datetime import date
+    def formatar_fluxo_mensal(dados_por_mes, inicio, hoje):
+        """
+        Formata o fluxo mensal com alturas percentuais pro gráfico.
 
-        dados_por_mes = {r[0]: {'receitas': float(r[1]), 'despesas': float(r[2])} for r in rows}
-
-        hoje = date.today()
-        # Início = 6 meses atrás
-        inicio = (hoje.replace(day=1) - __import__('datetime').timedelta(days=30 * 6)).replace(day=1)
-
+        Parâmetros:
+          - dados_por_mes: dict {'YYYY-MM': {'receitas': X, 'despesas': Y}}
+          - inicio: date (primeiro mês do range)
+          - hoje: date (último mês do range)
+        """
         resultado = []
         mes_atual = inicio
+
         while mes_atual <= hoje:
             chave = mes_atual.strftime('%Y-%m')
             dados = dados_por_mes.get(chave, {'receitas': 0, 'despesas': 0})
             saldo = dados['receitas'] - dados['despesas']
-            nome_mes = mes_atual.strftime('%b').upper()
+
+            nome_mes = MESES_PT.get(mes_atual.month, mes_atual.strftime('%b').upper())
 
             resultado.append({
                 'mes_chave':      chave,
@@ -79,6 +94,7 @@ class DashboardFormatters:
             else:
                 mes_atual = mes_atual.replace(month=mes_atual.month + 1)
 
+        # Alturas percentuais pro gráfico
         max_valor = max(
             (max(m['receitas'], m['despesas']) for m in resultado),
             default=1
@@ -90,10 +106,17 @@ class DashboardFormatters:
 
         return resultado
 
+    # ==========================================================
+    # TOP CATEGORIAS
+    # ==========================================================
     @staticmethod
-    def formatar_top_categorias(rows):
-        """ Formata top categorias com percentual """
-        total_geral = sum(float(r[2]) for r in rows) or 1
+    def formatar_top_categorias(rows, total_geral=None):
+        """
+        Formata top categorias.
+        total_geral = soma REAL de TODAS as categorias (não só das 5 mostradas).
+        """
+        if total_geral is None or total_geral == 0:
+            total_geral = sum(float(r[2]) for r in rows) or 1
 
         resultado = []
         for r in rows:
@@ -103,8 +126,8 @@ class DashboardFormatters:
                 'cor':            r[1],
                 'valor':          valor,
                 'valor_fmt':      formatar_moeda_br(valor),
-                'percentual':     (valor / total_geral) * 100,
-                'percentual_fmt': f"{(valor / total_geral) * 100:.1f}%",
+                'percentual':     (valor / total_geral) * 100 if total_geral else 0,
+                'percentual_fmt': f"{(valor / total_geral) * 100:.1f}%" if total_geral else '0%',
             })
 
         return {
@@ -113,12 +136,17 @@ class DashboardFormatters:
             'total_fmt':  formatar_moeda_br(total_geral),
         }
 
+    # ==========================================================
+    # ÚLTIMAS TRANSAÇÕES
+    # ==========================================================
     @staticmethod
     def formatar_ultimas_transacoes(rows):
         """ Formata últimas transações """
         transacoes = []
         for t in rows:
+            # Se for parcela filha, usa valor_parcela. Senão, valor_total.
             valor = float(t[5]) if t[6] is not None else float(t[4] or 0)
+
             transacoes.append({
                 'id':              t[0],
                 'sequencia':       t[1],

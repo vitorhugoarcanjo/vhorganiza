@@ -12,14 +12,6 @@ from rotas.pasta_dashboard.formatters import DashboardFormatters
 logger = logging.getLogger(__name__)
 
 
-# Mapa de meses em pt-BR
-MESES_PT = {
-    1: 'JAN', 2: 'FEV', 3: 'MAR', 4: 'ABR',
-    5: 'MAI', 6: 'JUN', 7: 'JUL', 8: 'AGO',
-    9: 'SET', 10: 'OUT', 11: 'NOV', 12: 'DEZ',
-}
-
-
 class DashboardServices:
 
     def __init__(self, conexao, cursor):
@@ -82,60 +74,30 @@ class DashboardServices:
         )
         rows = self.cursor.fetchall()
 
-        # Mapa {chave: {'receitas': ..., 'despesas': ...}}
+        # Monta dict pra o formatter
         dados_por_mes = {r[0]: {'receitas': float(r[1]), 'despesas': float(r[2])} for r in rows}
 
-        resultado = []
-        mes_atual = inicio
-        while mes_atual <= hoje:
-            chave = mes_atual.strftime('%Y-%m')
-            dados = dados_por_mes.get(chave, {'receitas': 0, 'despesas': 0})
-            saldo = dados['receitas'] - dados['despesas']
-
-            # 🔥 Mês em pt-BR
-            nome_mes = MESES_PT.get(mes_atual.month, mes_atual.strftime('%b').upper())
-
-            resultado.append({
-                'mes_chave':      chave,
-                'mes_nome':       nome_mes,
-                'receitas':       dados['receitas'],
-                'receitas_fmt':   f'R$ {dados["receitas"]:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.'),
-                'despesas':       dados['despesas'],
-                'despesas_fmt':   f'R$ {dados["despesas"]:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.'),
-                'saldo':          saldo,
-                'saldo_fmt':      f'R$ {saldo:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.'),
-                'saldo_positivo': saldo >= 0,
-            })
-
-            # Avança mês
-            if mes_atual.month == 12:
-                mes_atual = mes_atual.replace(year=mes_atual.year + 1, month=1)
-            else:
-                mes_atual = mes_atual.replace(month=mes_atual.month + 1)
-
-        # Alturas percentuais pro gráfico
-        max_valor = max(
-            (max(m['receitas'], m['despesas']) for m in resultado),
-            default=1
-        ) or 1
-
-        for m in resultado:
-            m['altura_receita_pct'] = (m['receitas'] / max_valor) * 100
-            m['altura_despesa_pct'] = (m['despesas'] / max_valor) * 100
-
-        return resultado
+        return DashboardFormatters.formatar_fluxo_mensal(dados_por_mes, inicio, hoje)
 
     # ==========================================================
     # TOP CATEGORIAS
     # ==========================================================
     def buscar_top_categorias(self, usuario_id, data_inicio, data_fim):
+        # 1. Top 5 categorias
         self.cursor.execute(
             DashboardQueries.get_top_categorias(),
             (usuario_id, data_inicio, data_fim)
         )
         rows = self.cursor.fetchall()
 
-        return DashboardFormatters.formatar_top_categorias(rows)
+        # 2. Total geral (todas as categorias)
+        self.cursor.execute(
+            DashboardQueries.get_total_despesas_periodo(),
+            (usuario_id, data_inicio, data_fim)
+        )
+        total_geral = float(self.cursor.fetchone()[0] or 0)
+
+        return DashboardFormatters.formatar_top_categorias(rows, total_geral)
 
     # ==========================================================
     # ÚLTIMAS TRANSAÇÕES

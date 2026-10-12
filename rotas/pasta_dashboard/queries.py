@@ -129,6 +129,22 @@ class DashboardQueries:
             LIMIT 5
         """
 
+    @staticmethod
+    def get_total_despesas_periodo():
+        """Total de despesas quitadas no período (pra mostrar no header do top)."""
+        return """
+            SELECT COALESCE(SUM(
+                CASE WHEN t.transacao_pai_id IS NOT NULL THEN t.valor_parcela ELSE t.valor_total END
+            ), 0)
+            FROM transacoes t
+            WHERE t.usuario_id = %s
+              AND t.ativo = 1
+              AND t.status = 'quitado'
+              AND t.tipo = 'despesa'
+              AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
+              AND t.data_quitamento BETWEEN %s AND %s
+        """
+
     # ==========================================================
     # ÚLTIMAS TRANSAÇÕES — por quitação
     # ==========================================================

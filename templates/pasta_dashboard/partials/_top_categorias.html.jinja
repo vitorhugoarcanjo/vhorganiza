@@ -1,9 +1,9 @@
-{# TOP CATEGORIAS #}
+{# templates/pasta_dashboard/partials/_top_categorias.html.jinja #}
 <div class="dash-section">
 
     <div class="dash-section-header">
         <h3>🏷️ Top Categorias (Despesas)</h3>
-        <span class="dash-section-badge">Total: {{ dados.total_fmt }}</span>
+        <span class="dash-section-badge">Top 5 de {{ dados.total_fmt }}</span>
     </div>
 
     {% if dados.categorias %}
