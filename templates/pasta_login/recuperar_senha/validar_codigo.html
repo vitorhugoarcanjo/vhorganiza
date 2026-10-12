@@ -1,53 +1,53 @@
+<!-- templates\pasta_login\recuperar_senha\validar_codigo.html -->
 {% extends "pasta_base_pre_login/base_pre_acesso.html" %}
 
 {% block title %}Vhorganiza - Validar Código{% endblock %}
 
 {% block styles %}
-<!-- Link para o CSS exclusivo da validação do código -->
-<link rel="stylesheet" href="{{ static_v('pasta_login_e_cadastre_se/pasta_validar_codigo/import_todas_css.css') }}">
+<link rel="stylesheet" href="{{ static_v('css/modules/pasta_pre_login/auth.min.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="login-container">
+<div class="apl-container">
 
-    <!-- Mensagens Flash do Flask (Alertas customizados sem Bootstrap) -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="flash-wrapper">
+            <div class="apl-flash-wrapper">
                 {% for category, message in messages %}
-                    <div class="custom-alert alert-{{ 'error' if category == 'error' else category }}">
+                    <div class="apl-alert apl-alert-{{ 'danger' if category == 'error' else category }}">
                         <span>{{ message }}</span>
-                        <button type="button" class="close-alert-btn" onclick="this.parentElement.remove()">✕</button>
+                        <button type="button" class="apl-close-alert-btn"
+                                onclick="this.parentElement.remove()">✕</button>
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
     {% endwith %}
 
-    <!-- CARD DO FORMULÁRIO -->
-    <div class="login-card">
-        <div class="card-header">
+    <div class="apl-card">
+        <div class="apl-card-header">
             <h2>📧 Código de Verificação</h2>
             <p>Enviamos um código para <strong>{{ email }}</strong></p>
         </div>
 
-        <form method="POST" class="login-form">
-            <!-- Campo do Código de 6 Dígitos -->
-            <div class="input-group">
+        <form method="POST" class="apl-form">
+            <div class="apl-input-group">
                 <label for="codigo">Código de 6 dígitos:</label>
-                <input type="text" id="codigo" name="codigo" class="code-input" maxlength="6" placeholder="000000" required autocomplete="one-time-code">
+                <input type="text" id="codigo" name="codigo"
+                       class="apl-code-input" maxlength="6"
+                       placeholder="000000" required autocomplete="one-time-code">
             </div>
 
-            <!-- Botões de Ação Principais -->
-            <div class="form-actions">
-                <button type="submit" class="btn-submit">Verificar</button>
+            <div class="apl-form-actions">
+                <button type="submit" class="apl-btn-submit">Verificar</button>
             </div>
 
-            <!-- Links de Navegação Secundários -->
-            <div class="form-navigation">
-                <a href="{{ url_for('recuperar.solicitar_recuperacao') }}" class="nav-btn-secondary">Solicitar novo código</a>
+            <div class="apl-form-navigation">
+                <a href="{{ url_for('recuperar.solicitar_recuperacao') }}"
+                   class="apl-nav-btn-secondary">Solicitar novo código</a>
             </div>
         </form>
     </div>
+
 </div>
 {% endblock %}

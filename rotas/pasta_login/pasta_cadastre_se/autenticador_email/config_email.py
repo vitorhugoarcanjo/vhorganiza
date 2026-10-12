@@ -1,4 +1,4 @@
-# config_email.py
+# rotas\pasta_login\pasta_cadastre_se\autenticador_email\config_email.py
 
 class EmailConfig:
     # Configurações SMTP

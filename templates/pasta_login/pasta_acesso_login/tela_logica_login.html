@@ -3,66 +3,54 @@
 {% block title %}Vhorganiza - Login{% endblock %}
 
 {% block styles %}
-<!-- Link para o CSS exclusivo da página de login -->
-<link rel="stylesheet" href="{{ static_v('pasta_login_e_cadastre_se/pasta_login/import_todas_css.css') }}">
-
-<link rel="stylesheet" href="{{ static_v('js/componentes/notificacoes_globais/notificacoes_tela.css') }}">
-
-<link rel="stylesheet" href="{{ static_v('js/pasta_login/btn_atualizador_acessar/btn_acessar.css') }}">
+<link rel="stylesheet" href="{{ static_v('css/modules/pasta_pre_login/auth.min.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="login-container">
+<div class="apl-container">
 
-    <!-- CARD DO FORMULÁRIO -->
-    <div class="login-card">
-        <div class="card-header">
+    <div class="apl-card">
+        <div class="apl-card-header">
             <h2>🔑 Acessar Sistema</h2>
             <p>Entre com suas credenciais para gerenciar suas tarefas</p>
         </div>
 
-        <form action="/login" method="post" class="login-form" id="formLogin">
-            <!-- Campo Usuário/E-mail -->
-            <div class="input-group">
+        <form action="/login" method="post" class="apl-form" id="formLogin">
+            <div class="apl-input-group">
                 <label for="nome_ou_email">Digite seu nome ou E-mail:</label>
                 <input type="text" id="nome_ou_email" name="nome_ou_email" placeholder="Ex: vitor@email.com" required>
             </div>
-            
-            <!-- Campo Senha -->
-            <div class="input-group">
+
+            <div class="apl-input-group">
                 <label for="senha">Digite sua senha:</label>
                 <input type="password" id="senha" name="senha" placeholder="••••••••" required>
             </div>
 
-            <!-- Botões de Ação Principais -->
-            <div class="form-actions">
-                <button type="submit" id="btnAcessar" class="btn-submit">
+            <div class="apl-form-actions">
+                <button type="submit" id="btnAcessar" class="apl-btn-submit">
                     <span id="txtBotao">Acessar</span>
                     <span id="spinnerCarregando" class="spinner d-none"></span>
                     <span id="txtCarregando" class="d-none">Acessando...</span>
                 </button>
-
-                <button type="reset" class="btn-reset">Limpar</button>
+                <button type="reset" class="apl-btn-reset">Limpar</button>
             </div>
 
-            <!-- Links de Navegação Secundários -->
-            <div class="form-navigation">
-                <a href="{{ url_for('ini_app') }}" class="nav-btn-secondary">Início</a>
-                <a href="{{ url_for('cadastre_se.tela_cadastre_se') }}" class="nav-btn-warning">Cadastre-se</a>
+            <div class="apl-form-navigation">
+                <a href="{{ url_for('ini_app') }}" class="apl-nav-btn-secondary">Início</a>
+                <a href="{{ url_for('cadastre_se.tela_cadastre_se') }}" class="apl-nav-btn-warning">Cadastre-se</a>
             </div>
 
-            <!-- Esqueci minha senha -->
-            <div class="form-footer">
-                <a href="{{ url_for('recuperar.solicitar_recuperacao') }}" class="forgot-password-link">Esqueci minha senha</a>
+            <div class="apl-form-footer">
+                <a href="{{ url_for('recuperar.solicitar_recuperacao') }}" class="apl-forgot-link">
+                    Esqueci minha senha
+                </a>
             </div>
         </form>
     </div>
+
 </div>
-
-
-{% block scripts %}
-    <script src="{{ static_v('js/componentes/notificacoes_globais/notificacoes_tela.js') }}"></script>
-    <script src="{{ static_v('js/pasta_login/btn_atualizador_acessar/btn_acessar.js') }}"></script>
 {% endblock %}
 
+{% block scripts %}
+<script src="{{ static_v('js/modules/pasta_pre_login/auth.min.js') }}"></script>
 {% endblock %}

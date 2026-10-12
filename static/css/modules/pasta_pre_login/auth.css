@@ -1,0 +1,356 @@
+/* static/css/modules/pasta_pre_login/auth.css */
+/* ==========================================================
+   AUTH PRE-LOGIN (Login, Cadastro, Recuperar, etc)
+   Prefixo: .apl-
+   Paleta: azul oceano profundo (igual base)
+   ========================================================== */
+
+/* ==========================================================
+   1. UTILITÁRIOS
+   ========================================================== */
+.d-none {
+    display: none !important;
+}
+
+/* ==========================================================
+   2. CONTAINER
+   ========================================================== */
+.apl-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: auto 0;
+}
+
+/* ==========================================================
+   3. CARD
+   ========================================================== */
+.apl-card {
+    background: #141a2b;
+    border: 1px solid rgba(59, 130, 246, 0.12);
+    width: 100%;
+    max-width: 380px;
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow:
+        0 20px 60px -20px rgba(0, 0, 0, 0.6),
+        0 0 60px -20px rgba(59, 130, 246, 0.15);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.apl-card-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.apl-card-header h2 {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.3px;
+}
+
+.apl-card-header p {
+    color: #7a8aa3;
+    font-size: 0.82rem;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.apl-card-header strong {
+    color: #e6edf7;
+}
+
+/* ==========================================================
+   4. FORM
+   ========================================================== */
+.apl-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.apl-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+}
+
+.apl-input-group label {
+    color: #e6edf7;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-align: left;
+    letter-spacing: 0.2px;
+}
+
+.apl-input-group input {
+    background-color: #0a0e1a;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    color: #ffffff;
+    font-size: 0.9rem;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.apl-input-group input::placeholder {
+    color: #4a5a72;
+}
+
+.apl-input-group input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+    background-color: #0a0e1a;
+}
+
+.apl-input-group input.apl-code-input {
+    padding: 0.75rem 0.5rem;
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.6rem;
+    letter-spacing: 8px;
+}
+
+/* ==========================================================
+   5. BOTÕES
+   ========================================================== */
+.apl-form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.85rem;
+}
+
+.apl-form-navigation {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.apl-btn-submit,
+.apl-btn-reset,
+.apl-nav-btn-secondary,
+.apl-nav-btn-warning {
+    flex: 1;
+    padding: 0.65rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.apl-btn-submit {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25);
+}
+
+.apl-btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+.apl-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.apl-btn-reset {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.apl-btn-reset:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+.apl-nav-btn-secondary {
+    background: rgba(30, 41, 59, 0.6);
+    color: #e6edf7;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.apl-nav-btn-secondary:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #ffffff;
+}
+
+.apl-nav-btn-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.apl-nav-btn-warning:hover {
+    background: rgba(245, 158, 11, 0.2);
+    color: #ffffff;
+    border-color: #f59e0b;
+}
+
+/* ==========================================================
+   6. LINK FORGOT PASSWORD
+   ========================================================== */
+.apl-form-footer {
+    text-align: center;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.apl-forgot-link {
+    color: #7a8aa3;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.apl-forgot-link:hover {
+    color: #22c55e;
+    text-decoration: underline;
+}
+
+/* ==========================================================
+   7. SPINNER
+   ========================================================== */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: girar 0.75s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes girar {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================
+   8. FLASH MESSAGES
+   ========================================================== */
+.apl-flash-wrapper {
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 1rem;
+}
+
+.apl-alert {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.95rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+}
+
+.apl-alert-error,
+.apl-alert-danger {
+    background-color: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+}
+
+.apl-alert-success {
+    background-color: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #86efac;
+}
+
+.apl-alert-warning {
+    background-color: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #fcd34d;
+}
+
+.apl-alert-info {
+    background-color: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    color: #93c5fd;
+}
+
+.apl-close-alert-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0.7;
+    padding-left: 0.5rem;
+}
+
+.apl-close-alert-btn:hover {
+    opacity: 1;
+}
+
+/* ==========================================================
+   9. RESPONSIVO
+   ========================================================== */
+@media (max-width: 767px) {
+    .apl-card {
+        padding: 1.5rem 1.25rem;
+        border-radius: 12px;
+    }
+
+    .apl-card-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .apl-input-group {
+        margin-bottom: 0.85rem;
+    }
+
+    .apl-input-group input {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.88rem;
+    }
+
+    .apl-input-group input.apl-code-input {
+        font-size: 1.4rem;
+        padding: 0.65rem 0.5rem;
+        letter-spacing: 6px;
+    }
+
+    .apl-form-actions,
+    .apl-form-navigation {
+        gap: 0.4rem;
+    }
+
+    .apl-btn-submit,
+    .apl-btn-reset,
+    .apl-nav-btn-secondary,
+    .apl-nav-btn-warning {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}

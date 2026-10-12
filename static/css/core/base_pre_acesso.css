@@ -1,0 +1,338 @@
+/* static/css/core/base_pre_acesso.css */
+/* ==========================================================
+   BASE PRÉ-LOGIN (navbar, sidebar, footer)
+   Paleta: dark azulado profundo
+   ========================================================== */
+
+/* ==========================================================
+   1. RESET E BASE
+   ========================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #0a0e1a;
+    color: #e6edf7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================
+   2. LAYOUT WRAPPER
+   ========================================================== */
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ==========================================================
+   3. NAVBAR FIXA
+   ========================================================== */
+.main-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 56px;
+    background-color: rgba(10, 14, 26, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+    z-index: 996;
+}
+
+.nav-container {
+    width: 100%;
+    height: 100%;
+    padding: 0 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-menu-wrapper {
+    display: none;
+}
+
+/* ==========================================================
+   4. SIDEBAR
+   ========================================================== */
+.sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: #0a0e1a;
+    color: #e6edf7;
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: -260px;
+    top: 0;
+    z-index: 999;
+    transition: left 0.25s ease-in-out;
+    border-right: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.sidebar .logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 2rem;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.sidebar .logo a {
+    color: inherit;
+    text-decoration: none;
+    background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin: 0.25rem 0;
+}
+
+.sidebar a {
+    color: #7a8aa3;
+    background-color: transparent;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar a i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar a:hover {
+    color: #ffffff;
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.sidebar a.active {
+    color: #ffffff;
+    background-color: rgba(37, 99, 235, 0.2);
+    box-shadow: inset 3px 0 0 #3b82f6;
+}
+
+/* ==========================================================
+   5. CONTROLES MOBILE
+   ========================================================== */
+.menu-toggle {
+    display: block;
+    position: fixed;
+    top: 0.75rem;
+    right: 1rem;
+    z-index: 997;
+    background: rgba(30, 41, 59, 0.8);
+    color: #ffffff;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 0.4rem 0.65rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+.menu-close {
+    display: block;
+    background: transparent;
+    color: #7a8aa3;
+    border: none;
+    font-size: 1.15rem;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.menu-close:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 998;
+}
+
+body.menu-active .sidebar { left: 0; }
+body.menu-active .sidebar-overlay { display: block; }
+body.menu-active { overflow: hidden; }
+
+/* ==========================================================
+   6. CONTEÚDO
+   ========================================================== */
+.content {
+    flex: 1;
+    margin-left: 0;
+    padding: 76px 1rem 1.5rem 1rem;
+    background: #0a0e1a;
+    background-image: radial-gradient(ellipse at top, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+    overflow-y: auto;
+}
+
+/* ==========================================================
+   7. FOOTER
+   ========================================================== */
+.footer {
+    background: #0a0e1a;
+    text-align: center;
+    padding: 1.25rem 1rem;
+    color: #5a6a82;
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(59, 130, 246, 0.08);
+}
+
+/* ==========================================================
+   8. REDES SOCIAIS
+   ========================================================== */
+.nav-socials-desktop {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-social-icon {
+    color: #5a6a82;
+    font-size: 1.1rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.nav-social-icon:hover {
+    color: #ffffff;
+    background: rgba(59, 130, 246, 0.15);
+    transform: translateY(-1px);
+}
+
+.nav-socials-mobile {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(59, 130, 246, 0.08);
+}
+
+.nav-socials-mobile p {
+    font-size: 0.7rem;
+    color: #5a6a82;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.socials-mobile-grid {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.socials-mobile-grid a {
+    color: #7a8aa3;
+    font-size: 1.1rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.socials-mobile-grid a:hover {
+    color: #ffffff;
+    background: rgba(59, 130, 246, 0.15);
+}
+
+/* ==========================================================
+   9. DESKTOP
+   ========================================================== */
+@media (min-width: 768px) {
+    .layout {
+        flex-direction: row;
+        min-height: calc(100vh - 56px);
+    }
+
+    .main-navbar {
+        padding-left: 240px;
+    }
+
+    .nav-menu-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+        gap: 2rem;
+    }
+
+    .menu-toggle,
+    .menu-close,
+    .sidebar-overlay,
+    .nav-socials-mobile {
+        display: none !important;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 240px;
+        height: 100vh;
+    }
+
+    .sidebar .logo {
+        margin-bottom: 2.5rem;
+        justify-content: flex-start;
+    }
+
+    .content {
+        margin-left: 240px;
+        width: calc(100% - 240px);
+        padding: 5rem 2rem 2rem 2rem;
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+}

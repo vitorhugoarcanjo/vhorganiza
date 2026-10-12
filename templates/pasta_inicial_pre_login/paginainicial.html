@@ -1,122 +1,213 @@
 {% extends "pasta_base_pre_login/base_pre_acesso.html" %}
 
-{% block title %}Vhorganiza - Gestão de Tarefas e Finanças{% endblock %}
+{% block title %}Vhorganiza · Organize tarefas, finanças e orçamentos{% endblock %}
 
 {% block styles %}
-<!-- Seu arquivo de estilo exclusivo para esta tela -->
-<link rel="stylesheet" href="{{ static_v('pasta_tela_inicial/import_todas_css.css') }}">
-<!-- Ícones para as redes sociais -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ static_v('css/modules/pasta_pre_login/pagina_inicial.min.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="home-wrapper">
-    
-    <!-- HERO SECTION -->
-    <section id="hero" class="hero-section">
-        <div class="hero-content">
-            <span class="badge-dev">⚡ AMBIENTE EM DESENVOLVIMENTO</span>
-            <h1 class="hero-title">Sua rotina produtiva e financeira em um só lugar.</h1>
-            <p class="hero-subtitle">O Vhorganiza é um ecossistema inteligente projetado para centralizar o controle do seu dinheiro e simplificar sua organização diária.</p>
-            
-            <!-- BOTÕES DE ACESSO DIRETO -->
-            <div class="hero-actions">
-                <a href="{{ url_for('login.validar_login') }}" class="btn-hero-primary">Acessar o Sistema</a>
-                <a href="{{ url_for('cadastre_se.tela_cadastre_se') }}" class="btn-hero-secondary">Criar Conta Gratuita</a>
+<div class="pi-wrapper">
+
+    <!-- ============================================== -->
+    <!-- HERO                                            -->
+    <!-- ============================================== -->
+    <section class="pi-hero">
+        <div class="pi-hero-content">
+            <span class="pi-badge-dev">
+                <i class="bi bi-lightning-charge-fill"></i> Ambiente em desenvolvimento
+            </span>
+
+            <h1 class="pi-hero-title">
+                Tarefas, finanças e orçamentos.<br>
+                <span class="pi-highlight">Tudo em um só lugar.</span>
+            </h1>
+
+            <p class="pi-hero-subtitle">
+                O Vhorganiza é o sistema que centraliza sua rotina: acompanhe o que precisa fazer, controle o que entra e sai, monte orçamentos, e veja tudo em um dashboard direto ao ponto.
+            </p>
+
+            <div class="pi-hero-actions">
+                <a href="{{ url_for('login.validar_login') }}" class="pi-btn-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> Acessar o sistema
+                </a>
+                <a href="{{ url_for('cadastre_se.tela_cadastre_se') }}" class="pi-btn-secondary">
+                    <i class="bi bi-person-plus"></i> Criar conta grátis
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- SCREENSHOTS / DEMO -->
-    <section id="demo" class="demo-section">
-        <div class="section-header">
-            <h2 class="section-title">📱 Conheça a Interface</h2>
-            <p class="section-subtitle">Simples, direta ao ponto e sem telas poluídas</p>
-        </div>
-        
-        <div class="cards-grid">
-            <!-- CARD 1: DASHBOARD -->
-            <div class="project-card">
-                <div class="card-image-wrapper">
-                    <img src="{{ url_for('static', filename='images/print_dashboard.png') }}" alt="Dashboard Vhorganiza">
-                </div>
-                <div class="card-body">
-                    <h3>📊 Central de Indicadores</h3>
-                    <p>Gráficos limpos para você entender seu saldo, despesas do mês e tarefas pendentes num piscar de olhos.</p>
-                </div>
+    <!-- ============================================== -->
+    <!-- MOCKUP DO DASHBOARD (CSS, sem imagem)           -->
+    <!-- ============================================== -->
+    <section class="pi-mockup-wrapper">
+        <div class="pi-mockup">
+            <div class="pi-mockup-bar">
+                <span class="pi-mockup-dot pi-dot-red"></span>
+                <span class="pi-mockup-dot pi-dot-yellow"></span>
+                <span class="pi-mockup-dot pi-dot-green"></span>
             </div>
+            <div class="pi-mockup-body">
+                <!-- KPIs -->
+                <div class="pi-mockup-kpis">
+                    <div class="pi-mockup-kpi">
+                        <div class="pi-mockup-kpi-label">💰 Saldo</div>
+                        <div class="pi-mockup-kpi-valor pi-pos">R$ 3.450</div>
+                    </div>
+                    <div class="pi-mockup-kpi">
+                        <div class="pi-mockup-kpi-label">📈 Receitas</div>
+                        <div class="pi-mockup-kpi-valor pi-pos">R$ 5.200</div>
+                    </div>
+                    <div class="pi-mockup-kpi">
+                        <div class="pi-mockup-kpi-label">📉 Despesas</div>
+                        <div class="pi-mockup-kpi-valor pi-neg">R$ 1.750</div>
+                    </div>
+                    <div class="pi-mockup-kpi">
+                        <div class="pi-mockup-kpi-label">📋 Tarefas</div>
+                        <div class="pi-mockup-kpi-valor">5</div>
+                    </div>
+                </div>
 
-            <!-- CARD 2: FINANÇAS -->
-            <div class="project-card">
-                <div class="card-image-wrapper">
-                    <img src="{{ url_for('static', filename='images/print_financas.png') }}" alt="Finanças Vhorganiza">
+                <!-- Gráfico fake -->
+                <div class="pi-mockup-chart">
+                    <div class="pi-mockup-chart-title">📊 Fluxo mensal</div>
+                    <div class="pi-mockup-bars">
+                        <div class="pi-mockup-bar-item pi-bar-green" style="height: 60%;"></div>
+                        <div class="pi-mockup-bar-item" style="height: 40%;"></div>
+                        <div class="pi-mockup-bar-item pi-bar-green" style="height: 80%;"></div>
+                        <div class="pi-mockup-bar-item" style="height: 55%;"></div>
+                        <div class="pi-mockup-bar-item pi-bar-green" style="height: 70%;"></div>
+                        <div class="pi-mockup-bar-item" style="height: 45%;"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h3>💵 Gestão de Fluxo de Caixa</h3>
-                    <p>Controle receitas, despesas fixas e compras parceladas de forma previsível e sem dores de cabeça.</p>
-                </div>
-            </div>
 
-            <!-- CARD 3: TAREFAS -->
-            <div class="project-card">
-                <div class="card-image-wrapper">
-                    <img src="{{ url_for('static', filename='images/print_tarefas.png') }}" alt="Tarefas Vhorganiza">
+                <!-- Lista fake -->
+                <div class="pi-mockup-lista">
+                    <div class="pi-mockup-linha">
+                        <span class="pi-mockup-linha-bolinha pi-bolinha-verde"></span>
+                        <div class="pi-mockup-linha-barra"></div>
+                    </div>
+                    <div class="pi-mockup-linha">
+                        <span class="pi-mockup-linha-bolinha"></span>
+                        <div class="pi-mockup-linha-barra pi-barra-media"></div>
+                    </div>
+                    <div class="pi-mockup-linha">
+                        <span class="pi-mockup-linha-bolinha pi-bolinha-amarela"></span>
+                        <div class="pi-mockup-linha-barra pi-barra-curta"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h3>📝 Kanban de Produtividade</h3>
-                    <p>Organize suas obrigações por nível de prioridade e categorias customizáveis para manter o foco total.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- INFORMAÇÕES DO PROJETO -->
-    <section id="sobre" class="about-section">
-        <h2 class="section-title">👨‍💻 Bastidores do Desenvolvimento</h2>
-        
-        <div class="features-grid">
-            <div class="feature-item">
-                <span class="feature-icon">🐍</span>
-                <h3>Stack Moderna</h3>
-                <p>Construído com Python, Flask e arquitetura limpa de dados.</p>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">🔐</span>
-                <h3>Privacidade Total</h3>
-                <p>Bancos de dados isolados e senhas criptografadas com segurança.</p>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">🚀</span>
-                <h3>Foco em Performance</h3>
-                <p>Interface ultra leve construída do zero, sem frameworks pesados.</p>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">🇧🇷</span>
-                <h3>Orgulho Nacional</h3>
-                <p>Projetado e codificado diretamente do Brasil em 2026.</p>
             </div>
         </div>
     </section>
 
-    <!-- REDES SOCIAIS -->
-    <section id="contato" class="contact-section">
-        <h2 class="section-title">📱 Tem alguma sugestão ou feedback?</h2>
-        <p class="contact-subtitle">Acompanhe a evolução do projeto e entre em contato direto comigo nas redes:</p>
-        
-        <div class="social-links">
-            <a href="https://www.linkedin.com/in/vitor-hugo-arcanjo-dias-pereira-5919b5334/" class="social-btn btn-linkedin" target="_blank" rel="noopener" title="LinkedIn">
+    <!-- ============================================== -->
+    <!-- MÓDULOS                                         -->
+    <!-- ============================================== -->
+    <section>
+        <div class="pi-section-header">
+            <h2 class="pi-section-title">O que você controla</h2>
+            <p class="pi-section-subtitle">
+                Cinco módulos integrados. Você decide o que usar, quando usar.
+            </p>
+        </div>
+
+        <div class="pi-modules-grid">
+            <div class="pi-module-card pi-module-tarefas">
+                <div class="pi-module-icon"><i class="bi bi-check2-square"></i></div>
+                <h3 class="pi-module-title">Tarefas</h3>
+                <p class="pi-module-desc">Organize o que precisa fazer com prazo, prioridade e categoria. Filtre, conclua e reabra sem bagunça.</p>
+            </div>
+
+            <div class="pi-module-card pi-module-financas">
+                <div class="pi-module-icon"><i class="bi bi-currency-dollar"></i></div>
+                <h3 class="pi-module-title">Finanças</h3>
+                <p class="pi-module-desc">Controle receitas e despesas, parceladas ou à vista. Marque como quitado e acompanhe o que ainda tá em aberto.</p>
+            </div>
+
+            <div class="pi-module-card pi-module-orcamentos">
+                <div class="pi-module-icon"><i class="bi bi-box2"></i></div>
+                <h3 class="pi-module-title">Orçamentos</h3>
+                <p class="pi-module-desc">Monte orçamentos estruturados e exporte em PDF. Ideal pra proposta comercial ou orçamento de serviço.</p>
+            </div>
+
+            <div class="pi-module-card pi-module-categorias">
+                <div class="pi-module-icon"><i class="bi bi-tags"></i></div>
+                <h3 class="pi-module-title">Categorias</h3>
+                <p class="pi-module-desc">Crie categorias por módulo, com cor própria. Deixe tudo organizado do jeito que faz sentido pra você.</p>
+            </div>
+
+            <div class="pi-module-card pi-module-dashboard">
+                <div class="pi-module-icon"><i class="bi bi-graph-up"></i></div>
+                <h3 class="pi-module-title">Dashboard</h3>
+                <p class="pi-module-desc">Veja saldo, fluxo mensal, top categorias e últimas transações — tudo num painel direto e visual.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- DIFERENCIAIS                                    -->
+    <!-- ============================================== -->
+    <section>
+        <div class="pi-section-header">
+            <h2 class="pi-section-title">Por que Vhorganiza</h2>
+        </div>
+
+        <div class="pi-features-grid">
+            <div class="pi-feature-item">
+                <div class="pi-feature-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+                <h3>Rápido de verdade</h3>
+                <p>Interface leve, carregamento quase instantâneo, feito do zero sem frameworks pesados.</p>
+            </div>
+
+            <div class="pi-feature-item">
+                <div class="pi-feature-icon"><i class="bi bi-shield-lock-fill"></i></div>
+                <h3>Seus dados isolados</h3>
+                <p>Bancos de dados separados por usuário. Nada seu fica visível pra outra conta.</p>
+            </div>
+
+            <div class="pi-feature-item">
+                <div class="pi-feature-icon"><i class="bi bi-palette2"></i></div>
+                <h3>Modo claro e escuro</h3>
+                <p>Tema adaptável em todas as telas. Alterna com 1 clique e fica salvo no seu navegador.</p>
+            </div>
+
+            <div class="pi-feature-item">
+                <div class="pi-feature-icon"><i class="bi bi-code-slash"></i></div>
+                <h3>Feito no Brasil</h3>
+                <p>Python, Flask e PostgreSQL. Codificado direto do Brasil, sem intermediário.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- CONTATO                                         -->
+    <!-- ============================================== -->
+    <section class="pi-contact-section">
+        <h2 class="pi-section-title">Tem sugestão ou quer trocar ideia?</h2>
+        <p class="pi-section-subtitle">
+            Estou evoluindo o Vhorganiza em tempo real. Manda feedback, dúvida ou ideia.
+        </p>
+
+        <div class="pi-social-links">
+            <a href="https://www.linkedin.com/in/vitor-hugo-arcanjo-dias-pereira-5919b5334/" class="pi-social-btn pi-btn-linkedin" target="_blank" rel="noopener" title="LinkedIn">
                 <i class="bi bi-linkedin"></i>
             </a>
-            <a href="https://github.com/vitorhugoarcanjo" class="social-btn btn-github" target="_blank" rel="noopener" title="GitHub">
+            <a href="https://github.com/vitorhugoarcanjo" class="pi-social-btn pi-btn-github" target="_blank" rel="noopener" title="GitHub">
                 <i class="bi bi-github"></i>
             </a>
-            <a href="https://www.instagram.com/vitor.hadp/" class="social-btn btn-instagram" target="_blank" rel="noopener" title="Instagram">
+            <a href="https://www.instagram.com/vitor.hadp/" class="pi-social-btn pi-btn-instagram" target="_blank" rel="noopener" title="Instagram">
                 <i class="bi bi-instagram"></i>
             </a>
-            <a href="https://wa.me/5565999757941?text=Olá%20Vitor,%20vi%20o%20Vhorganiza!" class="social-btn btn-whatsapp" target="_blank" rel="noopener" title="WhatsApp">
+            <a href="https://wa.me/5565999757941?text=Olá%20Vitor,%20vi%20o%20Vhorganiza!" class="pi-social-btn pi-btn-whatsapp" target="_blank" rel="noopener" title="WhatsApp">
                 <i class="bi bi-whatsapp"></i>
             </a>
         </div>
     </section>
+
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ static_v('js/modules/pasta_pre_login/pagina_inicial.min.js') }}"></script>
 {% endblock %}

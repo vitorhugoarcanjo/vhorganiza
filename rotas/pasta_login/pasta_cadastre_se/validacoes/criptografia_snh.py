@@ -1,3 +1,4 @@
+# rotas\pasta_login\pasta_cadastre_se\validacoes\criptografia_snh.py
 from werkzeug.security import generate_password_hash, check_password_hash
 
 def criptografar_senha(senha):

@@ -1,96 +1,86 @@
+<!-- templates/pasta_login/pasta_cadastre_se/tela_cadastre_se.html -->
 {% extends "pasta_base_pre_login/base_pre_acesso.html" %}
 
 {% block title %}Vhorganiza - Cadastre-se{% endblock %}
 
 {% block styles %}
-<!-- Link para o CSS exclusivo da página de cadastro (reaproveitando os mesmos estilos do login) -->
-<link rel="stylesheet" href="{{ static_v('pasta_login_e_cadastre_se/pasta_cadastre_se/import_todas_css.css') }}">
-
-<!-- Estilos rápidos para a nossa animação de carregamento acontecer sem depender de arquivos externos -->
-<link rel="stylesheet" href="{{ static_v('js/pasta_login/btn_atualizador_cadastrar/btn_cadastrar.css') }}">
+<link rel="stylesheet" href="{{ static_v('css/modules/pasta_pre_login/auth.min.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="login-container">
+<div class="apl-container">
 
-    <!-- Mensagens Flash do Flask (Alertas customizados sem Bootstrap, idênticos ao login) -->
+    <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="flash-wrapper">
+            <div class="apl-flash-wrapper">
                 {% for category, message in messages %}
-                    <div class="custom-alert alert-{{ 'error' if category == 'error' else category }}">
+                    <div class="apl-alert apl-alert-{{ 'danger' if category == 'error' else category }}">
                         <span>{{ message }}</span>
-                        <button type="button" class="close-alert-btn" onclick="this.parentElement.remove()">✕</button>
+                        <button type="button" class="apl-close-alert-btn"
+                                onclick="this.parentElement.remove()">✕</button>
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
     {% endwith %}
 
-    <!-- CARD DO FORMULÁRIO -->
-    <div class="login-card">
-        <div class="card-header">
+    <div class="apl-card">
+        <div class="apl-card-header">
             <h2>📝 Criar Conta</h2>
             <p>Preencha os dados abaixo para se cadastrar no sistema</p>
         </div>
 
-        <!-- Ajustado: Adicionada a id="formCadastro" para monitorarmos pelo script -->
-        <form id="formCadastro" action="/cadastre_se" method="post" class="login-form">
-            <!-- Campo Nome -->
-            <div class="input-group">
+        <form id="formCadastro" action="/cadastre_se" method="post" class="apl-form">
+            <div class="apl-input-group">
                 <label for="nome">Digite seu nome:</label>
-                <input type="text" id="nome" name="nome" placeholder="Ex: Vitor Hugo" required autocomplete="name">
+                <input type="text" id="nome" name="nome"
+                       placeholder="Ex: Vitor Hugo" required autocomplete="name">
             </div>
 
-            <!-- Campo E-mail -->
-            <div class="input-group">
+            <div class="apl-input-group">
                 <label for="email">Digite seu E-mail:</label>
-                <input type="email" id="email" name="email" placeholder="Ex: vitor@email.com" required autocomplete="email">
+                <input type="email" id="email" name="email"
+                       placeholder="Ex: vitor@email.com" required autocomplete="email">
             </div>
 
-            <!-- Campo Telefone -->
-            <div class="input-group">
+            <div class="apl-input-group">
                 <label for="telefone">Digite seu telefone:</label>
-                <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" oninput="formatarTelefone(this)" required>
+                <input type="tel" id="telefone" name="telefone"
+                       placeholder="(00) 00000-0000" required>
             </div>
-            
-            <!-- Campo Senha -->
-            <div class="input-group">
+
+            <div class="apl-input-group">
                 <label for="senha">Digite sua senha:</label>
-                <input type="password" id="senha" name="senha" placeholder="••••••••" required>
+                <input type="password" id="senha" name="senha"
+                       placeholder="••••••••" required>
             </div>
 
-            <!-- Campo Confirmação de Senha -->
-            <div class="input-group">
+            <div class="apl-input-group">
                 <label for="confirmar_senha">Validação da senha:</label>
-                <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="••••••••" required>
+                <input type="password" id="confirmar_senha" name="confirmar_senha"
+                       placeholder="••••••••" required>
             </div>
 
-            <!-- Botões de Ação Principais -->
-            <!-- Ajustado: Adicionadas IDs e spans internos no botão para controlar o texto -->
-            <div class="form-actions">
-                <button type="submit" id="btnCadastrar" class="btn-submit">
+            <div class="apl-form-actions">
+                <button type="submit" id="btnCadastrar" class="apl-btn-submit">
                     <span id="txtBotao">Cadastrar</span>
                     <span id="spinnerCarregando" class="spinner d-none"></span>
                     <span id="txtCarregando" class="d-none">Enviando código...</span>
                 </button>
-                <button type="reset" class="btn-reset">Limpar</button>
+                <button type="reset" class="apl-btn-reset">Limpar</button>
             </div>
 
-            <!-- Links de Navegação Secundários -->
-            <div class="form-navigation">
-                <a href="{{ url_for('ini_app') }}" class="nav-btn-secondary">Início</a>
-                <a href="/login" class="nav-btn-warning">Login</a>
+            <div class="apl-form-navigation">
+                <a href="{{ url_for('ini_app') }}" class="apl-nav-btn-secondary">Início</a>
+                <a href="/login" class="apl-nav-btn-warning">Login</a>
             </div>
         </form>
     </div>
-</div>
 
-<!-- Script Javascript para interceptar o envio e animar o botão -->
-{% block scripts %}
-<script src="{{ static_v('js/pasta_login/btn_atualizador_cadastrar/btn_cadastrar.js') }}"></script>
+</div>
 {% endblock %}
 
-
-
+{% block scripts %}
+<script src="{{ static_v('js/modules/pasta_pre_login/auth.min.js') }}"></script>
 {% endblock %}

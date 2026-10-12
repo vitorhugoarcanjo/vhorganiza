@@ -1,59 +1,57 @@
+<!-- templates\pasta_login\recuperar_senha\nova_senha.html -->
 {% extends "pasta_base_pre_login/base_pre_acesso.html" %}
 
 {% block title %}Vhorganiza - Nova Senha{% endblock %}
 
 {% block styles %}
-<!-- Link para o CSS exclusivo da definição de nova senha -->
-<link rel="stylesheet" href="{{ static_v('pasta_login_e_cadastre_se/pasta_nova_senha/import_todas_css.css') }}">
+<link rel="stylesheet" href="{{ static_v('css/modules/pasta_pre_login/auth.min.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="login-container">
+<div class="apl-container">
 
-    <!-- Mensagens Flash do Flask (Alertas customizados sem Bootstrap) -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="flash-wrapper">
+            <div class="apl-flash-wrapper">
                 {% for category, message in messages %}
-                    <div class="custom-alert alert-{{ 'error' if category == 'error' else category }}">
+                    <div class="apl-alert apl-alert-{{ 'danger' if category == 'error' else category }}">
                         <span>{{ message }}</span>
-                        <button type="button" class="close-alert-btn" onclick="this.parentElement.remove()">✕</button>
+                        <button type="button" class="apl-close-alert-btn"
+                                onclick="this.parentElement.remove()">✕</button>
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
     {% endwith %}
 
-    <!-- CARD DO FORMULÁRIO -->
-    <div class="login-card">
-        <div class="card-header">
+    <div class="apl-card">
+        <div class="apl-card-header">
             <h2>🔑 Nova Senha</h2>
             <p>Digite e confirme sua nova senha de acesso</p>
         </div>
 
-        <form method="POST" class="login-form">
-            <!-- Campo Nova Senha -->
-            <div class="input-group">
+        <form method="POST" class="apl-form">
+            <div class="apl-input-group">
                 <label for="senha">Nova Senha:</label>
-                <input type="password" id="senha" name="senha" placeholder="••••••••" required>
+                <input type="password" id="senha" name="senha"
+                       placeholder="••••••••" required>
             </div>
 
-            <!-- Campo Confirmar Senha -->
-            <div class="input-group">
+            <div class="apl-input-group">
                 <label for="confirmar_senha">Confirmar Senha:</label>
-                <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="••••••••" required>
+                <input type="password" id="confirmar_senha" name="confirmar_senha"
+                       placeholder="••••••••" required>
             </div>
 
-            <!-- Botões de Ação Principais -->
-            <div class="form-actions">
-                <button type="submit" class="btn-submit">Alterar Senha</button>
+            <div class="apl-form-actions">
+                <button type="submit" class="apl-btn-submit">Alterar Senha</button>
             </div>
 
-            <!-- Links de Navegação Secundários -->
-            <div class="form-navigation">
-                <a href="{{ url_for('login.validar_login') }}" class="nav-btn-secondary">Voltar ao login</a>
+            <div class="apl-form-navigation">
+                <a href="{{ url_for('login.validar_login') }}" class="apl-nav-btn-secondary">Voltar ao login</a>
             </div>
         </form>
     </div>
+
 </div>
 {% endblock %}

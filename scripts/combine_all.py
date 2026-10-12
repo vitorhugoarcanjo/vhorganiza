@@ -26,6 +26,10 @@ MODULOS = [
     'categorias',
     'pos_login',
     'dashboard',
+
+    'auth',
+    'pagina_inicial',
+
 ]
 
 

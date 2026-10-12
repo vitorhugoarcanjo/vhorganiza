@@ -1,0 +1,800 @@
+/* COMBINADO - 12/10/2026 11:20 */
+
+/* ===== base_pre_acesso.css ===== */
+/* static/css/core/base_pre_acesso.css */
+/* ==========================================================
+   BASE PRÉ-LOGIN (navbar, sidebar, footer)
+   Paleta: dark azulado profundo
+   ========================================================== */
+
+/* ==========================================================
+   1. RESET E BASE
+   ========================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #0a0e1a;
+    color: #e6edf7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================
+   2. LAYOUT WRAPPER
+   ========================================================== */
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ==========================================================
+   3. NAVBAR FIXA
+   ========================================================== */
+.main-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 56px;
+    background-color: rgba(10, 14, 26, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+    z-index: 996;
+}
+
+.nav-container {
+    width: 100%;
+    height: 100%;
+    padding: 0 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-menu-wrapper {
+    display: none;
+}
+
+/* ==========================================================
+   4. SIDEBAR
+   ========================================================== */
+.sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: #0a0e1a;
+    color: #e6edf7;
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: -260px;
+    top: 0;
+    z-index: 999;
+    transition: left 0.25s ease-in-out;
+    border-right: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.sidebar .logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 2rem;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.sidebar .logo a {
+    color: inherit;
+    text-decoration: none;
+    background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin: 0.25rem 0;
+}
+
+.sidebar a {
+    color: #7a8aa3;
+    background-color: transparent;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar a i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar a:hover {
+    color: #ffffff;
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.sidebar a.active {
+    color: #ffffff;
+    background-color: rgba(37, 99, 235, 0.2);
+    box-shadow: inset 3px 0 0 #3b82f6;
+}
+
+/* ==========================================================
+   5. CONTROLES MOBILE
+   ========================================================== */
+.menu-toggle {
+    display: block;
+    position: fixed;
+    top: 0.75rem;
+    right: 1rem;
+    z-index: 997;
+    background: rgba(30, 41, 59, 0.8);
+    color: #ffffff;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 0.4rem 0.65rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+.menu-close {
+    display: block;
+    background: transparent;
+    color: #7a8aa3;
+    border: none;
+    font-size: 1.15rem;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.menu-close:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 998;
+}
+
+body.menu-active .sidebar { left: 0; }
+body.menu-active .sidebar-overlay { display: block; }
+body.menu-active { overflow: hidden; }
+
+/* ==========================================================
+   6. CONTEÚDO
+   ========================================================== */
+.content {
+    flex: 1;
+    margin-left: 0;
+    padding: 76px 1rem 1.5rem 1rem;
+    background: #0a0e1a;
+    background-image: radial-gradient(ellipse at top, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+    overflow-y: auto;
+}
+
+/* ==========================================================
+   7. FOOTER
+   ========================================================== */
+.footer {
+    background: #0a0e1a;
+    text-align: center;
+    padding: 1.25rem 1rem;
+    color: #5a6a82;
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(59, 130, 246, 0.08);
+}
+
+/* ==========================================================
+   8. REDES SOCIAIS
+   ========================================================== */
+.nav-socials-desktop {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-social-icon {
+    color: #5a6a82;
+    font-size: 1.1rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.nav-social-icon:hover {
+    color: #ffffff;
+    background: rgba(59, 130, 246, 0.15);
+    transform: translateY(-1px);
+}
+
+.nav-socials-mobile {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(59, 130, 246, 0.08);
+}
+
+.nav-socials-mobile p {
+    font-size: 0.7rem;
+    color: #5a6a82;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.socials-mobile-grid {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.socials-mobile-grid a {
+    color: #7a8aa3;
+    font-size: 1.1rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.socials-mobile-grid a:hover {
+    color: #ffffff;
+    background: rgba(59, 130, 246, 0.15);
+}
+
+/* ==========================================================
+   9. DESKTOP
+   ========================================================== */
+@media (min-width: 768px) {
+    .layout {
+        flex-direction: row;
+        min-height: calc(100vh - 56px);
+    }
+
+    .main-navbar {
+        padding-left: 240px;
+    }
+
+    .nav-menu-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        width: 100%;
+        gap: 2rem;
+    }
+
+    .menu-toggle,
+    .menu-close,
+    .sidebar-overlay,
+    .nav-socials-mobile {
+        display: none !important;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 240px;
+        height: 100vh;
+    }
+
+    .sidebar .logo {
+        margin-bottom: 2.5rem;
+        justify-content: flex-start;
+    }
+
+    .content {
+        margin-left: 240px;
+        width: calc(100% - 240px);
+        padding: 5rem 2rem 2rem 2rem;
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+/* ===== notificacoes_tela.css ===== */
+/*
+static\js\componentes\notificacoes_globais\notificacoes_tela.css
+============================================ */
+/* SISTEMA DE NOTIFICAÇÕES - GLOBAL             */
+/* ============================================ */
+
+.notificacao-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.notificacao-item {
+    background: #1e1e2d;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 300px;
+    max-width: 420px;
+    pointer-events: auto;
+    animation: notificacaoEntrada 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    border-left: 4px solid;
+}
+
+.notificacao-item.sucesso {
+    border-left-color: #28a745;
+    background: #1a2e1f;
+}
+
+.notificacao-item.erro {
+    border-left-color: #dc3545;
+    background: #2e1a1d;
+}
+
+.notificacao-item.aviso {
+    border-left-color: #ffc107;
+    background: #2e2a1a;
+}
+
+.notificacao-item.saindo {
+    animation: notificacaoSaida 0.3s ease forwards;
+}
+
+.notificacao-icone {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.notificacao-mensagem {
+    flex: 1;
+}
+
+.notificacao-fechar {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.notificacao-fechar:hover {
+    color: white;
+}
+
+@keyframes notificacaoEntrada {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes notificacaoSaida {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+}
+
+/* ===== auth.css ===== */
+/* static/css/modules/pasta_pre_login/auth.css */
+/* ==========================================================
+   AUTH PRE-LOGIN (Login, Cadastro, Recuperar, etc)
+   Prefixo: .apl-
+   Paleta: azul oceano profundo (igual base)
+   ========================================================== */
+
+/* ==========================================================
+   1. UTILITÁRIOS
+   ========================================================== */
+.d-none {
+    display: none !important;
+}
+
+/* ==========================================================
+   2. CONTAINER
+   ========================================================== */
+.apl-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: auto 0;
+}
+
+/* ==========================================================
+   3. CARD
+   ========================================================== */
+.apl-card {
+    background: #141a2b;
+    border: 1px solid rgba(59, 130, 246, 0.12);
+    width: 100%;
+    max-width: 380px;
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow:
+        0 20px 60px -20px rgba(0, 0, 0, 0.6),
+        0 0 60px -20px rgba(59, 130, 246, 0.15);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.apl-card-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.apl-card-header h2 {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.3px;
+}
+
+.apl-card-header p {
+    color: #7a8aa3;
+    font-size: 0.82rem;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.apl-card-header strong {
+    color: #e6edf7;
+}
+
+/* ==========================================================
+   4. FORM
+   ========================================================== */
+.apl-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.apl-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+}
+
+.apl-input-group label {
+    color: #e6edf7;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-align: left;
+    letter-spacing: 0.2px;
+}
+
+.apl-input-group input {
+    background-color: #0a0e1a;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    color: #ffffff;
+    font-size: 0.9rem;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.apl-input-group input::placeholder {
+    color: #4a5a72;
+}
+
+.apl-input-group input:focus {
+    outline: none;
+    border-color: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+    background-color: #0a0e1a;
+}
+
+.apl-input-group input.apl-code-input {
+    padding: 0.75rem 0.5rem;
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.6rem;
+    letter-spacing: 8px;
+}
+
+/* ==========================================================
+   5. BOTÕES
+   ========================================================== */
+.apl-form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.85rem;
+}
+
+.apl-form-navigation {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.apl-btn-submit,
+.apl-btn-reset,
+.apl-nav-btn-secondary,
+.apl-nav-btn-warning {
+    flex: 1;
+    padding: 0.65rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.apl-btn-submit {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25);
+}
+
+.apl-btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+.apl-btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.apl-btn-reset {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.apl-btn-reset:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+.apl-nav-btn-secondary {
+    background: rgba(30, 41, 59, 0.6);
+    color: #e6edf7;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.apl-nav-btn-secondary:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #ffffff;
+}
+
+.apl-nav-btn-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.apl-nav-btn-warning:hover {
+    background: rgba(245, 158, 11, 0.2);
+    color: #ffffff;
+    border-color: #f59e0b;
+}
+
+/* ==========================================================
+   6. LINK FORGOT PASSWORD
+   ========================================================== */
+.apl-form-footer {
+    text-align: center;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.apl-forgot-link {
+    color: #7a8aa3;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.apl-forgot-link:hover {
+    color: #22c55e;
+    text-decoration: underline;
+}
+
+/* ==========================================================
+   7. SPINNER
+   ========================================================== */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: girar 0.75s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes girar {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================
+   8. FLASH MESSAGES
+   ========================================================== */
+.apl-flash-wrapper {
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 1rem;
+}
+
+.apl-alert {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.95rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+}
+
+.apl-alert-error,
+.apl-alert-danger {
+    background-color: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+}
+
+.apl-alert-success {
+    background-color: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #86efac;
+}
+
+.apl-alert-warning {
+    background-color: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #fcd34d;
+}
+
+.apl-alert-info {
+    background-color: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    color: #93c5fd;
+}
+
+.apl-close-alert-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0.7;
+    padding-left: 0.5rem;
+}
+
+.apl-close-alert-btn:hover {
+    opacity: 1;
+}
+
+/* ==========================================================
+   9. RESPONSIVO
+   ========================================================== */
+@media (max-width: 767px) {
+    .apl-card {
+        padding: 1.5rem 1.25rem;
+        border-radius: 12px;
+    }
+
+    .apl-card-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .apl-input-group {
+        margin-bottom: 0.85rem;
+    }
+
+    .apl-input-group input {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.88rem;
+    }
+
+    .apl-input-group input.apl-code-input {
+        font-size: 1.4rem;
+        padding: 0.65rem 0.5rem;
+        letter-spacing: 6px;
+    }
+
+    .apl-form-actions,
+    .apl-form-navigation {
+        gap: 0.4rem;
+    }
+
+    .apl-btn-submit,
+    .apl-btn-reset,
+    .apl-nav-btn-secondary,
+    .apl-nav-btn-warning {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+

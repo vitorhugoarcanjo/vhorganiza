@@ -1,0 +1,539 @@
+/* static/css/modules/pasta_pre_login/pagina_inicial.css */
+/* ==========================================================
+   PÁGINA INICIAL (pré-login) — prefixo .pi-
+   Paleta: dark azulado profundo
+   ========================================================== */
+
+/* ==========================================================
+   0. ANIMAÇÕES
+   ========================================================== */
+@keyframes piFadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes piGlow {
+    0%, 100% { opacity: 0.5; }
+    50%      { opacity: 0.8; }
+}
+
+/* ==========================================================
+   1. WRAPPER
+   ========================================================== */
+.pi-wrapper {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+/* ==========================================================
+   2. HERO
+   ========================================================== */
+.pi-hero {
+    padding: 3rem 1rem 1rem 1rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    animation: piFadeUp 0.6s ease-out;
+}
+
+.pi-hero::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    animation: piGlow 6s ease-in-out infinite;
+}
+
+.pi-hero-content {
+    max-width: 760px;
+    position: relative;
+    z-index: 1;
+}
+
+.pi-badge-dev {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: #60a5fa;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.pi-hero-title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+    letter-spacing: -1px;
+    line-height: 1.15;
+}
+
+.pi-hero-title .pi-highlight {
+    background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.pi-hero-subtitle {
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    color: #94a3b8;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pi-hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pi-btn-primary,
+.pi-btn-secondary {
+    padding: 0.8rem 1.75rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.pi-btn-primary {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.25);
+}
+
+.pi-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(34, 197, 94, 0.4);
+}
+
+.pi-btn-secondary {
+    background: rgba(30, 41, 59, 0.6);
+    color: #e6edf7;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.pi-btn-secondary:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================
+   3. SEÇÕES GENÉRICAS
+   ========================================================== */
+.pi-section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.pi-section-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: #ffffff;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.pi-section-subtitle {
+    font-size: 0.95rem;
+    color: #7a8aa3;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ==========================================================
+   4. MOCKUP DO DASHBOARD (feito em CSS, sem imagem)
+   ========================================================== */
+.pi-mockup-wrapper {
+    display: flex;
+    justify-content: center;
+    animation: piFadeUp 0.8s ease-out 0.2s both;
+}
+
+.pi-mockup {
+    width: 100%;
+    max-width: 900px;
+    background: #0c1d3a;
+    border-color: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+        0 20px 60px -20px rgba(0, 0, 0, 0.6),
+        0 0 80px -20px rgba(59, 130, 246, 0.2);
+}
+
+.pi-mockup-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(10, 14, 26, 0.6);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.pi-mockup-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #334155;
+}
+
+.pi-mockup-dot.pi-dot-red    { background: #ef4444; }
+.pi-mockup-dot.pi-dot-yellow { background: #f59e0b; }
+.pi-mockup-dot.pi-dot-green  { background: #22c55e; }
+
+.pi-mockup-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* KPIs do mockup */
+.pi-mockup-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.pi-mockup-kpi {
+    background: rgba(10, 14, 26, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.08);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.pi-mockup-kpi-label {
+    font-size: 0.6rem;
+    color: #5a6a82;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.pi-mockup-kpi-valor {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #e6edf7;
+}
+
+.pi-mockup-kpi-valor.pi-pos { color: #22c55e; }
+.pi-mockup-kpi-valor.pi-neg { color: #ef4444; }
+
+/* Gráfico de barras fake */
+.pi-mockup-chart {
+    background: rgba(10, 14, 26, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.08);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.pi-mockup-chart-title {
+    font-size: 0.65rem;
+    color: #5a6a82;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.pi-mockup-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 8px;
+    height: 80px;
+}
+
+.pi-mockup-bar-item {
+    flex: 1;
+    background: linear-gradient(to top, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.15));
+    border-radius: 3px 3px 0 0;
+    position: relative;
+    min-height: 10%;
+}
+
+.pi-mockup-bar-item.pi-bar-green {
+    background: linear-gradient(to top, rgba(34, 197, 94, 0.5), rgba(34, 197, 94, 0.15));
+}
+
+/* Lista fake */
+.pi-mockup-lista {
+    background: rgba(10, 14, 26, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.08);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pi-mockup-linha {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+}
+
+.pi-mockup-linha-bolinha {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3b82f6;
+    flex-shrink: 0;
+}
+
+.pi-mockup-linha-bolinha.pi-bolinha-verde { background: #22c55e; }
+.pi-mockup-linha-bolinha.pi-bolinha-amarela { background: #f59e0b; }
+
+.pi-mockup-linha-barra {
+    height: 6px;
+    background: rgba(59, 130, 246, 0.15);
+    border-radius: 3px;
+    flex: 1;
+}
+
+.pi-mockup-linha-barra.pi-barra-curta { max-width: 60%; }
+.pi-mockup-linha-barra.pi-barra-media { max-width: 80%; }
+
+/* ==========================================================
+   5. GRID DE MÓDULOS
+   ========================================================== */
+.pi-modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+.pi-module-card {
+    background: linear-gradient(180deg, rgba(20, 26, 43, 0.8) 0%, rgba(20, 26, 43, 0.4) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.pi-module-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pi-module-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 12px 40px -12px rgba(59, 130, 246, 0.3);
+}
+
+.pi-module-card:hover::before {
+    opacity: 1;
+}
+
+.pi-module-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.pi-module-card.pi-module-tarefas   .pi-module-icon { background: rgba(34, 197, 94, 0.1); color: #4ade80; border-color: rgba(34, 197, 94, 0.2); }
+.pi-module-card.pi-module-financas  .pi-module-icon { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border-color: rgba(59, 130, 246, 0.2); }
+.pi-module-card.pi-module-orcamentos .pi-module-icon { background: rgba(168, 85, 247, 0.1); color: #c084fc; border-color: rgba(168, 85, 247, 0.2); }
+.pi-module-card.pi-module-categorias .pi-module-icon { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border-color: rgba(245, 158, 11, 0.2); }
+.pi-module-card.pi-module-dashboard  .pi-module-icon { background: rgba(236, 72, 153, 0.1); color: #f472b6; border-color: rgba(236, 72, 153, 0.2); }
+
+.pi-module-title {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+
+.pi-module-desc {
+    color: #7a8aa3;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+/* ==========================================================
+   6. FEATURES (diferenciais)
+   ========================================================== */
+.pi-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+
+.pi-feature-item {
+    background: rgba(20, 26, 43, 0.5);
+    border: 1px solid rgba(59, 130, 246, 0.08);
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+}
+
+.pi-feature-item:hover {
+    border-color: rgba(59, 130, 246, 0.2);
+    background: rgba(20, 26, 43, 0.8);
+}
+
+.pi-feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+}
+
+.pi-feature-item h3 {
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+}
+
+.pi-feature-item p {
+    color: #7a8aa3;
+    font-size: 0.82rem;
+    line-height: 1.6;
+}
+
+/* ==========================================================
+   7. CTA FINAL / CONTATO
+   ========================================================== */
+.pi-contact-section {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(180deg, transparent, rgba(59, 130, 246, 0.03));
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.06);
+}
+
+.pi-social-links {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.pi-social-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    color: #7a8aa3;
+    text-decoration: none;
+    background: rgba(20, 26, 43, 0.6);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.pi-social-btn:hover {
+    transform: translateY(-3px);
+    color: #ffffff;
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.4);
+}
+
+.pi-social-btn.pi-btn-linkedin:hover  { background: #0077b5; border-color: #0077b5; }
+.pi-social-btn.pi-btn-github:hover    { background: #11161b; border-color: #11161b; }
+.pi-social-btn.pi-btn-instagram:hover { background: linear-gradient(45deg, #f09433 0%, #dc2743 50%, #bc1888 100%); border-color: transparent; }
+.pi-social-btn.pi-btn-whatsapp:hover  { background: #25d366; border-color: #25d366; }
+
+/* ==========================================================
+   8. RESPONSIVO
+   ========================================================== */
+@media (max-width: 900px) {
+    .pi-mockup-kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .pi-wrapper {
+        gap: 3rem;
+    }
+
+    .pi-hero {
+        padding-top: 1.5rem;
+    }
+
+    .pi-hero-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .pi-btn-primary,
+    .pi-btn-secondary {
+        width: 100%;
+        padding: 0.85rem;
+    }
+
+    .pi-mockup-body {
+        padding: 14px;
+    }
+
+    .pi-mockup-kpis {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .pi-mockup-bars {
+        height: 60px;
+    }
+}
