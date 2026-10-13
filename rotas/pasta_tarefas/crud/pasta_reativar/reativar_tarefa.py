@@ -24,16 +24,12 @@ logger = logging.getLogger(__name__)
 # ==========================================================
 def _buscar_tarefas_com_filtros(cursor, usuario_id):
     data_inicio, data_fim, tipo_data = TarefasFilters.processar_filtros_data()
-    filtros = {
+    filtros = TarefasFilters.recuperar_filtros(session)   # 🔥 SÓ RECUPERA
+    filtros.update({
         'data_inicio': data_inicio,
-        'data_fim': data_fim,
-        'tipo_data': tipo_data,
-        'categorias': TarefasFilters.filtro_categorias(usuario_id, cursor)[0],
-        'status': TarefasFilters.filtro_status(),
-        'prioridade': TarefasFilters.filtro_prioridade(),
-        'descricao': TarefasFilters.filtro_descricao(),
-        'mostrar_inativas': TarefasFilters.processar_mostrar_inativas(),
-    }
+        'data_fim':    data_fim,
+        'tipo_data':   tipo_data,
+    })
 
     service = TarefasServices(conexao=None, cursor=cursor)
     tarefas_raw = service.buscar_tarefas(usuario_id, filtros)
@@ -45,7 +41,7 @@ def _render_tbody(usuario_id, cursor):
     return render_template(
         'pasta_tarefas/partials/_tbody_tarefas.html.jinja',
         tarefas=tarefas,
-        mostrar_inativas=session.get('mostrar_inativas', '0'),
+        mostrar_inativas=session.get('tarefas_mostrar_inativas', '0'),   # 🔥 PREFIXO
     )
 
 

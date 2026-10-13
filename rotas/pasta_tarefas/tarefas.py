@@ -26,30 +26,27 @@ def ini_tarefas():
     usuario_id = session['user_id']
     is_htmx = request.headers.get('HX-Request') == 'true'
 
-    # 1. FILTROS
+    # 1. SALVAR FILTROS (só no POST da view principal)
+    if request.method == 'POST':
+        TarefasFilters.salvar_filtros_post(request, session)
+
+    # 2. PROCESSAR DATA + RECUPERAR FILTROS
     data_inicio, data_fim, tipo_data = TarefasFilters.processar_filtros_data()
     session['tarefas_tipo_data'] = tipo_data
 
     conexao, cursor = ini_conexao()
 
+    filtros = TarefasFilters.recuperar_filtros(session)
+    filtros.update({
+        'data_inicio': data_inicio,
+        'data_fim':    data_fim,
+        'tipo_data':   tipo_data,
+    })
+
+    # Categorias pro filtro (só se não for HTMX)
     categorias_filtro, categorias_usuario = TarefasFilters.filtro_categorias(usuario_id, cursor)
-    status_filtro      = TarefasFilters.filtro_status()
-    prioridade_filtro  = TarefasFilters.filtro_prioridade()
-    descricao_filtro   = TarefasFilters.filtro_descricao()
-    mostrar_inativas   = TarefasFilters.processar_mostrar_inativas()
 
-    filtros = {
-        'data_inicio':       data_inicio,
-        'data_fim':          data_fim,
-        'tipo_data':         tipo_data,
-        'categorias':        categorias_filtro,
-        'status':            status_filtro,
-        'prioridade':        prioridade_filtro,
-        'descricao':         descricao_filtro,
-        'mostrar_inativas':  mostrar_inativas,
-    }
-
-    # 2. QUERY
+    # 3. QUERY
     query = TarefasQueries.get_tarefas_base()
     params = [usuario_id]
     query, params = TarefasFilters.aplicar_filtros_query(query, params, filtros)
@@ -59,10 +56,10 @@ def ini_tarefas():
     tarefas_raw = cursor.fetchall()
     tarefas = TarefasFormatters.formatar_tarefas(tarefas_raw)
 
-    # 3. CONTADORES (pro footer)
-    pendentes   = sum(1 for t in tarefas if t['status'] == 'pendente'      and t['ativo'] == 1)
-    andamento   = sum(1 for t in tarefas if t['status'] == 'em andamento'  and t['ativo'] == 1)
-    concluidas  = sum(1 for t in tarefas if t['status'] == 'concluido'     and t['ativo'] == 1)
+    # 4. CONTADORES
+    pendentes  = sum(1 for t in tarefas if t['status'] == 'pendente'     and t['ativo'] == 1)
+    andamento  = sum(1 for t in tarefas if t['status'] == 'em andamento' and t['ativo'] == 1)
+    concluidas = sum(1 for t in tarefas if t['status'] == 'concluido'    and t['ativo'] == 1)
 
     contadores = {
         'pendentes':  pendentes,
@@ -70,11 +67,11 @@ def ini_tarefas():
         'concluidas': concluidas,
     }
 
-    # 4. HTMX (retorna só a tabela + OOB)
+    # 5. HTMX (retorna só a tabela + OOB)
     if is_htmx:
         return _renderizar_htmx(tarefas, contadores, filtros, data_inicio, data_fim)
 
-    # 5. RENDER COMPLETO
+    # 6. RENDER COMPLETO
     return render_template(
         'pasta_tarefas/tela_tarefas.html.jinja',
         user_nome=session.get('user_nome'),
@@ -84,12 +81,12 @@ def ini_tarefas():
         data_inicio=data_inicio,
         data_fim=data_fim,
         tipo_data=tipo_data,
-        mostrar_inativas=mostrar_inativas,
+        mostrar_inativas=filtros['mostrar_inativas'],
         categorias_usuario=categorias_usuario,
         categorias_filtro=categorias_filtro,
-        status_filtro=status_filtro,
-        prioridade_filtro=prioridade_filtro,
-        descricao_filtro=descricao_filtro,
+        status_filtro=filtros['status'],
+        prioridade_filtro=filtros['prioridade'],
+        descricao_filtro=filtros['descricao'],
     )
 
 
@@ -140,5 +137,5 @@ def detalhes_tarefa(tarefa_seq):
 # ==========================================================
 @login_required
 def limpar_filtros():
-    TarefasFilters.limpar_filtros()
+    TarefasFilters.limpar_filtros(session)
     return redirect(url_for('tarefas.ini_tarefas'))
