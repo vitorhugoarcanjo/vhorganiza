@@ -46,6 +46,7 @@ JS_FILES = [
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_estornar/modal_estornar_quitado.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_reativar/modal_reativar_inativo.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_quitar/btn_quitar.js',
+    'static/js/modules/pasta_financas/acoes_e_modais/pasta_quitar/quitar_modal.js',
     'static/js/modules/pasta_financas/acoes_e_modais/pasta_auditoria/auditoria_financas.js',
     
     # Menu

@@ -1,3 +1,4 @@
+// static\js\modules\pasta_financas\acoes_e_modais\detalhes_completo\detalhes_completo.js
 function verDetalhesTransacao(transacaoId) {
     const modal = document.getElementById('modalDetalhesTransacao');
     const conteudo = document.getElementById('conteudoDetalhesTransacao');

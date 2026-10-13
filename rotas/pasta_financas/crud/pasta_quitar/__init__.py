@@ -3,8 +3,18 @@ from flask import Blueprint
 
 bp_quitar = Blueprint('quitar_transacao', __name__)
 
-# Importa a view
-from .quitar_transacao import quitar_transacao_view
+from .quitar_transacao import quitar_modal_view, quitar_transacao_view
 
-# Registra as rotas
-bp_quitar.add_url_rule('/<int:sequencia>', view_func=quitar_transacao_view, methods=['POST'])
+# 🔥 GET — Renderiza o modal
+bp_quitar.add_url_rule(
+    '/modal/<int:sequencia>',
+    view_func=quitar_modal_view,
+    methods=['GET']
+)
+
+# 🔥 POST — Quita a transação
+bp_quitar.add_url_rule(
+    '/<int:sequencia>',
+    view_func=quitar_transacao_view,
+    methods=['POST']
+)

@@ -55,6 +55,9 @@
     <!-- VENCIMENTO -->
     <td>{{ transacao['data_vencimento'] or '-' }}</td>
 
+    <!-- QUITAMENTO -->
+    <td class="td-quitamento">{{ transacao.data_quitamento }}</td>
+
     <!-- AÇÕES -->
     <td class="td-acoes text-center">
         <!-- DETALHES -->
@@ -94,14 +97,10 @@
                     <i class="bi bi-trash"></i>
                 </button>
 
-                <!-- QUITAR / RECEBER -->
+                <!-- QUITAR / RECEBER — abre MODAL -->
                 {% if transacao['status'] == 'aberto' %}
                     <button type="button"
                             class="btn-acao check btn-quitar"
-                            hx-post="{{ url_for('financas.quitar_transacao.quitar_transacao_view', sequencia=transacao['sequencia_transacoes']) }}"
-                            hx-target="closest tr"
-                            hx-swap="outerHTML"
-                            hx-indicator="this"
                             data-id="{{ transacao['sequencia_transacoes'] }}"
                             title="{{ 'Quitar' if transacao['tipo'] == 'despesa' else 'Receber' }}">
                         <i class="bi {{ 'bi-check-lg' if transacao['tipo'] == 'despesa' else 'bi-cash-stack' }}"></i>

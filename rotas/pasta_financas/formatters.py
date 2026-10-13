@@ -22,6 +22,7 @@ class FinancasFormatters:
 
             # 💡 Regra limpa no Python: se for parcela filha, o valor da linha é o da parcela!
             valor_efetivo = valor_parcela_bruto if transacao_pai_id is not None else valor_total_bruto
+            data_quitamento_raw = t[15] if len(t) > 15 else None
 
             transacao_dict = {
                 "sequencia_transacoes": t[0],
@@ -41,7 +42,8 @@ class FinancasFormatters:
                 "transacao_pai_id": transacao_pai_id,
                 
                 # Rótulo amigável para parcelas
-                "parcela_label": f"{numero_parcela}/{total_parcelas}" if numero_parcela and total_parcelas and total_parcelas > 1 else 'À vista'
+                "parcela_label": f"{numero_parcela}/{total_parcelas}" if numero_parcela and total_parcelas and total_parcelas > 1 else 'À vista',
+                "data_quitamento": formatar_data_br(data_quitamento_raw) if data_quitamento_raw else '—',
             }
 
             transacoes.append(transacao_dict)

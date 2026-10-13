@@ -1,0 +1,51 @@
+<!-- templates/pasta_financas/modais/modal_quitar_transacao.html.jinja -->
+<div class="fin-modal-overlay active" id="modalQuitarTransacao">
+    <div class="fin-modal-box fin-modal-box-small">
+        <div class="fin-modal-header">
+            <h3>
+                <i class="bi {{ 'bi-check-circle' if transacao.tipo == 'despesa' else 'bi-cash-stack' }}"></i>
+                {{ 'Quitar' if transacao.tipo == 'despesa' else 'Receber' }} Transação
+            </h3>
+            <button class="fin-btn-close-modal" onclick="fecharModalQuitar()">✕</button>
+        </div>
+
+        <form id="formQuitarTransacao" onsubmit="event.preventDefault(); confirmarQuitar();">
+            <input type="hidden" id="quitarSequencia" value="{{ transacao.sequencia }}">
+            <input type="hidden" id="quitarTipo" value="{{ transacao.tipo }}">
+
+            <div class="fin-modal-body">
+                <p style="margin-bottom: 4px;">
+                    <strong>{{ transacao.descricao }}</strong>
+                </p>
+
+                <p style="margin-bottom: 16px; color: var(--texto-discreto);">
+                    Valor: {{ transacao.valor_formatado }}
+                </p>
+
+                <div class="form-group">
+                    <label>Data de {{ 'Quitação' if transacao.tipo == 'despesa' else 'Recebimento' }}</label>
+                    <input type="date"
+                           id="quitarData"
+                           name="data_quitamento"
+                           class="form-input"
+                           value="{{ hoje }}">
+                    <small style="color: var(--texto-discreto); display:block; margin-top:4px;">
+                        Vencimento original: {{ transacao.data_vencimento_original }}
+                    </small>
+                </div>
+            </div>
+
+            <div class="footer-fixo-padrao">
+                <div class="botoes-footer-padrao">
+                    <button type="submit" class="btn-footer btn-footer-primary" id="btnConfirmarQuitar">
+                        <i class="bi bi-check-lg"></i> CONFIRMAR
+                    </button>
+                    <button type="button" class="btn-footer-cancelar" onclick="fecharModalQuitar()">
+                        <i class="bi bi-x-circle"></i> CANCELAR
+                    </button>
+                </div>
+                <h2>{{ 'QUITAR' if transacao.tipo == 'despesa' else 'RECEBER' }}</h2>
+            </div>
+        </form>
+    </div>
+</div>
