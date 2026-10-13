@@ -4,14 +4,18 @@
 # Aceita data_quitamento do form (fallback: hoje)
 # ==========================================================
 
+import json
+import logging
 from flask import session, make_response, render_template, request
 from datetime import date
-from utils.fomatacoes.data_reutilizavel import formatar_moeda_br, formatar_data_br
 
 from rotas.middleware.autenticacao import login_required
 from rotas.auditoria_geral.pasta_financas.services_auditoria import AuditoriaFinanceiraService
 from utils.database.conexao_global import ini_conexao
 from rotas.pasta_financas.formatters import FinancasFormatters
+from utils.fomatacoes.data_reutilizavel import formatar_moeda_br, formatar_data_br
+
+logger = logging.getLogger(__name__)
 
 
 # ==========================================================
@@ -36,14 +40,26 @@ def quitar_modal_view(sequencia):
         if not transacao:
             return '', 404
 
-        valor_raw = float(transacao[4]) if transacao[5] else float(transacao[3])
-        # Monta dict pro template
+        # 🔥 Cálculo robusto — nunca quebra com None
+        valor_total     = transacao[3]
+        valor_parcela   = transacao[4]
+        data_vencimento = transacao[5]
+
+        # Se tiver valor_parcela (é filha), usa. Senão, usa valor_total.
+        # Se ambos forem None, usa 0 (não quebra).
+        if valor_parcela is not None:
+            valor_raw = float(valor_parcela)
+        elif valor_total is not None:
+            valor_raw = float(valor_total)
+        else:
+            valor_raw = 0.0
+
         dados = {
-            'sequencia':                  transacao[0],
-            'descricao':                  transacao[1],
-            'tipo':                       transacao[2],
-            'valor_formatado':            formatar_moeda_br(valor_raw),                              # 🔥
-            'data_vencimento_original':   formatar_data_br(transacao[5]) if transacao[5] else '(vazio)',  # 🔥
+            'sequencia':                transacao[0],
+            'descricao':                transacao[1] or 'Sem descrição',
+            'tipo':                     transacao[2] or 'despesa',
+            'valor_formatado':          formatar_moeda_br(valor_raw),
+            'data_vencimento_original': formatar_data_br(data_vencimento) if data_vencimento else '(vazio)',
         }
 
         return render_template(
@@ -51,6 +67,9 @@ def quitar_modal_view(sequencia):
             transacao=dados,
             hoje=date.today().isoformat(),
         )
+    except Exception as e:
+        logger.exception(f"Erro ao renderizar modal de quitar seq={sequencia}")
+        return '', 500
     finally:
         conexao.close()
 
@@ -62,7 +81,7 @@ def quitar_modal_view(sequencia):
 def quitar_transacao_view(sequencia):
     usuario_id = session['user_id']
 
-    # 🔥 Data vem do form (fallback: hoje)
+    # Data vem do form (fallback: hoje)
     data_quitamento = (request.form.get('data_quitamento') or '').strip()
     if not data_quitamento:
         data_quitamento = date.today().isoformat()
@@ -70,7 +89,6 @@ def quitar_transacao_view(sequencia):
     conexao, cursor = ini_conexao()
 
     try:
-        # Busca a transação + o pai (se for filha)
         cursor.execute("""
             SELECT id, descricao, status, tipo, transacao_pai_id
             FROM transacoes
@@ -82,8 +100,8 @@ def quitar_transacao_view(sequencia):
             conexao.close()
             return '', 404
 
-        id_interno = transacao[0]
-        status_antes = transacao[2]
+        id_interno       = transacao[0]
+        status_antes     = transacao[2]
         transacao_pai_id = transacao[4]
 
         # Se for FILHA, usa o ID do PAI pra auditoria
@@ -97,7 +115,6 @@ def quitar_transacao_view(sequencia):
             novo_status = 'quitado'
             acao = 'quitada'
 
-        # UPDATE com a data escolhida
         cursor.execute("""
             UPDATE transacoes
             SET status = %s,
@@ -108,8 +125,8 @@ def quitar_transacao_view(sequencia):
 
         # Auditoria com data ANTES/DEPOIS
         alteracoes = [
-            {'campo': 'Status',           'antes': status_antes, 'depois': novo_status},
-            {'campo': 'Data Quitamento',  'antes': '(vazio)',     'depois': data_quitamento},
+            {'campo': 'Status',          'antes': status_antes, 'depois': novo_status},
+            {'campo': 'Data Quitamento', 'antes': '(vazio)',    'depois': data_quitamento},
         ]
 
         AuditoriaFinanceiraService.registrar(
@@ -117,7 +134,7 @@ def quitar_transacao_view(sequencia):
             acao=acao,
             campo_alterado='multiplos',
             valor_antigo=None,
-            valor_novo=__import__('json').dumps(alteracoes, ensure_ascii=False),
+            valor_novo=json.dumps(alteracoes, ensure_ascii=False),
             conexao=conexao,
         )
 
@@ -155,6 +172,6 @@ def quitar_transacao_view(sequencia):
 
     except Exception as e:
         conexao.rollback()
-        print(f"Erro ao quitar: {e}")
+        logger.exception(f"Erro ao quitar seq={sequencia}")
         conexao.close()
         return '', 500
