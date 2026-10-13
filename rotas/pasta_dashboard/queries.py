@@ -24,7 +24,7 @@ class DashboardQueries:
             FROM transacoes t
             WHERE t.usuario_id = %s
               AND t.ativo = 1
-              AND t.status = 'quitado'
+              AND t.status IN ('quitado', 'recebido')
               AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
               AND t.data_quitamento BETWEEN %s AND %s
         """
@@ -75,7 +75,7 @@ class DashboardQueries:
             FROM transacoes t
             WHERE t.usuario_id = %s
               AND t.ativo = 1
-              AND t.status = 'quitado'
+              AND t.status IN ('quitado', 'recebido')
               AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
               AND t.data_quitamento BETWEEN %s AND %s
         """
@@ -97,7 +97,7 @@ class DashboardQueries:
             FROM transacoes t
             WHERE t.usuario_id = %s
               AND t.ativo = 1
-              AND t.status = 'quitado'
+              AND t.status IN ('quitado', 'recebido')
               AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
               AND t.data_quitamento >= %s
             GROUP BY TO_CHAR(t.data_quitamento, 'YYYY-MM')
@@ -105,7 +105,7 @@ class DashboardQueries:
         """
 
     # ==========================================================
-    # TOP CATEGORIAS — por quitação
+    # TOP CATEGORIAS — por quitação (SÓ DESPESA)
     # ==========================================================
     @staticmethod
     def get_top_categorias():
@@ -169,7 +169,7 @@ class DashboardQueries:
             LEFT JOIN categorias c ON c.id = t.categoria_id AND c.modulo = 'financas'
             WHERE t.usuario_id = %s
               AND t.ativo = 1
-              AND t.status = 'quitado'
+              AND t.status IN ('quitado', 'recebido')
               AND (t.transacao_pai_id IS NOT NULL OR t.total_parcelas <= 1)
               AND t.data_quitamento BETWEEN %s AND %s
             ORDER BY t.data_quitamento DESC, t.sequencia_transacoes DESC
